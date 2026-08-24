@@ -39,6 +39,12 @@ watch:
 extra_css:
   - assets/extra.css
 
+# Diagrams. The vendored mermaid is the same file the decks load, so a module
+# page renders its diagrams with no network (DECISION-mermaid-diagrams).
+extra_javascript:
+  - slides/vendor/mermaid.min.js
+  - assets/mermaid-init.js
+
 theme:
   name: material
   icon:
@@ -90,7 +96,11 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: diagram
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

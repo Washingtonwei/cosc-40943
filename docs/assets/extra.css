@@ -23,3 +23,29 @@
 .md-typeset table:not([class]) td {
   vertical-align: top;
 }
+
+/* Mermaid diagrams on module pages. The fence compiles to pre.diagram and
+   assets/mermaid-init.js replaces its contents with an SVG. */
+pre.diagram {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 1.2rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+pre.diagram code {
+  background: none;
+  padding: 0;
+}
+pre.diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The iron triangle figure, drawn inline so it diffs in git. Quality is amber
+   in both palettes. */
+:root { --iron-quality: #B26A00; }
+[data-md-color-scheme="slate"] { --iron-quality: #FFB443; }
+.figure { margin: 1.5rem 0; }
+.figure svg { display: block; margin: 0 auto; }
