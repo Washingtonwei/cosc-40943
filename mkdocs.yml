@@ -15,20 +15,21 @@ strict: true
 hooks:
   - decks/hook.py
 
+# Deck sources (compiled by the hook, never rendered as doc pages) and draft
+# stubs still holding raw authoring notes (DECISION-module-stub-as-inbox). An
+# excluded module is not built at all, so it is not reachable by URL and not in
+# the search index. When a stub is authored, delete its line here and add it to
+# `nav` below.
 exclude_docs: |
   slides/*.md
   slides/tier1/*
-
-# Draft stubs holding raw authoring notes (DECISION-module-stub-as-inbox). They
-# build and are reachable by URL, but stay out of the nav until they carry real
-# student-facing content, at which point move the line into `nav` above.
-not_in_nav: |
   modules/spec-driven-requirements.md
   modules/testing.md
   modules/ci-cd.md
   modules/metrics-and-tech-debt.md
   modules/open-source.md
   modules/ethics.md
+  modules/ai-augmented-team.md
 
 # `mkdocs serve` watches docs/ already; add the deck machinery so editing the
 # theme or the hook also triggers a live reload.
@@ -107,6 +108,5 @@ nav:
   - The Method: method.md
   - Modules:
       - SE and What AI Changes: modules/se-and-ai.md
-      - The AI-Augmented Team: modules/ai-augmented-team.md
       - Requirements Traceability: modules/traceability.md
   - Resources: resources.md

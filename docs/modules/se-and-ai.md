@@ -18,7 +18,7 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** none. This is the course opener.
-- **Leads into:** [The AI-Augmented Team](ai-augmented-team.md) in week 2 (onboarding the agent as a teammate), then requirements as the contract in weeks 3-4, and architecture in week 6, where the Napkin's six questions get the slow, derived treatment.
+- **Leads into:** The AI-Augmented Team in week 2 (onboarding the agent as a teammate), then requirements as the contract in weeks 3-4, and architecture in week 6, where the Napkin's six questions get the slow, derived treatment.
 - **How it's taught:** two lecture days in week 1, then revisited at every new topic all term. It owns the [Napkin drill](../studio.md#the-napkin-drill) you will run six times in studio.
 - **Course outcome it delivers:** [sizing up an unfamiliar problem and defending that judgment against the agent's version](../syllabus.md#learning-outcomes) (outcome 10), and it opens [collaborating with AI across the lifecycle](../syllabus.md#learning-outcomes) (outcome 6).
 
@@ -188,4 +188,3 @@ A seventh prompt, **Delegate** (what goes to the agent, what stays human), is he
 - [Schedule](../schedule.md): when this module is taught, and what follows it.
 - [Friday Studio](../studio.md): the Napkin drill as you will actually run it.
 - [Working with AI](../ai.md): the delegation boundary and these two failure modes, stated as course policy.
-- [The AI-Augmented Team](ai-augmented-team.md): the next module, on onboarding the agent to a team.
