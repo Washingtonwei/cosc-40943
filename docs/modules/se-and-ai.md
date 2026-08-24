@@ -82,7 +82,7 @@ The last row is the one students disbelieve and then discover. The hardest part 
 The life cycle is the sequence of activities a system goes through from idea to retirement. Different processes arrange it differently (waterfall runs it once, agile runs it every two weeks, and you will meet both), but the activities are the same:
 
 ```mermaid
-flowchart LR
+flowchart TD
   A[Vision and scope] --> B[Requirements]
   B --> C[Architecture]
   C --> D[Detailed design]
@@ -90,7 +90,7 @@ flowchart LR
   E --> F[Testing and QA]
   F --> G[Release and operations]
   G --> H[Maintenance]
-  H --> B
+  H -->|and it starts again| B
 ```
 
 Count the boxes. **Implementation is one of eight**, and it is the box you have been graded on for three years. It is also the box agents are strongest at.
@@ -171,7 +171,7 @@ It is solved by arriving already able to do the four-hour work: to scope a probl
 
 ### Kent Beck did the math
 
-Kent Beck invented Extreme Programming and test-driven development, and has been writing software for about fifty years. This is what he wrote the day he first used a language model seriously, in April 2023:
+Kent Beck created Extreme Programming, popularized test-driven development, and has been shipping software since the 1980s. This is what he wrote the day he first used a language model seriously, in April 2023:
 
 > The value of 90% of my skills just dropped to $0. The leverage for the remaining 10% went up 1000x.
 

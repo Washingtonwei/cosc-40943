@@ -139,7 +139,7 @@ Take two or three answers and do not correct them. Let the disagreement sit unre
 
 ## Kent Beck did the math
 
-Kent Beck invented Extreme Programming and test-driven development. He wrote this the first day he used a language model:
+Kent Beck created Extreme Programming and popularized test-driven development. He wrote this the first day he used a language model:
 
 > The value of 90% of my skills just dropped to $0. The leverage for the remaining 10% went up 1000x.
 
@@ -214,21 +214,22 @@ Fifty-eight years later the failure rate is still the reason this course exists.
 
 ```mermaid
 flowchart LR
-  A[Vision and scope] --> B[Requirements]
+  A[Vision] --> B[Requirements]
   B --> C[Architecture]
-  C --> D[Detailed design]
-  D --> E[Implementation]
-  E --> F[Testing and QA]
-  F --> G[Release and operations]
-  G --> B
+  C --> D[Design]
+  D --> E[Code]
+  E --> F[Test]
+  F --> G[Release]
+  G --> H[Maintain]
+  H --> B
 ```
 
 ::: key
-Agents are strongest at one box. You are accountable for the whole loop.
+One box of eight. Agents are strongest at that one. You are accountable for the loop.
 :::
 
 ::: note
-Point at Implementation and say: this is the box you have been graded on for three years. Then trace the arrows. Every other box is a meeting, a decision, or a document, and every one of them can sink the project on its own.
+Point at Code and say: this is the box you have been graded on for three years. Say the full names as you trace them (vision and scope, requirements, architecture, detailed design, implementation, testing and QA, release and operations, maintenance); the module writes them out. Then trace the arrows. Every other box is a meeting, a decision, or a document, and every one of them can sink the project on its own.
 :::
 
 ## What the job postings actually ask for
@@ -412,12 +413,12 @@ The "kill the session rather than redirect it" move is counterintuitive and wort
 Twenty minutes, an unfamiliar problem, a defensible rough judgment.
 
 ::: steps
-1. **Shape** — what kind of system is this really?
-2. **The hard part** — what makes it non-trivial?
-3. **The bottleneck** — what breaks first at scale?
-4. **Stack** — what would you build it on, and why that?
-5. **Three kill risks** — as mechanisms, not categories
-6. **Verdict** — feasible in the time you have?
+1. **Shape**: what kind of system is this really?
+2. **The hard part**: what makes it non-trivial?
+3. **The bottleneck**: what breaks first at scale?
+4. **Stack**: what would you build it on, and why that?
+5. **Three kill risks**: as mechanisms, not categories
+6. **Verdict**: feasible in the time you have?
 :::
 
 ::: warn

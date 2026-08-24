@@ -49,3 +49,12 @@ pre.diagram svg {
 [data-md-color-scheme="slate"] { --iron-quality: #FFB443; }
 .figure { margin: 1.5rem 0; }
 .figure svg { display: block; margin: 0 auto; }
+
+/* Pull quotes carry the lines a student should remember (the module's purpose
+   line, the Beck quote, the definitions). Material mutes blockquotes by
+   default, which rendered the most important sentence on a page as the least
+   prominent text on it. */
+.md-typeset blockquote {
+  color: var(--md-default-fg-color);
+  border-left: .2rem solid var(--md-primary-fg-color);
+}
