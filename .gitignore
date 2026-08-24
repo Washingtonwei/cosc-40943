@@ -1,0 +1,24 @@
+# Built site
+site/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Student data - never commit
+rosters/
+grades/
+*.roster.csv
+*roster*.csv
+*grades*.csv
+peer-evaluations/
+wars/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

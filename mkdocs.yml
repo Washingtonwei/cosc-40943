@@ -1,0 +1,112 @@
+site_name: COSC 40943 Software Engineering
+site_description: Software Engineering and Senior Design at TCU, Fall 2026.
+site_url: https://washingtonwei.github.io/cosc-40943/
+site_author: Bingyang Wei
+repo_url: https://github.com/Washingtonwei/cosc-40943
+repo_name: Washingtonwei/cosc-40943
+edit_uri: edit/main/docs/
+copyright: Texas Christian University, Department of Computer Science
+
+strict: true
+
+# Slide decks: docs/slides/*.md are compiled to site/slides/*.html by the hook,
+# exactly as docs/modules/*.md are compiled to site/modules/*/index.html by MkDocs.
+# The sources are excluded so they are never also rendered as documentation pages.
+hooks:
+  - decks/hook.py
+
+exclude_docs: |
+  slides/*.md
+  slides/tier1/*
+
+# Draft stubs holding raw authoring notes (DECISION-module-stub-as-inbox). They
+# build and are reachable by URL, but stay out of the nav until they carry real
+# student-facing content, at which point move the line into `nav` above.
+not_in_nav: |
+  modules/spec-driven-requirements.md
+  modules/testing.md
+  modules/ci-cd.md
+  modules/metrics-and-tech-debt.md
+  modules/open-source.md
+  modules/ethics.md
+
+# `mkdocs serve` watches docs/ already; add the deck machinery so editing the
+# theme or the hook also triggers a live reload.
+watch:
+  - decks
+
+extra_css:
+  - assets/extra.css
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.sections
+    - content.action.edit
+    - content.code.copy
+    - toc.follow
+    - search.highlight
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+plugins:
+  - search
+  - privacy:
+      assets: false
+      links_attr_map:
+        target: _blank
+        rel: noopener
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+nav:
+  - Home: index.md
+  - Syllabus: syllabus.md
+  - Schedule: schedule.md
+  - Friday Studio: studio.md
+  - Senior Design Project: project.md
+  - Assignments: assignments.md
+  - Working with AI: ai.md
+  - The Method: method.md
+  - Modules:
+      - SE and What AI Changes: modules/se-and-ai.md
+      - The AI-Augmented Team: modules/ai-augmented-team.md
+      - Requirements Traceability: modules/traceability.md
+  - Resources: resources.md

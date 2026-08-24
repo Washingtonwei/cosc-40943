@@ -1,0 +1,25 @@
+/* ============================================================
+   COSC 40943 site extras
+   ------------------------------------------------------------
+   Per-week material links in the schedule. Bracketed small caps
+   so they scan as materials rather than prose, while keeping
+   Material's ordinary link colour and hover.
+   ============================================================ */
+
+.md-typeset a.mat {
+  font-size: .68em;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.md-typeset a.mat::before { content: "["; opacity: .45; }
+.md-typeset a.mat::after  { content: "]"; opacity: .45; }
+
+.md-typeset a.mat + a.mat { margin-left: .3em; }
+
+/* schedule cells are dense; keep rows from stretching */
+.md-typeset table:not([class]) td {
+  vertical-align: top;
+}

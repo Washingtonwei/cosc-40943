@@ -1,0 +1,1247 @@
+<title>Fifteen Weeks to Demo Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ink:#0F1420;
+  --stage:#171E2E;
+  --stage-2:#1E273A;
+  --chalk:#F2EDE3;
+  --chalk-dim:#9AA3B5;
+  --rule:#2C374E;
+  --tcu:#6B2AA0;
+  --tcu-deep:#4D1979;
+  --alarm:#FF4D4D;
+  --sprout:#6FCF57;
+  --bot:#5BE0E6;
+  --paper:#FBF6E9;
+  --c1:#F2545B;
+  --c2:#FFB443;
+  --c3:#47C9A2;
+  --c4:#4EA8F5;
+  --c5:#C77DFF;
+  --c6:#FF7AB6;
+  --display:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --body:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --hand:"Caveat","Segoe Print",cursive;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--chalk);
+  font-family:var(--body);
+  overflow:hidden;
+  height:100vh;
+}
+
+/* ---------- chrome ---------- */
+.rail{
+  position:fixed; left:0; right:0; z-index:20;
+  display:flex; align-items:center; gap:12px;
+  padding:14px 22px;
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--chalk-dim);
+  pointer-events:none;
+}
+.rail.top{top:0}
+.rail.bot{bottom:0; justify-content:space-between}
+.week{
+  font-family:var(--display); font-weight:800; font-size:14px;
+  letter-spacing:.18em; color:var(--chalk);
+  background:var(--tcu-deep); padding:5px 11px; border-radius:4px;
+  min-width:104px; text-align:center;
+}
+.week.idle{background:var(--rule); color:var(--chalk-dim)}
+.opt{
+  font-size:10px; letter-spacing:.16em; color:var(--ink);
+  background:var(--c2); padding:4px 9px; border-radius:4px; font-weight:600;
+  opacity:0; transition:opacity .2s;
+}
+.opt.on{opacity:1}
+.ticks{display:flex; gap:4px; margin-left:auto; align-items:center}
+.tick{width:12px; height:3px; border-radius:2px; background:var(--rule); transition:background .3s, width .3s}
+.tick.done{background:var(--tcu)}
+.tick.opt{background:#4A3A1E}
+.tick.done.opt{background:#8A6A20}
+.tick.now{background:var(--chalk); width:20px}
+.hint{font-size:11px; letter-spacing:.1em}
+kbd{
+  font-family:var(--body); font-size:10px; background:var(--stage-2);
+  border:1px solid var(--rule); border-radius:3px; padding:2px 5px;
+  color:var(--chalk-dim); letter-spacing:.06em;
+}
+
+/* ---------- stage ---------- */
+.stage{
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  padding:52px 24px;
+}
+svg.scene{
+  width:100%; height:100%;
+  max-width:calc(177.7vh - 100px);
+  max-height:calc(56.25vw - 30px);
+  display:block;
+}
+
+/* reveal system */
+[data-s]{opacity:0; transform:translateY(16px); transition:opacity .5s cubic-bezier(.2,.8,.2,1), transform .5s cubic-bezier(.2,.8,.2,1)}
+[data-s].shown{opacity:1; transform:none}
+
+/* in-world type */
+.t-title{font-family:var(--display); font-weight:800; fill:var(--chalk)}
+.t-sub{font-family:var(--body); font-weight:400; fill:var(--chalk-dim)}
+.t-hand{font-family:var(--hand); font-weight:700; fill:var(--ink)}
+.t-hand-l{font-family:var(--hand); font-weight:600; fill:var(--chalk)}
+.t-label{font-family:var(--body); font-weight:600; fill:var(--chalk-dim); letter-spacing:.14em; text-transform:uppercase}
+.t-quote{font-family:var(--hand); font-weight:700; fill:var(--ink)}
+.t-mono{font-family:var(--body); font-weight:500; fill:var(--bot)}
+.t-code{font-family:var(--mono); font-weight:400; fill:#C9D2DC}
+.t-code-hi{font-family:var(--mono); font-weight:600}
+
+/* ambient */
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,-2px)}80%{transform:translate(2px,2px)}}
+@keyframes flick{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes rise{0%{transform:translateY(0);opacity:0}25%{opacity:.75}100%{transform:translateY(-70px);opacity:0}}
+@keyframes pulse{0%,100%{opacity:.16}50%{opacity:.42}}
+@keyframes scan{0%{transform:translateY(0)}100%{transform:translateY(300px)}}
+.bob{animation:bob 3.2s ease-in-out infinite}
+.hover{animation:hover 3.6s ease-in-out infinite}
+.shake{animation:shake .28s steps(2) infinite}
+.flick{animation:flick 1.1s ease-in-out infinite}
+.steam{animation:rise 3s ease-out infinite}
+.steam2{animation:rise 3s ease-out infinite 1.5s}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+.scan{animation:scan 2.2s linear infinite}
+
+@media (prefers-reduced-motion: reduce){
+  [data-s]{transition:opacity .01s}
+  .bob,.hover,.shake,.flick,.steam,.steam2,.pulse,.scan{animation:none}
+}
+
+/* ---------- notes ---------- */
+.notes{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  background:linear-gradient(to top, rgba(15,20,32,.98) 65%, rgba(15,20,32,0));
+  padding:34px 8vw 30px;
+  transform:translateY(101%); transition:transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.notes.open{transform:none}
+.notes .cue{
+  font-family:var(--body); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--tcu); margin-bottom:8px;
+}
+.notes .cue .flag{color:var(--c2)}
+.notes p{
+  margin:0; font-size:clamp(15px,1.5vw,20px); line-height:1.5;
+  color:var(--chalk); max-width:74ch;
+}
+.notes .beat{color:var(--chalk-dim); font-style:italic}
+.notes .ask{color:var(--sprout); font-weight:500}
+
+/* ---------- overlays ---------- */
+.blackout{
+  position:fixed; inset:0; background:#000; z-index:50;
+  opacity:0; pointer-events:none; transition:opacity .18s;
+}
+.blackout.on{opacity:1}
+.help{
+  position:fixed; inset:0; z-index:60; display:grid; place-items:center;
+  background:rgba(15,20,32,.94); opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.help.on{opacity:1; pointer-events:auto}
+.help-card{
+  position:relative;
+  background:var(--stage); border:1px solid var(--rule); border-radius:10px;
+  padding:30px 34px; max-width:560px;
+}
+.help-card h2{font-family:var(--display); font-weight:800; margin:0 0 4px; font-size:22px}
+.help-card p.lede{margin:0 0 20px; color:var(--chalk-dim); font-size:14px; line-height:1.5}
+.help-card dl{display:grid; grid-template-columns:auto 1fr; gap:10px 18px; margin:0; align-items:baseline}
+.help-card dt{text-align:right}
+.help-card dd{margin:0; font-size:14px; color:var(--chalk-dim)}
+.help-card .foot{margin:22px 0 0; font-size:12px; color:var(--chalk-dim); line-height:1.6}
+button.x{
+  position:absolute; top:14px; right:16px; background:none; border:none;
+  color:var(--chalk-dim); font-size:24px; cursor:pointer; font-family:var(--body); line-height:1;
+}
+button.x:focus-visible, .help-card:focus-visible{outline:2px solid var(--tcu); outline-offset:3px}
+</style>
+
+<div class="stage"><svg class="scene" id="scene" viewBox="0 0 1600 900" role="img" aria-label="Animated story scene"></svg></div>
+
+<div class="rail top"><span class="week idle" id="week">TITLE</span><span class="opt" id="optchip">Optional</span></div>
+<div class="rail bot">
+  <span class="hint"><kbd>&rarr;</kbd> advance &nbsp; <kbd>S</kbd> skip scene &nbsp; <kbd>N</kbd> notes &nbsp; <kbd>?</kbd> keys</span>
+  <span class="ticks" id="ticks"></span>
+</div>
+
+<div class="notes" id="notes"><div class="cue" id="cue">Narration</div><p id="note"></p></div>
+<div class="blackout" id="blackout"></div>
+
+<div class="help" id="help">
+  <div class="help-card" tabindex="-1">
+    <button class="x" id="helpclose" aria-label="Close">&times;</button>
+    <h2>Fifteen Weeks to Demo Day</h2>
+    <p class="lede">A narrated cautionary tale in 24 scenes, 89 beats. You talk; each scene reveals one beat at a time. About 17&ndash;19 minutes at a steady pace, or roughly 14 with the four <em>Optional</em> scenes skipped (amber ticks &mdash; press <kbd>S</kbd> to jump one).</p>
+    <dl>
+      <dt><kbd>&rarr;</kbd> <kbd>space</kbd> <kbd>PgDn</kbd></dt><dd>Next beat</dd>
+      <dt><kbd>&larr;</kbd> <kbd>PgUp</kbd></dt><dd>Back</dd>
+      <dt><kbd>S</kbd></dt><dd>Skip the rest of this scene</dd>
+      <dt><kbd>N</kbd></dt><dd>Narration notes on / off</dd>
+      <dt><kbd>B</kbd></dt><dd>Black the screen</dd>
+      <dt><kbd>Home</kbd></dt><dd>Back to the title</dd>
+      <dt><kbd>?</kbd></dt><dd>This card</dd>
+    </dl>
+    <p class="foot">Most presentation clickers send PgDn / PgUp, so they drive it without setup. Click the right side of the screen to advance, the left edge to go back. Amber ticks in the bottom rail are the optional scenes.</p>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   FIFTEEN WEEKS TO DEMO DAY
+   Original artwork: every figure is drawn from the primitives
+   below, nothing traced or imported.
+   ============================================================ */
+
+const C = ['#F2545B','#FFB443','#47C9A2','#4EA8F5','#C77DFF','#FF7AB6'];
+const SKIN = ['#F0C39B','#C98A5E','#8A5A3B','#F6DCC0','#A9714B','#5E3B25'];
+const CHALK='#F2EDE3', INK='#0F1420', ALARM='#FF4D4D', SPROUT='#6FCF57', PAPER='#FBF6E9', BOT='#5BE0E6';
+
+/* ---------- character system ---------- */
+
+function hair(type, col){
+  switch(type){
+    case 'bun':   return `<circle cx="0" cy="-244" r="15" fill="${col}"/><path d="M-37,-200 a37,37 0 0 1 74,0 q-37,-22 -74,0z" fill="${col}"/>`;
+    case 'curls': return `<circle cx="-22" cy="-218" r="16" fill="${col}"/><circle cx="0" cy="-228" r="18" fill="${col}"/><circle cx="22" cy="-218" r="16" fill="${col}"/><path d="M-37,-200 a37,37 0 0 1 74,0 q-37,-20 -74,0z" fill="${col}"/>`;
+    case 'long':  return `<path d="M-40,-196 a40,40 0 0 1 80,0 l0,64 -14,0 -6,-58 -40,0 -6,58 -14,0z" fill="${col}"/>`;
+    case 'crop':  return `<path d="M-37,-198 a37,37 0 0 1 74,0 q-20,-16 -37,-8 -17,-8 -37,8z" fill="${col}"/>`;
+    case 'pony':  return `<path d="M-37,-200 a37,37 0 0 1 74,0 q-37,-20 -74,0z" fill="${col}"/><path d="M32,-206 q26,10 22,44 q-4,20 -18,16 q10,-30 -12,-50z" fill="${col}"/>`;
+    case 'wave':  return `<path d="M-38,-198 a38,38 0 0 1 76,0 q-14,-14 -26,-4 -12,-12 -24,-2 -12,-8 -26,6z" fill="${col}"/>`;
+    case 'cap':   return `<path d="M-38,-200 a38,34 0 0 1 76,0z" fill="${col}"/><path d="M-38,-200 l-22,6 0,10 26,-8z" fill="${col}"/>`;
+    default: return '';
+  }
+}
+
+function face(mood){
+  const e=(cx,cy,r=5)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${INK}"/>`;
+  switch(mood){
+    case 'happy':   return e(-13,-202)+e(13,-202)+`<path d="M-13,-186 q13,13 26,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    case 'grin':    return `<path d="M-19,-204 q6,-8 12,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M7,-204 q6,-8 12,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M-15,-188 q15,17 30,0z" fill="${INK}"/>`;
+    case 'neutral': return e(-13,-202)+e(13,-202)+`<path d="M-10,-184 l20,0" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`;
+    case 'worried': return e(-13,-200)+e(13,-200)+`<path d="M-22,-214 l14,6" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/><path d="M22,-214 l-14,6" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/><path d="M-11,-180 q11,-10 22,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    case 'panic':   return `<ellipse cx="-13" cy="-202" rx="9" ry="11" fill="#fff"/><ellipse cx="13" cy="-202" rx="9" ry="11" fill="#fff"/>`+e(-13,-200,4.5)+e(13,-200,4.5)+`<ellipse cx="0" cy="-180" rx="9" ry="12" fill="${INK}"/>`;
+    case 'shout':   return `<path d="M-22,-212 l14,8" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><path d="M22,-212 l-14,8" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`+e(-13,-198,4.5)+e(13,-198,4.5)+`<path d="M-16,-182 q16,-4 32,0 q-8,20 -32,0z" fill="${INK}"/>`;
+    case 'flat':    return `<path d="M-19,-202 l12,0" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><path d="M7,-202 l12,0" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><path d="M-9,-182 l18,0" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`;
+    case 'dead':    return `<path d="M-19,-208 l12,12 M-7,-208 l-12,12" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><path d="M7,-208 l12,12 M19,-208 l-12,12" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><path d="M-11,-180 q6,7 11,0 q5,-7 11,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    case 'sick':    return e(-13,-200,4)+e(13,-200,4)+`<path d="M-11,-178 q11,-9 22,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    case 'sleep':   return `<path d="M-20,-200 q7,7 14,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M6,-200 q7,7 14,0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="-180" rx="6" ry="8" fill="${INK}"/>`;
+    case 'blank':   return e(-13,-202)+e(13,-202)+`<circle cx="0" cy="-181" r="6" fill="none" stroke="${INK}" stroke-width="4"/>`;
+    default:        return e(-13,-202)+e(13,-202);
+  }
+}
+
+const POSE = {
+  idle:[-8,8], up:[-155,155], shrug:[-118,118], type:[-58,58],
+  point:[-8,100], out:[-95,95], one:[-8,150], cheer:[-160,150], face:[-42,10]
+};
+
+function P(o){
+  const {x=0,y=0,s=1,col='#F2545B',hairType='crop',hairCol='#3B2A1E',skin=SKIN[0],
+         mood='neutral',pose='idle',flip=false,dim=false,tint=null}=o;
+  const [aL,aR]=POSE[pose]||POSE.idle;
+  const sk = tint||skin;
+  const arm=(sx,ang)=>`<g transform="translate(${sx},-152) rotate(${ang})"><rect x="-9" y="-4" width="18" height="70" rx="9" fill="${sk}"/></g>`;
+  return `<g transform="translate(${x},${y}) scale(${flip?-s:s},${s})" opacity="${dim?.28:1}">
+    <rect x="-13" y="-62" width="24" height="64" rx="12" fill="#2B3346"/>
+    <rect x="0" y="-62" width="24" height="64" rx="12" fill="#2B3346"/>
+    ${arm(-38,aL)}${arm(38,aR)}
+    <rect x="-40" y="-166" width="80" height="112" rx="32" fill="${col}"/>
+    <circle cx="0" cy="-198" r="38" fill="${sk}"/>
+    ${hair(hairType,hairCol)}${face(mood)}
+  </g>`;
+}
+
+/* the seventh teammate */
+function bot(o){
+  const {x=0,y=0,s=1,mood='calm',glow=true,dim=false,float=true}=o;
+  let visor;
+  switch(mood){
+    case 'busy':  visor = `<circle cx="-16" cy="0" r="5" fill="${INK}"/><circle cx="0" cy="0" r="5" fill="${INK}"/><circle cx="16" cy="0" r="5" fill="${INK}"/>`; break;
+    case 'happy': visor = `<path d="M-22,4 q8,-12 16,0" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M6,4 q8,-12 16,0" stroke="${INK}" stroke-width="5" fill="none" stroke-linecap="round"/>`; break;
+    case 'flat':  visor = `<path d="M-22,0 l14,0 M8,0 l14,0" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`; break;
+    case 'spray': visor = `<path d="M-20,-6 l40,0 M-20,4 l40,0" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`; break;
+    default:      visor = `<circle cx="-14" cy="0" r="6" fill="${INK}"/><circle cx="14" cy="0" r="6" fill="${INK}"/>`;
+  }
+  return `<g transform="translate(${x},${y}) scale(${s})" opacity="${dim?.3:1}">
+    <ellipse cx="0" cy="86" rx="42" ry="9" fill="#000" opacity=".25"/>
+    <g class="${float?'hover':''}">
+      ${glow?`<circle cx="0" cy="0" r="82" fill="${BOT}" class="pulse"/>`:''}
+      <path d="M0,-84 l0,-18" stroke="${BOT}" stroke-width="5" stroke-linecap="round"/><circle cx="0" cy="-108" r="8" fill="${BOT}"/>
+      <rect x="-56" y="-84" width="112" height="112" rx="34" fill="${CHALK}"/>
+      <rect x="-40" y="-52" width="80" height="46" rx="23" fill="${BOT}"/>
+      <g transform="translate(0,-29)">${visor}</g>
+      <rect x="-26" y="4" width="52" height="8" rx="4" fill="#C9D2DC"/>
+      <rect x="-18" y="18" width="36" height="6" rx="3" fill="#C9D2DC"/>
+    </g>
+  </g>`;
+}
+
+/* ---------- object primitives ---------- */
+
+function laptop(x,y,s=1,glow='#4EA8F5'){
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <path d="M-46,-56 l92,0 0,56 -92,0z" fill="#2B3346"/>
+    <rect x="-40" y="-51" width="80" height="46" fill="${glow}" opacity=".85"/>
+    <path d="M-62,4 l124,0 -8,10 -108,0z" fill="#3B465F"/>
+  </g>`;
+}
+
+function phoneFrame(x,y,s=1,inner=''){
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <rect x="-84" y="-150" width="168" height="300" rx="20" fill="#0C1018" stroke="${CHALK}" stroke-width="5"/>
+    <rect x="-74" y="-136" width="148" height="258" rx="6" fill="${PAPER}"/>
+    ${inner}
+    <circle cx="0" cy="132" r="12" fill="none" stroke="${CHALK}" stroke-width="4"/>
+  </g>`;
+}
+
+function bubble(x,y,w,h,lines,tail='bl',fill=PAPER,size=30){
+  const t = tail==='bl'
+    ? `<path d="M${-w/2+26},${h/2} l0,30 l34,-30z" fill="${fill}"/>`
+    : `<path d="M${w/2-26},${h/2} l0,30 l-34,-30z" fill="${fill}"/>`;
+  const ls = lines.map((l,i)=>
+    `<text x="0" y="${-h/2+26+(i+1)*(size+6)-size*0.28}" text-anchor="middle" class="t-quote" font-size="${size}">${l}</text>`).join('');
+  return `<g transform="translate(${x},${y})"><rect x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" rx="16" fill="${fill}"/>${t}${ls}</g>`;
+}
+
+function sticky(x,y,w,h,lines,col='#FFE066',rot=0,size=26){
+  const ls = lines.map((l,i)=>
+    `<text x="0" y="${-h/2+34+i*(size+6)}" text-anchor="middle" class="t-hand" font-size="${size}">${l}</text>`).join('');
+  return `<g transform="translate(${x},${y}) rotate(${rot})"><rect x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" fill="${col}"/>${ls}</g>`;
+}
+
+/* a stack of generated code lines */
+function codeBlock(x,y,w,rows,col=BOT,seed=7){
+  let r='', s=seed;
+  const rnd=()=>{ s=(s*1103515245+12345)%2147483648; return s/2147483648; };
+  for(let i=0;i<rows;i++){
+    const ind = (i%7===0)?0 : (i%3===0)?18 : 34;
+    const lw = 40 + rnd()*(w-ind-50);
+    r += `<rect x="${ind}" y="${i*13}" width="${lw}" height="7" rx="3.5" fill="${col}" opacity="${.35+rnd()*.5}"/>`;
+  }
+  return `<g transform="translate(${x},${y})">${r}</g>`;
+}
+
+function counter(x,y,label,value,col=CHALK,size=76){
+  return `<g transform="translate(${x},${y})">
+    <text x="0" y="0" text-anchor="middle" class="t-title" font-size="${size}" fill="${col}">${value}</text>
+    <text x="0" y="34" text-anchor="middle" class="t-label" font-size="17">${label}</text>
+  </g>`;
+}
+
+function calendar(x,y,s,opts={}){
+  const {marks={},circle=null,title='FALL SEMESTER'}=opts;
+  const cw=62,ch=54,cols=5,rows=3;
+  let cells='';
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    const n=r*cols+c+1, m=marks[n], cx=c*cw, cy=r*ch;
+    cells += `<rect x="${cx}" y="${cy}" width="${cw-4}" height="${ch-4}" fill="${m==='x'?'#F6E2DE':PAPER}" stroke="#D8CDB4" stroke-width="2"/>`;
+    cells += `<text x="${cx+8}" y="${cy+20}" font-family="Instrument Sans" font-size="14" fill="#9C927C">${n}</text>`;
+    if(m==='x') cells += `<path d="M${cx+12},${cy+14} l${cw-28},${ch-26} M${cx+cw-16},${cy+14} l-${cw-28},${ch-26}" stroke="${ALARM}" stroke-width="5" stroke-linecap="round"/>`;
+  }
+  let ring='';
+  if(circle!=null){
+    const c=(circle-1)%cols, r=Math.floor((circle-1)/cols);
+    ring=`<ellipse cx="${c*cw+cw/2-2}" cy="${r*ch+ch/2-2}" rx="30" ry="25" fill="none" stroke="${ALARM}" stroke-width="6"/>`;
+  }
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <rect x="-10" y="-46" width="${cols*cw+16}" height="${rows*ch+56}" fill="${PAPER}"/>
+    <rect x="-10" y="-46" width="${cols*cw+16}" height="34" fill="${ALARM}"/>
+    <text x="${(cols*cw)/2-1}" y="-23" text-anchor="middle" font-family="Instrument Sans" font-weight="600" font-size="16" fill="${PAPER}" letter-spacing="2">${title}</text>
+    ${cells}${ring}
+  </g>`;
+}
+
+function plant(x,y,health,s=1){
+  const h=Math.max(0,Math.min(1,health));
+  const droop=(1-h)*54;
+  const green = h>.66?SPROUT : h>.33?'#B7C24A' : '#8A7A4A';
+  const leaves = h>.6?3 : h>.35?2 : h>.12?1 : 0;
+  let L='';
+  const spec=[[-1,-58,20],[1,-76,18],[-1,-96,15]];
+  for(let i=0;i<leaves;i++){
+    const [dir,ly,lr]=spec[i];
+    L += `<ellipse cx="${dir*26}" cy="${ly+droop*0.5}" rx="${lr+8}" ry="${lr}" fill="${green}" transform="rotate(${dir*(20+droop*0.5)} ${dir*26} ${ly+droop*0.5})"/>`;
+  }
+  return `<g transform="translate(${x},${y}) scale(${s})" aria-hidden="true">
+    <path d="M0,-14 q${droop*0.5},-46 0,${-104+droop+14}" stroke="${green}" stroke-width="7" fill="none" stroke-linecap="round"/>
+    ${L}
+    <path d="M-30,-16 l60,0 -7,44 -46,0z" fill="#C4643A"/>
+    <rect x="-34" y="-24" width="68" height="14" rx="3" fill="#D97A4E"/>
+  </g>`;
+}
+
+function heading(t,sub,y=104){
+  return `<text x="800" y="${y}" text-anchor="middle" class="t-title" font-size="54">${t}</text>`+
+    (sub?`<text x="800" y="${y+42}" text-anchor="middle" class="t-sub" font-size="24">${sub}</text>`:'');
+}
+
+const TEAM = [
+  {name:'MIA',   col:C[0], hairType:'bun',   hairCol:'#4A3320', skin:SKIN[0]},
+  {name:'DEV',   col:C[1], hairType:'curls', hairCol:'#241A12', skin:SKIN[2]},
+  {name:'ROSA',  col:C[2], hairType:'long',  hairCol:'#3A2118', skin:SKIN[1]},
+  {name:'JONAH', col:C[3], hairType:'crop',  hairCol:'#6B4A2A', skin:SKIN[3]},
+  {name:'KAI',   col:C[4], hairType:'cap',   hairCol:'#243B6B', skin:SKIN[4]},
+  {name:'NELL',  col:C[5], hairType:'pony',  hairCol:'#1E1712', skin:SKIN[5]}
+];
+const LEAD   = {col:'#5BC0BE', hairType:'wave', hairCol:'#C64B23', skin:SKIN[3]};
+const CLIENT = {col:'#8FBF6A', hairType:'wave', hairCol:'#5A4432', skin:SKIN[1]};
+
+/* ============================================================
+   SCENES
+   ============================================================ */
+
+const SCENES = [];
+const scene = (o)=>SCENES.push(o);
+
+/* 1 — title */
+scene({
+  week:null,
+  steps:[
+    {note:'Before we talk about what software engineering is, I want to show you where you are going. This is a true story. Some version of it has happened in this course almost every year I have taught it.'},
+    {note:'Fifteen weeks. Six people. One real client. <span class="beat">Then land the last line slowly.</span> Nobody in this story writes a bad line of code. Most of them barely write any code at all.'}
+  ],
+  art:()=>`
+    ${plant(1420,720,1,1.1)}
+    <text x="800" y="316" text-anchor="middle" class="t-title" font-size="82">How a senior design project</text>
+    <text x="800" y="410" text-anchor="middle" class="t-title" font-size="82" fill="${ALARM}">goes terribly wrong</text>
+    <g data-s="1">
+      <line x1="520" y1="476" x2="1080" y2="476" stroke="#2C374E" stroke-width="2"/>
+      <text x="800" y="542" text-anchor="middle" class="t-sub" font-size="27">Fifteen weeks. Six people. One real client.</text>
+      <text x="800" y="592" text-anchor="middle" class="t-sub" font-size="27">Nobody writes a bad line of code.</text>
+      <text x="800" y="642" text-anchor="middle" class="t-title" font-size="30" fill="${BOT}">Most of them barely write any code at all.</text>
+    </g>`
+});
+
+/* 2 — the cast */
+scene({
+  week:'WEEK 01',
+  steps:[
+    {note:'Here is your team. Six people who have never shipped anything together, and who are all, individually, good programmers. Hold on to that: everyone in this story is competent.'},
+    {note:'Here is your client. A real one. She runs the campus community garden, she is giving you her time for free, and in fifteen weeks she expects something she can hand to sixty gardeners.'},
+    {note:'And here is the seventh member of your team. It was on the roster from day one. It never gets tired, it never says &ldquo;I don&rsquo;t know how,&rdquo; and it is the reason this story now ends faster than it used to.'}
+  ],
+  art:()=>{
+    let t='';
+    TEAM.forEach((m,i)=>{
+      t += `<g data-s="0">${P({x:220+i*150,y:640,s:.78,...m,mood:i%2?'happy':'grin'})}
+        <text x="${220+i*150}" y="678" text-anchor="middle" class="t-label" font-size="14">${m.name}</text></g>`;
+    });
+    return `${plant(120,780,1,.8)}
+      ${heading('The team','Six good programmers who have never shipped anything together')}
+      ${t}
+      <g data-s="1">
+        ${P({x:1180,y:640,s:.82,...CLIENT,mood:'happy'})}
+        <text x="1180" y="678" text-anchor="middle" class="t-label" font-size="14" fill="${SPROUT}">MS. REYES &middot; CLIENT</text>
+      </g>
+      <g data-s="2">
+        ${bot({x:1420,y:540,s:.7,mood:'happy'})}
+        <text x="1420" y="678" text-anchor="middle" class="t-label" font-size="14" fill="${BOT}">THE AGENT &middot; TEAMMATE 7</text>
+        <line x1="1300" y1="440" x2="1300" y2="690" stroke="#2C374E" stroke-width="2" stroke-dasharray="6 8"/>
+      </g>`;
+  }
+});
+
+/* 3 — the vision */
+scene({
+  week:'WEEK 01',
+  steps:[
+    {note:'The client has a vision, and it is a good one. A place where everyone with a plot in the garden can see what is growing, swap seedlings, and ask for help when they go out of town.'},
+    {note:'She calls it Sprout. She has been thinking about it for two years, so it is completely clear. <span class="beat">Pause.</span> To her.'}
+  ],
+  art:()=>{
+    const inner=`
+      <rect x="-74" y="-136" width="148" height="34" fill="${SPROUT}"/>
+      <text x="0" y="-112" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="26" fill="#0C1018">sprout</text>
+      <circle cx="-44" cy="-70" r="18" fill="#D9E8CF"/><rect x="-18" y="-84" width="84" height="10" rx="5" fill="#D8CDB4"/><rect x="-18" y="-66" width="60" height="8" rx="4" fill="#E4DCC8"/>
+      <rect x="-58" y="-36" width="116" height="62" rx="6" fill="#CDE3BC"/>
+      <ellipse cx="0" cy="-5" rx="26" ry="18" fill="${SPROUT}"/>
+      <rect x="-58" y="40" width="116" height="10" rx="5" fill="#D8CDB4"/><rect x="-58" y="58" width="80" height="10" rx="5" fill="#E4DCC8"/>
+      <text x="0" y="104" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="24" fill="#7C8F6A">3 waters</text>`;
+    return `${plant(180,780,1,.9)}
+      ${P({x:420,y:720,s:1.05,...CLIENT,mood:'grin',pose:'point'})}
+      <g class="bob">
+        <ellipse cx="1010" cy="420" rx="330" ry="250" fill="#1E273A"/>
+        <circle cx="700" cy="600" r="26" fill="#1E273A"/><circle cx="640" cy="650" r="15" fill="#1E273A"/>
+        ${phoneFrame(1010,410,.92,inner)}
+      </g>
+      <g data-s="1">
+        <text x="1010" y="762" text-anchor="middle" class="t-title" font-size="46">&ldquo;It&rsquo;s called Sprout.&rdquo;</text>
+        <text x="1010" y="806" text-anchor="middle" class="t-sub" font-size="23">Two years of imagining it. Perfectly clear. To her.</text>
+      </g>`;
+  }
+});
+
+/* 4 — fifteen weeks */
+scene({
+  week:'WEEK 01',
+  steps:[
+    {note:'Fifteen weeks. Not a deadline you negotiated or estimated. The registrar picked it, demo day is the last week, and it does not move.'},
+    {note:'Fifteen weeks sounds enormous in week one. Remember having had that feeling.'}
+  ],
+  art:()=>`
+    ${plant(1470,740,1,.95)}
+    ${heading('Fifteen weeks','The registrar picked this deadline. It does not move.')}
+    ${calendar(560,300,1.5,{circle:15})}
+    <g data-s="1">
+      ${sticky(1220,560,260,120,['DEMO DAY','no extensions'],'#FF8C7A',7,30)}
+      <path d="M1090,530 q70,-10 100,10" stroke="${ALARM}" stroke-width="4" fill="none"/>
+      <path d="M1090,530 l16,-12 M1090,530 l14,14" stroke="${ALARM}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>`
+});
+
+/* 5 — confidence  [OPTIONAL] */
+scene({
+  week:'WEEK 01', optional:true,
+  steps:[
+    {note:'And the team is thrilled. This is the first time any of them gets to build something a real person will use.'},
+    {note:'Nobody here is lazy. Nobody here is careless. Remember that at the end, because the temptation will be to explain the ending with laziness, and it will not fit.'}
+  ],
+  art:()=>{
+    let t='';
+    TEAM.forEach((m,i)=>{ t += P({x:280+i*175,y:640,s:.9,...m,mood:'grin',pose:i%2?'up':'cheer'}); });
+    return `${plant(1490,770,1,.85)}
+      ${heading('Everyone is excited','The first thing any of them will build for a real person')}
+      ${t}
+      <g data-s="1">
+        <text x="800" y="790" text-anchor="middle" class="t-title" font-size="40" fill="${SPROUT}">Nobody here is lazy. Nobody here is careless.</text>
+        <text x="800" y="836" text-anchor="middle" class="t-sub" font-size="24">That is what makes the ending worth explaining.</text>
+      </g>`;
+  }
+});
+
+/* 6 — the meeting */
+scene({
+  week:'WEEK 02',
+  steps:[
+    {note:'So you do the responsible thing. You schedule a meeting with the client, you bring a notebook, and you ask the obvious question.'},
+    {note:'What do you want?'},
+    {note:'And she tells you, for forty minutes, and you write all of it down. <span class="beat">Beat.</span> This is the moment the project is decided. Not the ending. Right here.'}
+  ],
+  art:()=>`
+    ${plant(140,800,1,.85)}
+    ${heading('You do the responsible thing','Week two: sit down and ask')}
+    <rect x="520" y="620" width="560" height="22" rx="6" fill="#3B465F"/>
+    <rect x="560" y="642" width="26" height="120" fill="#2B3346"/><rect x="1014" y="642" width="26" height="120" fill="#2B3346"/>
+    ${P({x:430,y:700,s:.95,...LEAD,mood:'happy'})}
+    ${P({x:1170,y:700,s:.95,...CLIENT,mood:'grin',pose:'point'})}
+    <g data-s="1">${bubble(600,420,330,110,['What do you want?'],'br')}</g>
+    <g data-s="2">${bubble(1090,340,420,196,['Well &mdash; it should feel','warm. Like a garden.','And really simple.'],'bl')}</g>`
+});
+
+/* 7 — the vibe spec */
+scene({
+  week:'WEEK 02',
+  steps:[
+    {note:'And here is what you leave the room with. Read it with me.'},
+    {note:'Friendly, not corporate. Cozy botanical. It must feel alive. Sign in by scanning a leaf. Likes are called Waters.'},
+    {note:'<span class="ask">Ask the room:</span> how many of these could you test? How would you know if you got &ldquo;alive&rdquo; wrong?'},
+    {note:'Zero. Not one line here can be tested, handed to a stranger, or checked off as done. You did not leave that room with requirements. You left with a mood.'}
+  ],
+  art:()=>{
+    const rows=[
+      ['Typeface','friendly, not corporate'],
+      ['Aesthetic','cozy botanical'],
+      ['Audience','plant people'],
+      ['Sign in by','scanning a leaf'],
+      ['Likes are called','Waters'],
+      ['It must feel','alive'],
+      ['Biggest risk','none, it&rsquo;s simple']
+    ];
+    let r='';
+    rows.forEach((row,i)=>{
+      const y=300+i*66;
+      r += `<g data-s="${i<2?0:1}">
+        <text x="600" y="${y}" text-anchor="end" class="t-label" font-size="19" fill="#9C927C">${row[0]}</text>
+        <text x="640" y="${y+4}" class="t-hand" font-size="38">${row[1]}</text></g>`;
+    });
+    return `
+      <rect x="380" y="180" width="900" height="600" rx="8" fill="${PAPER}"/>
+      <rect x="380" y="180" width="900" height="14" fill="${SPROUT}"/>
+      <text x="420" y="252" class="t-hand" font-size="46" fill="#3C4A2E">Sprout &mdash; what she wants</text>
+      ${r}
+      ${plant(1400,760,1,.9)}
+      <g data-s="2">${sticky(1330,300,300,150,['How many of','these can you','test?'],'#FFE066',6,30)}</g>
+      <g data-s="3"><g transform="rotate(-9 830 500)">
+        <rect x="470" y="440" width="720" height="120" rx="10" fill="none" stroke="${ALARM}" stroke-width="8"/>
+        <text x="830" y="522" text-anchor="middle" class="t-title" font-size="62" fill="${ALARM}">0 TESTABLE REQUIREMENTS</text>
+      </g></g>`;
+  }
+});
+
+/* 8 — paste it in  ★ */
+scene({
+  week:'WEEK 02',
+  steps:[
+    {note:'So you do what your team would actually do. You paste the whole card into the agent and you ask it to get started.'},
+    {note:'Ninety seconds. Two thousand one hundred and forty lines. It runs. <span class="beat">Let them enjoy this. It genuinely is amazing.</span>'},
+    {note:'Now look at what it had to do to give you that. You said &ldquo;sign in by scanning a leaf,&rdquo; which is not a thing, so it assumed email and password. You never mentioned a database, so it picked one. <span class="beat">Reveal the last two slowly.</span>'},
+    {note:'And you said it must feel alive. So it added push notifications and a social feed. Nobody asked for those. Nobody decided them. They are now in your codebase and they will be in your demo in thirteen weeks.'},
+    {note:'<span class="ask">Ask the room:</span> is the agent wrong here? <span class="beat">It is not. It did exactly what you asked. The gap in the spec did not disappear when you pasted it in. The agent filled it, silently, and moved on.</span>'}
+  ],
+  art:()=>`
+    ${plant(90,830,.95,.7)}
+    ${heading('So you paste it into the agent','Week two')}
+    <g transform="translate(300,470)">
+      <rect x="-130" y="-160" width="260" height="320" rx="6" fill="${PAPER}" opacity=".92"/>
+      <rect x="-130" y="-160" width="260" height="8" fill="${SPROUT}"/>
+      <text x="0" y="-116" text-anchor="middle" class="t-hand" font-size="26" fill="#3C4A2E">Sprout &mdash; the card</text>
+      <path d="M-100,-80 l200,0 M-100,-46 l160,0 M-100,-12 l186,0 M-100,22 l140,0 M-100,56 l178,0 M-100,90 l120,0" stroke="#D8CDB4" stroke-width="7" stroke-linecap="round"/>
+      <text x="0" y="140" text-anchor="middle" class="t-hand" font-size="30" fill="${ALARM}">&ldquo;must feel alive&rdquo;</text>
+    </g>
+    <path d="M450,470 l100,0" stroke="${BOT}" stroke-width="5"/><path d="M550,470 l-18,-14 M550,470 l-18,14" stroke="${BOT}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    ${bot({x:680,y:440,s:.72,mood:'busy'})}
+    <g data-s="1">
+      <rect x="850" y="250" width="330" height="410" rx="8" fill="#0C1018" stroke="#2C374E" stroke-width="2"/>
+      ${codeBlock(870,272,290,30)}
+      ${counter(1330,360,'lines, 90 seconds','2,140',BOT,64)}
+      <text x="1330" y="440" text-anchor="middle" class="t-title" font-size="30" fill="${SPROUT}">It runs.</text>
+    </g>
+    <g data-s="2">
+      ${sticky(1330,560,300,58,['assumed: email login'],'#CFE8EA',-3,24)}
+      ${sticky(1330,630,300,58,['assumed: PostgreSQL'],'#CFE8EA',2,24)}
+    </g>
+    <g data-s="3">
+      ${sticky(1330,700,300,58,['added: notifications'],'#FFB0A6',-2,24)}
+      ${sticky(1330,770,300,58,['added: social feed'],'#FFB0A6',3,24)}
+      <text x="1130" y="742" text-anchor="end" class="t-hand-l" font-size="30" fill="${ALARM}">nobody asked</text>
+      <path d="M1140,736 l40,10" stroke="${ALARM}" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g data-s="4">
+      <rect x="180" y="812" width="900" height="70" rx="8" fill="#1E273A" stroke="${BOT}" stroke-width="2"/>
+      <text x="630" y="858" text-anchor="middle" class="t-title" font-size="32" fill="${BOT}">The gap in the spec didn&rsquo;t go away. It got filled, silently.</text>
+    </g>`
+});
+
+/* 9 — six lightbulbs */
+scene({
+  week:'WEEK 02',
+  steps:[
+    {note:'You read the card to the team, and something wonderful happens: everybody gets it immediately. Six people, six ideas, zero arguments.'},
+    {note:'Except look at what is actually in those heads. <span class="beat">Reveal.</span> Kai is picturing a mobile app. Rosa is picturing a database. Nell is picturing a map of the garden plots.'},
+    {note:'They are not disagreeing. That is the problem. Disagreement is loud and you would have caught it. This is six different projects wearing the same name, and it is completely silent.'},
+    {note:'And now each of those six pictures has an agent attached to it that can produce a thousand lines an hour. <span class="beat">Beat.</span> You are not building one product six times slower than a company. You are building six products, faster than you can read them.'}
+  ],
+  art:()=>{
+    const icons=[
+      `<rect x="-15" y="-24" width="30" height="48" rx="5" fill="#0C1018"/>`,
+      `<ellipse cx="0" cy="-14" rx="22" ry="8" fill="#0C1018"/><path d="M-22,-14 l0,24 a22,8 0 0 0 44,0 l0,-24" fill="#0C1018"/>`,
+      `<path d="M-22,-18 l14,-6 16,8 14,-6 0,36 -14,6 -16,-8 -14,6z" fill="#0C1018"/>`,
+      `<rect x="-22" y="-18" width="44" height="30" rx="8" fill="#0C1018"/><path d="M-10,12 l6,12 10,-12z" fill="#0C1018"/>`,
+      `<circle cx="0" cy="-2" r="18" fill="none" stroke="#0C1018" stroke-width="6"/><path d="M13,11 l14,14" stroke="#0C1018" stroke-width="7" stroke-linecap="round"/>`,
+      `<ellipse cx="0" cy="0" rx="12" ry="20" fill="#0C1018" transform="rotate(-30)"/><path d="M6,10 l14,14" stroke="#0C1018" stroke-width="5" stroke-linecap="round"/>`
+    ];
+    let t='';
+    TEAM.forEach((m,i)=>{
+      const x=250+i*180;
+      t += P({x,y:740,s:.76,...m,mood:'grin'});
+      t += `<g data-s="0"><path d="M${x},${470} a50,50 0 1 1 .1,0z" fill="#FFE066"/>
+        <path d="M${x-15},${508} l30,0 0,15 -30,0z" fill="#E0B93A"/>
+        <path d="M${x-10},${527} l20,0 -4,11 -12,0z" fill="#C9A32E"/></g>`;
+      t += `<g data-s="1" transform="translate(${x},466)">${icons[i]}</g>`;
+      t += `<g data-s="3">${bot({x:x+62,y:684,s:.3,mood:'busy',glow:false,float:false})}</g>`;
+    });
+    return `${plant(1530,850,.95,.7)}
+      ${heading('Everyone gets it immediately','Six people. Six ideas. Zero arguments.')}
+      ${t}
+      <g data-s="2"><text x="800" y="812" text-anchor="middle" class="t-title" font-size="38" fill="${ALARM}">Nobody disagreed. That is why nobody noticed.</text></g>
+      <g data-s="3"><text x="800" y="862" text-anchor="middle" class="t-title" font-size="32" fill="${BOT}">Six products now, at a thousand lines an hour each.</text></g>`;
+  }
+});
+
+/* 10 — silos */
+scene({
+  week:'WEEK 03',
+  steps:[
+    {note:'The team splits the work the way every student team splits the work: by person. I&rsquo;ll take the front end. I&rsquo;ll take login.'},
+    {note:'Six people, six laptops, six branches, six agents. <span class="beat">Reveal the branches.</span> And from this moment, for the next seven weeks, nobody&rsquo;s code touches anybody else&rsquo;s.'},
+    {note:'Nothing is wrong yet. Everyone is working hard, everyone is making progress. This is exactly what a healthy project looks like from the inside.'}
+  ],
+  art:()=>{
+    let t='',lines='';
+    TEAM.forEach((m,i)=>{
+      const x=200+i*240;
+      t += P({x,y:700,s:.78,...m,mood:i===3?'neutral':'happy',pose:'type'});
+      t += laptop(x+2,668,.86,m.col);
+      t += bot({x:x+86,y:640,s:.26,mood:'busy',glow:false,float:false});
+      lines += `<path d="M800,250 Q${x},300 ${x},560" stroke="${m.col}" stroke-width="4" fill="none" opacity=".8"/><circle cx="${x}" cy="560" r="7" fill="${m.col}"/>`;
+    });
+    return `${plant(1500,830,.9,.7)}
+      ${heading('Split the work by person','&ldquo;I&rsquo;ll take the front end.&rdquo; &ldquo;I&rsquo;ll take login.&rdquo;')}
+      <g data-s="1"><circle cx="800" cy="242" r="11" fill="${CHALK}"/>
+        <text x="800" y="212" text-anchor="middle" class="t-label" font-size="16">main</text>${lines}</g>
+      ${t}
+      <g data-s="2"><text x="800" y="856" text-anchor="middle" class="t-sub" font-size="26">Nothing is wrong yet. This is what a healthy project feels like from the inside.</text></g>`;
+  }
+});
+
+/* 11 — the status board */
+scene({
+  week:'WEEK 06',
+  steps:[
+    {note:'Week six. Almost half the semester gone, and the mood is excellent, because look at the board.'},
+    {note:'Everybody is between eighty and ninety-five percent done. And forty-one thousand lines of code exist, which feels like an enormous amount of progress, because it is an enormous amount of code.'},
+    {note:'Now the two numbers nobody is looking at. <span class="beat">Reveal.</span> Lines that a human being on this team has actually read: about six hundred. Percentage of this that has ever been run together: zero.'},
+    {note:'<span class="ask">Ask the room:</span> which of those four numbers is the status of this project? <span class="beat">They will say 90%. It is the 0%.</span>'}
+  ],
+  art:()=>{
+    const pct=[90,85,95,80,90,88];
+    let rows='';
+    TEAM.forEach((m,i)=>{
+      const y=236+i*58;
+      rows += `<g data-s="${i<1?0:1}">
+        <text x="330" y="${y+8}" text-anchor="end" class="t-label" font-size="17">${m.name}</text>
+        <rect x="356" y="${y-14}" width="500" height="22" rx="11" fill="#232D42"/>
+        <rect x="356" y="${y-14}" width="${500*pct[i]/100}" height="22" rx="11" fill="${m.col}"/>
+        <text x="880" y="${y+8}" class="t-hand-l" font-size="28">${pct[i]}%</text>
+        <path d="M950,${y-4} l12,12 22,-26" stroke="${SPROUT}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>`;
+    });
+    return `${plant(120,830,.72,.72)}
+      ${heading('Week six: the status board','Everyone is nearly done')}
+      ${rows}
+      <g data-s="1">${counter(1250,300,'lines of code','41,000',BOT)}</g>
+      <g data-s="2">
+        ${counter(1250,480,'lines a human has read','~600',CHALK)}
+        ${counter(1250,660,'ever run together','0%',ALARM)}
+      </g>
+      <g data-s="3">
+        <rect x="300" y="778" width="700" height="76" rx="8" fill="#1E273A" stroke="${ALARM}" stroke-width="2"/>
+        <text x="650" y="826" text-anchor="middle" class="t-title" font-size="30">Which of these is the status?</text>
+      </g>`;
+  }
+});
+
+/* 12 — six house styles  ★ */
+scene({
+  week:'WEEK 06',
+  steps:[
+    {note:'Let me show you what those forty-one thousand lines actually look like. This is the same function &mdash; get the plots belonging to a user &mdash; written six times, in six places, in one codebase.'},
+    {note:'<span class="beat">Reveal all six.</span> Six names. Four different ideas about what to do when it fails, including one that does nothing. Two HTTP clients, so the app ships both.'},
+    {note:'And here is what I want you to notice: not one of these is bad code. Every one is idiomatic, defensible, and exactly what a competent agent produces when nobody has told it what this team does.'},
+    {note:'You onboarded six humans in week one. You told them where the repo was and how you name branches. <span class="beat">Beat.</span> Nobody onboarded the seventh. It never read your conventions, because you never wrote any down.'},
+    {note:'<span class="ask">This is week two of this course.</span> Writing the file that tells your agent what your team does is a real engineering task, and it is the difference between six house styles and one.'}
+  ],
+  art:()=>{
+    const cards=[
+      [0,'getUserPlots()',     'throw new Error(&hellip;)','axios'],
+      [1,'fetch_user_plots()', 'return null',              'fetch'],
+      [2,'UserPlotService()',  'console.log(err)',         'axios'],
+      [3,'plots.getAll()',     'catch {}',                 'fetch'],
+      [4,'loadPlotsForUser()', 'res.status(500)',          'axios'],
+      [5,'get_plots()',        '&mdash;',                  'fetch']
+    ];
+    let g='';
+    cards.forEach((cd,i)=>{
+      const col=i%3, row=Math.floor(i/3);
+      const x=96+col*476, y=232+row*212;
+      const m=TEAM[cd[0]];
+      g += `<g data-s="${i<1?0:1}">
+        <rect x="${x}" y="${y}" width="440" height="176" rx="8" fill="#0C1018" stroke="${m.col}" stroke-width="2"/>
+        <rect x="${x}" y="${y}" width="440" height="34" rx="8" fill="${m.col}"/>
+        <rect x="${x}" y="${y+22}" width="440" height="12" fill="${m.col}"/>
+        <text x="${x+16}" y="${y+24}" class="t-label" font-size="15" fill="${INK}">${m.name}</text>
+        <text x="${x+16}" y="${y+76}" class="t-code t-code-hi" font-size="25" fill="${m.col}">${cd[1]}</text>
+        <text x="${x+16}" y="${y+116}" class="t-code" font-size="20">on error: ${cd[2]}</text>
+        <text x="${x+16}" y="${y+150}" class="t-code" font-size="20">${cd[3]}</text>
+      </g>`;
+    });
+    return `${plant(1540,876,.72,.5)}
+      <text x="70" y="112" class="t-title" font-size="48">One function. Six house styles.</text>
+      <text x="70" y="156" class="t-sub" font-size="23">&ldquo;Get the plots belonging to a user&rdquo; &mdash; written six times, in one codebase</text>
+      ${g}
+      <g data-s="2">
+        <text x="800" y="712" text-anchor="middle" class="t-sub" font-size="25">Not one of these is bad code. Every one is idiomatic.</text>
+      </g>
+      <g data-s="3">
+        <rect x="96" y="734" width="1408" height="112" rx="8" fill="#1E273A" stroke="${BOT}" stroke-width="2"/>
+        <text x="800" y="780" text-anchor="middle" class="t-title" font-size="34" fill="${BOT}">You onboarded six teammates. Nobody onboarded the seventh.</text>
+        <text x="800" y="822" text-anchor="middle" class="t-sub" font-size="24">It never read your conventions, because you never wrote any down.</text>
+      </g>
+      <g data-s="4">
+        <text x="800" y="880" text-anchor="middle" class="t-title" font-size="27" fill="${SPROUT}">Writing that file is week two of this course.</text>
+      </g>`;
+  }
+});
+
+/* 13 — green tests  [OPTIONAL] */
+scene({
+  week:'WEEK 06', optional:true,
+  steps:[
+    {note:'<span class="flag">Optional scene.</span> One more thing about week six, and this is the one that fools good students.'},
+    {note:'The agent wrote three hundred and twelve tests. All three hundred and twelve pass. The team screenshots the green and puts it in the status update.'},
+    {note:'Here is the problem. Those tests were generated from the code, not from anything the client said. They assert that the code does what the code does. <span class="beat">Beat.</span> Every one of them would still be green if the entire feature were wrong.'},
+    {note:'Green tests are not verification. Green tests written from the implementation are the implementation agreeing with itself.'}
+  ],
+  art:()=>{
+    let dots='';
+    for(let i=0;i<312;i++){
+      const c=i%26, r=Math.floor(i/26);
+      dots += `<circle cx="${420+c*30}" cy="${300+r*30}" r="8" fill="${SPROUT}"/>`;
+    }
+    return `${plant(140,830,.7,.75)}
+      ${heading('312 tests. 312 passing.','Week six')}
+      <g data-s="1">${dots}</g>
+      <g data-s="2">
+        <rect x="380" y="640" width="860" height="94" rx="8" fill="#1E273A" stroke="${BOT}" stroke-width="2"/>
+        <text x="810" y="676" text-anchor="middle" class="t-sub" font-size="24">Generated from the code, not from anything she asked for.</text>
+        <text x="810" y="714" text-anchor="middle" class="t-title" font-size="30" fill="${BOT}">They assert that the code does what the code does.</text>
+      </g>
+      <g data-s="3"><text x="810" y="806" text-anchor="middle" class="t-title" font-size="38" fill="${ALARM}">All 312 stay green if the whole feature is wrong.</text></g>`;
+  }
+});
+
+/* 13 — the email */
+scene({
+  week:'WEEK 07',
+  steps:[
+    {note:'Week seven. The client sends a perfectly reasonable email.'},
+    {note:'Can I see it next Friday? <span class="beat">Beat.</span> Five words, and the whole project changes state.'},
+    {note:'Because until this second, &ldquo;how is it going&rdquo; had an answer, and the answer was great. Now somebody is going to look.'}
+  ],
+  art:()=>`
+    ${plant(200,800,.62,.85)}
+    ${heading('Week seven','A perfectly reasonable email')}
+    <g transform="translate(880,470)">
+      <rect x="-330" y="-190" width="660" height="380" rx="12" fill="${PAPER}"/>
+      <rect x="-330" y="-190" width="660" height="58" rx="12" fill="#E4DCC8"/>
+      <rect x="-330" y="-160" width="660" height="28" fill="#E4DCC8"/>
+      <circle cx="-296" cy="-161" r="9" fill="#C4643A"/><circle cx="-266" cy="-161" r="9" fill="#E0B93A"/><circle cx="-236" cy="-161" r="9" fill="#8FBF6A"/>
+      <text x="-290" y="-90" class="t-label" font-size="18" fill="#9C927C">FROM &nbsp; M. REYES</text>
+      <line x1="-290" y1="-66" x2="290" y2="-66" stroke="#D8CDB4" stroke-width="2"/>
+      <g data-s="1"><text x="-290" y="0" class="t-hand" font-size="52">Hi! Loving the updates.</text>
+      <text x="-290" y="66" class="t-hand" font-size="52">Can I see it next Friday?</text></g>
+      <g data-s="2"><text x="-290" y="140" class="t-hand" font-size="44" fill="#7C8F6A">&mdash; M</text></g>
+    </g>
+    <g data-s="2">${P({x:1400,y:820,s:.9,...LEAD,mood:'worried'})}</g>`
+});
+
+/* 14 — status check */
+scene({
+  week:'WEEK 07',
+  steps:[
+    {note:'So you go and ask, one at a time. And every answer you get is honest.'},
+    {note:'Basically done. Just need to hook it up. Works on my laptop. Blocked on Kai. I&rsquo;m at ninety percent.'},
+    {note:'And Nell says: the agent says it&rsquo;s finished. <span class="beat">Let that land.</span> Nell has outsourced not just the work but the judgement about whether the work is done.'},
+    {note:'Every one of those sentences is true. Not one of them is checkable. That is the difference between a status report and a status.'}
+  ],
+  art:()=>{
+    const q=[['Basically done.'],['Just need to','hook it up.'],['Works on','my laptop.'],
+             ['Blocked on Kai.'],['I&rsquo;m at 90%.'],['The agent says','it&rsquo;s finished.']];
+    let t='';
+    TEAM.forEach((m,i)=>{
+      const x=180+i*248, row=i%2;
+      t += P({x,y:820,s:.72,...m,mood:i===5?'happy':'neutral'});
+      t += `<g data-s="${i===5?2:1}">${bubble(x,row?400:300,232,q[i].length>1?128:88,q[i],'bl',i===5?'#CFE8EA':PAPER,26)}</g>`;
+      t += `<text x="${x}" y="856" text-anchor="middle" class="t-label" font-size="14">${m.name}</text>`;
+    });
+    return `${plant(1530,864,.55,.6)}
+      ${heading('You ask for status','Every answer you get is honest')}
+      ${t}
+      <g data-s="3">
+        <rect x="330" y="596" width="940" height="86" rx="8" fill="${ALARM}"/>
+        <text x="800" y="654" text-anchor="middle" class="t-title" font-size="42" fill="${PAPER}">All true. None of it checkable.</text>
+      </g>`;
+  }
+});
+
+/* 15 — merge hell */
+scene({
+  week:'WEEK 10',
+  steps:[
+    {note:'Week ten. Integration night. Six branches meet for the first time in seven weeks.'},
+    {note:'The conflicts are not the hard part. Git will tell you about the conflicts. <span class="beat">Reveal.</span>'},
+    {note:'The hard part is that Rosa&rsquo;s agent built a users table keyed on email, and Kai&rsquo;s agent built a login keyed on phone number. Both are finished. Both are correct. Only one can live.'},
+    {note:'Git cannot see that. It is not a merge conflict, it is an architecture decision that two agents made independently, in week four, and that no human ever made at all.'}
+  ],
+  art:()=>{
+    let lines='';
+    TEAM.forEach((m,i)=>{
+      const x=200+i*240;
+      lines += `<path d="M${x},250 Q${x},440 800,600" stroke="${m.col}" stroke-width="5" fill="none" opacity=".85"/><circle cx="${x}" cy="250" r="8" fill="${m.col}"/>`;
+    });
+    return `${plant(140,840,.45,.72)}
+      ${heading('Week ten: integration night','Six branches meet for the first time')}
+      ${lines}
+      <g data-s="1" class="shake">
+        <circle cx="800" cy="612" r="66" fill="${ALARM}"/>
+        <path d="M800,564 l0,54 M800,640 l0,10" stroke="${PAPER}" stroke-width="11" stroke-linecap="round"/>
+      </g>
+      <g data-s="1"><text x="800" y="732" text-anchor="middle" class="t-hand-l" font-size="34" fill="${ALARM}">CONFLICT (content): Merge conflict in 41 files</text></g>
+      <g data-s="2">
+        ${sticky(330,560,320,150,['users.email','Rosa&rsquo;s agent, wk 4'],'#8ED2C4',-7,26)}
+        ${sticky(1280,560,320,150,['login by phone','Kai&rsquo;s agent, wk 4'],'#C7A6E8',8,26)}
+      </g>
+      <g data-s="3">
+        <text x="800" y="812" text-anchor="middle" class="t-title" font-size="38">Git found the conflicts. Git cannot find this.</text>
+        <text x="800" y="856" text-anchor="middle" class="t-sub" font-size="24">A decision two agents made in week four, that no human ever made.</text>
+      </g>`;
+  }
+});
+
+/* 16 — who wrote this?  ★ */
+scene({
+  week:'WEEK 10',
+  steps:[
+    {note:'So you sit down to fix it, and you hit the thing that is genuinely new about your generation of this story.'},
+    {note:'You ask Rosa why the users table is shaped like that. And Rosa, who is a good student and an honest person, says: I don&rsquo;t know. <span class="beat">Beat.</span> It was like that when I got there.'},
+    {note:'Ask Kai. Same answer. Ask Dev. Same answer. <span class="beat">Reveal.</span> Forty-one thousand lines, and there is no one on this team you can ask about any of it.'},
+    {note:'The old version of this story had one person who understood each part. That was bad. This is worse: it is a codebase with no author.'}
+  ],
+  art:()=>{
+    let t='';
+    TEAM.slice(0,4).forEach((m,i)=>{
+      const x=290+i*310;
+      t += P({x,y:700,s:.86,...m,mood:'blank',pose:'shrug'});
+      t += `<g data-s="${i<1?1:2}">${bubble(x,430,264,88,['I don&rsquo;t know.'],'bl',PAPER,28)}</g>`;
+      t += `<text x="${x}" y="742" text-anchor="middle" class="t-label" font-size="15">${m.name}</text>`;
+    });
+    return `${plant(1520,850,.42,.62)}
+      ${heading('&ldquo;Why is it built this way?&rdquo;','Week ten')}
+      ${t}
+      <g data-s="3">
+        <rect x="220" y="782" width="1160" height="88" rx="8" fill="#1E273A" stroke="${BOT}" stroke-width="2"/>
+        <text x="800" y="838" text-anchor="middle" class="t-title" font-size="38" fill="${BOT}">41,000 lines, and a codebase with no author.</text>
+      </g>`;
+  }
+});
+
+/* 17 — bus factor */
+scene({
+  week:'WEEK 11',
+  steps:[
+    {note:'Week eleven. Kai gets an internship interview, then the flu, and is gone for nine days. The entire authentication layer is Kai&rsquo;s.'},
+    {note:'So you assign Jonah to pick it up. Jonah is a good programmer. <span class="beat">Reveal.</span> Two days, nothing. No README, no comments, no tests that mean anything, no one to ask.'},
+    {note:'And here is the part that stings: Kai could not have helped either. Kai never read it. Kai reviewed it the way all of us review a diff at eleven at night, which is to say Kai scrolled to the bottom and clicked approve.'},
+    {note:'You did not lose a teammate. You lost a dependency you never knew you had, on a person who was never really there.'}
+  ],
+  art:()=>`
+    ${plant(1520,856,.3,.6)}
+    ${heading('Week eleven','Kai is out for nine days')}
+    ${P({x:300,y:700,s:.92,...TEAM[4],mood:'sick',tint:'#A8B79A',dim:true})}
+    <text x="300" y="740" text-anchor="middle" class="t-label" font-size="15" fill="#5C6780">KAI &middot; OUT</text>
+    <g data-s="1">
+      <rect x="580" y="320" width="420" height="340" rx="10" fill="#0C1018" stroke="${ALARM}" stroke-width="4"/>
+      <text x="790" y="380" text-anchor="middle" class="t-label" font-size="18" fill="${ALARM}">AUTH LAYER &middot; 3,900 LINES</text>
+      ${codeBlock(610,404,360,14,'#2C374E')}
+      <g transform="translate(790,556)"><rect x="-34" y="-14" width="68" height="54" rx="7" fill="${ALARM}"/><path d="M-20,-14 a20,22 0 0 1 40,0" fill="none" stroke="${ALARM}" stroke-width="8"/></g>
+      <text x="790" y="700" text-anchor="middle" class="t-sub" font-size="21">no README &middot; no comments &middot; generated week 4</text>
+      ${P({x:1230,y:700,s:.92,...TEAM[3],mood:'flat',pose:'shrug'})}
+      <text x="1230" y="740" text-anchor="middle" class="t-label" font-size="15">JONAH &middot; DAY 2</text>
+    </g>
+    <g data-s="2">
+      ${sticky(1400,300,300,140,['reviewed by Kai','11:40pm, wk 4','&ldquo;LGTM&rdquo;'],'#FFD166',5,24)}
+    </g>
+    <g data-s="3">
+      <text x="800" y="838" text-anchor="middle" class="t-title" font-size="38" fill="${ALARM}">Kai couldn&rsquo;t have helped either. Kai never read it.</text>
+    </g>`
+});
+
+/* 18 — the session that took the wheel  [OPTIONAL] */
+scene({
+  week:'WEEK 13', optional:true,
+  steps:[
+    {note:'<span class="flag">Optional scene.</span> Week thirteen. Mia sits down at eight in the evening to fix one bug: the seedling list sorts in the wrong order.'},
+    {note:'Three hours later. Forty-seven files changed. Twenty-eight hundred lines. A new caching layer that nobody requested. <span class="beat">Reveal the last line.</span>'},
+    {note:'The list still sorts in the wrong order.'},
+    {note:'Look at the last number. In three hours the agent asked her zero questions. It never once said &ldquo;which of these did you mean?&rdquo; It was competent, and confident, and it took the wheel, and she let it, because every individual step looked reasonable.'},
+    {note:'<span class="ask">Ask the room:</span> at what minute should she have stopped? <span class="beat">The answer people give is around minute forty. The answer is minute six, the first time it changed a file she had not asked about.</span>'}
+  ],
+  art:()=>{
+    const rows=[
+      ['session length','3h 14m',CHALK,0],
+      ['files changed','47',CHALK,1],
+      ['lines written','2,800',CHALK,1],
+      ['new caching layer nobody asked for','1',ALARM,1],
+      ['the bug she sat down to fix','still open',ALARM,2],
+      ['questions the agent asked her','0',BOT,3]
+    ];
+    let r='';
+    rows.forEach((row,i)=>{
+      const y=286+i*82;
+      r += `<g data-s="${row[3]}">
+        <text x="1000" y="${y}" text-anchor="end" class="t-sub" font-size="26">${row[0]}</text>
+        <text x="1050" y="${y}" class="t-title" font-size="38" fill="${row[2]}">${row[1]}</text></g>`;
+    });
+    return `${plant(120,850,.2,.6)}
+      ${heading('One bug. One evening.','Week thirteen: the seedling list sorts wrong')}
+      ${P({x:330,y:700,s:.9,...TEAM[0],mood:'sleep',pose:'type'})}
+      ${laptop(332,668,.9,'#5E4A2A')}
+      <g data-s="1">${bot({x:470,y:560,s:.42,mood:'spray',glow:false})}</g>
+      ${r}
+      <g data-s="4">
+        <rect x="260" y="800" width="1080" height="80" rx="8" fill="#1E273A" stroke="${BOT}" stroke-width="2"/>
+        <text x="800" y="852" text-anchor="middle" class="t-title" font-size="34" fill="${BOT}">It never asked. She never stopped it. Every step looked reasonable.</text>
+      </g>`;
+  }
+});
+
+/* 19 — fire drill */
+scene({
+  week:'WEEK 14',
+  steps:[
+    {note:'Week fourteen. The fire drill. Every one of you will recognise this, because you have done it on an assignment.'},
+    {note:'Nobody has slept. The test suite got commented out on Tuesday because it was failing and there was no time. <span class="beat">Reveal.</span>'},
+    {note:'And the bug count is climbing, not falling, because now they are generating fixes faster than anyone can read them. Speed was never the bottleneck. Reading was.'},
+    {note:'Notice what got spent to buy this time. Not money, not scope. Quality. Quality is always what gets spent, because it is the only thing on a project with nobody defending it.'}
+  ],
+  art:()=>{
+    let t='';
+    [0,1,2,3,5].forEach((i,k)=>{
+      const x=240+k*270;
+      t += P({x,y:720,s:.78,...TEAM[i],mood:k===2?'sleep':'dead',pose:'type'});
+      t += laptop(x+2,690,.8,'#5E4A2A');
+      t += `<g class="${k%2?'steam':'steam2'}" transform="translate(${x+58},664)"><path d="M0,0 q8,-14 0,-26" stroke="#9AA3B5" stroke-width="4" fill="none" stroke-linecap="round"/></g>`;
+      t += `<g transform="translate(${x+56},700)"><path d="M-13,-16 l26,0 -4,26 -18,0z" fill="#D9DCE2"/><path d="M13,-10 a10,10 0 0 1 0,14" fill="none" stroke="#D9DCE2" stroke-width="4"/></g>`;
+    });
+    return `${plant(1545,864,.06,.55)}
+      ${heading('Week fourteen','Nobody has slept')}
+      ${t}
+      <g data-s="1">${sticky(1330,290,320,170,['// tests','// commented out','// Tuesday'],'#FFD166',6,30)}</g>
+      <g data-s="2">
+        <text x="250" y="250" class="t-label" font-size="18" fill="${ALARM}">OPEN BUGS</text>
+        <path d="M250,430 l80,-16 80,10 80,-34 80,4 80,-52 80,-14" stroke="${ALARM}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="730" cy="328" r="9" fill="${ALARM}"/>
+        <text x="758" y="338" class="t-hand-l" font-size="34" fill="${ALARM}">61</text>
+        <text x="250" y="474" class="t-sub" font-size="22">fixes generated faster than anyone can read them</text>
+      </g>
+      <g data-s="3">
+        <rect x="330" y="800" width="940" height="76" rx="8" fill="${ALARM}"/>
+        <text x="800" y="852" text-anchor="middle" class="t-title" font-size="38" fill="${PAPER}">You didn&rsquo;t buy time. You spent quality.</text>
+      </g>`;
+  }
+});
+
+/* 21 — more time  [OPTIONAL] */
+scene({
+  week:'WEEK 14', optional:true,
+  steps:[
+    {note:'So you do the only thing left. You email the client and ask for two more weeks.'},
+    {note:'And here is the part students never see coming. <span class="beat">Reveal.</span> She is not upset that it is late. She is upset because for twelve weeks you told her it was fine, she believed you, and she has been telling the garden board it would be ready.'},
+    {note:'You did not just miss a deadline. You spent her credibility as well as your own, and you never told her you were spending it.'}
+  ],
+  art:()=>`
+    ${plant(140,840,.05,.65)}
+    ${heading('You ask for two more weeks','Week fourteen')}
+    ${P({x:420,y:720,s:1,...LEAD,mood:'worried',pose:'shrug'})}
+    ${bubble(560,330,300,110,['+ 2 weeks?'],'bl',PAPER,36)}
+    <g data-s="1">
+      ${P({x:1200,y:720,s:1.05,...CLIENT,mood:'shout',pose:'out',tint:'#E88B7A'})}
+      ${bubble(1010,420,440,240,['You told me it was','fine. Every week.','For twelve weeks.'],'br','#FFD9D2',34)}
+    </g>
+    <g data-s="2"><text x="800" y="852" text-anchor="middle" class="t-title" font-size="40">You spent her credibility too. You never told her.</text></g>`
+});
+
+/* 21 — demo day  ★ */
+scene({
+  week:'WEEK 15',
+  steps:[
+    {note:'Demo day. Something runs. Genuinely. Two of the six features work and the team is proud of them, and they should be.'},
+    {note:'Then she points at the screen and asks the question that ends every project like this one. <span class="beat">Reveal.</span> Why does it keep sending me notifications?'},
+    {note:'And nobody in the room can answer her. Not because they are hiding something. Because no person ever decided to build that. <span class="beat">Reveal the callback.</span>'},
+    {note:'It came from week two. From &ldquo;it must feel alive.&rdquo; The agent inferred a notification system from three words in a vibe document, thirteen weeks ago, and it has been in every build since, and no human being ever chose it.'},
+    {note:'&ldquo;I never asked for this&rdquo; used to mean a developer got bored and gold-plated something. Now it means nobody was ever at the wheel.'}
+  ],
+  art:()=>{
+    const inner=`
+      <rect x="-74" y="-136" width="148" height="34" fill="#6B7A8F"/>
+      <text x="0" y="-112" text-anchor="middle" font-family="Instrument Sans" font-weight="600" font-size="20" fill="${PAPER}">Sprout</text>
+      <rect x="-58" y="-84" width="116" height="46" rx="6" fill="#FFD9D2"/>
+      <text x="0" y="-56" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="22" fill="${ALARM}">3 new alerts</text>
+      <rect x="-58" y="-26" width="116" height="40" rx="6" fill="#FFD9D2"/>
+      <text x="0" y="0" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="22" fill="${ALARM}">5 new alerts</text>
+      <rect x="-58" y="26" width="116" height="40" rx="6" fill="#FFD9D2"/>
+      <text x="0" y="52" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="22" fill="${ALARM}">9 new alerts</text>
+      <text x="0" y="102" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="22" fill="#9C927C">login &mdash; error 500</text>`;
+    return `${plant(180,846,.04,.62)}
+      ${heading('Demo day','Two of the six features work')}
+      ${phoneFrame(700,470,.92,inner)}
+      <g data-s="1">
+        ${P({x:1330,y:790,s:.95,...CLIENT,mood:'flat'})}
+        ${bubble(1150,320,470,150,['Why does it keep','sending me notifications?'],'br','#FFD9D2',32)}
+      </g>
+      <g data-s="2">
+        ${P({x:400,y:790,s:.9,...LEAD,mood:'blank',pose:'shrug'})}
+        <text x="400" y="832" text-anchor="middle" class="t-sub" font-size="24">nobody can answer</text>
+      </g>
+      <g data-s="3">
+        ${sticky(1010,600,300,66,['added: notifications'],'#FFB0A6',-3,24)}
+        <text x="1010" y="686" text-anchor="middle" class="t-hand-l" font-size="30" fill="${BOT}">week 2, from &ldquo;must feel alive&rdquo;</text>
+        <path d="M860,560 q90,-40 150,10" stroke="${BOT}" stroke-width="4" fill="none" stroke-dasharray="7 7"/>
+      </g>
+      <g data-s="4">
+        <rect x="240" y="866" width="1120" height="2" fill="${ALARM}"/>
+      </g>`;
+  }
+});
+
+/* 22 — the autopsy  ★ */
+scene({
+  week:null,
+  steps:[
+    {note:'So let us do the autopsy. Nine things went wrong. I am going to claim that not one of them is a programming mistake.'},
+    {note:'Nobody wrote down what done meant. The client was in the room once, in week two. Features got built that nobody asked for.'},
+    {note:'No plan, so nothing could be behind. &ldquo;Almost done&rdquo; was never checked. Six branches, one integration, at the very end.'},
+    {note:'Nobody read anyone else&rsquo;s code. One person&rsquo;s absence stopped the project. And when time ran out, quality is what got spent.'},
+    {note:'Now the column that belongs to your year specifically. <span class="beat">Reveal the right side and read a few.</span> The agent did not cause any of these. It made every single one of them arrive sooner and bigger.'},
+    {note:'<span class="ask">Ask the room:</span> which of these nine would be fixed by everyone on the team being a better programmer? <span class="beat">Take two or three answers before advancing.</span>'}
+  ],
+  art:()=>{
+    const items=[
+      ['Nobody wrote down what &ldquo;done&rdquo; meant.',        'the agent picked a meaning and built it'],
+      ['The client was in the room once, in week two.',           'thirteen weeks of guesses, compounding'],
+      ['Features got built that nobody asked for.',               'inferred from three words, in 90 seconds'],
+      ['There was no plan, so nothing could be behind.',          'output volume felt like a plan'],
+      ['&ldquo;Almost done&rdquo; was never checked.',            '41,000 lines, 600 of them read'],
+      ['Six branches, one integration, at the end.',              'six architectures, not six branches'],
+      ['Nobody read anyone else&rsquo;s code.',                   'nobody read their own either'],
+      ['One person&rsquo;s absence stopped the project.',         'and that person couldn&rsquo;t have helped'],
+      ['Quality is what got spent.',                              'fixes arrived faster than review could']
+    ];
+    let rows='';
+    items.forEach((it,i)=>{
+      const y=248+i*62;
+      const step = i<3?1 : i<6?2 : 3;
+      rows += `<g data-s="${step}">
+        <text x="70" y="${y}" class="t-title" font-size="26" fill="${ALARM}" opacity=".5">${String(i+1).padStart(2,'0')}</text>
+        <text x="118" y="${y}" class="t-sub" font-size="25" fill="${CHALK}">${it[0]}</text></g>
+        <g data-s="4">
+        <text x="900" y="${y}" class="t-title" font-size="22" fill="${BOT}">&rarr;</text>
+        <text x="936" y="${y}" class="t-sub" font-size="24" fill="${BOT}">${it[1]}</text></g>`;
+    });
+    return `${plant(1540,876,0,.5)}
+      <text x="70" y="120" class="t-title" font-size="48">The autopsy</text>
+      <text x="70" y="164" class="t-sub" font-size="23">Nine things went wrong</text>
+      <g data-s="4"><text x="900" y="164" class="t-label" font-size="19" fill="${BOT}">WHAT THE AGENT DID TO IT</text>
+      <line x1="880" y1="192" x2="1540" y2="192" stroke="#2C374E" stroke-width="2"/></g>
+      <line x1="70" y1="192" x2="850" y2="192" stroke="#2C374E" stroke-width="2"/>
+      ${rows}
+      <g data-s="5">
+        <rect x="70" y="818" width="1470" height="66" rx="8" fill="#1E273A" stroke="${ALARM}" stroke-width="2"/>
+        <text x="805" y="862" text-anchor="middle" class="t-title" font-size="32">Which of these would a better programmer have fixed?</text>
+      </g>`;
+  }
+});
+
+/* 23 — the turn */
+scene({
+  week:null,
+  steps:[
+    {note:'None of them. Every one is a decision that somebody did not make, or made alone, or made and never wrote down.'},
+    {note:'And the agent is not the villain here. It did competent work at every step. It is just that competent work on an undecided question produces a large, confident, well-tested pile of the wrong thing.'},
+    {note:'That is what this course is. Not a course about writing code, you already write code. A course about the decisions around the code that determine whether the code was worth writing.'},
+    {note:'Fifteen weeks. Starting now. <span class="beat">Blackout with B, then go to the survey.</span>'}
+  ],
+  art:()=>`
+    <g data-s="0">
+      <text x="800" y="270" text-anchor="middle" class="t-title" font-size="56">None of it was a coding problem.</text>
+      <text x="800" y="330" text-anchor="middle" class="t-sub" font-size="27">Every one was a decision nobody made, made alone, or never wrote down.</text>
+    </g>
+    <g data-s="1">
+      ${bot({x:800,y:452,s:.46,mood:'calm'})}
+      <text x="800" y="576" text-anchor="middle" class="t-title" font-size="32" fill="${BOT}">The agent did competent work at every step.</text>
+      <text x="800" y="620" text-anchor="middle" class="t-sub" font-size="25">Competent work on an undecided question is still the wrong thing, just faster.</text>
+    </g>
+    <g data-s="2">
+      <line x1="440" y1="678" x2="1160" y2="678" stroke="#2C374E" stroke-width="2"/>
+      <text x="800" y="754" text-anchor="middle" class="t-title" font-size="60" fill="${SPROUT}">That is what this course is.</text>
+    </g>
+    <g data-s="3">${plant(1400,830,.34,1)}</g>`
+});
+
+/* ============================================================
+   RUNTIME
+   ============================================================ */
+
+const svgEl=document.getElementById('scene');
+const weekEl=document.getElementById('week');
+const optEl=document.getElementById('optchip');
+const ticksEl=document.getElementById('ticks');
+const notesEl=document.getElementById('notes');
+const noteEl=document.getElementById('note');
+const cueEl=document.getElementById('cue');
+const blackEl=document.getElementById('blackout');
+const helpEl=document.getElementById('help');
+
+let si=0, sj=0, notesOpen=false, drawn=-1;
+
+ticksEl.innerHTML = SCENES.map(s=>`<span class="tick${s.optional?' opt':''}"></span>`).join('');
+const tickEls=[...ticksEl.children];
+
+function render(){
+  const sc=SCENES[si];
+  if(drawn!==si){ svgEl.innerHTML=sc.art(); drawn=si; }
+  svgEl.querySelectorAll('[data-s]').forEach(el=>{
+    el.classList.toggle('shown', +el.dataset.s <= sj);
+  });
+  weekEl.textContent = sc.week || '—';
+  weekEl.classList.toggle('idle', !sc.week);
+  optEl.classList.toggle('on', !!sc.optional);
+  tickEls.forEach((t,i)=>{
+    t.classList.toggle('done', i<si);
+    t.classList.toggle('now', i===si);
+  });
+  const st=sc.steps[Math.min(sj,sc.steps.length-1)];
+  noteEl.innerHTML = st ? st.note : '';
+  cueEl.innerHTML = `Scene ${si+1} of ${SCENES.length} &middot; beat ${sj+1} of ${sc.steps.length}`
+    + (sc.optional ? ' &middot; <span class="flag">optional scene</span>' : '');
+}
+
+function next(){
+  const sc=SCENES[si];
+  if(sj < sc.steps.length-1) sj++;
+  else if(si < SCENES.length-1){ si++; sj=0; }
+  else return;
+  render();
+}
+function prev(){
+  if(sj>0) sj--;
+  else if(si>0){ si--; sj=SCENES[si].steps.length-1; }
+  else return;
+  render();
+}
+function skipScene(){
+  if(si<SCENES.length-1){ si++; sj=0; render(); }
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  switch(e.key){
+    case 'ArrowRight': case ' ': case 'PageDown': case 'Enter': next(); e.preventDefault(); break;
+    case 'ArrowLeft': case 'PageUp': case 'Backspace': prev(); e.preventDefault(); break;
+    case 's': case 'S': skipScene(); e.preventDefault(); break;
+    case 'Home': si=0; sj=0; drawn=-1; render(); e.preventDefault(); break;
+    case 'End': si=SCENES.length-1; sj=SCENES[si].steps.length-1; drawn=-1; render(); e.preventDefault(); break;
+    case 'n': case 'N': notesOpen=!notesOpen; notesEl.classList.toggle('open',notesOpen); e.preventDefault(); break;
+    case 'b': case 'B': blackEl.classList.toggle('on'); e.preventDefault(); break;
+    case '?': case '/': helpEl.classList.toggle('on'); e.preventDefault(); break;
+    case 'Escape': helpEl.classList.remove('on'); blackEl.classList.remove('on'); break;
+  }
+});
+
+document.querySelector('.stage').addEventListener('click', e=>{
+  if(e.clientX < window.innerWidth*0.22) prev(); else next();
+});
+document.getElementById('helpclose').addEventListener('click', ()=>helpEl.classList.remove('on'));
+helpEl.addEventListener('click', e=>{ if(e.target===helpEl) helpEl.classList.remove('on'); });
+
+render();
+</script>
