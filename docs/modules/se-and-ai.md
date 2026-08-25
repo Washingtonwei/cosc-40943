@@ -42,6 +42,90 @@ Every decision in that chain (what "done" means, which architecture survives con
 
 ## 4. Core concepts
 
+### What agents can actually do now
+
+**First, the word.** An **agent** is a language model wired to tools. It can read and write the files in your repository, run commands and tests, read what came back, and try again. That loop is the difference between a chatbot you paste code into and something that works inside your project, and it is what this course means every time it says "agent".
+
+**Now the capability, honestly.** Distrust anyone who gives you a version that is entirely optimistic or entirely dismissive.
+
+!!! info "As of August 2026, and this section dates fastest"
+
+    **The benchmark.** [SWE-bench](https://arxiv.org/abs/2310.06770) (Jimenez et al., ICLR 2024) hands a model a real issue from a real open-source repository, with the repository at the commit before the fix, and asks for a patch that passes the project's own test suite. It is not a puzzle; it is the actual job of a maintainer on a Tuesday. **SWE-bench Verified** is the 500-problem subset that OpenAI had professional developers screen in 2024, after the original set was found to contain issues that were under-specified or unsolvable from the description alone. Verified is the number people quote.
+    
+    When the benchmark was published in 2023, the best system resolved about 2% of it. Today frontier models resolve the large majority of Verified and the top few sit within a couple of points of each other. The benchmark is close to saturated, which is why the field keeps building harder ones. Standings move monthly and are on the [public leaderboard](https://www.swebench.com/); the ceiling is the point, not the winner.
+    
+    **The capability is real.** These models will read an unfamiliar codebase, locate the defect, write the patch, write the test, and explain the change. Frontier systems come from several labs at once (Anthropic, OpenAI, Google), and open-weight models (ones whose parameters anyone can download and run) sit on the same leaderboard rather than in a separate league. This is not one company's trick, and it is not going to be withdrawn.
+
+Now the part that matters more, and that the benchmark headlines leave out.
+
+**Agents fall off a cliff as tasks get longer.** METR, a research group that evaluates AI systems, measures agent capability in a unit that translates: how long would a human expert take on this task? Fitting a curve to that gives a model's **time horizon**, the task length at which it succeeds half the time. Measuring the frontier models of early 2025, METR reported "almost 100% success rate on tasks taking humans less than 4 minutes, but ... <10% of the time on tasks taking more than around 4 hours." Task length is the single strongest predictor of whether an agent will fail.
+
+**Read those two numbers as a shape, not as constants.** METR's other finding is that the time horizon has been doubling roughly every seven months. The four-minute and four-hour figures are the March 2025 measurement, the curve has slid right since, and it will slide again before you are promoted. What holds is the shape: success collapses as tasks get longer, and the work that survives each slide is the work to the right of wherever the frontier has reached. Look up the current figures rather than quoting these.
+
+The shape, with the 2025 numbers as the illustration:
+
+| How long a human would take | Agents | Examples |
+|---|---|---|
+| Under 4 minutes | Nearly always succeed | Write this function. Fix this stack trace. Rename this across the repo. Explain this file. |
+| Hours to months | Rarely succeed alone | Decide what to build. Choose an architecture. Find out what the client meant. Keep a design coherent across six people and fifteen weeks. |
+
+Nobody is paid a salary for four-minute tasks. A semester-long project for a real client is the second row, over and over, and so is every job you are about to apply for.
+
+### The layoffs, and what actually caused them
+
+You have read that software engineering is over. Here is what the evidence supports.
+
+**Cause one, the hangover.** Companies hired through 2020 and 2021 as though pandemic demand were the new baseline. It was not. Marc Andreessen [puts the range at 25% to 75% overstaffed](https://fortune.com/2026/03/31/marc-andreessen-ai-layoffs-silver-bullet-excuse-overhiring) and calls the AI explanation a "silver bullet excuse" for cleaning house. The 2023 layoffs were openly described as post-pandemic rightsizing. Much of what followed hits the same functions, and a company that doubled a division in 2021 and trimmed it in 2026 is correcting a five-year-old mistake.
+
+**Cause two, AI is a convenient explanation.** "We are becoming more efficient with AI" is a better story for shareholders than "we hired badly." Sam Altman, who has every incentive to claim the opposite, [calls it AI washing](https://fortune.com/article/sam-altman-ai-washing-tech-layoffs/): "there's some AI washing where people are blaming AI for layoffs that they would otherwise do, and then there's some real displacement by AI of different kinds of jobs." Watch the numbers: AI was named in about 5% of announced US cuts across all of 2025 and about 23% through the first half of 2026, a jump far larger than any change in the technology over those months. When the explanation moves faster than the thing it explains, the explanation is doing other work.
+
+**Cause three, expensive bets that lost.** Meta's Reality Labs lost about $13.7 billion in 2022 and about $16.1 billion in 2023 pursuing the metaverse. That money was a strategic decision made by executives, and when it had to be recovered it was recovered from headcount. No AI was involved. This happens constantly and it is worth understanding early: *you can lose your job because of a decision made three levels above you, in a meeting you were not in, about a product you never worked on.* Being technically excellent does not protect you from it. Being the person who understands what the business is trying to do gives you a better chance of seeing it coming.
+
+**And the part that is genuinely about AI.** The entry-level rung really is thinner. The tasks a company used to hand a new graduate to build their judgment (small well-specified changes, test writing, boilerplate) are exactly the four-minute tasks agents now do for nothing. That is a real problem for your cohort, and it is not solved by refusing to use the tools.
+
+It is solved by arriving already able to do the four-hour work: to scope a problem, run a client conversation, choose an architecture and defend it, review code you did not write, and direct agents rather than compete with them. That is a description of this course, and by December you will have done all of it on a real project for a real client.
+
+### Kent Beck did the math
+
+Kent Beck created Extreme Programming, popularized test-driven development, and has been shipping software since the 1980s. This is what he wrote the day he first used a language model seriously, in April 2023:
+
+> The value of 90% of my skills just dropped to $0. The leverage for the remaining 10% went up 1000x.
+
+The line gets quoted as doom. Read the second half again. He is describing a thousandfold increase in the value of some of his skills, and the interesting question is which ones. He answered that later. The 10% is:
+
+- Having a vision
+- Breaking that vision into milestones
+- Managing the design
+- Controlling complexity
+
+Compare that list against the METR table above. Beck named the four-hour column two years before anyone measured it, from the inside, by noticing which of his own skills the model could not do. Vision, milestones, design, and complexity control are not four-minute tasks, and they are four lines of this course's syllabus.
+
+**This is the argument of the whole module.** AI did not make software engineering knowledge irrelevant. It collapsed the value of implementation-level skill and multiplied the value of the highest-level engineering skills, which are precisely the ones traditional courses treated as soft, unteachable, or something you would pick up on the job.
+
+Two consequences worth stating plainly:
+
+> You will not be replaced by AI. You will be replaced by someone who can use AI.
+
+And the reason that sentence is not a threat: **AI is an amplifier**. It multiplies whatever judgment you bring to it, and the sign matters as much as the size. Bring a clear specification and a sense of what good looks like, and you get a great deal of good work quickly. Bring nothing and you get nothing, faster: zero multiplied is still zero. Bring a wrong premise, a misread of what the client needs, or a design that will not survive the second year, and the amplifier neither stalls nor argues. The wrong thing arrives complete, tested, documented, and spread through the codebase before anyone questions it, which is worse than having built nothing, because undoing it now costs more than building it did.
+
+### Execution, judgment, and agency
+
+A job is not one thing. It is three, and AI is doing something different to each.
+
+**Execution** is carrying out a task somebody has already defined: write this function, analyze this data, generate this document. If your value is mostly execution, you are competing with something that improves every few months and gets cheaper as it does. Execution is being commoditized.
+
+**Judgment** is deciding what to do, what not to do, and whether something is wrong even when it looks right. An agent can assist with judgment. It does not carry the consequences of the decision, and that is the whole difference.
+
+**Agency** is taking ownership and moving something from zero to one without being told exactly how: defining the problem, setting direction, adapting when it breaks, and delivering something real. An agent helps you execute faster. It does not decide what is worth doing.
+
+> Execution is abundant. Judgment is scarce. Agency is the differentiator.
+
+**Taste is the trainable core of judgment.** Taste is knowing what good looks like without needing a rubric: which abstraction will hurt in six months, which test is theater, which explanation is fluent and hollow. It is what lets you *reject* work. Without it you approve whatever arrives, which is the chef who cannot taste, and no amount of agent capacity repairs it. It is built by making decisions rather than generating answers, by catching the agent when it is wrong, and by seeing enough good and bad work to tell them apart. Strong judgment comes from holding several perspectives at once; weak judgment comes from applying one model to everything.
+
+Agency is the harder one to build in a classroom, which is why this course is not a classroom for most of its hours. A real client, a problem nobody has scoped, fifteen weeks, and something that has to work in December is the only reliable way to get it.
+
+**And the risk that runs underneath all of this:** AI makes it easy to look competent without being competent. The output is polished, the thinking under it is shallow, and confidence grows faster than competence. That gap does not show up in a demo. It shows up in the first interview question that goes one level deeper than the artifact you brought.
+
 ### What software engineering is
 
 The standard definition, from IEEE Standard 610.12:
@@ -134,100 +218,11 @@ Wiegers assigns those three roles across five dimensions rather than three, coun
 
 A project where all three corners are constraints has no degrees of freedom and is already failing; it just does not know yet. When your client asks for the demo a month earlier, the honest responses are all trades: defer requirements to a later release, shorten the test cycle, or add people, which is slower before it is faster (Brooks's law: adding people to a late project makes it later). "Yes" without a trade is a promise to spend quality.
 
-**There is no agreed definition of success**, which is worth knowing before your first client meeting. A 2013 survey by Scott Ambler asked practitioners what makes a project successful: 58% said on schedule, 36% said on budget, and only 14% said built to specification. Just 8% named all three together. Your client, your teammates, and your instructor may each be using a different one of these definitions without realizing it. Ask early which corner your client actually cares about, because they will not volunteer it and they will grade you on it.
+**There is no agreed definition of success**, which is worth knowing before your first client meeting. Scott Ambler's [2013 IT Project Success survey](https://ambysoft.com/surveys/success2013.html) asked practitioners what makes a project successful: 58% valued being on schedule, 36% on budget, and only 14% building to specification. Just 25% valued on time and on budget together, and only 8% valued all three. Your client, your teammates, and your instructor may each be using a different one of these definitions without realizing it. Ask early which corner your client actually cares about, because they will not volunteer it and they will grade you on it.
 
 The interesting part is the failure mode. Projects rarely fail because a team could not build the thing. They fail because the three constraints were set unrealistically at the start and **the team never renegotiated them**, so it tried to deliver under constraints that stopped being achievable in week three. Nobody wanted to be the one to say so. The MVP demo shrinks quietly instead, and the client finds out in December.
 
 This is why the course has four checkpoints and a scoped MVP rather than one deadline. A checkpoint is a scheduled opportunity to renegotiate while renegotiating is still cheap. Use them for that, not just to report that things are fine.
-
-### What a requirement is
-
-The word gets used loosely all term, so pin it down now.
-
-> A **requirement** is a statement of a capability the system must provide, or a constraint it must satisfy, that has been agreed with the people who can accept or reject the system, and that is specific enough that you can tell whether it has been met.
-
-Three parts, and a statement missing any of them is not a requirement yet:
-
-1. **A capability or a constraint.** What it must do, or the conditions it must do it under.
-2. **Agreed.** Somebody with authority accepted it. A thing you inferred from a hallway conversation is a guess.
-3. **Verifiable.** There is an observation that settles the question.
-
-The verifiability test is the one that does the work. Apply it out loud: *what would I observe if this were satisfied, and what would I observe if it were not?* If you cannot answer both halves, you are holding a wish.
-
-| A wish | A requirement |
-|---|---|
-| "The system should be user-friendly." | "A student who has never seen the system can submit a weekly activity report in under two minutes without asking for help, in a test with five students." |
-| "It needs to be fast." | "A dashboard page returns in under 400 ms at the ninetieth percentile with 200 concurrent users." |
-| "Instructors manage rubrics." | "Only a user with the instructor role can publish a rubric. Publication is irreversible and is recorded in the audit log with the actor and timestamp." |
-| "Handle errors gracefully." | "If the peer-evaluation service is unreachable, the submission is queued locally and the student is shown a message naming the delay, and no submission is lost." |
-
-Requirements are the entire subject of weeks 3 and 4, where you will write them for your own client and learn why the wrong-but-met contract is the most dangerous artifact in engineering. For now, one consequence matters: **a requirement is what an agent can be held to.** An agent asked to build a "user-friendly" anything will build something and it will be confident. An agent given the second column has a target it can hit and you have a basis to reject its work.
-
-### What agents can actually do now
-
-**First, the word.** An **agent** is a language model wired to tools. It can read and write the files in your repository, run commands and tests, read what came back, and try again. That loop is the difference between a chatbot you paste code into and something that works inside your project, and it is what this course means every time it says "agent".
-
-**Now the capability, honestly.** Distrust anyone who gives you a version that is entirely optimistic or entirely dismissive.
-
-!!! info "As of August 2026, and this section dates fastest"
-
-    **The benchmark.** [SWE-bench](https://arxiv.org/abs/2310.06770) (Jimenez et al., ICLR 2024) hands a model a real issue from a real open-source repository, with the repository at the commit before the fix, and asks for a patch that passes the project's own test suite. It is not a puzzle; it is the actual job of a maintainer on a Tuesday. **SWE-bench Verified** is the 500-problem subset that OpenAI had professional developers screen in 2024, after the original set was found to contain issues that were under-specified or unsolvable from the description alone. Verified is the number people quote.
-    
-    When the benchmark was published in 2023, the best system resolved about 2% of it. Today frontier models resolve the large majority of Verified and the top few sit within a couple of points of each other. The benchmark is close to saturated, which is why the field keeps building harder ones. Standings move monthly and are on the [public leaderboard](https://www.swebench.com/); the ceiling is the point, not the winner.
-    
-    **The capability is real.** These models will read an unfamiliar codebase, locate the defect, write the patch, write the test, and explain the change. Frontier systems come from several labs at once (Anthropic, OpenAI, Google) and the strongest open-weight models (ones whose parameters anyone can download and run) from Alibaba's Qwen and Moonshot's Kimi lines are close behind, which means this is not one company's trick and it is not going to be withdrawn.
-
-Now the part that matters more, and that the benchmark headlines leave out.
-
-**Agents fall off a cliff as tasks get longer.** METR, a research group that evaluates AI systems, measures agent capability in a unit that translates: how long would a human expert take on this task? Fitting a curve to that gives a model's **time horizon**, the task length at which it succeeds half the time. Measuring the frontier models of early 2025, METR reported "almost 100% success rate on tasks taking humans less than 4 minutes, but ... <10% of the time on tasks taking more than around 4 hours." Task length is the single strongest predictor of whether an agent will fail.
-
-**Read those two numbers as a shape, not as constants.** METR's other finding is that the time horizon has been doubling roughly every seven months. The four-minute and four-hour figures are the March 2025 measurement, the curve has slid right since, and it will slide again before you are promoted. What holds is the shape: success collapses as tasks get longer, and the work that survives each slide is the work to the right of wherever the frontier has reached. Look up the current figures rather than quoting these.
-
-The shape, with the 2025 numbers as the illustration:
-
-| How long a human would take | Agents | Examples |
-|---|---|---|
-| Under 4 minutes | Nearly always succeed | Write this function. Fix this stack trace. Rename this across the repo. Explain this file. |
-| Hours to months | Rarely succeed alone | Decide what to build. Choose an architecture. Find out what the client meant. Keep a design coherent across six people and fifteen weeks. |
-
-Nobody is paid a salary for four-minute tasks. A semester-long project for a real client is the second row, over and over, and so is every job you are about to apply for.
-
-### The layoffs, and what actually caused them
-
-You have read that software engineering is over. Here is what the evidence supports.
-
-**Cause one, the hangover.** Companies hired through 2020 and 2021 as though pandemic demand were the new baseline. It was not. Marc Andreessen [puts the range at 25% to 75% overstaffed](https://fortune.com/2026/03/31/marc-andreessen-ai-layoffs-silver-bullet-excuse-overhiring) and calls the AI explanation a "silver bullet excuse" for cleaning house. The 2023 layoffs were openly described as post-pandemic rightsizing. Much of what followed hits the same functions, and a company that doubled a division in 2021 and trimmed it in 2026 is correcting a five-year-old mistake.
-
-**Cause two, AI is a convenient explanation.** "We are becoming more efficient with AI" is a better story for shareholders than "we hired badly." Sam Altman, who has every incentive to claim the opposite, [calls it AI washing](https://fortune.com/article/sam-altman-ai-washing-tech-layoffs/): "there's some AI washing where people are blaming AI for layoffs that they would otherwise do, and then there's some real displacement by AI of different kinds of jobs." Watch the numbers: AI was named in about 5% of announced US cuts across all of 2025 and about 23% through the first half of 2026, a jump far larger than any change in the technology over those months. When the explanation moves faster than the thing it explains, the explanation is doing other work.
-
-**Cause three, expensive bets that lost.** Meta's Reality Labs lost about $13.7 billion in 2022 and about $16.1 billion in 2023 pursuing the metaverse. That money was a strategic decision made by executives, and when it had to be recovered it was recovered from headcount. No AI was involved. This happens constantly and it is worth understanding early: *you can lose your job because of a decision made three levels above you, in a meeting you were not in, about a product you never worked on.* Being technically excellent does not protect you from it. Being the person who understands what the business is trying to do gives you a better chance of seeing it coming.
-
-**And the part that is genuinely about AI.** The entry-level rung really is thinner. The tasks a company used to hand a new graduate to build their judgment (small well-specified changes, test writing, boilerplate) are exactly the four-minute tasks agents now do for nothing. That is a real problem for your cohort, and it is not solved by refusing to use the tools.
-
-It is solved by arriving already able to do the four-hour work: to scope a problem, run a client conversation, choose an architecture and defend it, review code you did not write, and direct agents rather than compete with them. That is a description of this course, and by December you will have done all of it on a real project for a real client.
-
-### Kent Beck did the math
-
-Kent Beck created Extreme Programming, popularized test-driven development, and has been shipping software since the 1980s. This is what he wrote the day he first used a language model seriously, in April 2023:
-
-> The value of 90% of my skills just dropped to $0. The leverage for the remaining 10% went up 1000x.
-
-The line gets quoted as doom. Read the second half again. He is describing a thousandfold increase in the value of some of his skills, and the interesting question is which ones. He answered that later. The 10% is:
-
-- Having a vision
-- Breaking that vision into milestones
-- Managing the design
-- Controlling complexity
-
-Compare that list against the METR table above. Beck named the four-hour column two years before anyone measured it, from the inside, by noticing which of his own skills the model could not do. Vision, milestones, design, and complexity control are not four-minute tasks, and they are four lines of this course's syllabus.
-
-**This is the argument of the whole module.** AI did not make software engineering knowledge irrelevant. It collapsed the value of implementation-level skill and multiplied the value of the highest-level engineering skills, which are precisely the ones traditional courses treated as soft, unteachable, or something you would pick up on the job.
-
-Two consequences worth stating plainly:
-
-> You will not be replaced by AI. You will be replaced by someone who can use AI.
-
-And the reason that sentence is not a threat: **AI is an amplifier**. It multiplies whatever judgment you bring to it, and the sign matters as much as the size. Bring a clear specification and a sense of what good looks like, and you get a great deal of good work quickly. Bring nothing and you get nothing, faster: zero multiplied is still zero. Bring a wrong premise, a misread of what the client needs, or a design that will not survive the second year, and the amplifier neither stalls nor argues. The wrong thing arrives complete, tested, documented, and spread through the codebase before anyone questions it, which is worse than having built nothing, because undoing it now costs more than building it did.
 
 ### What the market pays for
 
@@ -268,7 +263,7 @@ Map it onto the team you are about to be on. The menu is your specification and 
 
 Two things this metaphor gets right that "AI will write the code" gets wrong:
 
-**The chef's authority comes from being able to taste.** A chef who cannot tell a good plate from a bad one is not a chef, no matter how good the brigade is. This is why the exams in this course are closed to agents, and why every assignment is graded on judgment rather than output. You cannot direct work you are unable to evaluate. You will simply approve whatever arrives, quickly, which is automation bias with extra steps.
+**The chef's authority comes from being able to taste.** A chef who cannot tell a good plate from a bad one is not a chef, no matter how good the brigade is. This is why the exams in this course are closed to agents, and why every assignment is graded on judgment rather than output. You cannot direct work you are unable to evaluate. You will simply approve whatever arrives, quickly, which is automation bias (trusting output because a machine produced it) with extra steps.
 
 **The pass is not optional and it does not scale by wishing.** If the brigade produces plates faster than the chef can taste them, the answer is not to stop tasting. That is the central operational problem of an AI-augmented team and week 2 takes it up directly.
 
@@ -285,6 +280,29 @@ Three things, and they pull in different directions.
 **The economics of rigor inverted.** Teams skipped living traceability (keeping every requirement connected to the code that implements it and the test that proves it), current design documents, and consistent glossaries because the *upkeep* cost human hours, not because the practices lacked value. That cost has collapsed. So the question is no longer "is this rigor worth the effort?" but "now that upkeep is cheap, which discarded rigor is worth reinstating?" This is the reasoning behind several choices later in the course that would have looked like bureaucratic overhead in 2019.
 
 The guardrail: cheap generation is not cheap trust. A practice is worth reinstating when it has value, was skipped for labor reasons, and a check can keep it honest. Practices failing that last test are reinstated only behind human sign-off, and that is exactly where judgment gets taught.
+
+### What a requirement is
+
+The word gets used loosely all term, so pin it down now.
+
+> A **requirement** is a statement of a capability the system must provide, or a constraint it must satisfy, that has been agreed with the people who can accept or reject the system, and that is specific enough that you can tell whether it has been met.
+
+Three parts, and a statement missing any of them is not a requirement yet:
+
+1. **A capability or a constraint.** What it must do, or the conditions it must do it under.
+2. **Agreed.** Somebody with authority accepted it. A thing you inferred from a hallway conversation is a guess.
+3. **Verifiable.** There is an observation that settles the question.
+
+The verifiability test is the one that does the work. Apply it out loud: *what would I observe if this were satisfied, and what would I observe if it were not?* If you cannot answer both halves, you are holding a wish.
+
+| A wish | A requirement |
+|---|---|
+| "The system should be user-friendly." | "A student who has never seen the system can submit a weekly activity report in under two minutes without asking for help, in a test with five students." |
+| "It needs to be fast." | "A dashboard page returns in under 400 ms at the ninetieth percentile with 200 concurrent users." |
+| "Instructors manage rubrics." | "Only a user with the instructor role can publish a rubric. Publication is irreversible and is recorded in the audit log with the actor and timestamp." |
+| "Handle errors gracefully." | "If the peer-evaluation service is unreachable, the submission is queued locally and the student is shown a message naming the delay, and no submission is lost." |
+
+Requirements are the entire subject of weeks 3 and 4, where you will write them for your own client and learn why the wrong-but-met contract is the most dangerous artifact in engineering. For now, one consequence matters: **a requirement is what an agent can be held to.** An agent asked to build a "user-friendly" anything will build something and it will be confident. An agent given the second column has a target it can hit and you have a basis to reject its work.
 
 ### The delegation boundary
 
@@ -303,29 +321,6 @@ Three terms in that table you have not met yet. A **use case** is one goal a use
 The delegation test: **if guessing it wrong would violate a requirement, the human pins it. Otherwise the agent derives it.** Both extremes are wrong answers. "Delegate everything" produces a fast, well-tested implementation of a question nobody answered; "keep everything human" throws away the one advance that makes the rigor affordable.
 
 Notice that the left column is Beck's 10% and the four-hour column, written out as tasks. That is not a coincidence. It is the same boundary described three ways, and if you only remember one of the three, remember whichever one you find easiest to apply under pressure.
-
-### The Napkin: six prompts
-
-Given an unfamiliar problem, produce a defensible rough judgment in twenty minutes. This is the delegation boundary at project scale: an agent will produce a fluent plan, stack, and risk list for any prompt in seconds, so the human differentiator is judging whether it is any good.
-
-1. **Shape.** What kind of system is this really (a CRUD application, meaning create, read, update, and delete over a database; a data pipeline; real-time; integration glue; machine learning)? One sentence, then three to five boxes.
-2. **The hard part.** The one thing that makes this not a weekend project. Every project has one that dominates, and naming it is most of the skill.
-3. **Bottleneck.** Where it breaks first: under load, under scale, or under a five-person team.
-4. **Stack.** What you would build it with, one sentence of why. Boring default unless there is a reason.
-5. **Kill risks.** Top three, each stated as a mechanism, not a category.
-6. **Verdict.** Feasible for this team in this time, yes or no, and what you would cut first.
-
-A seventh prompt, **Delegate** (what goes to the agent, what stays human), is held in reserve until the first six run smoothly.
-
-**The sequence is fixed:** individual silently (about 5 minutes), team reconcile (about 10), then the agent's napkin, then diff (about 5). Students who prompt first anchor on the agent's answer and learn nothing. The diff step is where the learning happens; protect it when time runs short.
-
-**What the agent needs from you before it drafts one.** The client's real constraints (budget, incumbent systems, deadline, who will operate it), the team's actual skills, and the definition of done. An agent asked to plan a project will invent all three plausibly and silently.
-
-**How to run the diff.** Interrogate the differences in both directions. Where it named something you missed, ask whether the mechanism is real. Where you named something it missed, ask why it did not, which is usually because you hold context that never made it into the prompt. That is **context engineering** (working out what the agent cannot infer, then supplying it deliberately) arriving in week 1.
-
-**What scores.** Credit goes to naming a mechanism over naming a category. "Scope creep, integration issues, communication problems" is risk bingo and scores nothing. "The client's system exports CSV nightly, so nothing is real-time and the dashboard requirement is dead on arrival" is the target.
-
-**Honest framing for students.** One semester does not manufacture ten years of pattern library. What the drill offers is the frame, six calibrated rounds with fast feedback, and the habit of noticing when your own estimate was wrong.
 
 ### Agenda capture: losing control of the conversation
 
@@ -353,7 +348,30 @@ A seventh prompt, **Delegate** (what goes to the agent, what stays human), is he
 - *Move 2:* kill the session rather than redirect it. The context that captured you is the same context you would be arguing against.
 - *Move 3:* write the goal down before opening the chat, so drift is checkable rather than a feeling.
 
-**The Napkin is the pre-commitment device.** A napkin written before the session gives an external thing to check the conversation against ("does this thread touch the hard part or the bottleneck I named?"). The drill therefore has two uses: sizing an unfamiliar problem, and making agenda capture visible in a familiar one. The second is probably the more frequent use in practice.
+**The fix is a pre-commitment device, and it is the next section.** A napkin written before the session gives an external thing to check the conversation against ("does this thread touch the hard part or the bottleneck I named?"). The drill therefore has two uses: sizing an unfamiliar problem, and making agenda capture visible in a familiar one. The second is probably the more frequent use in practice.
+
+### The Napkin: six prompts
+
+Given an unfamiliar problem, produce a defensible rough judgment in twenty minutes. This is the delegation boundary at project scale: an agent will produce a fluent plan, stack, and risk list for any prompt in seconds, so the human differentiator is judging whether it is any good.
+
+1. **Shape.** What kind of system is this really (a CRUD application, meaning create, read, update, and delete over a database; a data pipeline; real-time; integration glue; machine learning)? One sentence, then three to five boxes.
+2. **The hard part.** The one thing that makes this not a weekend project. Every project has one that dominates, and naming it is most of the skill.
+3. **Bottleneck.** Where it breaks first: under load, under scale, or under a five-person team.
+4. **Stack.** What you would build it with, one sentence of why. Boring default unless there is a reason.
+5. **Kill risks.** Top three, each stated as a mechanism, not a category.
+6. **Verdict.** Feasible for this team in this time, yes or no, and what you would cut first.
+
+A seventh prompt, **Delegate** (what goes to the agent, what stays human), is held in reserve until the first six run smoothly.
+
+**The sequence is fixed:** individual silently (about 5 minutes), team reconcile (about 10), then the agent's napkin, then diff (about 5). Students who prompt first anchor on the agent's answer and learn nothing. The diff step is where the learning happens; protect it when time runs short.
+
+**What the agent needs from you before it drafts one.** The client's real constraints (budget, incumbent systems, deadline, who will operate it), the team's actual skills, and the definition of done. An agent asked to plan a project will invent all three plausibly and silently.
+
+**How to run the diff.** Interrogate the differences in both directions. Where it named something you missed, ask whether the mechanism is real. Where you named something it missed, ask why it did not, which is usually because you hold context that never made it into the prompt. That is **context engineering** (working out what the agent cannot infer, then supplying it deliberately) arriving in week 1.
+
+**What scores.** Credit goes to naming a mechanism over naming a category. "Scope creep, integration issues, communication problems" is risk bingo and scores nothing. "The client's system exports CSV nightly, so nothing is real-time and the dashboard requirement is dead on arrival" is the target.
+
+**Honest framing for students.** One semester does not manufacture ten years of pattern library. What the drill offers is the frame, six calibrated rounds with fast feedback, and the habit of noticing when your own estimate was wrong.
 
 ## 5. Risks and mitigations
 
@@ -382,15 +400,16 @@ Every module in this course carries such a table, naming the classic failure for
 
 ## 7. Summary / key takeaways
 
-- Software engineering is the systematic, disciplined, quantifiable approach to the whole life of a system. Implementation is one of eight life-cycle activities, and it is the one agents are best at.
-- A requirement is a capability or constraint, agreed with someone who can accept the system, and specific enough to verify. Anything failing the verifiability test is a wish, and an agent handed a wish will build something confident and wrong.
 - Agent success collapses as tasks get longer. Kent Beck named the same boundary from the inside: implementation skill lost its value, and vision, milestones, design, and complexity control gained a thousandfold.
 - The layoffs are mostly a pandemic over-hiring correction, partly a convenient story, and partly somebody else's failed strategic bet. The genuinely AI-driven part is the thinning of entry-level work, and the response is to arrive able to do the four-hour work.
 - You will not be replaced by AI, you will be replaced by someone who can use AI. AI is an amplifier: it multiplies zero into zero, and a wrong premise into a wrong system that is complete, tested, and expensive to reverse.
+- A job is execution, judgment, and agency. AI is commoditizing the first, which is the part you have been graded on for three years. Execution is abundant, judgment is scarce, agency is the differentiator, and taste (knowing what good looks like without a rubric) is the trainable core of judgment.
+- Software engineering is the systematic, disciplined, quantifiable approach to the whole life of a system. Implementation is one of eight life-cycle activities, and it is the one agents are best at.
 - Scope, schedule, and resources trade against each other, and quality is what gets spent when a team will not renegotiate them. Checkpoints exist to make that renegotiation cheap and scheduled.
+- A requirement is a capability or constraint, agreed with someone who can accept the system, and specific enough to verify. Anything failing the verifiability test is a wish, and an agent handed a wish will build something confident and wrong.
 - The delegation test: if guessing it wrong would violate a requirement, it stays human.
-- The Napkin is that boundary at project scale: six prompts, twenty minutes, a verdict you can defend. Write yours before you prompt, then diff it against the agent's in both directions. A named mechanism beats a named category every time.
 - Automation bias is wrong output you trusted; agenda capture is right output on the wrong problem. The second has no error signal, so you need an external checkpoint.
+- The Napkin is that boundary at project scale: six prompts, twenty minutes, a verdict you can defend. Write yours before you prompt, then diff it against the agent's in both directions. A named mechanism beats a named category every time.
 - A project fails completely with no defective line of code in it, when the specification was a mood and nobody was at the wheel. That is the failure mode this whole course is arranged against.
 
 ## 8. Key papers and further reading

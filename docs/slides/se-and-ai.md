@@ -87,11 +87,11 @@ This is the slide that changes the temperature in the room. Deliver it as fact, 
 
 ## That said, the agents really are that good
 
-SWE-bench Verified: a real GitHub issue, a real repository, and a patch that has to pass the project's own tests.
+SWE-bench: a real GitHub issue, a real repository, and a patch that has to pass the project's own tests. **Verified** is the 500-problem subset screened by hand in 2024.
 
 ::: steps
-- 2023, when the benchmark was published: about 2%
-- Today: the large majority, solved
+- 2023, on the original benchmark: about 2%
+- Today, on Verified: the large majority, solved
 - The top few models sit within about two points of each other
 :::
 
@@ -174,14 +174,57 @@ Land the connection to the METR slide explicitly. Then: every one of those four 
 You will not be replaced by AI. You will be replaced by someone who can use AI.
 :::
 
-AI is an amplifier. It multiplies whatever you feed it, and the sign matters.
+::: note
+Say it twice. This is the sentence they repeat to their parents at Thanksgiving, so give it room. Then the next two slides explain why it is not a threat.
+:::
 
-::: warn
-Zero in, zero out, faster. Wrong in, and the wrong thing arrives finished, tested, and everywhere.
+## AI is an amplifier
+
+It multiplies whatever judgment you feed it.
+
+::: steps
+- A clear specification in: a great deal of good work, fast
+- Nothing in: nothing, faster
+:::
+
+::: key
+Zero multiplied is still zero.
 :::
 
 ::: note
-Say the key line twice. This is the sentence they repeat to their parents at Thanksgiving, so give it room. Then slow down for the warn block: the failure mode is not that the agent hands you nothing, it is that it hands you a great deal of the wrong thing, and a wrong thing that is complete and tested costs more to undo than one you never built. Call forward to Wednesday, where this is why the specification is the scarce thing.
+An amplifier adds nothing of its own; it scales what you bring. Ask what happens with a vague prompt. Someone will say "garbage out", which is the setup for the next slide, where it is worse than garbage.
+:::
+
+## And the sign matters
+
+::: warn
+A wrong premise in, and the wrong thing arrives complete, tested, documented, and spread through the codebase.
+:::
+
+Worse than nothing, because undoing it now costs more than building it did.
+
+::: note
+Slow down here. They expect "bad input, bad output". The point is sharper: the amplifier neither stalls nor argues, so a misread of what the client wanted comes back as a finished system with green tests. That is more expensive to reverse than an empty repository. Call forward to Wednesday, where this is why the specification is the scarce thing.
+:::
+
+## Execution, judgment, agency
+
+::: steps
+- **Execution.** Carry out a task someone already defined. Becoming cheap.
+- **Judgment.** Decide what matters, and catch what is wrong even when it looks right.
+- **Agency.** Own the problem. Take it from zero to one.
+:::
+
+::: key
+Execution is abundant. Judgment is scarce. Agency is the differentiator.
+:::
+
+::: note
+Slow down here. This is the answer to "what should I be building in myself this year," and it is the most marketable thing you will say all week. Execution is what they have been graded on for three years, and it is the part that just got commoditized. An agent can assist with judgment but never carries the consequences of the decision, and it never decides what is worth doing at all.
+
+Then the warning: AI makes it easy to look competent without being competent. Polished output, shallow thinking, confidence growing faster than competence. The gap shows up in the first interview question that goes one level deeper than the artifact.
+
+Taste is the trainable part: knowing what good looks like without a rubric, which is what lets you reject work instead of approving it.
 :::
 
 ## You already know how to program
@@ -349,8 +392,8 @@ The agent is fluent on every arrow. It has no opinion whatsoever about the diamo
 | Requirements quality, scope, vocabulary | Use case to design-of-record |
 | Business constraints, domain knowledge | Approved design to code and tests |
 | Quality attributes, "good enough" | Cross-document consistency checks |
-| Decisions that are hard to reverse | Drafting, refactoring, explaining code |
-| "Is this even a good idea?" | Mechanical transformations |
+| Decisions that are hard to reverse | Mechanical transformations |
+| "Is this even a good idea?" | Drafting, refactoring, explaining code |
 
 ::: note
 Do not read the table aloud. Put it up, then work the next slide live against tasks they call out. Call back to Monday's complaints: most of what they said they disliked is a task in the left-hand column that somebody put in the right-hand one.
