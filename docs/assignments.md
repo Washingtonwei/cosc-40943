@@ -13,10 +13,10 @@ Each one has the shape of real work on a codebase you did not write: **open a we
 
 | # | Assignment | Due | Task |
 |---|---|---|---|
-| 1 | **Hello, Project Pulse** | Fri **Sep 4** | Set up and run Pulse, explore it with the agent, open a well-formed issue for a real smell you found, and submit a small pull request. |
-| 2 | **Spec a feature** | Fri **Sep 25** | Write a use case with acceptance criteria for a feature Pulse is missing, then turn it into an agent build-context and evaluate what the agent produced against what you wrote. |
+| 1 | **Hello, Project Pulse** | Fri **Sep 4** | Set up and run Project Pulse, explore it with the agent, open a well-formed issue for a real smell you found, and submit a small pull request. |
+| 2 | **Spec a feature** | Fri **Sep 25** | Write a use case with acceptance criteria for a feature Project Pulse is missing, then turn it into an agent build-context and evaluate what the agent produced against what you wrote. |
 | 3 | **Add a use case** | Fri **Oct 16** | Take one use case end to end with the agent, wire it into the traceability matrix, and add AI-generated tests that you have vetted. |
-| 4 | **Triage the analyzers** | Fri **Nov 6** | Run linters, SpotBugs, and SonarQube on Pulse. Separate real findings from false positives, fix a set, and show them passing in CI. The triage is the assignment. |
+| 4 | **Triage the analyzers** | Fri **Nov 6** | Run linters, SpotBugs, and SonarQube on Project Pulse. Separate real findings from false positives, fix a set, and show them passing in CI. The triage is the assignment. |
 | 5 | **Hunt the bug** | Fri **Nov 20** | Localize a planted bug using logs, traces, and the agent. Fix it and add the regression test that would have caught it. |
 
 Each falls on the Friday of the week its topic is taught or shortly after, roughly three weeks apart, and none lands during a break or on a checkpoint Friday except the first, which is deliberate: Checkpoint 0 is a lightweight kickoff gate and this assignment is small.
