@@ -56,9 +56,9 @@ Two minutes, hard stop. The third question is the one that pays. Their complaint
 ## You have read the headlines
 
 ::: steps
-- More tech jobs cut in the first half of 2026 than in all of 2025
-- Roughly half of this year's layoff announcements name AI as a reason
-- Entry-level postings are the ones that thinned the most
+- Tech job cuts in the first half of 2026: **83% above** the same period in 2025
+- Total US cuts across all sectors over that period: **down about 40%**
+- The entry-level rung is the part that thinned
 :::
 
 ::: warn
@@ -73,7 +73,7 @@ Do not soften this and do not dwell. Fifty seconds. They already know; what they
 
 ::: steps
 1. **The hangover.** Companies hired through 2021 as if 2021 were normal.
-2. **A convenient reason.** Sam Altman: almost every company doing layoffs blames AI, whether or not it is about AI.
+2. **A convenient reason.** Sam Altman calls it *AI washing*: blaming AI for layoffs you would have done anyway.
 3. **A lost bet.** Meta burned thirty billion dollars on Reality Labs in two years. Nobody laid off the metaverse.
 :::
 
@@ -82,7 +82,7 @@ AI is part of this. It is not most of it.
 :::
 
 ::: note
-This is the slide that changes the temperature in the room. Deliver it as fact, not reassurance. The numbers if they ask: Reality Labs lost about 13.7 billion in 2022 and 16.1 billion in 2023, and Andreessen has put pandemic overstaffing at 25 to 75 percent. Then be honest about the part that is real: the entry-level rung genuinely is thinner, which is the argument for being the person who directs agents rather than the person competing with one.
+This is the slide that changes the temperature in the room. Deliver it as fact, not reassurance. The numbers if they ask: AI was named in about 5 percent of announced US cuts in 2025 and about 23 percent in the first half of 2026, Reality Labs lost about 13.7 billion in 2022 and 16.1 billion in 2023, and Andreessen puts overstaffing at 25 to 75 percent and calls AI a silver-bullet excuse. Then be honest about the part that is real: the entry-level rung genuinely is thinner, which is the argument for being the person who directs agents rather than the person competing with one.
 :::
 
 ## That said, the agents really are that good
@@ -90,7 +90,7 @@ This is the slide that changes the temperature in the room. Deliver it as fact, 
 SWE-bench Verified: a real GitHub issue, a real repository, and a patch that has to pass the project's own tests.
 
 ::: steps
-- 2023: single digits
+- 2023, when the benchmark was published: about 2%
 - Today: the large majority, solved
 - The top few models sit within about two points of each other
 :::
@@ -123,6 +123,8 @@ Task length is the single strongest predictor of failure. Everything this course
 
 ::: note
 The hinge of the whole lecture. Say it plainly: nobody is paid for four-minute tasks. A semester-long project for a real client is the four-hour column, over and over. That gap is the job.
+
+Date the numbers out loud: this is METR's March 2025 measurement, and they also found the horizon doubles about every seven months, so the boundary has moved right since and will move again. Teach the shape, not the constants. If a student says the four-hour figure must be stale, agree with them, then point out that the argument gets stronger as the curve slides, not weaker, because the work worth having is always to the right of the frontier.
 :::
 
 ## So, honestly {.center}
@@ -159,7 +161,7 @@ The 10%, in his own words afterward:
 :::
 
 ::: key
-This is the four-hour column. Beck said it a year before anyone measured it.
+This is the four-hour column. Beck said it two years before anyone measured it.
 :::
 
 ::: note
@@ -172,10 +174,14 @@ Land the connection to the METR slide explicitly. Then: every one of those four 
 You will not be replaced by AI. You will be replaced by someone who can use AI.
 :::
 
-AI is an amplifier. An amplifier multiplies whatever you feed it, including zero.
+AI is an amplifier. It multiplies whatever you feed it, and the sign matters.
+
+::: warn
+Zero in, zero out, faster. Wrong in, and the wrong thing arrives finished, tested, and everywhere.
+:::
 
 ::: note
-Say it twice. This is the sentence they repeat to their parents at Thanksgiving, so give it room.
+Say the key line twice. This is the sentence they repeat to their parents at Thanksgiving, so give it room. Then slow down for the warn block: the failure mode is not that the agent hands you nothing, it is that it hands you a great deal of the wrong thing, and a wrong thing that is complete and tested costs more to undo than one you never built. Call forward to Wednesday, where this is why the specification is the scarce thing.
 :::
 
 ## You already know how to program
@@ -401,7 +407,7 @@ The gap in a specification does not disappear when you hand it to an agent. It g
 | | Automation bias | Agenda capture |
 |---|---|---|
 | **What happens** | You accept output you did not verify | You work competently on what does not matter yet |
-| **The tell** | You cannot explain a line you shipped | The agent has asked you zero questions |
+| **The tell** | You cannot explain a line you shipped | You have stopped asking questions of your own |
 | **The move** | Verify against the spec, not the code | Kill the session, do not redirect it |
 
 ::: note
