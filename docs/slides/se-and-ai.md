@@ -627,20 +627,26 @@ Read the paragraph once, then say nothing for five minutes and let it be uncomfo
 
 ## What the agent said
 
-**Shape:** real-time parking availability platform, mobile app plus web dashboard, live map view.
+**Shape:** a batch data pipeline with a thin read-only page on top, not a real-time system. Eleven rows of state, 7,000 read-mostly users.
 
-**Stack:** React Native, Node, WebSockets for live updates, Redis cache, Postgres, deployed on AWS with autoscaling.
+**The hard part:** the gate counts are not occupancy, and the error compounds. Tailgating, motorcycles, propped gates, exits with no matching entry. And "right now" is a fiction: the freshest data is fifteen minutes stale, at exactly the hour it matters.
 
-**Risks:** scalability under peak load; user adoption; integration issues with Facilities systems.
+**Bottleneck:** trust, not throughput. One morning of "40 open" at a full lot ends adoption.
 
-**Verdict:** feasible, an MVP in 8 to 10 weeks.
+**Stack:** Spring Boot, Postgres, a small Vue page, Azure. Anything fancier solves a problem this system does not have.
 
-::: ask
-Where is it right, where is it wrong, and what did you know that it could not?
+**Kill risks:** data access never lands · a wrong number under a Dean's promise · scope creep.
+
+**Verdict:** feasible, under-scoped if you count only the software. Cut "now" first: say "as of 8:45am, roughly 40 spaces (estimated)".
+
+::: key
+Thirty seconds, and it found the hard part.
 :::
 
 ::: note
-**Regenerate this before class** from your own agent and paste in what it actually produced. What is here is a stand-in, and the segment is more honest with a real run. Diff in both directions, five minutes minimum, and protect it if you are running late. Where it named something they missed, ask whether the mechanism is real. Where they beat it, ask why, and drive at the answer: nothing in the paragraph said the counters miss tailgating cars, that gates are propped open on event days, or that motorcycles slip through. Those facts live in the parking garage, not in the prompt. That is context engineering, arriving in week 1. Then land the shape: eleven lots and 7,000 users is not a scaling problem, and "user adoption" is not a risk, it is a category. The real one is that the counters drift low over a day, so the page reports openings in a full lot and the student who circled for ten minutes never opens it again.
+A real run (Claude Opus 5, 26 Aug 2026), condensed to fit. Regenerate it if you like; the segment works either way, and a weaker answer only makes it easier.
+
+**It will beat most of the room, so do not pretend otherwise.** That is the segment. Two questions pay. First, grade its three risks the way I grade yours: two are mechanisms, "scope creep" is bingo, which hands you the next slide. Second, and slower: it *named* the file-share risk but cannot get IT to grant the account, cannot decide whether the Dean's promise gets renegotiated, and is not the one explaining a wrong number at 8:50am. Then the one that lands: how would any of you know if this napkin were wrong? Nobody in the room can check it today. That is automation bias with the stakes showing, and it is why the five minutes of silence came first.
 :::
 
 ## What scores, and what does not
