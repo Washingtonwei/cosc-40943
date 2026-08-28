@@ -21,7 +21,7 @@ Each one has the shape of real work on a codebase you did not write: **open a we
 
 Each falls on the Friday of the week its topic is taught or shortly after, roughly three weeks apart, and none lands during a break or on a checkpoint Friday except the first, which is deliberate: Checkpoint 0 is a lightweight kickoff gate and this assignment is small.
 
-**Submission is the pull request itself.** Each assignment is done in **your own private copy of [Project Pulse](https://github.com/Washingtonwei/project-pulse)**, created for you at the start of that assignment, not in the public repository. There is nothing separate to upload: the issue you opened, the commits, and the pull request description are the artifact being graded. Each is due by the start of class on its date. Late work takes a 15% penalty per day and is not accepted more than two days late.
+**Submission is the pull request itself.** Each assignment is done in **your own fork of a class copy of [Project Pulse](https://github.com/Washingtonwei/project-pulse)**, not in the public repository. Each assignment has its own repository to fork; the link is on that assignment's page. There is nothing separate to upload: the issue you opened, the commits, and the pull request description are the artifact being graded. Each is due by the start of class on its date. Late work takes a 15% penalty per day and is not accepted more than two days late.
 
 ## Exams
 

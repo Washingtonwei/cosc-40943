@@ -8,21 +8,31 @@ You are not being asked to fix anything important. You are being asked to prove 
 
 ## Your assignment repository
 
-You do **not** work in the public [Project Pulse](https://github.com/Washingtonwei/project-pulse) repository. **Your own private copy of it** is created for you and appears in your GitHub account on Monday, August 31, alongside your team and client brief. It is a complete copy of the same code, and it is yours: your issue, your branch, and your pull request all live in it.
+You do **not** work in the public [Project Pulse](https://github.com/Washingtonwei/project-pulse) repository. Fork this one instead:
 
-It is created from the GitHub username you gave in the interest and skills survey. If you did not give one, or gave the wrong one, email <b.wei@tcu.edu> on Monday.
+**<https://github.com/tcu-cosc-40943/hello-project-pulse>**
 
-You already have Project Pulse running from studio. Clone your own copy next to it and reuse the Docker containers and dependencies you have installed; the second setup costs a clone and a build, not another install.
+Same code, class copy. Press **Fork**, keep the defaults, and it lands in your own account. Your issue, your branch, and your pull request all live in your fork.
+
+Then change two settings. GitHub's defaults are wrong for this assignment, and both failures are silent: nothing warns you, the work just ends up somewhere it does not count.
+
+!!! warning "1. Turn Issues on in your fork"
+    A new fork has its **Issues tab disabled**. This assignment requires you to open an issue, so switch it on: **Settings → General → Features → Issues**.
+
+!!! warning "2. Point your pull request at your own fork"
+    When you open a pull request, GitHub sets the **base repository** to `tcu-cosc-40943/hello-project-pulse`, not yours. Change the base repository dropdown to **your own fork** and the base branch to `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
+
+You already have Project Pulse running from studio. Clone your fork next to it and reuse the Docker containers and dependencies you installed; the second setup costs a clone and a build, not another install.
 
 ## Before you start
 
 - Project Pulse running on your machine, per the [setup steps](../resources.md). You did this in studio on August 28.
-- Your assignment repository, cloned.
+- Your fork, with Issues turned on, cloned.
 - Your AI coding agent, able to read the repository. See [Working with AI](../ai.md).
 
 ## What you submit
 
-One pull request in your own assignment repository, linked to one issue you opened there. There is nothing to upload anywhere. The issue, the diff, and the pull request description are the artifact.
+One pull request **in your own fork**, linked to one issue you opened there. There is nothing to upload anywhere. The issue, the diff, and the pull request description are the artifact.
 
 ## Part 1: Read one package with the agent
 
@@ -73,7 +83,7 @@ Note what that does. It names the file and the method. It says what the code doe
 
 ## Part 3: Make the change and open the pull request
 
-Branch off `main` in your assignment repository, make the fix, and open a pull request that closes your issue.
+Branch off `main` in your fork, make the fix, and open a pull request that closes your issue. **Check the base repository dropdown before you press Create**, per the warning above.
 
 **Keep it small.** One file is normal. If your diff runs past about fifty lines, you picked the wrong finding. Small is not a consolation prize here: choosing a change you can fully defend is the skill being assessed.
 
@@ -97,7 +107,9 @@ Then say what you delegated and what you kept, in a sentence or two. "The agent 
 !!! important "Not the bar: it ran"
     An agent can produce a passing version of every part of this in ten minutes. That is the floor. The grade is for the finding you chose, the changes you decided against, the claim you caught, and whether you can explain the diff to someone who did not write it. Expect to be asked in class.
 
-**Leave the pull request open. Do not merge your own.** It is yours to merge, and merging it is not the assignment; it is reviewed and graded as submitted, the way it would be at work.
+**Leave the pull request open. Do not merge your own.** Your fork is yours, so nothing stops you, but merging is not the assignment; it is reviewed and graded as submitted, the way it would be at work.
+
+Your fork is public, and so is everyone else's. Read your classmates' work if you want, after you have filed your own; what you cannot do is submit a finding you did not make. That is the [explanation test](../ai.md), and it is asked in class.
 
 If your fix is genuinely good, you may be invited to open it against the real [Project Pulse](https://github.com/Washingtonwei/project-pulse) as an actual contribution. That is not part of the grade, and it is not something you should ask for. It is something a small number of these earn.
 
