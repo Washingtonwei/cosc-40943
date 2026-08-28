@@ -141,7 +141,7 @@ A **midterm** on Monday, October 19, covering weeks 1 through 8, and a **final e
 
 ### Individual Project Pulse assignments
 
-Five individual assignments on **Project Pulse**, the instructor's own application and the codebase demonstrated in lecture. Each follows the shape of real work on an unfamiliar codebase: open an issue, make a change, submit a pull request. Each is framed around the AI workflow and **graded on judgment, not on whether it ran**. These are individual work; see [Working with AI](ai.md) for what that means when you have an agent.
+Five individual assignments on **Project Pulse**, the instructor's own application and the codebase demonstrated in lecture. Each follows the shape of real work on an unfamiliar codebase: open an issue, make a change, submit a pull request. You work in your own private copy of the repository, issued to you for each assignment. Each is framed around the AI workflow and **graded on judgment, not on whether it ran**. These are individual work; see [Working with AI](ai.md) for what that means when you have an agent.
 
 The full set, with timing, is on the [Assignments](assignments.md) page.
 

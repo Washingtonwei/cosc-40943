@@ -376,7 +376,7 @@ Every module carries one, naming the classic failure for its topic and the one A
 
 **Individual assignment (Project Pulse)**: Hello, Project Pulse
 
-- **Task (AI-workflow-framed):** set up and run Project Pulse, explore it with the agent, open a well-formed issue for a real smell you found, and submit a small pull request.
+- **Task (AI-workflow-framed):** set up and run Project Pulse, have the agent explain one package and catch a claim the code does not support, open a well-formed issue, and submit a small pull request. [Full assignment](../assignments/hello-project-pulse.md).
 - **Deliverable and assessment (per student):** the issue and the pull request. Graded on whether the issue names a real problem precisely enough to act on, and whether the pull request explains why the change is right. Not on size.
 
 ## 7. Summary / key takeaways

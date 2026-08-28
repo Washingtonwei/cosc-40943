@@ -113,7 +113,9 @@ nav:
   - Schedule: schedule.md
   - Friday Studio: studio.md
   - Senior Design Project: project.md
-  - Assignments: assignments.md
+  - Assignments:
+      - Overview: assignments.md
+      - 1. Hello, Project Pulse: assignments/hello-project-pulse.md
   - Working with AI: ai.md
   - The Method: method.md
   - Modules:

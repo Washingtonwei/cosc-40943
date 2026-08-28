@@ -13,7 +13,7 @@ Each one has the shape of real work on a codebase you did not write: **open a we
 
 | # | Assignment | Due | Task |
 |---|---|---|---|
-| 1 | **Hello, Project Pulse** | Fri **Sep 4** | Set up and run Project Pulse, explore it with the agent, open a well-formed issue for a real smell you found, and submit a small pull request. |
+| 1 | **[Hello, Project Pulse](assignments/hello-project-pulse.md)** | Fri **Sep 4** | Set up and run Project Pulse, read one package with the agent and catch a claim the code does not support, open a well-formed issue, and submit a small pull request. |
 | 2 | **Spec a feature** | Fri **Sep 25** | Write a use case with acceptance criteria for a feature Project Pulse is missing, then turn it into an agent build-context and evaluate what the agent produced against what you wrote. |
 | 3 | **Add a use case** | Fri **Oct 16** | Take one use case end to end with the agent, wire it into the traceability matrix, and add AI-generated tests that you have vetted. |
 | 4 | **Triage the analyzers** | Fri **Nov 6** | Run linters, SpotBugs, and SonarQube on Project Pulse. Separate real findings from false positives, fix a set, and show them passing in CI. The triage is the assignment. |
@@ -21,7 +21,7 @@ Each one has the shape of real work on a codebase you did not write: **open a we
 
 Each falls on the Friday of the week its topic is taught or shortly after, roughly three weeks apart, and none lands during a break or on a checkpoint Friday except the first, which is deliberate: Checkpoint 0 is a lightweight kickoff gate and this assignment is small.
 
-**Submission is the pull request itself**, opened against [Project Pulse](https://github.com/Washingtonwei/project-pulse). There is nothing separate to upload: the issue you opened, the commits, and the pull request description are the artifact being graded. Each is due by the start of class on its date. Late work takes a 15% penalty per day and is not accepted more than two days late.
+**Submission is the pull request itself.** Each assignment is done in **your own private copy of [Project Pulse](https://github.com/Washingtonwei/project-pulse)**, created for you at the start of that assignment, not in the public repository. There is nothing separate to upload: the issue you opened, the commits, and the pull request description are the artifact being graded. Each is due by the start of class on its date. Late work takes a 15% penalty per day and is not accepted more than two days late.
 
 ## Exams
 
