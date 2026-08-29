@@ -30,6 +30,7 @@ exclude_docs: |
   modules/open-source.md
   modules/ethics.md
   modules/ai-augmented-team.md
+  modules/dynamic-analysis.md
 
 # `mkdocs serve` watches docs/ already; add the deck machinery so editing the
 # theme or the hook also triggers a live reload.

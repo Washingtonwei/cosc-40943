@@ -26,6 +26,18 @@ The part that belongs in this module rather than in a security lecture:
 
 **Source:** CrowdStrike's external root cause analysis for Channel File 291 (August 2024) is public and readable. Assign the first few pages.
 
+### Name the oracle (three minutes, and week 12 depends on it)
+
+Say the word out loud in this module: an **oracle** is whatever decides that an execution was correct. A test is inputs plus an oracle, and the oracle is the only half that carries intent. Inputs decide what the code does; the oracle decides what "right" means.
+
+This costs one slide and it is not new content, it is a label for the two things already taught here. CrowdStrike had inputs (test data that wildcarded the 21st field) and an oracle that agreed with the implementation, so the suite was green on a contract it never checked. The login ladder is the same lesson from the other side: the room's junior list is not short on inputs, it is short on any idea of what correct means beyond "it logged me in."
+
+Once named, the CrowdStrike line becomes a definition rather than an aphorism: tests written from the implementation get their oracle from the implementation, which is why they cannot fail. That is also the answer to what an agent produces by default.
+
+**Hand-off.** `MODULE-dynamic-analysis` (week 12) builds its oracle ladder on this word and teaches the in-source `assert` as an oracle over every execution rather than one example. Its section 4 assumes the word was named here. Skip these three minutes and week 12 has to define it cold.
+
+**Keep the `assert` statement out of week 9.** It belongs beside fuzzing, where a stronger oracle is what turns a crash-finder into a bug-finder, and this week is a single Wednesday anyway (the midterm takes Monday). Week 9 owns the test assertion as an oracle for one input; week 12 owns the in-source assertion as an oracle for all of them.
+
 ### The opener: "how would you test the login?"
 
 Carried forward from the 2025 deck (appendix), where it was buried behind the introduction lecture. It belongs here, and it is the best opener this module has.

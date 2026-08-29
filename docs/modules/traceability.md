@@ -12,6 +12,13 @@ wants preserved; it is NOT a fully authored module yet. Sections 4, 6, 7, 8, 9 a
 placeholders. Author to publication grade. See the planning repo's course-design/module-catalog.md
 ("The traceability thread") for how this threads through the other modules, and notes/methodology.md
 for the full traceability model (two axes, off-spine overlays) that this module teaches a subset of.
+
+Section 4's "Three ways the specification and the code drift apart" is authored. Its code facts were
+verified against https://github.com/Washingtonwei/project-pulse (branch main): addPeerEvaluation
+guards on active weeks and on the previous-week window, updatePeerEvaluation guards on neither, and
+getPeerEvaluationAverage ends in .average().orElse(0.0). Re-check before this module goes stable;
+the running example is a live repository, and OI-24 in particular is code-deferred, so the first
+example disappears the day it is fixed.
 -->
 
 ## 2. Where it fits
@@ -35,9 +42,29 @@ Traceability is the antidote to the specific way AI-generated code rots. A human
 
 ## 4. Core concepts
 
-<!-- To author (`MODULE-traceability` build). Required subset: the single-axis spine (use case to design to code to test), forward = coverage, backward = justification; the verification edge (a requirement with no test is not traced). Exposed: the second (NFR) axis, off-spine overlays (BO, ASR-to-KD, business rules as constraints), cite-don't-restate invariants. Pull the full model from notes/methodology.md ("The traceability model"). -->
+<!-- To author (`MODULE-traceability` build). Required subset: the single-axis spine (use case to design to code to test), forward = coverage, backward = justification; the verification edge (a requirement with no test is not traced). Exposed: the second (NFR) axis, off-spine overlays (BO, ASR-to-KD, business rules as constraints), cite-don't-restate invariants. Pull the full model from notes/methodology.md ("The traceability model"). The subsection below is authored; the rest of section 4 still needs writing around it. -->
 
 …
+
+### Three ways the specification and the code drift apart
+
+The backward edge asks which requirement authorized a given piece of code. On a real codebase the answer is often "none", and that answer comes in three shapes, repaired three different ways.
+
+| Shape | What you see | Repair |
+|---|---|---|
+| Specification right, code behind | A rule is written down and the code does not enforce it | Conform the code |
+| Code right, specification stale | The document describes behavior the system no longer has | Amend the document |
+| Neither says anything | The code made a decision no document records | Decide it, then write it down |
+
+**Specification right, code behind.** `BR-evaluation-submission-window` binds both the initial submission and any later edit to a one-week window. `EvaluationService.addPeerEvaluation` enforces it twice over: the week must be one of the section's active weeks, and it must be the previous week. `updatePeerEvaluation` checks neither, so an evaluation stays rewritable forever. Trace forward from the rule and you land on `addPeerEvaluation` and stop, because the edit path was never linked to it.
+
+**Neither says anything.** `getPeerEvaluationAverage` ends in `.average().orElse(0.0)`, so a student nobody evaluated is reported with an average of `0.0`, the same number as a student her teammates all rated zero. No business rule covers the empty case. Trace backward from that `0.0` and you arrive nowhere. It is not a violation, because there is nothing to violate. Someone decided in code that "not evaluated" and "rated zero" are the same value, and no document records the decision or what it does to the section's weekly report.
+
+The third shape is the one that scales badly once an agent is writing the code. The first two are inconsistencies, and an inconsistency can be found by machine, because two artifacts exist and they disagree. The third produces no inconsistency at all: only one artifact ever spoke. An agent handed an under-specified use case always picks something, picks it in seconds, and emits code indistinguishable from code implementing a decision you actually made. That is how an implementation quietly becomes the specification, and it is the reason to ask the backward question out loud rather than assume the forward map covers you.
+
+You will meet the opposite advice, and it is good advice. Guidance on reading an unfamiliar codebase tells you to treat documentation as a starting point rather than truth, because it is often out of date. That is not the opposite of this course's position, it is the other half of it. Neither artifact is true by default: a contract can be behind the system, and a system can be wrong about the contract. Which of the two is wrong is decided per item, and deciding it is what a register is for.
+
+**Keep a register.** Project Pulse reconciles the two in [`docs/requirements/OPEN-ISSUES.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/requirements/OPEN-ISSUES.md), under a "Doc ↔ Code Gap Analysis" heading. Each entry names the rule, the `file:method` that diverges from it, and the direction the divergence will be resolved. Read it: a working register is worth more than the definition. And note what it is not. It is not a bug list. Each entry is a claim about *which of the two artifacts is currently wrong*, decided per item rather than assumed, which is why several of them resolve by changing the document. A divergence you have decided not to fix yet is traced. A divergence nobody noticed is not, and that is the whole difference the register buys.
 
 ## 5. The AI-native lens
 
