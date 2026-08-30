@@ -25,7 +25,7 @@ This is also where your Senior Design project starts. It continues into COSC 409
 
 1. Read the [Syllabus](syllabus.md). It is your first course reading, and start with [what this course expects of your time](syllabus.md#what-this-course-expects-of-your-time). Plan your semester around this course rather than fitting it into the gaps.
 2. Read [Working with AI](ai.md) before you touch the first assignment.
-3. Work through the setup steps on [Resources](resources.md) **before Friday's studio**. Friday is for unblocking, not for installing.
+3. Work through the setup steps on [Resources](resources.md) early. Getting Project Pulse running is [assignment 1](assignments/hello-project-pulse.md), due Fri Sep 4; Friday's studio is Checkpoint 0, not an install clinic.
 4. Skim the [Schedule](schedule.md) so you know where the term is going.
 
 ## How the week works

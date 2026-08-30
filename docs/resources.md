@@ -49,14 +49,14 @@ It is a real application with real history, real technical debt, and real bugs. 
 
 Studio assumes you can run a Spring Boot and Vue.js stack. Several later topics (CI/CD pipelines, Spring Boot Actuator, Spring Security) are taught here for the software engineering concepts and the lifecycle reasoning, not for the tooling setup, which would eat class minutes better spent elsewhere.
 
-If you did not take that course, you are not stranded, but you do have a catch-up path to walk. Start with these, both written by the instructor and both public:
+If you did not take that course, you are not stranded, but you do have a catch-up path to walk. Start with these two series, written by the instructor and free. Watch with the demo repository open beside you and type it along; reading it is not the same thing.
 
-| Resource | Covers |
-|---|---|
-| [Learn Vue 3 with Bingyang](https://github.com/Washingtonwei/learn-vue-3-with-bingyang) | The frontend half. Demo code for the free YouTube tutorial series; work through it alongside the videos. |
-| [Hogwarts Artifacts Online](https://github.com/Washingtonwei/hogwarts-artifacts-online) | The backend half. A Spring Boot sample application demonstrating typical use cases and practices, including the layering Project Pulse uses. |
+| Series | Code | Covers |
+|---|---|---|
+| [Learn Vue 3 with Bingyang](https://www.youtube.com/playlist?list=PLqq9AhcMm2oMvar6SRrKdCQsrBUbYicqA) | [learn-vue-3-with-bingyang](https://github.com/Washingtonwei/learn-vue-3-with-bingyang) | The frontend half. Project Pulse runs the same Vue 3 and Vite stack. |
+| [Learn Spring Boot 3 with Bingyang](https://www.youtube.com/playlist?list=PLqq9AhcMm2oPdXXFT3fzjaKLsVymvMXaY) | [Hogwarts Artifacts Online](https://github.com/Washingtonwei/hogwarts-artifacts-online) | The backend half, built with the layering Project Pulse uses. The series teaches Spring Boot 3 and Project Pulse is on 4, so a few APIs moved; the structure and the practices carry over. |
 
-Work through the parts you need rather than all of it. The goal is being able to read and run the stack, not mastery. Combine that with the week 1 and 2 studio onboarding and you will keep up.
+Work through the parts you need rather than all of it. The goal is being able to read and run the stack, not mastery. Combine that with [assignment 1](assignments/hello-project-pulse.md) and the week 2 studio and you will keep up.
 
 
 ## Tools

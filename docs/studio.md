@@ -24,12 +24,13 @@ Led by **Hiep Nguyen**. Each TA takes four of the twelve teams and keeps them al
 
 <!-- TODO(instructor): fill the team-to-TA assignment once teams are formed. -->
 
-## Weeks 1 and 2 are different
+## The first studio is different
 
-Your team's project barely exists in the first two weeks, so studio is guided onboarding instead:
+Your team's project barely exists yet, so the first studio is guided onboarding rather than project work:
 
-- **Week 1, Aug 28.** Environment setup, run Project Pulse once on your own machine, complete your first AI-assisted task. Come with the [setup steps](resources.md) already attempted. With 72 students and three TAs, studio cannot absorb 72 cold installations.
 - **Week 2, Sep 4.** Stand up your team's GitHub repository, Projects board, Issues and Sub-issues, and Slack channel. Draft and sign your team contract. This is also **Checkpoint 0**.
+
+Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 72 students and three TAs, studio cannot absorb 72 cold installations.
 
 From week 3 onward, studio is your project.
 
