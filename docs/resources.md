@@ -15,25 +15,15 @@ Project Pulse is the codebase you read all term, and your [first assignment](ass
 | **Maven** | **do not install** | The repository ships the `mvnw` wrapper. Use it. |
 | An editor | your choice | |
 
-### 2. Clone and run [Project Pulse](https://github.com/Washingtonwei/project-pulse)
+The README assumes this toolchain and does not name versions, which is why the table is here. A JDK other than 21 is the most common reason a first build fails.
 
-For [assignment 1](assignments/hello-project-pulse.md) you clone **your own fork** rather than the repository shown below, and the URL changes accordingly. The code is identical; the difference is that your commits have somewhere to go.
+### 2. Clone and run it
 
-```bash
-git clone https://github.com/Washingtonwei/project-pulse.git
-cd project-pulse
+The [Project Pulse README](https://github.com/Washingtonwei/project-pulse#readme) is the procedure, and it is the one to follow: Docker for MySQL and Mailpit, the backend, the frontend, the ports, and the test student and instructor logins. It is not repeated here, because it moves with the code and a copy on this site would quietly fall behind it.
 
-# MySQL on 3306, Mailpit on 1025 (SMTP) and 8025 (web)
-docker compose up -d
+Two things differ for [assignment 1](assignments/hello-project-pulse.md). Clone **your own fork** rather than the repository the README names, and read the README **in your fork**, so the instructions match the code you actually have.
 
-# Backend, serves on http://localhost:80
-cd backend && ./mvnw spring-boot:run
-
-# Frontend, in a second terminal, serves on http://localhost:5173
-cd frontend && npm install && npm run dev
-```
-
-Then open <http://localhost:5173>. The README lists test student and instructor logins. Getting it to start is the goal this week; understanding it is not, yet.
+Getting it to start is the goal this week. Understanding it is not, yet.
 
 ### 3. Set up your AI coding agent
 

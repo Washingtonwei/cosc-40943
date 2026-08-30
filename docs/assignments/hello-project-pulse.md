@@ -34,9 +34,9 @@ This is your first time with Project Pulse, and it is a real application: a Vue 
 Fork first, then clone **your fork**. There is no reason to clone the public Project Pulse repository at all; your fork is the same code, and it is where every commit you make has to end up.
 
 1. Fork the repository and turn Issues on, per the two settings above.
-2. Install the toolchain, [step 1 of the setup instructions](../resources.md).
-3. Clone your fork and run it, following [step 2](../resources.md) with your own fork's URL in place of the one shown there.
-4. Open <http://localhost:5173> and log in. The README lists test student and instructor logins.
+2. Install the toolchain, [step 1 of the setup instructions](../resources.md). The README assumes it and does not name versions; a JDK other than 21 is the usual reason a first build fails.
+3. Clone your fork, then follow the **README in your fork**. It carries the whole procedure: Docker, the backend, the frontend, the ports, and the test logins. Read it there rather than anywhere else, since it is the copy that matches your code.
+4. Log in as the test student the README names.
 5. Point your agent at the clone and confirm it can read the code, [step 3](../resources.md).
 
 Getting it to start is the goal. Understanding it is Part 1.
