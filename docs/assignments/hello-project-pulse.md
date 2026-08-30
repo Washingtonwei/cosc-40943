@@ -22,6 +22,9 @@ Then change two settings. GitHub's defaults are wrong for this assignment, and b
 !!! warning "2. Point your pull request at your own fork"
     When you open a pull request, GitHub sets the **base repository** to `tcu-cosc-40943/hello-project-pulse`, not yours. Change the base repository dropdown to **your own fork** and the base branch to `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
 
+!!! note "Already forked during studio?"
+    Open your fork and press **Sync fork** at the top of the file list before you start. The pull request template was added after Friday, and syncing is one click while you have no commits of your own.
+
 You already have Project Pulse running from studio. Clone your fork next to it and reuse the Docker containers and dependencies you installed; the second setup costs a clone and a build, not another install.
 
 ## Before you start
@@ -43,7 +46,7 @@ Pick **one** backend package under `backend/src/main/java/team/projectpulse/` or
 | Performance tracking | `activity` (weekly activity reports), `evaluation` (peer evaluations), `rubric` |
 | Org and enrollment model | `course`, `section`, `team`, `student`, `instructor` |
 | Shared platform | `system` (the `Result` envelope, `StatusCode`, `ExceptionHandlerAdvice`), `security`, `user` |
-| Requirements module | anything under `ram/`, for example `document`, `requirement`, `usecase`, `glossary`, `validation` |
+| Requirements module | anything under `ram/`, for example `document`, `requirement`, `usecase`, `glossary`, `collaboration` |
 
 Ask the agent to explain that package: what it is responsible for, how a request flows through it, what it depends on. Then **read the code and check the explanation against it.**
 
@@ -59,7 +62,7 @@ Checking the agent is also how you find something worth filing, because it force
 
 - The **`Result` envelope**: every API response is wrapped, and the frontend's shared Axios instance unwraps it. A response or a caller that does not follow this is a real finding.
 - **`Converter<S, T>` DTO conversion**, written explicitly. There is no Lombok and no MapStruct in this codebase, on purpose.
-- **`/api/v1` routing**, uniform across controllers.
+- **`/api/v1` routing**, uniform across controllers. Each controller declares it as the placeholder `${api.endpoint.base-url}`, resolved from `application.yml`, so searching the Java for a literal `/api/v1` returns nothing.
 - **Per-feature API clients** under `frontend/src/apis/<feature>/`, going through the shared Axios instance rather than calling the network directly.
 
 Failing that: code whose name or comment disagrees with what it does, logic duplicated across two services that should share it, a literal that should be a named constant, or an error path that swallows the information a caller needs.
@@ -93,7 +96,7 @@ Your pull request description carries three things.
 2. **What you deliberately did not change.** You will have noticed other things. Naming them and leaving them alone is a professional move, not an admission.
 3. **What the agent got wrong**, from Part 1: the claim, and the file and line that disproves it.
 
-Then say what you delegated and what you kept, in a sentence or two. "The agent drafted the fix and I rewrote the null handling because it silently returned an empty list" costs you nothing and is worth writing.
+The pull request template in your fork gives you these as headings, plus a check on the base repository. Then say what you delegated and what you kept, in a sentence or two. "The agent drafted the fix and I rewrote the null handling because it silently returned an empty list" costs you nothing and is worth writing.
 
 ## How it is graded
 
