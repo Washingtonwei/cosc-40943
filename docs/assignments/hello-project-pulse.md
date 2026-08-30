@@ -25,7 +25,11 @@ Then change two settings. GitHub's defaults are wrong for this assignment, and t
     When you open a pull request, GitHub sets the **base repository** to `tcu-cosc-40943/hello-project-pulse`, not yours. Change the base repository dropdown to **your own fork** and the base branch to `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
 
 !!! note "Already forked?"
-    A few of you forked before the pull request template was added. Open your fork and press **Sync fork** at the top of the file list before you start; it is one click while you have no commits of your own.
+    Press **Sync fork** at the top of your fork's file list before you start, so you have the current code and the pull request template. It is one click while you have no commits of your own.
+
+## What you submit
+
+One pull request **in your own fork**, linked to one issue you opened there. **Submit the pull request's URL to TCU Online** by the beginning of class on the due date. That link is your submission; the issue, the diff, and the pull request description are what get graded. Nothing else is uploaded.
 
 ## Part 0: Clone your fork and get it running
 
@@ -41,25 +45,24 @@ Fork first, then clone **your fork**. There is no reason to clone the public Pro
 
 Getting it to start is the goal. Understanding it is Part 1.
 
-!!! tip "Stuck? Ask in Slack, in the help channel"
-    Setup problems are the one thing on this assignment you should not work through alone, and they are almost never unique to you. Post in the help channel with the exact command you ran and the exact error text, not a description of it. Do this the day you get stuck, not on Thursday night.
+!!! tip "Stuck? Post in the Slack help channel"
+    Setup problems are the one thing here you should not work through alone, and they are almost never unique to you. Post the exact command you ran and the exact error text, not a description of it. Do this the day you get stuck, not on Thursday night.
 
-Part 0 carries no points of its own. It is what makes the other three possible.
+**If you are still blocked, keep going.** Parts 1 through 3 need the source, not a running application: you can read the code, catch the agent, file the issue, and make the change from the clone alone. Say in your pull request that it would not start and what you tried. A setup failure should cost you the reproduction steps in your issue, not the assignment.
 
-## What you submit
-
-One pull request **in your own fork**, linked to one issue you opened there. There is nothing to upload anywhere. The issue, the diff, and the pull request description are the artifact.
+Part 0 carries no points of its own.
 
 ## Part 1: Read one package with the agent
 
 Pick **one** backend package under `backend/src/main/java/team/projectpulse/` or one frontend feature under `frontend/src/`. Reasonable choices:
 
-| Area | Packages |
+| Area | Where to look |
 |---|---|
 | Performance tracking | `activity` (weekly activity reports), `evaluation` (peer evaluations), `rubric` |
 | Org and enrollment model | `course`, `section`, `team`, `student`, `instructor` |
 | Shared platform | `system` (the `Result` envelope, `StatusCode`, `ExceptionHandlerAdvice`), `security`, `user` |
 | Requirements module | anything under `ram/`, for example `document`, `requirement`, `usecase`, `glossary`, `collaboration` |
+| Frontend | under `frontend/src/`: `apis/<feature>` (the per-feature API clients), `pages`, `components`, `stores`, `router` |
 
 Ask the agent to explain that package: what it is responsible for, how a request flows through it, what it depends on. Then **read the code and check the explanation against it.**
 
@@ -71,7 +74,7 @@ Write down the claim, and write down the file and line that settles it. Both go 
 
 Checking the agent is also how you find something worth filing, because it forces you to read closely enough to notice where the code is not what it should be.
 
-**What to look for.** Project Pulse states its conventions, and the most useful week-1 finding is a place that departs from one:
+**What to look for.** Project Pulse states its conventions, and the most useful finding is a place that departs from one:
 
 - The **`Result` envelope**: every API response is wrapped, and the frontend's shared Axios instance unwraps it. A response or a caller that does not follow this is a real finding.
 - **`Converter<S, T>` DTO conversion**, written explicitly. There is no Lombok and no MapStruct in this codebase, on purpose.
