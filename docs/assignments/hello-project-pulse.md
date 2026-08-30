@@ -14,10 +14,12 @@ You do **not** work in the public [Project Pulse](https://github.com/Washingtonw
 
 Same code, class copy. Press **Fork**, keep the defaults, and it lands in your own account. Your issue, your branch, and your pull request all live in your fork.
 
-Then change two settings. GitHub's defaults are wrong for this assignment, and both failures are silent: nothing warns you, the work just ends up somewhere it does not count.
+Then change two settings. GitHub's defaults are wrong for this assignment, and they go wrong differently. The first stops you: a new fork has no Issues tab, so there is nowhere to file. The second does not stop you: your pull request opens against the class repository rather than your own, and nothing tells you it went to the wrong place.
 
 !!! warning "1. Turn Issues on in your fork"
     A new fork has its **Issues tab disabled**. This assignment requires you to open an issue, so switch it on: **Settings → General → Features → Issues**.
+
+    Do not file it on the class repository instead. Issues are enabled there, so it will work, and it is the obvious move when your own fork has no tab. Your issue counts only in your fork.
 
 !!! warning "2. Point your pull request at your own fork"
     When you open a pull request, GitHub sets the **base repository** to `tcu-cosc-40943/hello-project-pulse`, not yours. Change the base repository dropdown to **your own fork** and the base branch to `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
