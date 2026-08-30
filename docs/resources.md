@@ -1,8 +1,8 @@
 # Resources
 
-## Before Friday, August 28
+## Setting up Project Pulse
 
-Friday studio is for unblocking, not for installing. There are 72 of you and three TAs. Attempt all of this beforehand and bring your specific error message.
+Project Pulse is the codebase you read all term, and your [first assignment](assignments/hello-project-pulse.md) runs on it. Do this early in the week rather than the night before it is due. If something fails, post the exact command and the exact error text in Slack, in the help channel; setup problems are almost never unique to one person.
 
 ### 1. Install the toolchain
 
@@ -16,6 +16,8 @@ Friday studio is for unblocking, not for installing. There are 72 of you and thr
 | An editor | your choice | |
 
 ### 2. Clone and run [Project Pulse](https://github.com/Washingtonwei/project-pulse)
+
+For [assignment 1](assignments/hello-project-pulse.md) you clone **your own fork** rather than the repository shown below, and the URL changes accordingly. The code is identical; the difference is that your commits have somewhere to go.
 
 ```bash
 git clone https://github.com/Washingtonwei/project-pulse.git
@@ -42,7 +44,7 @@ Confirm it can read the cloned repository. See [Working with AI](ai.md) for acce
 One you will use all year, with your real name on it. Your contribution history is part of how the project is assessed.
 
 !!! tip "If you get stuck, write down exactly where"
-    "It failed" is not a question a TA can answer in a fifty-minute studio. A pasted command and stack trace is. Bring the text, not a description of the text.
+    "It failed" is not a question anyone can answer. A pasted command and stack trace is. Post the text, not a description of the text.
 
 ## Project Pulse
 

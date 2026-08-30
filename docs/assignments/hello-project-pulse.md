@@ -24,16 +24,27 @@ Then change two settings. GitHub's defaults are wrong for this assignment, and t
 !!! warning "2. Point your pull request at your own fork"
     When you open a pull request, GitHub sets the **base repository** to `tcu-cosc-40943/hello-project-pulse`, not yours. Change the base repository dropdown to **your own fork** and the base branch to `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
 
-!!! note "Already forked during studio?"
-    Open your fork and press **Sync fork** at the top of the file list before you start. The pull request template was added after Friday, and syncing is one click while you have no commits of your own.
+!!! note "Already forked?"
+    A few of you forked before the pull request template was added. Open your fork and press **Sync fork** at the top of the file list before you start; it is one click while you have no commits of your own.
 
-You already have Project Pulse running from studio. Clone your fork next to it and reuse the Docker containers and dependencies you installed; the second setup costs a clone and a build, not another install.
+## Part 0: Clone your fork and get it running
 
-## Before you start
+This is your first time with Project Pulse, and it is a real application: a Vue frontend, a Spring Boot backend, MySQL and Mailpit in Docker. Budget an evening, and start this week rather than the night before.
 
-- Project Pulse running on your machine, per the [setup steps](../resources.md). You did this in studio on August 28.
-- Your fork, with Issues turned on, cloned.
-- Your AI coding agent, able to read the repository. See [Working with AI](../ai.md).
+Fork first, then clone **your fork**. There is no reason to clone the public Project Pulse repository at all; your fork is the same code, and it is where every commit you make has to end up.
+
+1. Fork the repository and turn Issues on, per the two settings above.
+2. Install the toolchain, [step 1 of the setup instructions](../resources.md).
+3. Clone your fork and run it, following [step 2](../resources.md) with your own fork's URL in place of the one shown there.
+4. Open <http://localhost:5173> and log in. The README lists test student and instructor logins.
+5. Point your agent at the clone and confirm it can read the code, [step 3](../resources.md).
+
+Getting it to start is the goal. Understanding it is Part 1.
+
+!!! tip "Stuck? Ask in Slack, in the help channel"
+    Setup problems are the one thing on this assignment you should not work through alone, and they are almost never unique to you. Post in the help channel with the exact command you ran and the exact error text, not a description of it. Do this the day you get stuck, not on Thursday night.
+
+Part 0 carries no points of its own. It is what makes the other three possible.
 
 ## What you submit
 
