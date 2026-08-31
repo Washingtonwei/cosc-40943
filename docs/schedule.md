@@ -25,7 +25,7 @@ Dates from the TCU Registrar's [Fall 2026 academic dates](https://registrar.tcu.
 | Wk | Dates | Mon + Wed lecture | Fri studio | Project milestone |
 |----|-------|-------------------|------------|-------------------|
 | 1 | Aug 24, 26, 28 | A real failure story; what software engineering is, and what AI changed about the job; the delegation boundary, the Napkin frame, and how an agent session goes wrong<br>[Story](slides/fifteen-weeks-to-demo-day.html){ .mat } [Slides](slides/se-and-ai.html){ .mat } [Reading](modules/se-and-ai.md){ .mat } | No studio. Three lecture days. Setup and the first AI-assisted task are [assignment 1](assignments/hello-project-pulse.md). | Interest and skills survey, due Fri Aug 28 |
-| 2 | Aug 31, Sep 2, 4 | The AI-augmented team and GitHub as single source of truth; professionalism, team contract, conflict protocol | **Checkpoint 0** (kickoff gate), after standing up your repo, board, and Slack | Teams and client briefs released Mon Aug 31; contract signed, board up, client meeting 1 |
+| 2 | Aug 31, Sep 2, 4 | The AI-augmented team and GitHub as single source of truth; professionalism, team contract, conflict protocol<br>[Reading](modules/ai-augmented-team.md){ .mat } | Your team's first hour together: fix your meeting slot, sign the contract, stand up repo, board, and Slack. **Checkpoint 0** is verified in the room as you work. | Teams, clients, and project briefs released Wed Sep 2; contract signed, board and Slack up, first client meeting requested |
 | 3 | ~~Sep 7~~, 9, 11 | *Labor Day, no class Monday.* Requirements as the contract (1 of 2): glossary, vision and scope, use cases | Napkin **round 0** on your own project, then author your glossary and vision and scope | Requirements elicitation begins |
 | 4 | Sep 14, 16, 18 | Requirements as the contract (2 of 2): business rules, quality attributes, the SRS | Write your use cases and business rules; draft the SRS | Draft specification underway |
 | 5 | Sep 21, 23, 25 | Context engineering: the specification is the context, and when is it enough | Napkin **round 1**, then turn one use case into an agent build-context | Draft specification validated against build-contexts |
@@ -57,7 +57,7 @@ Each week's materials are linked at the end of its lecture cell. **Slides** is t
 
 ## Checkpoints
 
-Four times in the term, the Friday studio hour is your team's checkpoint presentation to its TA. That week's own-project objective moves to out-of-class team time.
+Four times in the term, the Friday studio hour is your team's checkpoint presentation to its TA. That week's own-project objective moves to out-of-class team time. **Checkpoint 0 is the exception:** it is not a presentation. Your TA verifies it in the room while your team works.
 
 **Fri Sep 4** (kickoff gate) · **Fri Oct 2** · **Fri Oct 23** · **Fri Nov 13**. They are marked in the grid above.
 

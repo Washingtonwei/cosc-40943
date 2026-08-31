@@ -29,7 +29,6 @@ exclude_docs: |
   modules/metrics-and-tech-debt.md
   modules/open-source.md
   modules/ethics.md
-  modules/ai-augmented-team.md
   modules/dynamic-analysis.md
 
 # `mkdocs serve` watches docs/ already; add the deck machinery so editing the
@@ -121,5 +120,6 @@ nav:
   - The Method: method.md
   - Modules:
       - SE and What AI Changes: modules/se-and-ai.md
+      - The AI-Augmented Team: modules/ai-augmented-team.md
       - Requirements Traceability: modules/traceability.md
   - Resources: resources.md

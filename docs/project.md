@@ -31,7 +31,7 @@ Clients write project briefs before the semester. **The instructor assigns stude
 
 That survey is **[here](https://forms.gle/m3vzou8VhPJ2pBTz6)**, and it closes Friday, Aug 28. It is the only input to who you work with and what you build, so it is worth ten unhurried minutes. If you cannot commit to at least four meeting blocks a week, say so in the survey and email the instructor before Friday.
 
-**Teams, clients, and project briefs are announced Monday, August 31.** Each team is assigned a TA who stays with it all semester.
+**Teams, clients, and project briefs are announced Wednesday, September 2.** Each team is assigned a TA who stays with it all semester. Read your brief before Friday: Friday's studio is your team's first hour together, and you will spend it planning, not reading.
 
 <!-- TODO(instructor): link the client briefs and publish the team roster once assignments are made. -->
 
@@ -68,11 +68,11 @@ Anything the agent must build against, or that a consistency check must resolve,
 
 ## Checkpoints
 
-Four times in the term, your team presents to its TA during the Friday studio hour.
+Four times in the term, your team presents to its TA during the Friday studio hour. Checkpoint 0 is the exception: it is a verification you pass, not a presentation you give.
 
 | Checkpoint | Date | What you present |
 |---|---|---|
-| **0**, kickoff gate | Fri Sep 4 | Team contract signed. GitHub repository and Projects board standing. First client meeting held, with minutes. |
+| **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by all six and committed to your repository as `docs/team-contract.md`. GitHub repository, Projects board, and Slack channel standing. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
 | **1** | Fri Oct 2 | Glossary, vision and scope, use cases, business rules, and draft SRS, reviewed. Architecture-of-record drafted: every use-case area, component, and external integration named. |
 | **2** | Fri Oct 23 | The architecture proven by one working vertical slice: the highest-risk use case taken through design-of-record, implementation, and tests. Demonstrated running, not described. |
 | **3** | Fri Nov 13 | Fan-out progress and production readiness. Multiple use cases built, tested, and traced, with the traceability matrix resolving. CI/CD pipeline with at least one quality gate, static analysis wired in, observability in place. |
@@ -98,6 +98,8 @@ These run every week once the project starts, and they are 40% of your grade bet
 Every team member contributes to **the writing**. Each document section has one main author; others review and comment, and only the main author accepts or rejects a suggestion. Track your authorship in your WAR.
 
 Every team member contributes to **the code**. Commit history is monitored periodically. "I did the documentation" is not a defense, and neither is "I let the agent handle my part."
+
+**Every team member is full stack.** Work is divided by use case, not by layer: one developer owns a use case end to end, front end, back end, tests, and the pipeline that ships it. There is no front-end person, no database person, and no designated tester on this team. Splitting the system by layer ("I'll take the front end") is the failure you saw in week 1: the defect that appears where two layers meet belongs to nobody, nothing is done until two people agree it is, and neither of them graduates able to build a system. Teams are staffed so that up to six use cases move at once, each with one owner who can answer for it.
 
 ## Conflict
 

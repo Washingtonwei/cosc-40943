@@ -459,7 +459,7 @@ The payoff of the whole hour, so do not read the table aloud; they have just wat
 - **Today:** apply for the GitHub Student Developer Pack. Verification takes days.
 - **Wednesday:** the Napkin, and a live agent session that goes off the rails.
 - **Friday:** studio. Project Pulse running on your machine, plus one AI-assisted task on real code.
-- **Monday Aug 31:** teams, clients, and project briefs.
+- **Next Wednesday, Sep 2:** teams, clients, and project briefs.
 :::
 
 ::: warn

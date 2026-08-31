@@ -26,9 +26,9 @@ Led by **Hiep Nguyen**. Each TA takes four of the twelve teams and keeps them al
 
 ## The first studio is different
 
-Your team's project barely exists yet, so the first studio is guided onboarding rather than project work:
+Your team was formed on Wednesday and your project barely exists yet, so the first studio is guided onboarding rather than project work:
 
-- **Week 2, Sep 4.** Stand up your team's GitHub repository, Projects board, Issues and Sub-issues, and Slack channel. Draft and sign your team contract. This is also **Checkpoint 0**.
+- **Week 2, Sep 4.** Your team's first hour together. Introduce yourselves, fix the recurring weekly meeting slot you will defend all term, read your client brief as a team, draft and sign your team contract, and stand up your GitHub repository, Projects board, Issues and Sub-issues, and Slack channel. The contract is committed to the repository as `docs/team-contract.md`, not kept in a document somewhere. Your TA verifies **Checkpoint 0** in the room while you work.
 
 Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 72 students and three TAs, studio cannot absorb 72 cold installations.
 
