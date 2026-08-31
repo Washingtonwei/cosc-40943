@@ -289,9 +289,26 @@ The merge gate is the last structural point where a human is required to look at
 This is why PR size is not a style preference. Four hundred lines can get all four. Twelve hundred gets "LGTM", and everyone in the room knows it.
 :::
 
-## One use case, one owner, three merges
+## First, what "done" means
 
-`UC-TEA-assign-students` · Maya owns all of it
+**Issue #41** · `UC-TEA-assign-students` · the course admin assigns students to teams
+
+::: steps
+- An admin can add a student to a team in their section
+- A student already on another team in that section is **moved**, not duplicated
+- A student outside the section is **rejected**, with a message naming why
+- The roster updates without a page reload
+:::
+
+::: note
+Read the second and third aloud and let them land. Neither is obvious, both are decisions somebody made, and both are exactly what an agent would have invented differently if the issue had not said.
+
+Milestone is TEA, the team-management use-case area. Mention it once; do not dwell.
+:::
+
+## One owner, three merges
+
+Maya owns all of it. She is a full-stack owner of one use case, **not the team's backend person**.
 
 | Sub-issue | Branch | `main` after |
 |---|---|---|
@@ -299,12 +316,49 @@ This is why PR size is not a style preference. Four hundred lines can get all fo
 | #43 API function, the control | `feat/43-...-ui` | green, an admin can do it |
 | #44 end-to-end coverage | `test/44-...-e2e` | green and verified |
 
+::: key
+Three reviewable merges beat one large one. Same person, sequential.
+:::
+
 ::: note
-Devon reviews, and Devon does not own this use case: that is the value of an outside reader. Meanwhile Devon and Priya own their own use cases end to end, and Maya reviews theirs.
+The right-hand column is the slide. Each merge leaves main deployable, which is what makes short branches safe.
 
-Branch names carry the number so `git log` on a strange line leads back to the use case six months later.
+Meanwhile Devon and Priya own their own use cases end to end, and Maya reviews theirs. Parallelism across use cases, not inside one.
+:::
 
-If time is short, this slide can be told in thirty seconds off the table alone.
+## What Maya actually does on #42
+
+::: steps
+- Claims it; the card moves to In progress
+- `git switch -c feat/42-assign-student-backend` off `main`
+- Works it, agent or not. Commits carry the number
+- Opens a pull request saying **`Closes #42`**, naming the criteria it satisfies
+- **Devon reviews.** The issue first, then the diff against it
+- Merge. #42 closes, the board moves, #41 stays open at one of three
+:::
+
+::: note
+Step three: `feat: reject assignment when student is outside the section (#42)`. The number in the commit is what makes `git log` on a strange line lead back to the use case six months later.
+
+Step five is the one to emphasize. Devon does not own this use case, and that is the whole value of review: a reader who was not there when the decisions were made.
+
+When the third merges, #41 closes and the use case is built, tested, and shipped by one accountable person.
+:::
+
+## And the one that needs none of this
+
+`UC-RUB-view-rubric`: one Vue call, one controller method, one service method, five tests.
+
+One sub-issue. One branch. One hour.
+
+::: key
+Reaching for three sub-issues here is following a rule instead of thinking.
+:::
+
+::: note
+Do not skip this slide. Without it they will decompose every trivial CRUD use case into ceremony, and blame you for it.
+
+Half of any real system looks like this one.
 :::
 
 ## Onboard the agent like a new hire
