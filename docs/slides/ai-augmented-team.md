@@ -117,18 +117,18 @@ flowchart LR
 Two dotted arrows are the point: the repository and your typing are the only two ways anything gets in.
 :::
 
-## When the session ends, the context is discarded {.center}
+## When the session ends, the context is discarded
 
 Tomorrow starts empty and rebuilds from **what you type** and **what it reads from disk**.
 
-::: key
-The repository is the team's shared memory, and it is the only memory the agent has.
+::: ask
+So: does your agent know what your team decided on Wednesday?
 :::
 
 ::: note
-This is the thesis. Say it, write it, and call back to it for the rest of the term.
+Do not answer it yet. The next slide answers it, and the one after that draws the conclusion.
 
-Then the sharpener: "does the agent know about our decision?" is never a question about intelligence. It is a question about whether the decision is somewhere it reads.
+The sharpener to say out loud: this is never a question about intelligence. It is a question about whether the decision is somewhere it reads.
 :::
 
 ## What it can and cannot read
@@ -148,11 +148,25 @@ Your Slack is not documentation. It is an oral tradition with search.
 :::
 
 ::: note
-The joke earns its place: it is the argument on the next slide, compressed.
+The joke is the whole right-hand column compressed, and it is the line they will repeat to each other.
 
 Also worth saying: a teammate who was sick on Tuesday is in the position the agent is in permanently. The agent just makes an existing problem visible.
 
 **If someone asks "could we just connect Slack to it?"** (they will): yes, connectors exist, you could do it this afternoon, and it would not help. Read access is not a source of truth. A chat log has no notion of *current* (git replaces, chat accumulates). Retrieval returns the argument, not the conclusion. A semester of Slack does not fit the window. And nothing in Slack was reviewed. More text is not better context, which is what week 5 is built on. Section 4.2 of the module has this written out if they want it.
+:::
+
+## So the repository is the memory {.center}
+
+::: key
+The repository is the team's shared memory, and it is the only memory the agent has.
+:::
+
+A decision that lives only in Slack is one your agent will contradict, confidently, next week.
+
+::: note
+This is the thesis of the hour. Say it, write it on the board, and call back to it every week for the rest of the term.
+
+"Single source of truth" stops being a filing rule the moment you read it this way.
 :::
 
 ## GitHub as that memory
@@ -337,6 +351,18 @@ The merge gate is the last structural point where a human is required to look at
 This is why PR size is not a style preference. Four hundred lines can get all four. Twelve hundred gets "LGTM", and everyone in the room knows it.
 :::
 
+## All of it, on one use case {.center}
+
+Issue, sub-issues, branches, review, merge.
+
+`UC-TEA-assign-students` · the course admin assigns students to teams
+
+::: note
+Four slides. Tell them that, so "first" has something to be first of.
+
+If you are behind, this slide plus the table on the next one is the thirty-second version.
+:::
+
 ## First, what "done" means
 
 **Issue #41** · `UC-TEA-assign-students` · the course admin assigns students to teams
@@ -409,7 +435,9 @@ Do not skip this slide. Without it they will decompose every trivial CRUD use ca
 Half of any real system looks like this one.
 :::
 
-## What that buys you
+## What the chain buys you
+
+Issue, sub-issue, branch, pull request. Every link recorded, for free.
 
 ```mermaid
 flowchart LR
