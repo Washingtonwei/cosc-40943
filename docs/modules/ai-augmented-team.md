@@ -6,17 +6,13 @@
 
 By the end of this module, a student can:
 
-1. Distinguish the language model, the context, the context window, and the agent loop, and explain from that machinery why an agent has no memory between sessions.
-2. Explain why a decision made in a meeting or in Slack is invisible to a coding agent, and name where that decision has to live instead.
-3. Map a team's work onto GitHub's artifacts: the milestone is a use-case area, the issue is a use case, the sub-issue is a development task, and every sub-issue has exactly one accountable assignee.
-4. Decide how big a branch should be, using the test that it leaves `main` green and is small enough for a human to review, and explain why a small use case should not be split at all.
-5. Distinguish the unit of merge from the unit of done, and say what closing a pull request does and does not prove.
-6. Judge whether an issue is well-formed enough to hand to an agent, using its acceptance criteria as the test, and rewrite one that is not.
-7. Predict what an agent does with an under-specified issue, and explain why that failure is silent rather than loud.
-8. Write the parts of a project charter (`CLAUDE.md`, or `AGENTS.md`) an agent needs in order to work in an unfamiliar repository, and say which conventions belong at the root and which belong next to the code.
-9. Own a use case across the whole stack, and explain why splitting a use case by layer across teammates leaves the integration defect with no owner.
-10. Trace a merged line of code backward to the requirement that asked for it, through the pull request, the branch, and the issue.
-11. Name what a team contract must fix, and explain why the recurring meeting time is the clause the others depend on.
+1. Explain from the machinery (the language model, the context, the context window, and the agent loop) why an agent has no memory between sessions, and why a decision made in a meeting or in Slack never reaches it.
+2. Map a team's work onto GitHub's artifacts: the milestone is a use-case area, the issue is a use case, the sub-issue is a development task, and each sub-issue has exactly one accountable assignee.
+3. Judge whether an issue is well-formed, using its acceptance criteria as the test; rewrite one that is not; and predict what an agent does with one that stays vague.
+4. Size a branch by the test that it leaves `main` green and is small enough for a human to review, and distinguish the unit of merge from the unit of done.
+5. Own a use case across the whole stack, and explain why splitting one by layer across teammates leaves the integration defect with no owner.
+6. Write the project charter an agent needs (`AGENTS.md`, with a one-line `CLAUDE.md` beside it), and say which conventions belong at the root and which belong next to the code.
+7. Trace a merged line of code back to the requirement that asked for it, and name what a team contract must fix.
 
 ## 2. Where it fits
 
@@ -45,13 +41,13 @@ Nobody wrote bad code. Each team's software was correct under its own assumption
 
 ### 4.1 The new teammate has amnesia
 
-Week 1 defined an agent as a language model wired to tools. To see why your repository has to carry the team's decisions, open up that definition, because the memory question is settled by the machinery rather than by how clever the model is.
+Week 1 defined an agent as a language model wired to tools. Open that definition up, because the memory question is settled by the machinery rather than by how clever the model is.
 
 **The brain is a large language model.** An LLM is a very large statistical model of text. It was trained on an enormous corpus by repeatedly predicting the next chunk of text (a **token**, roughly a word-piece) given everything before it, and the parameters that survived training encode a great deal about how code, English, and Java conventions tend to go. Two things follow. It knows Spring Boot in general, because Spring Boot is all over its training data. It knows nothing whatsoever about your project, because your project was not.
 
-**The model is a function, not a process.** You give it text, it returns text, and then it stops. It is not sitting there between your messages. Nothing carries over: no variables, no notes, no recollection of the last thing it told you. Ask it the same question twice with the same input and you have not reminded it of anything, because there was nothing to remind.
+**The model is a function, not a process.** You give it text, it returns text, it stops. It is not sitting there between your messages, and nothing carries over: no variables, no notes, no recollection of the last thing it told you.
 
-Which raises an obvious question. If the model remembers nothing, why does a chat conversation seem to remember?
+Which raises an obvious question. If the model remembers nothing, why does a chat conversation seem to?
 
 **Because the whole conversation is re-sent every turn.** Your first message, its reply, your second message, all of it, resubmitted as one block of text each time you press enter. What looks like memory is re-reading. The block of text handed to the model on a given turn is its **context**, and the size limit on that block is the **context window**, measured in tokens. Anything that is not in the context on this turn does not exist on this turn.
 
@@ -71,11 +67,9 @@ Now the property that matters, and it is duller than intelligence: **when the se
 
 So the question "does the agent know about our decision?" is never a question about intelligence. It is a question about whether the decision is somewhere the agent reads.
 
-**And "the agent" is not even a stable thing.** Halfway through a Thursday you hit your plan's usage limit. You do not want to wait until Monday and you do not want to pay for a higher tier, so you finish the task in Codex, or Gemini CLI, or whatever your teammate has installed. The new tool cannot see the old one's session, which is obvious. Less obvious: it does not read the same instruction file either. It starts from nothing, in your repository, and assembles a context out of whatever it finds there.
+**And "the agent" is not even a stable thing.** Halfway through a Thursday you hit your plan's usage limit, and rather than wait until Monday you finish the task in Codex, or Gemini CLI, or whatever your teammate has installed. That it cannot see the old session is obvious. Less obvious: it does not read the same instruction file either. It starts from nothing and assembles a context out of what it finds in your repository.
 
-What transfers is what you committed. A half-finished change you never committed is invisible to it. A decision you talked through at turn nine is gone. The issue's acceptance criteria, the branch, the diff so far, and the charter are all still there.
-
-So the discipline is the same one, one notch tighter: **before you run out, get the state out of the session and into the repository.** A comment on the issue saying where things stand. A commit on the branch, even of unfinished work. Any decision you reached in conversation, written into the charter (4.11 covers the file, and how to make one charter serve every tool). Then the next agent, whichever one it turns out to be, resumes instead of guessing.
+What transfers is what you committed. The half-finished change you never committed is invisible; the decision you talked through at turn nine is gone; the issue's acceptance criteria, the branch, the diff so far, and the charter are still there. So the discipline is the same one, one notch tighter: **before you run out, get the state out of the session and into the repository.** A comment on the issue, a commit on the branch even of unfinished work, and any decision you reached in conversation written into the charter (4.11 covers that file, and how to make one serve every tool).
 
 ### 4.2 What the agent can see
 
@@ -86,7 +80,7 @@ So the discipline is the same one, one notch tighter: **before you run out, get 
 | Command output it runs itself (tests, builds, `git log`) | Whatever a teammate has not written down yet |
 | Its own edits, within one session | Anything from its previous session |
 
-Everything in the right-hand column is knowledge your team genuinely has. None of it reaches the agent. The human cost is the same one step slower: a teammate who was sick on Tuesday is in the position the agent is in permanently.
+Everything in the right-hand column is knowledge your team has. None of it reaches the agent. The human cost is the same one step slower: a teammate who was sick on Tuesday is in the position the agent is in permanently.
 
 This is the thesis of the module:
 
@@ -96,9 +90,9 @@ Single source of truth stops being a filing rule when you read it that way. A de
 
 **"But could we just connect Slack to the agent?"** Yes, technically. Agents take tools through connectors (the Model Context Protocol is the common standard), Slack has a documented API, and Slack connectors already exist. You could give an agent your channel history this afternoon.
 
-It would not help, and understanding why is worth more than the thesis it appears to threaten. **Read access is not the same as a source of truth.**
+It would not help, and why it would not is worth more than the thesis it appears to threaten. **Read access is not a source of truth.**
 
-- **A chat log has no notion of current.** Git replaces; chat accumulates. A decision made in September and reversed in October sit in the stream looking exactly alike, and nothing retracts anything. Your repository holds one current version of the rule, and its history is a separate, deliberate thing you go looking for.
+- **A chat log has no notion of current.** Git replaces; chat accumulates. A decision made in September and reversed in October sit in the stream looking exactly alike. Your repository holds one current version of the rule, and its history is a separate thing you go looking for.
 - **Retrieval returns the argument, not the conclusion.** Ask a connected agent what your team decided about time zones and you get the four messages where people disagreed, a joke, and somebody's lunch plan. The message that actually settled it carries no marking that distinguishes it from the three that did not.
 - **It does not fit.** A semester of Slack is far larger than any context window, so something has to select a handful of messages, and which handful is close to a lottery.
 - **Nothing in Slack was reviewed.** A change to your charter arrives as a pull request that a teammate approved. A message in Slack arrives because somebody typed it at midnight.
@@ -141,7 +135,7 @@ An issue is well-formed when someone who was not in the room can tell whether th
 
 Two real issues from Project Pulse, both written by people on the project.
 
-[**Issue #33, "Make Project Pulse Mobile-Friendly for Student and Instructor Workflows"**](https://github.com/Washingtonwei/project-pulse/issues/33) runs to about eighty lines and carries background, a summary, the exact pages in scope, the current behavior, the proposed approach, explicit **non-goals** ("no new features, no visual redesign, no native app"), and eight checkboxed acceptance criteria including this one:
+[**Issue #33, "Make Project Pulse Mobile-Friendly for Student and Instructor Workflows"**](https://github.com/Washingtonwei/project-pulse/issues/33) runs to 124 lines and carries background, a summary, the exact pages in scope, the current behavior, the proposed approach, explicit **non-goals** ("no new features, no visual redesign, no native app"), and eight checkboxed acceptance criteria including this one:
 
 > - [ ] No horizontal scrolling on common phone widths (~375px)
 
@@ -149,7 +143,7 @@ That is checkable by someone who has never met the author. It names a number.
 
 [**Issue #37, "Show an error on invalid credentials"**](https://github.com/Washingtonwei/project-pulse/issues/37) is three sentences and a screenshot: the login page shows nothing when credentials are wrong, the console shows the error, and the suggested fix is a pop-up saying "invalid credentials."
 
-Everything in #37 is true and none of it is a specification. Does "invalid credentials" mean a wrong password, an unknown account, or a locked one, and does the message distinguish them? (It had better not, for security reasons, but that is a decision, and the issue does not make it.) Does the error appear as a toast, inline under the field, or both? How long does it stay? What happens to the password field? Notice also the shape of the third sentence: it proposes a solution instead of stating a requirement, which quietly hands the design decision to whoever reads it first.
+Everything in #37 is true and none of it is a specification. Does "invalid credentials" mean a wrong password, an unknown account, or a locked one, and does the message distinguish them? (It had better not, for security reasons, but that is a decision the issue does not make.) Toast, inline under the field, or both? How long does it stay? Notice too the shape of the third sentence: it proposes a solution instead of stating a requirement, handing the design decision to whoever reads it first.
 
 Issue #33 is not longer because its author was more thorough. It is longer because its author was answering the question *how would a stranger know this was done?*
 
@@ -157,7 +151,7 @@ Issue #33 is not longer because its author was more thorough. It is longer becau
 
 Here is why 4.4 is an engineering concern rather than a project-management preference.
 
-**A vague issue does not stop an agent.** It has no mechanism for stopping. Hand an agent issue #37 and it will not reply "insufficient detail." It will infer the missing acceptance criteria, commit to them silently, and write clean, tested, confident code against its own invention. You will get a toast notification with a two-second timeout reading "Invalid credentials", because that is the median answer on the internet, and you will get no signal at all that a decision was made on your behalf.
+**A vague issue does not stop an agent.** It has no mechanism for stopping. Hand it issue #37 and it will not reply "insufficient detail": it infers the missing acceptance criteria, commits to them silently, and writes clean, tested, confident code against its own invention. You get a two-second toast reading "Invalid credentials", because that is the median answer on the internet, and no signal at all that a decision was made on your behalf.
 
 Compare the two failure modes:
 
@@ -173,7 +167,7 @@ So "keep the board current" and "write acceptance criteria" are not administrati
 
 ### 4.6 What a branch should be
 
-Students usually ask this next, and the answer is worth more than a rule: should a branch be an issue or a sub-issue?
+Should a branch be an issue or a sub-issue? The answer is worth more than the rule it produces.
 
 **A branch is not a unit of work. It is a unit of integration.** One branch means one pull request means one merge into `main`. So the real question is what a pull request should be, and that has a settled answer built on two constraints:
 
@@ -186,7 +180,7 @@ From those two:
 
 Usually that is one sub-issue. Sometimes it is a whole use case. The size is a judgment you make, not a mapping you look up, and three clauses keep the judgment honest.
 
-**Do not split a small use case.** Much of any real system is CRUD. `UC-RUB-view-rubric` in Project Pulse is one Vue call, one controller method, one service method, and one test. Splitting that into three sub-issues produces ceremony, not engineering. One sub-issue, one branch, done. Split when a use case is genuinely multi-day.
+**Do not split a small use case.** Much of any real system is CRUD. `UC-RUB-view-rubric` in Project Pulse is one Vue call, one controller method, one service method, and five tests that differ only in who is logged in. Splitting that into three sub-issues produces ceremony, not engineering. One sub-issue, one branch, done. Split when a use case runs to more than a day's work.
 
 **Every merge leaves `main` green and deployable.** A backend endpoint that nothing calls yet satisfies this. A half-applied schema migration does not. This is the clause that makes short branches safe, and it is the one to be strict about.
 
@@ -198,23 +192,21 @@ So:
 
 > **One developer owns a use case end to end: front end, back end, tests, and the pipeline that ships it.**
 
-You are not the front-end person, the database person, or the tester. Every one of you is full stack, on your own use cases, all term. That is a deliberate course requirement and not a preference: the layer specialist is the most comfortable role on a student team and the least employable one, and it is how a team arrives in November with six parts and no product.
+You are not the front-end person, the database person, or the tester. Every one of you is full stack, on your own use cases, all term. This is a course requirement, not a preference: the layer specialist is the most comfortable role on a student team and the least employable one, and it is how a team arrives in November with six parts and no product.
 
-The owner may still cut three branches, because three reviewable merges beat one enormous one. Same person, sequential, each leaving `main` green. What you do not do is hand the layers to different people.
-
-Parallelism on your team happens **across use cases, not inside one.** Six people means up to six use cases moving at once, each with an owner who can answer for it.
+The owner may still cut three branches, because three reviewable merges beat one enormous one. Same person, sequential, each leaving `main` green. What you do not do is hand the layers to different people. Parallelism happens **across use cases, not inside one**: six people means up to six use cases moving at once, each with an owner who can answer for it.
 
 **Why short branches, and not one long one per feature?** Because the longer a branch lives, the more `main` moves underneath it, and the merge gets worse every day. A week-old branch on a six-person team is a guaranteed conflict. Professional teams keep branches alive for hours to a couple of days for exactly this reason. Aim to merge within two days; if you cannot, the task was too big.
 
-**And this matters more now, not less.** An agent will hand you a 1,200-line diff across nine files in twenty minutes. Generation got cheap. Review capacity did not, and in relative terms it got worse, because you are now reviewing code that nobody on your team wrote and nobody can explain from memory. **The size of a pull request is set by how much a human can actually review, and that number did not change when the agent arrived.**
+**And this matters more now, not less.** An agent will hand you a 1,200-line diff across nine files in twenty minutes. Generation got cheap; review capacity did not. **The size of a pull request is set by how much a human can actually review, and that number did not change when the agent arrived.**
 
 ### 4.7 The pull request is the first read
 
 There is a second reason branches matter now, and it is bigger than merge conflicts.
 
-**Review used to be a second opinion. It is now the first read.** When a human typed the code, the reviewer was the second person to have gone through it line by line; the author had already been forced to understand every line by the act of writing it. Typing was a slow, involuntary review. When an agent writes the code, that first pass is gone. The author read the prompt and the agent's summary of what it did. Nobody has read the diff. The reviewer is not checking someone's work, they are reading the code for the first time on behalf of the whole team.
+**Review used to be a second opinion. It is now the first read.** When a human typed the code, the author had already been forced to understand every line by the act of writing it: typing was a slow, involuntary review, and the reviewer was genuinely second. When an agent writes it, that first pass is gone. The author read the prompt and the agent's summary. Nobody has read the diff. The reviewer is not checking someone's work; they are reading the code for the first time on behalf of the whole team.
 
-**And the signals reviewers rely on have stopped carrying information.** Experienced reviewers skim for fluency: consistent naming, sensible structure, tests present, doc comments, no dead code. Those were never the point, but they correlated with care, because producing them took effort that only a careful person spent. Agent output has all of them for free. Fluent, well-structured, thoroughly commented, confidently wrong code is now cheap to produce, and the heuristics we evolved to triage human code are calibrated on a world that no longer exists.
+**And the signals reviewers rely on have stopped carrying information.** Experienced reviewers skim for fluency: consistent naming, sensible structure, tests present, doc comments. Those were never the point, but they correlated with care, because producing them took effort only a careful person spent. Agent output has all of them for free. Fluent, well-structured, confidently wrong code is cheap now, and the heuristics we evolved to triage human code are calibrated on a world that no longer exists.
 
 Put those together and the merge gate is the **last structural point at which a human is required to look at all**. Push straight to `main` and there is no such point. That is the real argument for branching on an AI-augmented team, and it is not about conflicts.
 
@@ -237,7 +229,7 @@ This is why the size limit in 4.6 is not a style preference. A four-hundred-line
 
 **Issue #41, `UC-TEA-assign-students`.** Acceptance criteria: an admin can add a student to a team in their section; a student already on another team in that section is moved rather than duplicated; a student outside the section is rejected with a message naming why; the roster reflects the change without a page reload.
 
-**Maya owns it**, all of it. She is a full-stack owner of one use case, not the team's backend person. She cuts three branches because three reviewable merges beat one 700-line one, and each merge leaves `main` green.
+**Maya owns it**, all of it. She is a full-stack owner of one use case, not the team's backend person. She cuts three branches because three reviewable merges beat one large one, and each merge leaves `main` green.
 
 | Sub-issue | Branch | What merges | State of `main` after |
 |---|---|---|---|
@@ -260,7 +252,7 @@ Then Maya does the same for #43 and #44. When the third merges, #41 closes and t
 
 Four things the example does on purpose. **One owner across the whole stack**, so the integration defect has somebody's name on it. The **branch name carries the number**, so six months later `git log` on a strange line leads to the branch, the branch to #42, #42 to #41, and #41 to the use case, and that chain survives everyone forgetting. The **split is by deployable slice**, so each piece merges without breaking `main`. And the **reviewer is not the owner**, because the point of review is a reader who was not there when the decisions were made.
 
-**An honest note about the running example.** Project Pulse does not use a Projects board or milestones. It carries a traceability document instead, which is the heavyweight version of the same idea and more machinery than your team needs in September. You will use the board. What Project Pulse demonstrates is the discipline underneath it: every unit of work has an identifier, and the identifier connects a requirement to the code that satisfies it.
+**An honest note about the running example.** Project Pulse uses no Projects board and no milestones. It carries a traceability document instead, which is the same idea with more machinery than your team needs in September. You will use the board. What Project Pulse demonstrates is the discipline underneath both: every unit of work has an identifier, and that identifier connects a requirement to the code satisfying it.
 
 ### 4.9 The traceability chain
 
@@ -278,7 +270,7 @@ Which means the team can answer, without asking anyone:
 - Which acceptance criteria were satisfied, and by what?
 - This line of code is strange. What asked for it?
 
-That last question matters most on an AI-augmented team, and it is worth being precise about why. When most of the code was typed by a human, "why is this here?" has a witness. When most of it was generated, the witness is gone: the person who merged it read it once, and the agent that wrote it has forgotten the session. The chain replaces the witness. Week 8 makes this a standing discipline; for now, build the habit of referencing the issue in the branch name and the pull request description.
+That last question matters most on an AI-augmented team. When most of the code was typed by a human, "why is this here?" has a witness. When most of it was generated, the witness is gone: the person who merged it read it once, and the agent that wrote it has forgotten the session. The chain replaces the witness. Week 8 makes this a standing discipline; for now, build the habit of referencing the issue in the branch name and the pull request description.
 
 GitHub automates part of it. A pull request whose description says `Closes #42` closes issue 42 on merge, and the board moves the card.
 
@@ -309,11 +301,11 @@ Write **`AGENTS.md`** as the real file, and add a `CLAUDE.md` that is one line l
 @AGENTS.md
 ```
 
-Claude Code expands that import at session start, so every tool reads the same instructions from one source. Anything genuinely Claude-specific goes underneath the import line, which is the one thing a symlink cannot do. Three details that will cost you an hour if you get them wrong: match the filename's capitals, because `@agents.md` resolves on Windows and macOS and fails on Linux and in CI; the path resolves relative to the file containing the import, so `backend/CLAUDE.md` picks up `backend/AGENTS.md`; and an `@` inside backticks or a fenced block is left as literal text, which is why the line above displays rather than imports. Verify it once with `/context` and check that `CLAUDE.md` appears under Memory files.
+Claude Code expands that import at session start, so every tool reads the same instructions from one source. Anything Claude-specific goes underneath the import line, which is the one thing a symlink cannot do. Three details that will cost you an hour if you get them wrong: match the filename's capitals, because `@agents.md` resolves on Windows and macOS and fails on Linux and in CI; the path resolves relative to the file containing the import, so `backend/CLAUDE.md` picks up `backend/AGENTS.md`; and an `@` inside backticks or a fenced block is left as literal text, which is why the line above displays rather than imports. Verify it once with `/context` and check that `CLAUDE.md` appears under Memory files.
 
 **Why not a symlink?** `ln -s AGENTS.md CLAUDE.md` does work, and it is the tidier answer on macOS and Linux. On Windows it needs Administrator privileges or Developer Mode, and a repository cloned without symlink support checks the file out as a text file containing the path `AGENTS.md`, which the agent then reads as your entire project charter. On a mixed team, use the import.
 
-**What does not transfer.** Instructions are portable; tooling is not. Project Pulse's `.claude/commands/` holds `/design`, `/implement`, `/spec-build`, and `/sync-check`, and those are Claude Code's format. Switch tools and you run those workflows by hand or rebuild them in the new tool's own mechanism. Worth knowing before you plan a week around a tool you might run out of.
+**What does not transfer.** Instructions are portable; tooling is not. Project Pulse's `.claude/commands/` holds `/design`, `/implement`, `/spec-build`, and `/sync-check`, the project's workflow gates written as commands the agent can run. They are Claude Code's format, so switching tools means running those workflows by hand or rebuilding them. You meet the gates themselves in week 7; know what the directory is when you see it, and know the cost before you plan a week around a tool you might run out of.
 
 Project Pulse is a worked example, and the instructive part is that it is not one file. It is Claude-only (it is developed with Claude Code, so there is no `AGENTS.md`), but the layering is what to copy:
 
@@ -337,13 +329,11 @@ What belongs in yours, in week 2:
 
 Write it thin in week 2. It grows every time the agent gets something wrong in a way that was your fault for not saying.
 
-Project Pulse also carries `.claude/commands/`, holding `/design`, `/implement`, `/spec-build`, and `/sync-check`: the project's workflow gates written down as commands the agent can run. You meet those in week 7. Mentioned here so you know what the directory is when you see it.
-
 ### 4.12 The team contract, and why it lives in the repository
 
 Your **team contract** is the human half of the same idea, and it goes in your repository as `docs/team-contract.md`, committed and signed by all six of you.
 
-Not a document somewhere else. The contract is a set of decisions about how your team operates, it is exactly the kind of thing that gets made once and forgotten, and it belongs where the rest of your team's memory lives. One of its clauses is your AI usage guidelines, which your agent should be able to read.
+Not a document somewhere else. It is a set of decisions about how your team operates, exactly the kind of thing made once and forgotten, so it belongs where the rest of your team's memory lives. One of its clauses is your AI usage guidelines, which your agent should be able to read.
 
 What it fixes:
 
@@ -363,7 +353,7 @@ The rest of professional practice, what your team owes each other and what happe
 
 ## 5. The AI-native lens
 
-Every module from here on closes by asking the same four questions about its own activity. They are the course's standing framework for the delegation boundary, and the answers differ sharply by topic, which is the point.
+Every module from here on closes by asking the same four questions about its own activity. They are the course's standing framework for the delegation boundary, and the answers differ sharply by topic.
 
 - **Delegate to AI:** drafting the boilerplate of an issue from a rough description, decomposing an approved use case into candidate development tasks, writing the first pass of a charter's build-and-test section by reading the repository, and summarizing what changed in a pull request.
 - **Keep human:** the acceptance criteria, always. Also what counts as one use case, what is out of scope, and the decision to merge. The agent can propose a task breakdown; whether that breakdown covers the use case is a judgment about the product, not about the code.
@@ -387,18 +377,15 @@ Every module from here on closes by asking the same four questions about its own
 - **In studio (own project):** introduce yourselves and fix the recurring weekly slot. Read your client brief together. Draft and sign `docs/team-contract.md` and commit it. Create the repository, the Projects board with its columns, and the Slack channel. Open your first two issues from the brief, each with acceptance criteria a stranger could check.
 - **Deliverable and assessment:** this is [Checkpoint 0](../project.md#checkpoints), verified in the room by your TA rather than presented. The contract is checked for a named meeting time and six signatures; the issues are checked for acceptance criteria, not for volume.
 
-**Individual assignment (Project Pulse)** — none. The individual work due this week, [Hello, Project Pulse](../assignments/hello-project-pulse.md), belongs to week 1 and includes opening a well-formed issue, which is the same skill on a codebase you did not write.
+**Individual assignment (Project Pulse):** none. The individual work due this week, [Hello, Project Pulse](../assignments/hello-project-pulse.md), belongs to week 1 and includes opening a well-formed issue, which is the same skill on a codebase you did not write.
 
 ## 8. Summary / key takeaways
 
 - The repository is the team's shared memory, and it is the only memory the agent has. A decision that lives only in Slack is one your agent will contradict.
-- The Project board displays the work; the issues hold it. The issue is a use case, the sub-issue is a development task, and every sub-issue has exactly one assignee: the person who signs it, not the one who typed it.
-- One developer owns a use case end to end, front end to pipeline. Splitting a use case by layer across teammates is the failure from week 1: nobody owns the integration defect, and nobody learns the stack. Parallelism happens across use cases, not inside one.
-- A branch is a unit of integration, not a unit of work. Make it the smallest change that leaves `main` green and is worth reviewing on its own, and do not split a use case that is already small.
-- The branch is the unit of merge; the use case is the unit of done. Merging your pull request does not mean the feature works.
-- Review used to be a second opinion and is now the first read, because nobody went through the code line by line before you. Fluent, well-structured, confidently wrong code is cheap now, so the signals reviewers used to skim for have stopped carrying information. "LGTM" is how that reaches `main`.
-- An issue is well-formed when a stranger can tell whether the work is done. Acceptance criteria are that test.
-- An under-specified issue does not stall an agent; it makes the agent design your product silently, and the result arrives looking like finished work.
+- The board displays the work; the issues hold it. The issue is a use case, the sub-issue is a development task, and its one assignee is the person who signs it, not the one who typed it.
+- One developer owns a use case end to end, front end to pipeline. Splitting by layer across teammates leaves the integration defect with no owner and teaches nobody the stack. Parallelism happens across use cases, not inside one.
+- A branch is a unit of integration: the smallest change that leaves `main` green and is worth reviewing on its own. It is the unit of merge, and the use case is the unit of done.
+- An issue is well-formed when a stranger can tell whether the work is done. A vague one does not stall an agent, it makes the agent design your product silently, and review is now the first read rather than a second opinion, which is what makes "LGTM" dangerous.
 - Onboard the agent the way you onboard a person, in a file it re-reads every session: what the product is, how to run it, the conventions, and the workflow it must follow.
 
 ## 9. Key papers and further reading
@@ -418,7 +405,7 @@ Every module from here on closes by asking the same four questions about its own
 3. Your teammate opens a pull request with 400 lines of agent-written code and the description "fixes the evaluation bug." What is the first thing you ask for, and why is it not a code question?
 4. A sub-issue on your board is assigned to two people and has three branches. What went wrong one step earlier?
 5. Your `AGENTS.md` says "follow existing conventions." Why is that line nearly worthless, and what would you replace it with?
-6. Your team splits `UC-RUB-view-rubric` (one Vue call, one controller method, one service method, one test) into four sub-issues on four branches. Nothing is technically wrong. What has the team lost, and what would you have done instead?
+6. Your team splits `UC-RUB-view-rubric` (one Vue call, one controller method, one service method, five tests) into four sub-issues on four branches. Nothing is technically wrong. What has the team lost, and what would you have done instead?
 7. A teammate's branch has been open for nine days and now conflicts with `main` in five files. Name the decision, made nine days ago, that caused this.
 8. A teammate wires your Slack workspace into the agent and argues the team no longer needs to write decisions down. Give the two strongest reasons they are wrong, and name the one thing their change genuinely does improve.
 
