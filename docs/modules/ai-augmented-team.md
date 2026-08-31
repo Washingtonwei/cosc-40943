@@ -1,5 +1,7 @@
 # The AI-Augmented Team
 
+**Slides:** [The AI-Augmented Team](../slides/ai-augmented-team.html) (the fast version).
+
 > **Purpose (one line):** set your team up so the work is legible to every member, including the one that forgets everything between sessions: put what governs the project in the repository, and make every unit of work traceable from requirement to merged code.
 
 ## 1. Learning objectives
