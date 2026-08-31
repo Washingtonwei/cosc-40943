@@ -72,7 +72,7 @@ Four times in the term, your team presents to its TA during the Friday studio ho
 
 | Checkpoint | Date | What you present |
 |---|---|---|
-| **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by all six and committed to your repository as `docs/team-contract.md`. GitHub repository, Projects board, and Slack channel standing. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
+| **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by all six and committed to your repository as [`docs/team-contract.md`](team-contract.md), each member signing in their own commit. GitHub repository, Projects board, and Slack channel standing. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
 | **1** | Fri Oct 2 | Glossary, vision and scope, use cases, business rules, and draft SRS, reviewed. Architecture-of-record drafted: every use-case area, component, and external integration named. |
 | **2** | Fri Oct 23 | The architecture proven by one working vertical slice: the highest-risk use case taken through design-of-record, implementation, and tests. Demonstrated running, not described. |
 | **3** | Fri Nov 13 | Fan-out progress and production readiness. Multiple use cases built, tested, and traced, with the traceability matrix resolving. CI/CD pipeline with at least one quality gate, static analysis wired in, observability in place. |

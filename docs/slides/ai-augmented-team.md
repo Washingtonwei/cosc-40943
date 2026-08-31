@@ -515,7 +515,7 @@ What goes in yours this week: what the product is, how to run it, how to run the
 
 ## Your contract goes in the repo too
 
-`docs/team-contract.md`, signed by all six.
+`docs/team-contract.md`, signed by all six. Each member commits their own signature line.
 
 | Clause | Why it is there |
 |---|---|
@@ -523,7 +523,7 @@ What goes in yours this week: what the product is, how to run it, how to run the
 | Channel, and expected response time | so "I did not see it" stops being an argument |
 | How decisions get made | how you break a tie without a two-week standoff |
 | How work gets claimed | so nothing is owned by everyone |
-| Git workflow and coding standards | branch naming, what blocks a merge |
+| Git workflow and review | branch naming, who reviews, what blocks a merge |
 | AI usage guidelines | what you delegate, and who signs before merge |
 | When someone does not deliver | agreed while nobody is angry |
 
