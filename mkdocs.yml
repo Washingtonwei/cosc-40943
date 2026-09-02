@@ -53,7 +53,6 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.top
-    - navigation.sections
     - content.action.edit
     - content.code.copy
     - toc.follow
@@ -111,19 +110,17 @@ nav:
   - Home: index.md
   - Syllabus: syllabus.md
   - Schedule: schedule.md
-  - Friday Studio: studio.md
-  - Senior Design Project: project.md
-  - Teams: teams.md
-  - Team Contract: team-contract.md
-  - Professionalism: professionalism.md
   - Assignments:
       - Overview: assignments.md
       - 1. Hello, Project Pulse: assignments/hello-project-pulse.md
-  - Working with AI: ai.md
-  - The Method: method.md
-  - Modules:
-      - SE and What AI Changes: modules/se-and-ai.md
-      - The AI-Augmented Team: modules/ai-augmented-team.md
-      - Professionalism: modules/professionalism.md
-      - Requirements Traceability: modules/traceability.md
-  - Resources: resources.md
+  - Modules: modules.md
+  - Senior Design:
+      - Project: project.md
+      - Teams: teams.md
+      - Friday Studio: studio.md
+      - Team Contract: team-contract.md
+  - Reference:
+      - The Method: method.md
+      - Working with AI: ai.md
+      - Professionalism: professionalism.md
+      - Resources: resources.md
