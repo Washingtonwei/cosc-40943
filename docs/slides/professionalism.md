@@ -225,6 +225,57 @@ An owner, an action, and a date. **Written down.**
 Written down in the issue or the channel, same rule as every other team decision. Give the humane reason too: the teammate who agreed to Friday and hit it now has evidence, and nobody's memory of the term gets to overwrite it.
 :::
 
+## Six you will meet this term
+
+::: steps
+- **The Ghost.** Three unanswered messages, nine days, an empty branch
+- **The Nine-Minute Tax.** Always late. Five people wait. That's forty-five minutes of your team, every week
+- **"Yeah, I'll take that."** Volunteers for everything in the meeting. Delivers none of it
+- **Merged, Unread.** The agent wrote it, they pasted it, nobody read it, their name is on it
+- **The Rubber Stamp.** "LGTM" on nine hundred lines, forty seconds after it opened
+- **The Hero.** Silent for three weeks, then two thousand lines at 11pm before the demo
+:::
+
+::: note
+Go one at a time and let them laugh. They will recognise every one, and several of them will recognise themselves, which is the point.
+
+The Nine-Minute Tax is the one to linger on, because chronic lateness is the pitfall students genuinely do not think of as a professionalism problem. Do the arithmetic out loud: nine minutes times five people waiting is forty-five minutes of your team's time, every week, and it is a decision one person made alone.
+
+A seventh, and this room will produce it on Friday: **"I'll take the front end."** Claiming a layer instead of a use case. Monday's slide 19 said why, and your TA will be listening for it at the tables.
+:::
+
+## Now notice what I just did {.center}
+
+I labeled six people.
+
+::: warn
+Don't do that.
+:::
+
+::: note
+The turn, and it is the most important thirty seconds in the segment. Ask them what rule I just broke, and wait.
+
+I attacked the person, not the problem. Every one of those names is a judgment about a human being, and if you open with one you will get a fight.
+
+The archetype is for **spotting** the pattern. The sentence you actually say names the **behavior**. Next slide shows the conversion.
+:::
+
+## Same six, said out loud
+
+::: steps
+- Ghost → *"You've missed two meetings and #41 hasn't started. What's going on?"*
+- Nine-Minute Tax → *"The last four meetings started late waiting for you. Can you make 4:00, or should we move it?"*
+- Merged, Unread → *"Walk me through why this swallows the exception."*
+:::
+
+::: note
+Three is enough; they can build the rest.
+
+The lateness one is worth pointing at: it ends with an offer. "Can you make 4:00, or should we move it" assumes there might be a real reason, which is step three doing its job inside a single sentence. Sometimes the fix is that the meeting is at a bad time and nobody said so.
+
+If a student asks about the Rubber Stamp or the Hero, take it. Rubber Stamp: "this was approved in forty seconds and the bug was on line 300." Hero: "two thousand lines the night before means nobody can review it, so we shipped unreviewed code."
+:::
+
 ## Five rules
 
 ::: steps
@@ -256,7 +307,7 @@ It's **submitting code you can't explain.**
 > "Walk me through why this swallows the exception."
 
 ::: note
-Everything up to here would have been true in 2015. This slide and the next would not, and they are why this is a software engineering lecture rather than a communication lecture. Say that as you arrive.
+Merged, Unread from the six, taken seriously. Everything else on that list would have been true in 2015; this slide and the next would not, and they are why this is a software engineering lecture rather than a communication lecture. Say that as you arrive.
 
 Everyone here uses AI and the course requires it. Name that first, or the room hears a prohibition.
 
@@ -333,16 +384,18 @@ Repeat the last line.
 
 ## Three minutes
 
-A teammate took a use case three weeks ago, has missed two meetings, and hasn't answered the channel in nine days.
+Pick one from the six. It is week 9, and they have done it three times.
 
 ::: ask
 Write the **first sentence** you say to them.
 :::
 
 ::: note
-Ninety seconds to write, ninety to trade with a neighbor and find the judgment hiding in theirs. Then take two or three out loud.
+Ninety seconds to write, ninety to trade with a neighbor and find the judgment hiding in theirs. Then take two or three out loud, from different archetypes.
 
-Almost everyone writes a version of "you never do anything," ten minutes after being told not to. Do not pre-empt that on the slide and do not soften it when you take answers. Ask the room what's unfalsifiable about the one you just read.
+Assign rather than let them choose, if the room is slow: left third takes the Ghost, middle the Nine-Minute Tax, right the Rubber Stamp.
+
+Almost everyone writes a version of "you never do anything," ten minutes after being told not to. Do not pre-empt that on the slide and do not soften it when you take answers. Ask the room what is unfalsifiable about the one you just read.
 :::
 
 ## Friday

@@ -149,18 +149,45 @@ Rule 1 carries the other four. Everything in this module gets harder in proporti
 
 ### 4.8 The situations you will actually hit
 
-| Situation | What you see | Open with |
-|---|---|---|
-| **The ghost** | Missed meetings, unanswered messages, an assigned sub-issue with no branch | "You've missed the last two meetings and #41 hasn't started. What's going on?" |
-| **Unread agent output** | A large pull request, fast, that the author cannot walk you through | "Walk me through why this method swallows the exception here." |
-| **"The agent wrote it"** | The excuse, after a defect ships | "It's merged under your name, so it's yours. What check would have caught this?" |
-| **The dominator** | One person decides everything, and the rest have stopped proposing | "The last four architecture calls were made outside the meeting. I want the next one discussed." |
-| **Quality that keeps failing** | The same review comments on every pull request | "This is the third pull request with the same finding. What's making it hard to catch before you push?" |
-| **Scope creep** | The client keeps adding, and nobody says no | Not a teammate problem. Take it to your TA and the instructor early. |
+Six patterns account for most of what goes wrong on a student team. You will recognise them, and you will probably recognise yourself in at least one.
 
-Two of those are new, and they are the ones this course has to teach because they did not exist five years ago.
+| | The tell |
+|---|---|
+| **The Ghost** | Three unanswered messages, nine days, an empty branch |
+| **The Nine-Minute Tax** | Always late. Five people wait. Forty-five minutes of your team, every week |
+| **"Yeah, I'll take that"** | Volunteers for everything in the meeting, delivers none of it |
+| **Merged, Unread** | The agent wrote it, they pasted it, nobody read it, their name is on it |
+| **The Rubber Stamp** | "LGTM" on nine hundred lines, forty seconds after the pull request opened |
+| **The Hero** | Silent for three weeks, then two thousand lines at 11pm before the demo |
 
-**Unread agent output.** The behavior is not "you used AI." Everyone here uses AI, and the course requires it. The behavior is *submitting code you cannot explain*, and clause 6 of your team contract is where your team writes that down: every member can explain any line submitted under their name, and no agent output is merged that nobody has read. The observation is a question asked in review, not an accusation made in a meeting. If the author can walk you through it, there was never a problem. If they cannot, you have your finding, and it is about review discipline rather than about the tool.
+A seventh shows up in the first studio: **"I'll take the front end."** Claiming a layer instead of a use case, which leaves the integration defect owned by nobody. [The AI-Augmented Team](ai-augmented-team.md) says why that fails.
+
+**Now notice what just happened.** Those are six labels for six people, which is precisely what 4.1 tells you never to open with. The archetype is a tool for *spotting* a pattern in yourself or your team. It is not the sentence you say. Call somebody a Ghost to their face and you will get a fight instead of a fix.
+
+Convert each one to a behavior, and it becomes sayable:
+
+| Instead of the label | Say |
+|---|---|
+| The Ghost | "You've missed two meetings and #41 hasn't started. What's going on?" |
+| The Nine-Minute Tax | "The last four meetings started late waiting for you. Can you make 4:00, or should we move it?" |
+| "Yeah, I'll take that" | "You took three tasks last meeting and none of them have branches. Which one is actually yours?" |
+| Merged, Unread | "Walk me through why this method swallows the exception here." |
+| The Rubber Stamp | "This was approved in forty seconds and the defect was on line 300. What would you want a reviewer to do for your code?" |
+| The Hero | "Two thousand lines the night before means nobody can review it, so we shipped unreviewed code to a client demo." |
+
+The lateness line is the one to study, because it ends with an offer. *"Can you make 4:00, or should we move it?"* runs step three inside a single sentence: it assumes there may be a real reason and gives them somewhere to put it. Sometimes the finding is that the meeting is at a bad time and nobody wanted to be the one to say so.
+
+Three more, which are less about a person and more about a team:
+
+| Situation | Open with |
+|---|---|
+| **The dominator** | One person decides everything and the rest have stopped proposing. "The last four architecture calls were made outside the meeting. I want the next one discussed." |
+| **Repeat findings** | The same review comment on every pull request. "This is the third pull request with the same finding. What's making it hard to catch before you push?" |
+| **Scope creep** | The client keeps adding and nobody says no. Not a teammate problem: take it to your TA and the instructor early. |
+
+Two of the six are new, and they are the ones this course has to teach because they did not exist five years ago.
+
+**Merged, Unread.** The behavior is not "you used AI." Everyone here uses AI, and the course requires it. The behavior is *submitting code you cannot explain*, and clause 6 of your team contract is where your team writes that down: every member can explain any line submitted under their name, and no agent output is merged that nobody has read. The observation is a question asked in review, not an accusation made in a meeting. If the author can walk you through it, there was never a problem. If they cannot, you have your finding, and it is about review discipline rather than about the tool.
 
 **"The agent wrote it."** Week 1's rule settles this: you are accountable for what the agent writes. Putting your name on a pull request is claiming the work, and the claim does not come apart later because the defect turned out to be embarrassing. Worth naming out loud in week 2, before it happens, so nobody discovers in October that it was never going to work.
 
