@@ -96,7 +96,7 @@ You will learn a specific method for working this way, **spec-driven, agent-assi
 
 An AI coding agent does the per-use-case design and implementation. It works against a contract you wrote, reviewed, and own. That specification is version-controlled Markdown in your repository, not a throwaway prompt, because there has to be something to review the code against. Classic software engineering topics (requirements, architecture, testing, static analysis, CI/CD, observability, code review) are taught at the moment the method demands them, not as a disconnected survey.
 
-**This course is where your Senior Design project starts.** You will work in a team of six students on a real software project for a real external client. The project continues into COSC 40993 in spring 2027 and is officially due in April 2027, but your team must get started this fall and have a working first version of the software running by the end of the fall semester.
+**This course is where your Senior Design project starts.** You will work in a team of five or six students on a real software project for a real external client. The project continues into COSC 40993 in spring 2027 and is officially due in April 2027, but your team must get started this fall and have a working first version of the software running by the end of the fall semester.
 
 ### How the week works
 
@@ -147,7 +147,7 @@ The full set, with timing, is on the [Assignments](assignments.md) page.
 
 ### Senior Design project
 
-Teams of six students, assigned by the instructor from a short interest and skills survey completed in the first week of class, work with a real external client. Twelve teams this term.
+Teams of five or six students, assigned by the instructor from a short interest and skills survey completed in the first week of class, work with a real external client. Thirteen teams this term.
 
 **Deliverables.** Your team's specification and design set, version-controlled in your team's GitHub repository:
 

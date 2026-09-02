@@ -14,15 +14,15 @@ Attendance in studio counts the same as lecture attendance: each absence is a 1%
 
 ## Teaching assistants
 
-Led by **Hiep Nguyen**. Each TA takes four of the twelve teams and keeps them all semester.
+Led by **Hiep Nguyen**. Each TA takes four or five of the thirteen teams and keeps them all semester.
 
 | TA | Email | Teams |
 |---|---|---|
-| Hiep Nguyen (lead) | HIEP.N.NGUYEN@tcu.edu | TBA |
-| Ali Gasimli | A.GASIMLI@tcu.edu | TBA |
-| Yuv Raj Pant | YUV.RAJ.PANT@tcu.edu | TBA |
+| Hiep Nguyen (lead) | HIEP.N.NGUYEN@tcu.edu | 1, 2, 5, 9, 13 |
+| Ali Gasimli | A.GASIMLI@tcu.edu | 3, 6, 10, 12 |
+| Yuv Raj Pant | YUV.RAJ.PANT@tcu.edu | 4, 7, 8, 11 |
 
-<!-- TODO(instructor): fill the team-to-TA assignment once teams are formed. -->
+Team numbers are on the [Teams page](teams.md).
 
 ## The first studio is different
 

@@ -113,7 +113,9 @@ nav:
   - Schedule: schedule.md
   - Friday Studio: studio.md
   - Senior Design Project: project.md
+  - Teams: teams.md
   - Team Contract: team-contract.md
+  - Professionalism: professionalism.md
   - Assignments:
       - Overview: assignments.md
       - 1. Hello, Project Pulse: assignments/hello-project-pulse.md
@@ -122,5 +124,6 @@ nav:
   - Modules:
       - SE and What AI Changes: modules/se-and-ai.md
       - The AI-Augmented Team: modules/ai-augmented-team.md
+      - Professionalism: modules/professionalism.md
       - Requirements Traceability: modules/traceability.md
   - Resources: resources.md

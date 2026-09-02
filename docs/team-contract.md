@@ -10,7 +10,7 @@ The contract is a set of decisions about how your team works, and decisions your
 
 ## How you sign it
 
-**Each member adds their own signature line, in their own commit.** Not one person typing six names.
+**Each member adds their own signature line, in their own commit.** Not one person typing everybody's name.
 
 ```
 git switch -c contract
@@ -18,7 +18,7 @@ git switch -c contract
 git commit -am "Sign the team contract (Ana)"
 ```
 
-That makes `git log docs/team-contract.md` the evidence, and it is what your TA looks at. Six commits by six accounts, or the contract is not signed.
+That makes `git log docs/team-contract.md` the evidence, and it is what your TA looks at. One commit per member, from that member's own account, or the contract is not signed.
 
 ## Filling it in
 
@@ -36,7 +36,7 @@ Copy this into `docs/team-contract.md` and replace everything in angle brackets.
 # Team Contract: <team name>
 
 **Project:** <client project name>
-**Members:** <six names>
+**Members:** <every member's name>
 **Signed:** <date>
 
 ## 1. Meeting time
@@ -97,7 +97,7 @@ Each member adds their own line, in their own commit.
 Your TA reads for four things, at your table, in about two minutes:
 
 1. A **named day and time** in clause 1. Not "weekly, TBD".
-2. **Six signature lines, in six commits.** `git log` is the proof.
+2. **One signature line per member, each in its own commit.** `git log` is the proof.
 3. Clause 7 says something specific about what actually happens, rather than restating that problems should be avoided.
 4. The file is committed to your repository at `docs/team-contract.md`.
 

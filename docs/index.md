@@ -3,13 +3,13 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 1: the team formation survey"
+!!! important "Week 2: your team and your client"
 
-    **[Complete the team formation survey](https://forms.gle/m3vzou8VhPJ2pBTz6)** before Friday, Aug 28. Sign in with your TCU account.
+    **[Teams, projects, clients, and TAs are published.](teams.md)** Find your team, then read your client's brief, which is **on TCU Online** under your team's number.
 
-    Your answers are the only input to team and project assignment, so answer honestly rather than impressively. The availability section matters more than you think: the most reliable predictor of a struggling senior design team is one that never found a time to meet.
+    Friday's studio is your team's first hour together: you fix the weekly meeting time you will defend all term, sign your [team contract](team-contract.md), stand up your repository, and your TA verifies Checkpoint 0 at your table. Come having read the brief, not to read it.
 
-    [![Team formation survey QR code](assets/team-formation-qr.svg){ width="180" }](https://forms.gle/m3vzou8VhPJ2pBTz6)
+    If your name is not on the Teams page, email the instructor today.
 
 ## What this course is
 

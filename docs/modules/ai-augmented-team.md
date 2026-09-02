@@ -333,7 +333,7 @@ Write it thin in week 2. It grows every time the agent gets something wrong in a
 
 ### 4.12 The team contract, and why it lives in the repository
 
-Your **team contract** is the human half of the same idea, and it goes in your repository as `docs/team-contract.md`, committed and signed by all six of you, each in their own commit. [The template and the clause-by-clause guidance are here](../team-contract.md).
+Your **team contract** is the human half of the same idea, and it goes in your repository as `docs/team-contract.md`, committed and signed by every member, each in their own commit. [The template and the clause-by-clause guidance are here](../team-contract.md).
 
 Not a document somewhere else. It is a set of decisions about how your team operates, exactly the kind of thing made once and forgotten, so it belongs where the rest of your team's memory lives. One of its clauses is your AI usage guidelines, which your agent should be able to read.
 

@@ -1,6 +1,6 @@
 # Senior Design Project
 
-Twelve teams of six students, each working with a real external client on a real problem. This fall you specify, design, and prove the system, and deliver a working MVP. In COSC 40993 next spring you build it out and deliver it, in April 2027.
+Thirteen teams of five or six students, twelve of them working with a real external client on a real problem. This fall you specify, design, and prove the system, and deliver a working MVP. In COSC 40993 next spring you build it out and deliver it, in April 2027.
 
 ## The year at a glance
 
@@ -27,13 +27,11 @@ The single most reliable predictor of a struggling senior design team is not wea
 
 ## Teams and clients
 
-Clients write project briefs before the semester. **The instructor assigns students to teams and projects** from a short interest and skills survey given in week 1. There is no pitch-and-choose round: with twelve teams it does not scale, and a written brief means your team has a real starting problem on day one rather than spending three weeks shopping.
+Clients write project briefs before the semester. **The instructor assigns students to teams and projects** from a short interest and skills survey given in week 1. There is no pitch-and-choose round: with thirteen teams it does not scale, and a written brief means your team has a real starting problem on day one rather than spending three weeks shopping.
 
-That survey is **[here](https://forms.gle/m3vzou8VhPJ2pBTz6)**, and it closes Friday, Aug 28. It is the only input to who you work with and what you build, so it is worth ten unhurried minutes. If you cannot commit to at least four meeting blocks a week, say so in the survey and email the instructor before Friday.
+**[Teams, clients, and TAs are published here.](teams.md)** Each team is assigned a TA who stays with it all semester. **Your client brief is on TCU Online**, filed under your team's number.
 
-**Teams, clients, and project briefs are announced Wednesday, September 2.** Each team is assigned a TA who stays with it all semester. Read your brief before Friday: Friday's studio is your team's first hour together, and you will spend it planning, not reading.
-
-<!-- TODO(instructor): link the client briefs and publish the team roster once assignments are made. -->
+Read it before Friday. Friday's studio is your team's first hour together, and you will spend it planning, not reading.
 
 ## What you deliver this fall
 
@@ -104,3 +102,5 @@ Every team member contributes to **the code**. Commit history is monitored perio
 ## Conflict
 
 Team conflict is normal and it is engineered for, not improvised. Your team contract, drafted in week 2, names **your recurring meeting time**, how you make decisions, what responsiveness you owe each other, and what happens when someone does not deliver. Fix the meeting time first: it is the clause the rest depend on, and the one teams regret leaving vague. When the contract is not enough, escalate to your TA, then to the instructor. Escalate early. A problem raised in week 5 is a conversation; the same problem raised in week 14 is a grade dispute.
+
+How to run the conversation before it gets that far is [Professionalism](modules/professionalism.md); the standards, the accountability process, and the FAQ are in the [Professionalism handbook](professionalism.md).
