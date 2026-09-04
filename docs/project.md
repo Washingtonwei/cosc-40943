@@ -35,7 +35,7 @@ Read it before Friday. Friday's studio is your team's first hour together, and y
 
 ## What you deliver this fall
 
-Your specification and design set lives as version-controlled Markdown in your team's GitHub repository. It is not a pile of documents produced for a grade; it is the contract your coding agent builds against, and it is the reason your agent's output can be reviewed at all.
+Your specification and design set lives as version-controlled Markdown in your team's GitHub repository, a public repository owned by one named member ([how to set it up](studio.md#where-your-repository-lives)). It is not a pile of documents produced for a grade; it is the contract your coding agent builds against, and it is the reason your agent's output can be reviewed at all.
 
 Your team also keeps a **Google Drive** for everything that is not part of that contract. The split is worth understanding rather than memorizing, because it explains the whole method:
 
@@ -47,6 +47,8 @@ Your team also keeps a **Google Drive** for everything that is not part of that 
 | Source code and tests | Shared working drafts and scratch |
 
 Anything the agent must build against, or that a consistency check must resolve, is Markdown in the repository. A use case in a Google Doc cannot be cited by an ID, diffed in a pull request, or verified against the code, so it is not a specification, it is a note about one. Everything else, where six people co-writing matters more than machine-readability, belongs in Drive. Share the Drive with the instructor and your TA at kickoff.
+
+**Your repository is public, so keep your client's material out of it.** The brief stays on TCU Online, and anything your client hands you or asks you to keep private stays in Drive. What goes in the repository is what your team writes: the specification, the design, the code.
 
 | Deliverable | What it is |
 |---|---|
@@ -70,7 +72,7 @@ Four times in the term, your team presents to its TA during the Friday studio ho
 
 | Checkpoint | Date | What you present |
 |---|---|---|
-| **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by all six and committed to your repository as [`docs/team-contract.md`](team-contract.md), each member signing in their own commit. GitHub repository, Projects board, and Slack channel standing. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
+| **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by every member and committed to your repository as [`docs/team-contract.md`](team-contract.md), each member signing in their own commit. GitHub repository, Projects board, and Slack channel standing, with your TA and the instructor on both. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
 | **1** | Fri Oct 2 | Glossary, vision and scope, use cases, business rules, and draft SRS, reviewed. Architecture-of-record drafted: every use-case area, component, and external integration named. |
 | **2** | Fri Oct 23 | The architecture proven by one working vertical slice: the highest-risk use case taken through design-of-record, implementation, and tests. Demonstrated running, not described. |
 | **3** | Fri Nov 13 | Fan-out progress and production readiness. Multiple use cases built, tested, and traced, with the traceability matrix resolving. CI/CD pipeline with at least one quality gate, static analysis wired in, observability in place. |

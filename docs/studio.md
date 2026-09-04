@@ -4,8 +4,8 @@ Friday is not a lecture and not a lab on a toy problem. It is the hour your team
 
 ## How it runs
 
-- Same room, same time, whole class. Twelve teams work in parallel.
-- **Each TA owns four teams for the entire semester.** You get the same TA every week, at every checkpoint. They know your project's history, which is the point.
+- Same room, same time, whole class. Thirteen teams work in parallel, seated in three zones by TA. You sit in the same zone every Friday.
+- **Each TA owns four or five teams for the entire semester.** You get the same TA every week, at every checkpoint. They know your project's history, which is the point.
 - Every studio has **one scoped objective**, published on the [Schedule](schedule.md). It is the move you saw demonstrated on Project Pulse in Wednesday's lecture, now applied to your code.
 - TAs circulate. They are there to unblock and to review, not to lecture.
 - **On four Fridays, studio is your checkpoint presentation** to your TA. That week's objective moves to out-of-class team time.
@@ -30,7 +30,16 @@ Your team was formed on Wednesday and your project barely exists yet, so the fir
 
 - **Week 2, Sep 4.** Your team's first hour together. Introduce yourselves, fix the recurring weekly meeting slot you will defend all term, read your client brief as a team, draft and sign your [team contract](team-contract.md), and stand up your GitHub repository, Projects board, Issues and Sub-issues, and Slack channel. The contract is committed to the repository as `docs/team-contract.md`, not kept in a document somewhere. Your TA verifies **Checkpoint 0** in the room while you work.
 
-Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 72 students and three TAs, studio cannot absorb 72 cold installations.
+### Where your repository lives
+
+**One member owns it, under their own GitHub account.** Name that person before you create anything, and write their name and the repository URL into your contract's header.
+
+- The repository is **public**, named `cosc-40943-team-NN-<slug>` to match your brief on TCU Online. Create it with a README so it has a `main` branch from the start. Public means your client's material does not go in it: see [what belongs in the repository and what belongs in Drive](project.md#what-you-deliver-this-fall).
+- The owner invites **nine collaborators**: the other members, all three TAs, and the instructor. A personal repository gives every collaborator write access, which is what you want.
+- **A Project's access list is separate from the repository's.** Everyone can be on the repository and still be unable to move a card. After you create the Project and link it, the owner adds the team and your TA under the Project's own settings. This is the step teams forget, and your TA checks it from an account that is not the owner's.
+- **The owner has to be someone continuing into COSC 40993 in the spring.** If they leave the course, transfer the repository before they go. Everyone clones on day one, so no single account is ever holding your history hostage.
+
+Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 77 students and three TAs, studio cannot absorb 77 cold installations.
 
 From week 3 onward, studio is your project.
 

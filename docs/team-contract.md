@@ -4,21 +4,23 @@ Your team's operating agreement. You draft and sign it in the [first studio](stu
 
 ## Where it lives, and why
 
-**In your team's repository, at `docs/team-contract.md`.** Not in a shared document somewhere else.
+**In your team's repository, at `docs/team-contract.md`.** Not in a shared document somewhere else. That repository is public and owned by one named member; [the studio page](studio.md#where-your-repository-lives) says how to stand it up.
 
 The contract is a set of decisions about how your team works, and decisions your team makes belong where the rest of your team's memory lives. Two of its clauses (the git workflow and the AI usage guidelines) are instructions your coding agent should be able to read, which it can only do if the file is in the repository. See [The AI-Augmented Team](modules/ai-augmented-team.md) for why that matters more than it sounds.
 
 ## How you sign it
 
-**Each member adds their own signature line, in their own commit.** Not one person typing everybody's name.
+**Each member adds their own signature line, in their own commit.** Not one person typing everybody's name. That makes `git log docs/team-contract.md` the evidence, and it is what your TA looks at. One commit per member, from that member's own account, or the contract is not signed.
+
+**In the studio, sign in the browser.** The owner commits the filled-in template to `main`. Everyone else opens `docs/team-contract.md` on GitHub, clicks the edit pencil, adds their own line, and commits directly to `main`. Six people editing one file in the same minute is safe, because GitHub serializes the commits for you, and it needs nothing installed. This is the one time you commit to `main`; clause 5 of the contract you are signing forbids it from Monday on.
+
+**Afterwards, amendments go through a branch**, like every other change:
 
 ```
-git switch -c contract
-# add your line to the Signatures section
-git commit -am "Sign the team contract (Ana)"
+git switch -c contract-amend
+# edit the clause
+git commit -am "Amend clause 5: two approving reviews"
 ```
-
-That makes `git log docs/team-contract.md` the evidence, and it is what your TA looks at. One commit per member, from that member's own account, or the contract is not signed.
 
 ## Filling it in
 
@@ -37,6 +39,7 @@ Copy this into `docs/team-contract.md` and replace everything in angle brackets.
 
 **Project:** <client project name>
 **Members:** <every member's name>
+**Repository:** <url>, owned by <name>
 **Signed:** <date>
 
 ## 1. Meeting time
@@ -94,12 +97,12 @@ Each member adds their own line, in their own commit.
 
 ## What Checkpoint 0 checks
 
-Your TA reads for four things, at your table, in about two minutes:
+Your TA reads for four things, at your row, in about two minutes:
 
 1. A **named day and time** in clause 1. Not "weekly, TBD".
 2. **One signature line per member, each in its own commit.** `git log` is the proof.
 3. Clause 7 says something specific about what actually happens, rather than restating that problems should be avoided.
-4. The file is committed to your repository at `docs/team-contract.md`.
+4. The file is committed to your repository at `docs/team-contract.md`, and the header names the repository owner.
 
 ## Changing it later
 

@@ -7,7 +7,7 @@ Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00
 
     **[Teams, projects, clients, and TAs are published.](teams.md)** Find your team, then read your client's brief, which is **on TCU Online** under your team's number.
 
-    Friday's studio is your team's first hour together: you fix the weekly meeting time you will defend all term, sign your [team contract](team-contract.md), stand up your repository, and your TA verifies Checkpoint 0 at your table. Come having read the brief, not to read it.
+    Friday's [studio](studio.md) is your team's first hour together: you fix the weekly meeting time you will defend all term, sign your [team contract](team-contract.md), stand up your repository, and your TA verifies Checkpoint 0 at your row. Come having read the brief, not to read it, and [decide who will own the repository](studio.md#where-your-repository-lives) before you get there.
 
     If your name is not on the Teams page, email the instructor today.
 
