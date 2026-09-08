@@ -122,5 +122,6 @@ nav:
   - Reference:
       - The Method: method.md
       - Working with AI: ai.md
+      - Git Workflow: git-workflow.md
       - Professionalism: professionalism.md
       - Resources: resources.md

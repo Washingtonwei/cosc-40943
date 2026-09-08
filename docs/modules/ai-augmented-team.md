@@ -202,6 +202,8 @@ The owner may still cut three branches, because three reviewable merges beat one
 
 **And this matters more now, not less.** An agent will hand you a 1,200-line diff across nine files in twenty minutes. Generation got cheap; review capacity did not. **The size of a pull request is set by how much a human can actually review, and that number did not change when the agent arrived.**
 
+The commands that go with all of this are on the [Git Workflow](../git-workflow.md) page: the daily loop, the recipe for the first conflict, and the repository settings that enforce it. Read it before you cut your first branch.
+
 ### 4.7 The pull request is the first read
 
 There is a second reason branches matter now, and it is bigger than merge conflicts.
@@ -413,6 +415,7 @@ Every module from here on closes by asking the same four questions about its own
 
 ## Related
 
+- [Git Workflow](../git-workflow.md): the commands. Branching, syncing, conflicts, and the repository settings.
 - [SE and What AI Changes](se-and-ai.md): where accountability for agent output was established.
 - [Requirements Traceability](traceability.md): the chain in 4.9, made a standing discipline in week 8.
 - [The Method](../method.md): the full spec-driven, agent-assisted method this workflow serves.

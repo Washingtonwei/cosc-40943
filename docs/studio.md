@@ -39,6 +39,8 @@ Your team was formed on Wednesday and your project barely exists yet, so the fir
 - **A Project's access list is separate from the repository's.** Everyone can be on the repository and still be unable to move a card. After you create the Project and link it, the owner adds the team and your TA under the Project's own settings. This is the step teams forget, and your TA checks it from an account that is not the owner's.
 - **The owner has to be someone continuing into COSC 40993 in the spring.** If they leave the course, transfer the repository before they go. Everyone clones on day one, so no single account is ever holding your history hostage.
 
+Once it exists, the owner turns on branch protection and the merge settings in the [Git Workflow](git-workflow.md#repository-settings) page, in week 3. Everyone else reads that page before their first branch.
+
 Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 77 students and three TAs, studio cannot absorb 77 cold installations.
 
 From week 3 onward, studio is your project.
