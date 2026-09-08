@@ -51,6 +51,24 @@ There is an important difference between two students, and it is not the one peo
 
 If you are in the first column, come find me. There is no version of this course where asking for help costs you.
 
+## Patterns to catch early
+
+Most teams that struggle here struggle in one of a small number of ways, and every one of them is cheap to fix in September and expensive in November. Read this as a mirror, not as a set of labels for your teammates. The names are for spotting a pattern in yourself.
+
+| The pattern | Ask yourself | If the answer is yes |
+|---|---|---|
+| **Going quiet** | Have I left a teammate's message unanswered for days, or gone a week with nothing pushed? | Post today, even if it is only "I am stuck on this and have not started that." A sentence costs you nothing. Silence costs the team's trust, which is the one thing on this page you cannot get back. |
+| **Costing everyone nine minutes** | Am I the reason the last few meetings started late? | Say so, then either commit to the time or ask the team to move it. Five people waiting nine minutes is forty-five minutes of your team, every week. |
+| **Taking more than I deliver** | Did I volunteer for things last meeting that still have no branch? | Hand one back now, not at the deadline. Nobody minds a task returned in week 5. |
+| **Merging what I have not read** | Could I explain every line of my last pull request, out loud, with the agent closed? | Read it before it merges. Your name on it is the claim that you can explain it, and clause 6 of your team contract is where your team wrote that down. |
+| **Rubber-stamping** | Did I approve a large pull request in under a minute? | Review it, or say you have not had time yet. An approval is a signature. |
+| **Saving it for the end** | Am I planning to write most of my part right before the demo? | Split it now. Two thousand lines the night before cannot be reviewed, so what ships is unreviewed. |
+| **Claiming a layer** | Did I claim "the front end" instead of a use case? | Re-cut your work by use case, or the integration defect ends up owned by nobody. [The AI-Augmented Team](modules/ai-augmented-team.md) explains why. |
+
+Two of these did not exist five years ago in the form they take now: merging code nobody read, and approving code nobody read. Neither is about using AI. Everyone here uses AI, and this course requires it. Both are about putting your name on work you cannot explain, which is why "the agent wrote it" is not available as a defense.
+
+**If you recognise one of these in a teammate rather than in yourself,** do not open with the label. Calling somebody a ghost to their face gets you a fight instead of a fix. [The professionalism module](modules/professionalism.md) has the four-step protocol and the sentences that actually work.
+
 ## Communication standards
 
 - Reply in your team's channel within **24 hours** on weekdays.

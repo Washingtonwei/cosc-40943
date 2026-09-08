@@ -70,7 +70,7 @@ The left attacks motivation. Not observable, not arguable, and it puts them into
 
 The line that lands: you already know how to do this. In code review you go after the diff and never the author. A teammate is not harder than a diff.
 
-Two more pairs if the room wants them, from the module: "you don't care about this project" becomes "you've missed the last three meetings without telling anyone"; "your code is sloppy" becomes "this pull request has failed CI four times on the same lint rule."
+Three more pairs if the room wants them, from the module. Use the AI one first, since it is the complaint this course will actually produce: "you used AI to generate code that makes no sense" becomes "this pull request adds a caching layer we never discussed, and nobody in Tuesday's review could explain what it does." Then: "you don't care about this project" becomes "you've missed the last three meetings without telling anyone"; "your code is sloppy" becomes "this pull request has failed CI four times on the same lint rule."
 :::
 
 ## A team problem is a defect
@@ -382,20 +382,69 @@ Slowly, and do not soften it. The one slide where the rest of the hour does not 
 Repeat the last line.
 :::
 
-## Three minutes
+## Pair up. Neither of you is you
 
-Pick one from the six. It is week 9, and they have done it three times.
+Sam took a use case three weeks ago. Two missed meetings. Nine days, no answer in the channel.
 
 ::: ask
-Write the **first sentence** you say to them.
+Decide now: who opens, and who is **Sam**.
 :::
 
 ::: note
-Ninety seconds to write, ninety to trade with a neighbor and find the judgment hiding in theirs. Then take two or three out loud, from different archetypes.
+Thirty seconds to pair up and pick. Say the reason out loud: nobody is playing anybody who is actually in this room. You are both playing Sam's team.
 
-Assign rather than let them choose, if the room is slow: left third takes the Ghost, middle the Nine-Minute Tax, right the Rubber Stamp.
+If the hall gets loud, that is the exercise working. Do not fight it.
+:::
 
-Almost everyone writes a version of "you never do anything," ten minutes after being told not to. Do not pre-empt that on the slide and do not soften it when you take answers. Ask the room what is unfalsifiable about the one you just read.
+## Round one: open with the label
+
+::: warn
+"You're being a ghost."
+:::
+
+Say it exactly like that.
+
+::: note
+Ninety seconds, and it will not need them. It dies in about four seconds and the room laughs, which is the design: they were told to say it, so the failure belongs to the script and not to anybody sitting there.
+
+Let the laugh run. Then ask one pair to replay their worst one at the front. That is the thirty seconds people still have in November.
+:::
+
+::: joke
+The only conversation in this course that is supposed to fail.
+:::
+
+## Round two: Sam has a reason
+
+**Sam, pick one. Do not say which.**
+
+::: steps
+- Two jobs since August
+- Stuck, and too embarrassed to say so
+- Something at home
+- Thought somebody else had picked it up
+:::
+
+::: ask
+Open again, properly. Find out which one.
+:::
+
+::: note
+Three minutes. Observe, Analyze, Investigate, Fix, and Investigate is the only road to the card.
+
+Then swap: ninety seconds, same scenario, other side. Everybody plays Sam once. Receiving one of these without defending is the half nobody practices.
+:::
+
+## How many of you guessed right? {.center}
+
+::: key
+You do not get to skip Investigate. You will guess wrong, in front of somebody who knows you guessed.
+:::
+
+::: note
+Few hands, and it lands harder discovered than announced.
+
+Ask one pair what Sam's reason was and what got them to it. It is almost always a question rather than a statement.
 :::
 
 ## Friday

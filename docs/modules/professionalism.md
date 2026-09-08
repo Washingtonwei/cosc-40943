@@ -31,7 +31,7 @@ They fail like this. In week 4 somebody notices that a teammate has stopped show
 
 That is the first time it was ever said out loud, and it is eleven weeks too late to fix. The instructor's options in week 15 are all bad ones. In week 4 the options were good, and cheap: one uncomfortable ten-minute conversation.
 
-**The failure mode is silence, and silence carries no signal.** Project Pulse, the system you spend the term reading, is a peer-evaluation application for exactly these teams, and it has a defect that makes the point better than any slide: `getPeerEvaluationAverage` in `EvaluationService` returns `0.0` for a student nobody evaluated ([`project-pulse`](https://github.com/Washingtonwei/project-pulse), `main`). A student with no data and a student everyone scored zero come out identical. Week 12 returns to that as a testing problem. Read it today as a team problem: when nobody says anything, the absence of a signal gets read as a verdict, and the person it lands on never got a chance to answer it.
+**The failure mode is silence, and silence carries no signal.** When nobody says anything, the absence of a signal gets read as a verdict, and the person it lands on never got a chance to answer it.
 
 This module is the ten-minute conversation in week 4, taught as an engineering procedure so that it is something you execute rather than something you work up the nerve for.
 
@@ -46,8 +46,9 @@ This module is the ten-minute conversation in week 4, taught as an engineering p
 | "You're lazy." | "The backend endpoint wasn't done by Friday, as we agreed on the 12th." |
 | "You don't care about this project." | "You've missed the last three meetings without telling anyone." |
 | "Your code is sloppy." | "This pull request has failed CI four times on the same lint rule." |
+| "You used AI to generate code that makes no sense." | "This pull request adds a caching layer we never discussed, and nobody in Tuesday's review could explain what it does." |
 
-The left column attacks personality, intelligence, or motivation. None of those is observable, none is arguable, and all three put the other person into defending themselves rather than fixing anything. The right column names behaviors, facts, and observable actions.
+The left column attacks personality, intelligence, motivation, or judgment. None of those is observable, none is arguable, and each one puts the other person into defending themselves rather than fixing anything. The right column names behaviors, facts, and observable actions: notice that the last one never mentions the tool.
 
 You already know how to do this. You do it in code review, where the target is the diff and never the author. A teammate is not harder than a diff; the move is the same one.
 
@@ -191,6 +192,8 @@ Two of the six are new, and they are the ones this course has to teach because t
 
 **"The agent wrote it."** Week 1's rule settles this: you are accountable for what the agent writes. Putting your name on a pull request is claiming the work, and the claim does not come apart later because the defect turned out to be embarrassing. Worth naming out loud in week 2, before it happens, so nobody discovers in October that it was never going to work.
 
+The [handbook](../professionalism.md) carries these patterns as a self-check you can run on yourself in any week of the term, phrased as questions rather than labels.
+
 ### 4.9 Escalation, and the two exceptions
 
 Three levels, and almost everything ends at the first:
@@ -213,9 +216,12 @@ And if you are the one who is behind, say so on day two rather than in week ten.
 
 ## 5. Hands-on
 
-**In class, in pairs, three minutes.** A teammate on your team took a use case three weeks ago, has missed two meetings, and has not answered the channel in nine days. Write the *first sentence* you say to them. Trade with your partner and find the judgment hiding in theirs.
+**In class, in pairs, ten minutes.** Neither of you plays yourself. Sam took a use case three weeks ago, has missed two meetings, and has not answered the channel in nine days; one of you opens the conversation, and one of you is Sam.
 
-Everybody writes a version of "you never do anything" the first time. The exercise is not the conversation; it is noticing how naturally a conclusion arrives dressed as an observation.
+Round one opens with the label, "you're being a ghost", because you are told to. It fails in about four seconds, and the failure is the lesson: that sentence was never going to work, and being right about the facts does not rescue it.
+
+In round two, Sam privately picks a reason (two jobs since August, stuck and embarrassed, something at home, or thought somebody else had picked it up) and does not say which. The only way to it is Investigate. Then you swap, because receiving one of these without defending is the half nobody practices and the half you will need first.
+
 
 **In Friday's studio.** Clause 7 of your [team contract](../team-contract.md): who raises a missed commitment, how soon, and what happens the second time. Write it while nobody is angry, because that is the only time anybody writes a fair one. Your TA checks it for something specific rather than for a restatement that problems should be avoided.
 
