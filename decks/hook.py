@@ -235,6 +235,8 @@ def render_body(lines: list[str]) -> tuple[str, str]:
         elif kind == "cols":
             cells = [c.strip() for c in text.split("|||")]
             cls = "cols c3" if len(cells) >= 3 else "cols"
+            if arg:
+                cls += f" {arg}"
             inner = "".join(f"<div>{wrap_tables(md(c))}</div>" for c in cells)
             chunks.append(f'<div class="{cls}">{inner}</div>')
         elif kind == "panel":

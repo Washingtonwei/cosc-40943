@@ -50,13 +50,35 @@ Here is why that matters more now, not less. **An agent asked to implement MCAS 
 
 ### 4.1 A brief is not a set of requirements
 
-A manager at a pharmaceutical company asks for a system to track chemical containers, so chemists stop buying what is already down the hall and the safety office can file its reports without a week of work. Can it be ready in five months?
+Gerhard, a senior manager at Contoso Pharmaceuticals, is meeting Cynthia, who manages the IT department. This conversation is read out loud in class, and it is worth reading again slowly.
 
-> "I see why this project is important," said Cynthia. "But before I can commit to a schedule, we'll need to understand the requirements for the chemical tracking system."
+> **Gerhard:** "We need to build a chemical tracking information system. The system should keep track of all the chemical containers we already have in the stockroom and in laboratories. That way, the chemists can get some chemicals from someone down the hall instead of always buying a new container. This should save us a lot of money. Also, the Health and Safety Department needs to generate government reports on chemical usage and disposal with a lot less work than it takes them today. Can you build this system in time for the compliance audit in five months?"
 >
-> Gerhard was confused. "What do you mean? I just told you my requirements."
+> **Cynthia:** "I see why this project is important, Gerhard. But before I can commit to a schedule, we'll need to understand the requirements for the chemical tracking system."
+>
+> Gerhard was confused. **"What do you mean? I just told you my requirements."**
+>
+> **Cynthia:** "Actually, you described some general business objectives for the project. That doesn't give me enough information to know what software to build or how long it might take. I'd like to have one of our business analysts work with some users to understand their needs for the system."
+>
+> Gerhard protested. **"The chemists are busy people. They don't have time to nail down every detail before you can start programming. Can't your people figure out what to build?"**
+>
+> **Cynthia:** "If we just make our best guess at what the users need to do with the system, we can't do a good job. We're software developers, not chemists. I've learned that if we don't take the time to understand the problem, nobody is happy with the results."
+>
+> Gerhard insisted. **"We don't have time for all that. I gave you my requirements. Now just build the system, please. Keep me posted on your progress."**
+>
+> Karl Wiegers and Joy Beatty, *Software Requirements*, 3rd edition, chapter 1.
+
+Read Gerhard generously, because the scene collapses if you do not. He is not a fool and he is not a villain. He knows the business, the audit date is real, and every sentence he says is reasonable from where he is sitting. He also genuinely believes he gave her his requirements.
 
 He did not. He described **business objectives**, which is a different thing and a valuable one. What nobody in that room yet knows: who is allowed to request a hazardous chemical, what happens when a container is half empty, whether "the stockroom" is one place or six, what the safety office's report has to contain, and which of those the system is responsible for.
+
+Three things in the scene are worth naming, because you will meet all three this week.
+
+**"Can't your people figure out what to build?"** You will hear a politer version of this on Thursday: *just do what you think is best*, or *you are the technical people*. It is an invitation to guess, and it always arrives sounding like trust.
+
+**"We're software developers, not chemists."** Cynthia can say this out loud. An agent handed the same gap cannot. Ask it to build a chemical tracking system from Gerhard's paragraph and it produces something complete, confident, and plausible, with nothing in the output marking which parts came from him and which it invented. She declines to guess; it has no mechanism for declining.
+
+**Gerhard wins the argument.** He is senior, he is paying, and he ends the conversation. Cynthia is right and still has to go and do the work without his blessing. That is the ordinary case, and it is why the rest of this module is about how to run the meeting rather than how to win it. Your leverage is not authority. It is a read-back your client cannot help correcting.
 
 Your client is Gerhard. This is not a criticism of your client. Knowing the business and knowing what software to build are two different kinds of expertise, and only one of them is in the room already.
 

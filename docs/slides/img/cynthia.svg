@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Cynthia, manager of the Contoso IT department">
+  <defs>
+    <clipPath id="cynthia-clip"><circle cx="80" cy="80" r="74"/></clipPath>
+  </defs>
+  <circle cx="80" cy="80" r="74" fill="#1E273A"/>
+  <g clip-path="url(#cynthia-clip)">
+    <path d="M20 160c0-26 24-40 60-40s60 14 60 40z" fill="#3B2A56"/>
+    <path d="M62 116l18 20 18-20-18-6z" fill="#F2EDE3"/>
+    <rect x="68" y="98" width="24" height="24" rx="10" fill="#C98C63"/>
+    <path d="M41 112C36 56 50 28 80 28s44 28 39 84z" fill="#3A2E2B"/>
+    <ellipse cx="80" cy="74" rx="32" ry="36" fill="#DCA277"/>
+    <circle cx="48" cy="80" r="6" fill="#C98C63"/>
+    <circle cx="112" cy="80" r="6" fill="#C98C63"/>
+    <path d="M48 64c4-24 16-34 32-34s28 10 32 34c-9-12-19-17-32-17s-23 5-32 17z" fill="#3A2E2B"/>
+    <circle cx="68" cy="78" r="4.5" fill="#2C374E"/>
+    <circle cx="92" cy="78" r="4.5" fill="#2C374E"/>
+    <g fill="none" stroke="#9B6BD6" stroke-width="3">
+      <rect x="56" y="70" width="24" height="17" rx="6"/>
+      <rect x="80" y="70" width="24" height="17" rx="6"/>
+      <path d="M48 74h8M104 74h8"/>
+    </g>
+    <path d="M69 97c4 5 18 5 22 0" fill="none" stroke="#A45B47" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <circle cx="80" cy="80" r="74" fill="none" stroke="#9B6BD6" stroke-width="4"/>
+</svg>

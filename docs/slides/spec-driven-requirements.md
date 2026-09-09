@@ -13,21 +13,181 @@ Week 3 · You meet your client in about 24 hours
 Labor Day took Monday, so this is the only lecture this week, and every team meets its client Thursday or Friday. Say that in the first thirty seconds: everything today is for a meeting that happens before the next time we are in this room.
 :::
 
-## "I just told you my requirements"
+## Two volunteers
 
-A manager asks for a system to track chemical containers. Chemists stop buying what is already down the hall. The safety office files its reports without a week of work.
+::: cols
+![Gerhard](img/gerhard.svg){ width="150" }
 
-Five months, before the compliance audit. Can you do it?
+**Gerhard**
 
-::: steps
-- **Cynthia:** "Before I can commit to a schedule, we'll need to understand the requirements."
-- **Gerhard:** "What do you mean? I just told you my requirements."
+Senior manager, Contoso Pharmaceuticals.
+
+He is paying for this.
+|||
+![Cynthia](img/cynthia.svg){ width="150" }
+
+**Cynthia**
+
+Manager of the Contoso IT department.
+
+She has to build it.
 :::
 
 ::: note
-Read it as two people, not as a slide. This is Wiegers' opening story and it is exactly the situation every team walks into on Thursday.
+Cast two students before you show the next slide, and hand them the room. Say the frame in one sentence: this conversation happens somewhere in every project, and one of you is having it on Thursday.
 
-Then ask the room: did he give her requirements? Take two or three answers before advancing.
+Tell the readers to play it straight rather than for laughs. Gerhard is not a fool and this is not a villain scene. He knows his business, he is under real time pressure, and everything he says is reasonable from where he is sitting.
+
+Ask the rest of the room to listen for one thing and write it down: **the first moment where the two of them are no longer talking about the same thing.**
+
+Wiegers and Beatty, *Software Requirements*, 3rd edition, chapter 1.
+:::
+
+## Gerhard opens
+
+::: cols portrait
+![Gerhard](img/gerhard.svg){ width="150" }
+
+Gerhard
+{: .who }
+|||
+"We need to build a chemical tracking information system. The system should keep track of all the chemical containers we already have in the stockroom and in laboratories. That way, the chemists can get some chemicals from someone down the hall instead of always buying a new container. This should save us a lot of money.
+
+Also, the Health and Safety Department needs to generate government reports on chemical usage and disposal with a lot less work than it takes them today.
+
+Can you build this system in time for the compliance audit in five months?"
+:::
+
+::: note
+Let it run. Do not comment yet.
+
+If the reader rushes, ask them to take the last sentence again. The deadline is the part everyone remembers and it is the part with no analysis behind it.
+:::
+
+## Cynthia: not yet
+
+::: cols portrait
+![Cynthia](img/cynthia.svg){ width="150" }
+
+Cynthia
+{: .who }
+|||
+"I see why this project is important, Gerhard.
+
+But before I can commit to a schedule, we'll need to understand the requirements for the chemical tracking system."
+:::
+
+::: note
+This is the whole job in two sentences. She is not refusing, and she is not stalling. She is saying that a schedule is a claim, and she cannot make it yet.
+:::
+
+## "I just told you my requirements"
+
+::: cols portrait
+![Gerhard](img/gerhard.svg){ width="150" }
+
+Gerhard
+{: .who }
+|||
+Gerhard was confused.
+
+"What do you mean? I just told you my requirements."
+:::
+
+::: key
+He is not being difficult. He genuinely believes he just did.
+:::
+
+::: note
+Stop here for a beat. This is the line the hour is built on, and the important word is **confused**, not annoyed.
+
+Ask the room, quickly: was he wrong? Take two or three answers, do not resolve it yet. The resolution is two slides away.
+:::
+
+## Cynthia: those were objectives
+
+::: cols portrait
+![Cynthia](img/cynthia.svg){ width="150" }
+
+Cynthia
+{: .who }
+|||
+"Actually, you described some general business objectives for the project. That doesn't give me enough information to know what software to build or how long it might take.
+
+I'd like to have one of our business analysts work with some users to understand their needs for the system."
+:::
+
+::: note
+There is the split, and there is the name for it. Business objectives are real, valuable, and necessary, and they are not requirements.
+
+Note who she wants to talk to: **users**, not Gerhard. Gerhard knows why the project exists. He does not know what happens to a half-empty container.
+:::
+
+## Gerhard: the chemists are busy
+
+::: cols portrait
+![Gerhard](img/gerhard.svg){ width="150" }
+
+Gerhard
+{: .who }
+|||
+Gerhard protested.
+
+"The chemists are busy people. They don't have time to nail down every detail before you can start programming.
+
+Can't your people figure out what to build?"
+:::
+
+::: note
+Every team in this room will hear a version of this on Thursday, phrased more politely. "Just do what you think is best." "You are the technical people."
+
+It is an invitation to guess, and it always sounds like trust.
+:::
+
+## Cynthia: we are not chemists
+
+::: cols portrait
+![Cynthia](img/cynthia.svg){ width="150" }
+
+Cynthia
+{: .who }
+|||
+"If we just make our best guess at what the users need to do with the system, we can't do a good job. We're software developers, not chemists.
+
+I've learned that if we don't take the time to understand the problem, nobody is happy with the results."
+:::
+
+::: ai
+Your agent is not a chemist either, and it will never say so.
+:::
+
+::: note
+Land the callout hard, because it is the one line of this scene that is newer than the book it comes from.
+
+Cynthia can say "we are not chemists". An agent handed the same gap produces a confident, complete, plausible chemical tracking system, and nothing in the output tells you which parts were known and which were invented. She declines to guess. It cannot.
+:::
+
+## Gerhard: just build it
+
+::: cols portrait
+![Gerhard](img/gerhard.svg){ width="150" }
+
+Gerhard
+{: .who }
+|||
+Gerhard insisted.
+
+"We don't have time for all that. I gave you my requirements.
+
+Now just build the system, please. Keep me posted on your progress."
+:::
+
+::: note
+Thank the readers and let the room applaud them.
+
+Then say the uncomfortable half out loud: Gerhard wins this conversation. He is senior, he is paying, and he ends it. Cynthia is right and she still has to go and do the work anyway, without his blessing.
+
+That is the real situation, and it is why the next slides are about how you run the meeting rather than about how you win the argument. Your leverage is not authority. It is a read-back your client cannot help correcting.
 :::
 
 ## What he actually gave her
