@@ -118,6 +118,7 @@ nav:
       - Teams: teams.md
       - Friday Studio: studio.md
       - Team Contract: team-contract.md
+      - Templates: https://github.com/tcu-cosc-40943/course-templates
   - Reference:
       - The Method: method.md
       - Working with AI: ai.md
