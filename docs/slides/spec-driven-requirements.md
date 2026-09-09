@@ -69,14 +69,16 @@ Project Pulse started as a complaint about spreadsheets.
 `docs/requirements/` today:
 
 - `project-glossary.md`
-- `vision-and-scope.md` (about 11,000 words)
-- `use-cases.md`
+- `vision-and-scope.md` (7,500 words)
+- `use-cases.md` (43,700 words)
 - `business-rules.md`
 - `software-requirements-specification.md`
 - `OPEN-ISSUES.md`
 
 ::: note
 Have the real folder open in a browser tab and show it: github.com/Washingtonwei/project-pulse, docs/requirements. Scroll the vision and scope for five seconds so they feel the length, then close it.
+
+The folder is about 66,000 words in total. Say that number out loud; it is the whole point of the slide.
 
 Name OPEN-ISSUES.md out loud. It comes back at the end of the hour.
 :::
@@ -330,7 +332,8 @@ The forcing question, ask it Thursday: if we deliver only one of these in Decemb
 **Twelve minutes. Laptops open, one per team.**
 
 ::: steps
-- Give your agent: the one-page brief, the vision and scope template **with its instructions**, and the role. "You are an experienced business analyst."
+- Open the template, select all, copy: `raw.githubusercontent.com/tcu-cosc-40943/course-templates/main/requirements/vision-and-scope.md`
+- Give your agent that, your one-page brief, and the role. "You are an experienced business analyst."
 - Ask for two things: a customized interview script, and a plain-language primer on this client's domain and acronyms.
 - It will give you about thirty questions.
 :::
@@ -340,6 +343,8 @@ Then do the part it cannot do.
 :::
 
 ::: note
+The raw URL is the whole file as plain text, so it is select-all and paste, no cloning. Have it on the board before you start; nobody types that from a slide.
+
 Walk the room, all three TAs too. Watch for teams that paste the brief and nothing else; the template's instructions are the context that makes the difference.
 
 The primer is the half nobody thinks to ask for. A team that walks in already knowing what their client's acronyms mean asks better questions for the whole hour.

@@ -26,7 +26,7 @@ By the end of week 3, a student can:
 
 ## 3. Motivation
 
-**The problem, on Project Pulse.** Project Pulse began as a complaint: submitting weekly activity reports through shared spreadsheets and peer evaluations through uploaded Excel files was slow and error-prone. That complaint is a paragraph. What it became is [`docs/requirements/`](https://github.com/Washingtonwei/project-pulse/tree/main/docs/requirements), roughly eleven thousand words of vision and scope plus a glossary, use cases, business rules, and a specification. Nothing in that folder is decoration. It is what makes the difference between a team that builds the thing and a team that builds a thing.
+**The problem, on Project Pulse.** Project Pulse began as a complaint: submitting weekly activity reports through shared spreadsheets and peer evaluations through uploaded Excel files was slow and error-prone. That complaint is a paragraph. What it became is [`docs/requirements/`](https://github.com/Washingtonwei/project-pulse/tree/main/docs/requirements): about 66,000 words across a vision and scope, a glossary, use cases, business rules, and a specification. The use cases alone run to 43,700. Nothing in that folder is decoration. It is what makes the difference between a team that builds the thing and a team that builds a thing.
 
 You are holding a one-page brief. Your client is holding the rest, mostly without knowing they are holding it.
 

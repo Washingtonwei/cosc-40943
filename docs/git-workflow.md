@@ -141,7 +141,9 @@ git merge origin/main
 
 For the member who [owns the repository](studio.md#where-your-repository-lives). Do this once, in week 3, and tell the team in Slack when it is on.
 
-On `main`, under branch protection: require a pull request before merging, require at least one approving review, require the build check to pass, and disallow direct pushes.
+On `main`, under branch protection: require a pull request before merging, require at least one approving review, and disallow direct pushes.
+
+**Leave "require status checks to pass" off for now.** Your repository has no pipeline until week 11, and a required check that never reports leaves every pull request stuck waiting for it forever. Turn it on when you have a build to wait for.
 
 In general settings: allow squash merging only, so history stays uniform, and enable "automatically delete head branches" so merged branches clean themselves up.
 
