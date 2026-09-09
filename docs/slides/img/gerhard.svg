@@ -1,7 +1,10 @@
 <!-- Gerhard, the client. Drawn in the character system of the week 1 story deck
      (docs/slides/tier1/fifteen-weeks-to-demo-day.part.html): this is its CLIENT
-     archetype, unchanged, so the figure a student met in week 1 is the same
-     figure here. Geometry copied from that file's P(), hair() and face(). -->
+     archetype, so the figure a student met in week 1 is the same figure here.
+     Geometry copied from that file's P(), hair() and face(). One deviation from
+     CLIENT: hairCol is grey (#B9BFCC, not #5A4432) because Gerhard is a senior
+     manager. Everything else, the sage torso, skin and shape, is unchanged, so
+     he still reads as the same client. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 264" width="110" height="264" role="img" aria-label="Gerhard, a senior manager at Contoso Pharmaceuticals">
   <g transform="translate(55,254)">
     <rect x="-13" y="-62" width="24" height="64" rx="12" fill="#2B3346"/>
@@ -10,7 +13,7 @@
     <g transform="translate(38,-152) rotate(8)"><rect x="-9" y="-4" width="18" height="70" rx="9" fill="#C98A5E"/></g>
     <rect x="-40" y="-166" width="80" height="112" rx="32" fill="#8FBF6A"/>
     <circle cx="0" cy="-198" r="38" fill="#C98A5E"/>
-    <path d="M-38,-198 a38,38 0 0 1 76,0 q-14,-14 -26,-4 -12,-12 -24,-2 -12,-8 -26,6z" fill="#5A4432"/>
+    <path d="M-38,-198 a38,38 0 0 1 76,0 q-14,-14 -26,-4 -12,-12 -24,-2 -12,-8 -26,6z" fill="#B9BFCC"/>
     <circle cx="-13" cy="-202" r="5" fill="#0F1420"/>
     <circle cx="13" cy="-202" r="5" fill="#0F1420"/>
     <path d="M-10,-184 l20,0" stroke="#0F1420" stroke-width="4" stroke-linecap="round"/>
