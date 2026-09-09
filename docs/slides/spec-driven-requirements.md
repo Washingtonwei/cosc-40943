@@ -178,7 +178,7 @@ The point: "would you use this?" reliably produces yes, because agreeing is free
 ::: note
 Past behavior over hypothetical preference. A forced choice over a wish list. An artifact over a description.
 
-"Show me" is the cheapest four letters in requirements engineering. People describe the process they believe they follow. The spreadsheet shows the one they actually follow, and the difference is where the requirements are hiding.
+"Show me" is the two most productive words in requirements engineering, and they cost nothing. People describe the process they believe they follow. The spreadsheet shows the one they actually follow, and the difference is where the requirements are hiding.
 
 Every team should leave today intending to ask for an artifact.
 :::

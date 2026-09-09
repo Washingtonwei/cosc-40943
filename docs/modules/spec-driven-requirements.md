@@ -91,7 +91,7 @@ What people say in an interview is data about the interview. Asking "would you u
 | Would this save time? | How long does it take today, and how do you know? |
 | Do you like this? | Show me the spreadsheet you use now. |
 
-Past behavior over hypothetical preference; a forced choice over a wish list; an artifact over a description. **"Show me" is the cheapest and most productive four letters in requirements engineering.** People describe the process they believe they follow; the spreadsheet shows the one they actually follow, and the difference is where the requirements are hiding.
+Past behavior over hypothetical preference; a forced choice over a wish list; an artifact over a description. **"Show me" is the two most productive words in requirements engineering, and they cost nothing.** People describe the process they believe they follow; the spreadsheet shows the one they actually follow, and the difference is where the requirements are hiding.
 
 Two more that pay for themselves:
 
