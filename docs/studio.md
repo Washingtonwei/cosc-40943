@@ -60,6 +60,8 @@ cp -r ../course-templates/requirements docs/
 
 Copy them, do not fork. Each file opens with instructions telling you what the section is for, how to produce it, and how to check it; leave those in place until the document is finished, because they are context for your agent on every later pass. The [Requirements as the Contract](modules/spec-driven-requirements.md) module is the reading behind them.
 
+One of them is used before Friday, not on it. `client-interview-guide.md` is your script for the first client meeting and the record of what was said in it. Copy it, work it with your agent in Wednesday's class, take it into the meeting on the scribe's laptop, and commit it the same day as `client-interview-YYYY-MM-DD.md`, one file per meeting. Everything it leaves unanswered becomes an entry in `OPEN-ISSUES.md`.
+
 ## The Napkin drill
 
 On five non-checkpoint Fridays, studio opens with a twenty-minute warm-up before the main objective. You are handed a one-paragraph brief for a system you have never seen and asked to size it up on six points: shape, the hard part, the bottleneck, stack, three kill risks, and a verdict.

@@ -60,7 +60,29 @@ He did not. He described **business objectives**, which is a different thing and
 
 Your client is Gerhard. This is not a criticism of your client. Knowing the business and knowing what software to build are two different kinds of expertise, and only one of them is in the room already.
 
-### 4.2 The first client meeting
+### 4.2 What "the requirements" actually means
+
+So what did Cynthia want that Gerhard had not given her? The definition is deliberately broad:
+
+> Requirements are defined during the early stages of a system development as a specification of what should be implemented. They are descriptions of how the system should **behave**, or of a system **property** or **attribute**. They may be a **constraint** on the development process of the system.
+>
+> Sommerville and Sawyer, *Requirements Engineering: A Good Practice Guide* (1997)
+
+Read the three nouns. **Behavior** is what the system does, and it is the only one most teams write down. A **property or attribute** is what the system must *be*, and what its data has to look like: fast, available, auditable, five digits then an optional hyphen. A **constraint on the development process** is not about the running system at all. It restricts how you are permitted to build it.
+
+That breadth is the point. **"The requirements" is not one kind of statement. It is an umbrella over several kinds of information that only mean something together**, which is why §4.9 lists nine of them and why they end up in four different documents. A team that hears only the first noun ships a feature list. Project Pulse's specification carries `CO-ferpa` (comply with FERPA when storing and transmitting student educational records) and `CO-server-side-llm-proxy` (every call to the language model routes through the server, so credentials never reach the browser). Neither is a behavior anyone would demo, and either one discovered in November is a rewrite.
+
+Week 1 gave you the test for whether one sentence qualifies: [a capability or a constraint, agreed with the people who can accept the system, and specific enough to verify](se-and-ai.md#what-a-requirement-is). This definition tells you what that sentence is allowed to be *about*. You need both.
+
+**Why write any of it down.** Three reasons, and they are not the same reason:
+
+- **Understand** precisely what the software has to do. Being told is not the same act as understanding.
+- **Communicate** that understanding precisely to everyone who builds, tests, or accepts it. On your team that is five other people, three of whom were not in the meeting, and an agent that was in no meeting at all.
+- **Control** production, so that what ships matches the specification, including after the specification changes. It will change.
+
+The third is the one teams skip, and it is what makes the word *contract* in this module's title honest. A requirement nobody can hold you to is not a contract, and neither is one you can quietly edit in December to match what you happened to build.
+
+### 4.3 The first client meeting
 
 You get an hour and roughly one first impression. Three roles, agreed before you walk in:
 
@@ -78,7 +100,11 @@ Ask to record, and say why: so nobody is transcribing instead of listening. If t
 
 **Within 24 hours**, send written notes and the open questions. This creates the record, and it gives the client a second chance to correct you while the meeting is fresh.
 
-### 4.3 What people say versus what they take
+The questions themselves are not in this module. They are in [`client-interview-guide.md`](https://github.com/tcu-cosc-40943/course-templates/blob/main/requirements/client-interview-guide.md): fifteen sections of question with examples written for a different domain so you have to rewrite them in your client's vocabulary, a minute budget on each, and space under each one for what they said. It is your script going in and your meeting record coming out, and it is the file you customize with your agent in class on Wednesday. This module owns the technique; the guide owns the questions.
+
+Its first rule is worth repeating here, because it is the mistake this room is most likely to make: **listen before you build.** Describing what you would build in the first twenty minutes ends the elicitation, because a client who has heard your idea starts reacting to it instead of describing their world. This is about order rather than silence. Some clients want to think out loud with you, and that is worth doing, after the read-back, once you can describe their current process back to them accurately. What is absolute is the other rule: **commit to nothing**, because five teammates are not in the room. "Let me write that down and bring it back to the team" is the whole sentence.
+
+### 4.4 What people say versus what they take
 
 Sony ran a focus group on a yellow sport Walkman. The room loved it: sporty, fresh, so much better than another black one. On the way out, participants were told to help themselves to a free Walkman, from two tables, black on one and yellow on the other. Everyone took a black one.
 
@@ -99,9 +125,27 @@ Two more that pay for themselves:
 
 **Listen for the rule.** When a client says only certain people may do something under certain conditions, that is a business rule, and it usually comes with the word "must", "unless", or "only". Those sentences are gold, and they arrive unannounced in the middle of a story about something else.
 
-### 4.4 Business objectives and success metrics
+### 4.5 Business objectives and success metrics
 
 A **business objective** says what should improve, in numbers: "reduce the instructor's time to grade peer evaluations by 50%". Not "make grading better", which nobody can ever be wrong about.
+
+
+Objectives come in two flavors, and the shapes are worth having in front of you while you write your own. Fill in the letters.
+
+| Financial | Nonfinancial |
+|---|---|
+| Capture a market share of X% within Y months. | Achieve a customer satisfaction measure of at least X within Y months of release. |
+| Increase market share in country W from X% to Y% within Z months. | Increase transaction-processing productivity by X% and reduce the data error rate to no more than Y%. |
+| Reach a sales volume of X units or revenue of $Y within Z months. | Develop an extensible platform for a family of related products. |
+| Achieve X% return on investment within Y months. | Develop specific core technology competencies. |
+| Achieve positive cash flow on this product within Y months. | Be rated the top product for reliability in published reviews by a specified date. |
+| Save $X per year currently spent on a high-maintenance legacy system. | Comply with specific federal and state regulations. |
+| Reduce monthly support costs from $X to $Y within Z months. | Receive no more than X service calls and Y warranty calls per unit within Z months of shipping. |
+| Increase gross margin on existing business from X% to Y% within one year. | Reduce turnaround time to X hours on Y% of support calls. |
+
+Nearly every objective a senior design client has lives in the right-hand column. Your client is not selling the software you are building, so market share and revenue are rarely the point. Time, error rate, participation, compliance, and satisfaction are. A team that comes back with a financial objective has usually invented it.
+
+Platitudes are the failure mode. "Become recognized as a world-class provider" and "provide a more rewarding customer experience" are not objectives, because no measurement could ever contradict them.
 
 A **success metric** tells you whether you are on track to get there, and can be measured much sooner. That gap is why they are separate things. An objective may not be measurable until long after your semester ends, and may depend on work beyond your project, but you still need to know in October whether you are pointed the right way. Sometimes the two are the same sentence, when the objective happens to be measurable early.
 
@@ -109,7 +153,7 @@ Every metric needs a **baseline**, and the question that produces it is the one 
 
 Choose metrics that measure what matters rather than what is easy. "Reduce product development costs by 20 percent" is easy to measure and easy to hit by laying people off. Prefer the metric that gets **worse** if you build the wrong thing.
 
-### 4.5 The glossary: one word, one concept
+### 4.6 The glossary: one word, one concept
 
 Write it from the first meeting, because your client hands you the vocabulary whether you ask or not.
 
@@ -119,7 +163,7 @@ If two words mean the same thing and nothing in the repository says so, your tea
 
 The half that stays human is noticing. When your client says "cycle" in one sentence and "sprint" in the next, ask which they mean, in the room, while they are in front of you. An agent reading the transcript afterward cannot ask.
 
-### 4.6 Identifiers: slugs, not numbers
+### 4.7 Identifiers: slugs, not numbers
 
 Requirement items carry identifiers so that a design document, a test, a commit, and an issue can all point at the same thing. This course uses **name-based slugs**: `BO-grading-time`, `SM-submission-rate`, `RI-cloud-cost`, `AS-client-maintains-stack`, `FEAT-performance-tracking`.
 
@@ -131,7 +175,7 @@ Rules: coin the slug from the concept, keep it short and unique within its space
 
 Numbers are not banned everywhere. `OPEN-ISSUES.md` uses `OI-1` upward, because that list only ever grows at the bottom and is cited lightly. The convention is not "slugs everywhere"; it is slugs wherever items get reordered or cited often.
 
-### 4.7 Scope, and the line you will need in October
+### 4.8 Scope, and the line you will need in October
 
 A business analyst is reviewing a specification when the marketing manager asks to add a "like this product" button. It sounds small. His argument is the one you will hear: the developers are going to be in the code anyway, so how hard is one tiny feature? Her analysis says it does not serve the objective the project exists for, and is not simple to build. The hard part is not the analysis. It is that the manager does not have the business objectives in mind and she has to be able to say why, out loud, without sounding obstructive.
 
@@ -139,7 +183,7 @@ That is what the scope section is for. It is not paperwork. It is the sentence y
 
 Write down what is **out** as explicitly as what is in, and ask the forcing question in the first meeting: *if we deliver only one of these in December, which one?* A client who cannot choose has not thought about it yet, and you need to know that now rather than in November.
 
-### 4.8 The nine kinds of requirement
+### 4.9 The nine kinds of requirement
 
 Everything a client says in a meeting is one of these. Sorting them as you hear them is most of the skill, and the right-hand column is what to listen for.
 
@@ -157,9 +201,9 @@ Everything a client says in a meeting is one of these. Sorting them as you hear 
 
 The last row is the one to watch. Solution ideas arrive constantly and sound like requirements, and taking them at face value locks in a design chosen by someone who is not a software engineer.
 
-**The full version, with definitions, sources, and worked examples for each kind, is in [Requirement Types](../requirement-types.md).** Read it once before week 4.
+**The full version is in [Requirement Types](../requirement-types.md)**: each kind with its definition, where it comes from, what it sounds like, and **one worked example from Project Pulse**, so you can read the same system sliced nine ways and feel where the lines fall. Read it once before week 4.
 
-### 4.9 Knowing when to stop
+### 4.10 Knowing when to stop
 
 You are never entirely done, particularly building incrementally. But you are at the point of diminishing returns when the client stops producing new use cases, proposes scenarios that turn out to be variations on ones you have, repeats issues already covered, or suggests things that are all out of scope or all low priority. Users tend to raise requirements in order of decreasing importance, so the tail is genuinely the tail.
 
@@ -204,6 +248,7 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 ## 9. Key papers and further reading
 
 - Karl Wiegers and Joy Beatty, *Software Requirements*, 3rd edition (2013). The source of the templates this course uses, the nine requirement kinds, and the business objectives and success metrics material. Chapters 5 and 6 cover the vision and scope document.
+- Ian Sommerville and Pete Sawyer, *Requirements Engineering: A Good Practice Guide* (1997). The source of the definition in §4.2, and still the clearest statement of why "the requirements" covers behavior, properties, and process constraints at once.
 - Fred Brooks, *The Mythical Man-Month* (1975), on requirements: "The hardest single part of building a software system is deciding precisely what to build... No other part of the work so cripples the resulting system if done wrong."
 - Nancy Leveson, *Engineering a Safer World* (2011), chapters 1 and 2, on failures as control-structure failures rather than component failures.
 - Joint Authorities Technical Review, *Boeing 737 MAX Flight Control System* (2019), and the House Committee on Transportation and Infrastructure's final report (2020). The requirements and hazard-analysis sections are the relevant ones.

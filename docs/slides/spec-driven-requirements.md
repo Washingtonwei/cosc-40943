@@ -62,6 +62,30 @@ Be explicit that this is not a criticism of the client. Knowing the business and
 Your client is Gerhard. Yours has given you one page.
 :::
 
+## Then what is a requirement?
+
+> Requirements are defined during the early stages of a system development as a specification of what should be implemented. They are descriptions of how the system should **behave**, or of a system **property** or **attribute**. They may be a **constraint** on the development process of the system.
+
+::: steps
+- **Behave:** what it does
+- **Property or attribute:** what it must be, and what its data looks like
+- **Constraint:** how you are allowed to build it
+:::
+
+::: key
+"The requirements" is an umbrella over several kinds of information, not one list of features.
+:::
+
+::: note
+Sommerville and Sawyer, 1997. Put it on screen and read the three nouns out loud. Stop on the third, because nobody expects it: a requirement can be about your development process rather than about the running system at all.
+
+Project Pulse carries both of the unexpected kinds. CO-ferpa, comply with FERPA when storing student educational records. CO-vue-spring-stack, Vue on the front and Spring Boot on the back. Neither is a feature anyone would demo, and either one discovered in November is a rewrite.
+
+Then the three reasons to write any of it down: understand, communicate, control. Control is the one that makes the word "contract" in the title honest.
+
+Do **not** teach the nine types here. That is the Requirement Types page and week 4. All this slide has to do is stop them writing a feature list on Friday. Sixty seconds, then move.
+:::
+
 ## This is what one page becomes
 
 Project Pulse started as a complaint about spreadsheets.
@@ -229,6 +253,27 @@ No, because nobody can ever be wrong about it. An objective carries a number so 
 The other identifier shapes live in the same document: RI- for risks, AS- for assumptions, FEAT- for features. State a risk as a mechanism, not a category.
 :::
 
+## Objectives come in two flavors
+
+| Financial | Nonfinancial |
+|---|---|
+| Save $X per year spent on a legacy system. | Cut the data error rate to no more than X%. |
+| Reduce monthly support cost from $X to $Y in Z months. | Comply with specific federal and state regulations. |
+| Reach revenue of $X within Y months. | Reduce turnaround to X hours on Y% of requests. |
+| Achieve X% return on investment within Y months. | Raise satisfaction to at least X within Y months. |
+
+::: key
+Your client's objectives are almost all in the right-hand column.
+:::
+
+::: note
+Point at the right column and say why: your client is not selling the software you are building, so market share and revenue are rarely the point. Time, error rate, participation, compliance, and satisfaction are. A team that comes back Friday with a financial objective has usually invented it.
+
+Every row has a letter in it. That is the shape, not decoration.
+
+The full sixteen shapes are in the module, section 4.5. If you are behind, show this slide and say only the right-column line. Do not read the table.
+:::
+
 ## The follow-up nobody asks
 
 "How will you know this worked?"
@@ -332,9 +377,9 @@ The forcing question, ask it Thursday: if we deliver only one of these in Decemb
 **Twelve minutes. Laptops open, one per team.**
 
 ::: steps
-- Open the template, select all, copy: `raw.githubusercontent.com/tcu-cosc-40943/course-templates/main/requirements/vision-and-scope.md`
+- Open the guide, select all, copy: `raw.githubusercontent.com/tcu-cosc-40943/course-templates/main/requirements/client-interview-guide.md`
 - Give your agent that, your one-page brief, and the role. "You are an experienced business analyst."
-- Ask for two things: a customized interview script, and a plain-language primer on this client's domain and acronyms.
+- Ask for two things: your domain's version of every question in the guide, and a plain-language primer on this client's acronyms.
 - It will give you about thirty questions.
 :::
 
@@ -345,9 +390,13 @@ Then do the part it cannot do.
 ::: note
 The raw URL is the whole file as plain text, so it is select-all and paste, no cloning. Have it on the board before you start; nobody types that from a slide.
 
-Walk the room, all three TAs too. Watch for teams that paste the brief and nothing else; the template's instructions are the context that makes the difference.
+Say what the guide is: fifteen sections of question with a minute budget on each, examples written for a recruiting client so they cannot be used unchanged, and a place to write what was said. It is the script tomorrow and the meeting record afterward. Tell them to commit it to docs/requirements/ as client-interview-YYYY-MM-DD.md, one file per meeting.
+
+Walk the room, all three TAs too. Watch for teams that paste the brief and nothing else; the guide's instructions are the context that makes the difference.
 
 The primer is the half nobody thinks to ask for. A team that walks in already knowing what their client's acronyms mean asks better questions for the whole hour.
+
+If a team finishes early, send them to section 11: who runs this after we graduate, and what do they already know how to run. Almost nobody asks it and it constrains the whole stack.
 :::
 
 ## Thirty questions. Forty-five minutes.
@@ -373,9 +422,11 @@ Take three teams' answers out loud. Ask one of them to name a question they cut 
 ## Before you walk in
 
 ::: steps
+- Listen before you build. Brainstorm after the read-back, not in minute five.
 - Assign the three roles tonight.
 - Send your client the shortlist the day before. They arrive with answers instead of promises.
 - Copy the templates into `docs/requirements/` in your team repo.
+- Scribe has `client-interview-guide.md` open in the meeting. Commit it the same day.
 - Everything you could not answer goes in `OPEN-ISSUES.md`.
 :::
 

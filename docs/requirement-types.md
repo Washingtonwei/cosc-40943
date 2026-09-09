@@ -2,6 +2,8 @@
 
 **Purpose:** the nine kinds of requirement, in full, with where each comes from, where it gets written down, and what it sounds like when a client says it out loud. [Requirements as the Contract](modules/spec-driven-requirements.md) summarizes this in a table and sends you here for the detail.
 
+Every kind below carries one **example from Project Pulse**, so you can see the same system sliced nine ways. Comparing the nine examples is the fastest way to feel the difference between them.
+
 Use it two ways. Before a client meeting, skim the "What it sounds like" entries so you recognize things as they go past. After a meeting, sort your notes: every line your client gave you is one of these, and knowing which one tells you which document it belongs in.
 
 ## Why sorting matters
@@ -41,6 +43,8 @@ Solid arrows mean "is written down in". Dotted arrows mean "is the origin of, or
 
 **Written down in.** The vision and scope document.
 
+**Example (Project Pulse).** `BO-PERF-instructor-efficiency`: reduce the instructor's effort to run weekly performance tracking (collection, parsing, scoring, comment compilation, result distribution) by automating the end-to-end cycle and eliminating the manual download, parse, and upload the instructor runs each week for the whole cohort. Its metric `SM-grading-time` targets a 50% reduction against the instructor-reported hours under the old spreadsheet process.
+
 **What it sounds like.** "We need to cut the time we spend on...", "if we could get this down to a day...", "the audit is in five months".
 
 ### Business problem or opportunity
@@ -51,16 +55,7 @@ For a corporate information system, describe the business problem being solved o
 
 Summarize the business benefits quantitatively and measurably. Platitudes ("become recognized as a world-class provider") and vague improvements ("provide a more rewarding customer experience") are neither helpful nor verifiable.
 
-| Financial | Nonfinancial |
-|---|---|
-| Capture a market share of X% within Y months. | Achieve a customer satisfaction measure of at least X within Y months of release. |
-| Increase market share in country W from X% to Y% within Z months. | Increase transaction-processing productivity by X% and reduce the data error rate to no more than Y%. |
-| Reach a sales volume of X units or revenue of $Y within Z months. | Develop an extensible platform for a family of related products. |
-| Achieve X% return on investment within Y months. | Develop specific core technology competencies. |
-| Achieve positive cash flow on this product within Y months. | Be rated the top product for reliability in published reviews by a specified date. |
-| Save $X per year currently spent on a high-maintenance legacy system. | Comply with specific federal and state regulations. |
-| Reduce monthly support costs from $X to $Y within Z months. | Receive no more than X service calls and Y warranty calls per unit within Z months of shipping. |
-| Increase gross margin on existing business from X% to Y% within one year. | Reduce turnaround time to X hours on Y% of support calls. |
+The eight financial and eight nonfinancial objective shapes, with a note on which column a senior design client's objectives fall in, are in [Requirements as the Contract §4.5](modules/spec-driven-requirements.md#45-business-objectives-and-success-metrics).
 
 ### Success metrics
 
@@ -109,6 +104,8 @@ Ask the client directly:
 
 **What it sounds like.** A sentence starting "I need to..." followed by a task: "I need to print a mailing label for a package." "As the lead machine operator, I need to calibrate the pump controller first thing every morning."
 
+**Example (Project Pulse).** `UC-RUB-create-rubric`, "the course admin creates a rubric". One goal, one actor, and a set of steps that get them there.
+
 Use cases and user stories are not always sufficient on their own. For real-time and reactive systems, where the correct behavior depends on what state the system is in rather than on a sequence of user steps, a state machine expresses requirements that a use case cannot.
 
 ---
@@ -122,6 +119,8 @@ Use cases and user stories are not always sufficient on their own. For real-time
 **Written down in.** The business rules catalog.
 
 **What it sounds like.** "Must comply with...", "if <condition>, then <something happens>", "must be calculated according to...", and any sentence where only certain people may do something under certain conditions. Examples: "a new client must pay 30 percent of the estimated consulting fee and travel expenses in advance", "time-off approvals must comply with the company's vacation policy".
+
+**Example (Project Pulse).** `BR-evaluation-submission-window`: a student may submit a peer evaluation only for the previous week, and has that one week to complete it; both the initial submission and any later edits must occur within this window. The rule is the course's, not the software's. Project Pulse enforces it, but it would still be the policy on paper.
 
 A rule is usually the origin of requirements of several other kinds:
 
@@ -143,6 +142,8 @@ A rule is usually the origin of requirements of several other kinds:
 **Written down in.** The software requirements specification.
 
 **How to find them.** Go over each use case action step, including the extensions, and specify enough detail that a developer knows how to implement the step and a tester knows how to derive test cases from it.
+
+**Example (Project Pulse).** `FR-AI-no-auto-edit`: the system shall not modify student-authored content with assistant-generated text without an explicit confirmation action by the student. One condition, one observable behavior, and a tester can write the case from the sentence alone.
 
 ### EARS: a template that is hard to misread
 
@@ -171,6 +172,8 @@ Source: <https://alistairmavin.com/ears/>
 
 **What it sounds like.** Adjectives: fast, easy, user-friendly, reliable, secure. "The mobile software must respond quickly to touch commands." "The shopping cart has to be simple to use so my new customers don't abandon the purchase." Every one of those is subjective as stated, and your job is to work with the user to find the verifiable goal underneath.
 
+**Example (Project Pulse).** `PER-report-load`: Project Pulse shall return the instructor progress-monitoring dashboard and the report views within 500 milliseconds at the 95th percentile, under the peak near-deadline concurrency envelope. Compare it with "the dashboard should be fast", which is the same wish with nothing to test.
+
 The attributes worth knowing by name:
 
 | | | | |
@@ -194,6 +197,8 @@ Quality attributes are where a system that met every functional requirement can 
 
 **What it sounds like.** "Must read signals from...", "must send messages to...", "must be able to read files in `<format>`", "user interface elements must conform to `<a standard>`". Examples: "the manufacturing execution system must control the wafer sorter", "the mobile app should send the check image to the bank after I photograph the check I'm depositing".
 
+**Example (Project Pulse).** `SI-import-allowlist`: accept PDF (`.pdf`) and PowerPoint (`.pptx`, `.ppt`) uploads as project source material, and reject any file whose type is not on the allowlist or whose size exceeds a configurable per-file limit (default 25 MB). The boundary is the point: the allowlist says what the outside world is allowed to hand you.
+
 **How they get represented.** A context diagram or use case diagram for the boundary. Input and output file formats, report layouts, and API documentation for system interfaces. Dialog maps, storyboards, and low- or high-fidelity prototypes for user interfaces.
 
 ---
@@ -207,6 +212,8 @@ Quality attributes are where a system that met every functional requirement can 
 **Written down in.** The software requirements specification.
 
 **What it sounds like.** "Must be written in `<a specific language>`", "cannot exceed `<some limit>`", "must use `<a specific control>`". Examples: "files submitted electronically cannot exceed 10 MB", "the browser must use 256-bit encryption for all secure transactions".
+
+**Example (Project Pulse).** `CO-vue-spring-stack`: the client shall be implemented in Vue.js and the backend in Java using the Spring Boot framework. And `CO-ferpa`: Project Pulse shall comply with FERPA when storing and transmitting student educational records. Neither is a feature. Both remove options you would otherwise have had.
 
 **Where constraints come from.**
 
@@ -234,6 +241,8 @@ For your project, the constraint that most often goes unasked is who maintains t
 
 **What it sounds like.** Any description of format, data type, allowed values, or default value; the composition of a complex business structure; or a report to be generated. "The ZIP code has five digits, followed by an optional hyphen and four digits that default to 0000." "An order consists of the customer's identity, shipping information, and one or more products, each of which includes the product number, number of units, unit price, and total price."
 
+**Example (Project Pulse).** A requirement document's status is one of `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`; a submitted document is either returned for revision or accepted, and an accepted one is read-only. The allowed values and the transitions between them are data requirements, and guessing them wrong builds a workflow the client does not have.
+
 ---
 
 ## 9. Solution ideas
@@ -245,6 +254,8 @@ For your project, the constraint that most often goes unasked is who maintains t
 **Written down in.** Nowhere, as stated. Once you find the need underneath, that goes in whichever document it belongs to.
 
 **What it sounds like.** Anyone describing a specific way to interact with the system in order to perform an action. "Then I select the state where I want to send the package from a drop-down list." "The phone has to allow the user to swipe with a finger to navigate between screens."
+
+**Example (not in the repository, and that is the point).** "Put a drop-down on the dashboard so I can pick which week to look at." The need underneath is that an instructor reads one week at a time. A drop-down is one way to serve it, and once you write it down as the requirement you have made a design decision on your client's behalf.
 
 **How to get underneath it.** Ask why, repeatedly, until you reach something that is true regardless of implementation. A password is one way to implement an identity requirement, and it is not the only one; if you record "the system shall require a password" you have already made a design decision on the client's behalf.
 
@@ -266,3 +277,4 @@ Not everything in a meeting is a requirement of any kind. Sort the rest as it ar
 
 - [Requirements as the Contract](modules/spec-driven-requirements.md): the module this page supports.
 - [Studio](studio.md): where you apply it to your own project.
+- The Project Pulse examples on this page are quoted from [`docs/requirements/`](https://github.com/Washingtonwei/project-pulse/tree/main/docs/requirements) on `main`, verified 2026-09-08.
