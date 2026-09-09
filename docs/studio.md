@@ -45,6 +45,21 @@ Environment setup is not studio work. Getting Project Pulse running on your own 
 
 From week 3 onward, studio is your project.
 
+### Where your requirements documents live
+
+**In your team repository, under `docs/requirements/`, next to your code.** Not in Google Drive, not in a shared document. Your AI teammate reads your repository and nothing else, so a specification it cannot open is a specification it cannot build from.
+
+Blank templates are in [course-templates](https://github.com/tcu-cosc-40943/course-templates). Copy the folder in once, at the start of week 3's studio, and it is yours from then on:
+
+```bash
+git clone https://github.com/tcu-cosc-40943/course-templates.git
+cd your-team-repo
+mkdir -p docs
+cp -r ../course-templates/requirements docs/
+```
+
+Copy them, do not fork. Each file opens with instructions telling you what the section is for, how to produce it, and how to check it; leave those in place until the document is finished, because they are context for your agent on every later pass. The [Requirements as the Contract](modules/spec-driven-requirements.md) module is the reading behind them.
+
 ## The Napkin drill
 
 On five non-checkpoint Fridays, studio opens with a twenty-minute warm-up before the main objective. You are handed a one-paragraph brief for a system you have never seen and asked to size it up on six points: shape, the hard part, the bottleneck, stack, three kill risks, and a verdict.

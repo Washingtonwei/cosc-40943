@@ -74,7 +74,7 @@ Ask to record, and say why: so nobody is transcribing instead of listening. If t
 
 **Shape of the hour.** Ten minutes on the business, why this problem and why now. Thirty on the process as it works today, walked step by step. Ten on scope, what is in and what is out. Ten to read back what you heard.
 
-**The read-back is the highest-value ten minutes and the part teams skip.** Say what you understood in your own words, and watch for the correction. A client who is nodding may be being polite; a client correcting you is engaged, and the correction is usually the single most useful sentence of the meeting. The [vision statement table](https://github.com/tcu-cosc-40943/course-templates) is built for this: read the filled-in row set aloud, in ninety seconds, and see what they fix.
+**The read-back is the highest-value ten minutes and the part teams skip.** Say what you understood in your own words, and watch for the correction. A client who is nodding may be being polite; a client correcting you is engaged, and the correction is usually the single most useful sentence of the meeting. The vision statement table in [`vision-and-scope.md`](https://github.com/tcu-cosc-40943/course-templates/blob/main/requirements/vision-and-scope.md) is built for this: fill it in during the meeting, read the six rows aloud, and see what they fix. Ninety seconds.
 
 **Within 24 hours**, send written notes and the open questions. This creates the record, and it gives the client a second chance to correct you while the meeting is fresh.
 
@@ -187,7 +187,7 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 **Studio (team, own project)**
 
 - **Goal:** produce the first version of the two documents your project will be built from, and a written record of what you still do not know.
-- **In studio (own project):** copy the templates into `docs/requirements/` in your team repository. Split the sections across the team, one owner each, one branch and one pull request per person. Draft the glossary from your client brief and your meeting, fill in Background, the business opportunity, business objectives with real slugs, and the vision statement, and record everything you could not answer in `OPEN-ISSUES.md`. Preceded by [Napkin](se-and-ai.md#the-napkin-six-prompts) round 0 on your own project, which is sealed unread.
+- **In studio (own project):** copy the [templates](https://github.com/tcu-cosc-40943/course-templates) into `docs/requirements/` in your team repository. Split the sections across the team, one owner each, one branch and one pull request per person. Draft the glossary from your client brief and your meeting, fill in Background, the business opportunity, business objectives with real slugs, and the vision statement, and record everything you could not answer in `OPEN-ISSUES.md`. Preceded by [Napkin](se-and-ai.md#the-napkin-six-prompts) round 0 on your own project, which is sealed unread.
 - **Deliverable and assessment:** `docs/requirements/` on your `main` branch by end of studio, with commits from every member. Assessed on whether the objectives carry numbers, whether the open issues are real questions rather than placeholders, and whether the glossary contains terms you learned from the client rather than terms you already knew.
 
 **Individual assignment (Project Pulse)**: none. The requirements skills are assessed on your own project, where there is a real client to be wrong about.
