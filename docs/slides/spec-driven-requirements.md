@@ -16,7 +16,7 @@ Labor Day took Monday, so this is the only lecture this week, and every team mee
 ## Two volunteers
 
 ::: cols
-![Gerhard](img/gerhard.svg){ width="150" }
+![Gerhard](img/gerhard.svg){ height="230" }
 
 **Gerhard**
 
@@ -24,7 +24,7 @@ Senior manager, Contoso Pharmaceuticals.
 
 He is paying for this.
 |||
-![Cynthia](img/cynthia.svg){ width="150" }
+![Cynthia](img/cynthia.svg){ height="230" }
 
 **Cynthia**
 
@@ -46,7 +46,7 @@ Wiegers and Beatty, *Software Requirements*, 3rd edition, chapter 1.
 ## Gerhard opens
 
 ::: cols portrait
-![Gerhard](img/gerhard.svg){ width="150" }
+![Gerhard](img/gerhard.svg)
 
 Gerhard
 {: .who }
@@ -67,7 +67,7 @@ If the reader rushes, ask them to take the last sentence again. The deadline is 
 ## Cynthia: not yet
 
 ::: cols portrait
-![Cynthia](img/cynthia.svg){ width="150" }
+![Cynthia](img/cynthia.svg)
 
 Cynthia
 {: .who }
@@ -84,7 +84,7 @@ This is the whole job in two sentences. She is not refusing, and she is not stal
 ## "I just told you my requirements"
 
 ::: cols portrait
-![Gerhard](img/gerhard.svg){ width="150" }
+![Gerhard](img/gerhard.svg)
 
 Gerhard
 {: .who }
@@ -107,7 +107,7 @@ Ask the room, quickly: was he wrong? Take two or three answers, do not resolve i
 ## Cynthia: those were objectives
 
 ::: cols portrait
-![Cynthia](img/cynthia.svg){ width="150" }
+![Cynthia](img/cynthia.svg)
 
 Cynthia
 {: .who }
@@ -126,7 +126,7 @@ Note who she wants to talk to: **users**, not Gerhard. Gerhard knows why the pro
 ## Gerhard: the chemists are busy
 
 ::: cols portrait
-![Gerhard](img/gerhard.svg){ width="150" }
+![Gerhard](img/gerhard.svg)
 
 Gerhard
 {: .who }
@@ -147,7 +147,7 @@ It is an invitation to guess, and it always sounds like trust.
 ## Cynthia: we are not chemists
 
 ::: cols portrait
-![Cynthia](img/cynthia.svg){ width="150" }
+![Cynthia](img/cynthia.svg)
 
 Cynthia
 {: .who }
@@ -170,7 +170,7 @@ Cynthia can say "we are not chemists". An agent handed the same gap produces a c
 ## Gerhard: just build it
 
 ::: cols portrait
-![Gerhard](img/gerhard.svg){ width="150" }
+![Gerhard](img/gerhard.svg)
 
 Gerhard
 {: .who }

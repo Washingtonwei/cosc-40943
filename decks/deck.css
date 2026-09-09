@@ -186,7 +186,7 @@ td:has(> code:only-child){font-variant-numeric:tabular-nums}
 .cols{display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); align-items:start}
 .cols.c3{grid-template-columns:1fr 1fr 1fr}
 .cols.portrait{grid-template-columns:190px 1fr; gap:36px; align-items:start}
-.cols.portrait img{width:150px; height:auto; display:block}
+.cols.portrait img{height:236px; width:auto; display:block}
 .cols.portrait .who{font-family:var(--font-display); font-size:var(--fs-small); color:var(--ink-dim); margin:10px 0 0}
 .cols > * > :last-child{margin-bottom:0}
 

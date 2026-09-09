@@ -1,23 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="Gerhard, a senior manager at Contoso Pharmaceuticals">
-  <defs>
-    <clipPath id="gerhard-clip"><circle cx="80" cy="80" r="74"/></clipPath>
-  </defs>
-  <circle cx="80" cy="80" r="74" fill="#1E273A"/>
-  <g clip-path="url(#gerhard-clip)">
-    <path d="M20 160c0-26 24-40 60-40s60 14 60 40z" fill="#39435C"/>
-    <path d="M62 116l18 22 18-22-18-6z" fill="#F2EDE3"/>
-    <path d="M75 126h10l-5 9z" fill="#FFB443"/>
-    <path d="M80 135l-8 12 8 8 8-8z" fill="#FFB443"/>
-    <rect x="68" y="98" width="24" height="24" rx="10" fill="#D9A882"/>
-    <ellipse cx="80" cy="74" rx="32" ry="36" fill="#E8BE96"/>
-    <circle cx="48" cy="78" r="6" fill="#D9A882"/>
-    <circle cx="112" cy="78" r="6" fill="#D9A882"/>
-    <path d="M49 60C50 38 62 30 80 30s30 8 31 30c-5-11-16-16-31-16-7 0-13 2-17 6-6 4-11 6-14 10z" fill="#B9BFCC"/>
-    <rect x="59" y="63" width="17" height="4" rx="2" transform="rotate(10 67.5 65)" fill="#8C93A3"/>
-    <rect x="84" y="63" width="17" height="4" rx="2" transform="rotate(-10 92.5 65)" fill="#8C93A3"/>
-    <circle cx="68" cy="78" r="4.5" fill="#2C374E"/>
-    <circle cx="92" cy="78" r="4.5" fill="#2C374E"/>
-    <rect x="68" y="95" width="24" height="4" rx="2" fill="#B5715A"/>
+<!-- Gerhard, the client. Drawn in the character system of the week 1 story deck
+     (docs/slides/tier1/fifteen-weeks-to-demo-day.part.html): this is its CLIENT
+     archetype, unchanged, so the figure a student met in week 1 is the same
+     figure here. Geometry copied from that file's P(), hair() and face(). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 264" width="110" height="264" role="img" aria-label="Gerhard, a senior manager at Contoso Pharmaceuticals">
+  <g transform="translate(55,254)">
+    <rect x="-13" y="-62" width="24" height="64" rx="12" fill="#2B3346"/>
+    <rect x="0" y="-62" width="24" height="64" rx="12" fill="#2B3346"/>
+    <g transform="translate(-38,-152) rotate(-8)"><rect x="-9" y="-4" width="18" height="70" rx="9" fill="#C98A5E"/></g>
+    <g transform="translate(38,-152) rotate(8)"><rect x="-9" y="-4" width="18" height="70" rx="9" fill="#C98A5E"/></g>
+    <rect x="-40" y="-166" width="80" height="112" rx="32" fill="#8FBF6A"/>
+    <circle cx="0" cy="-198" r="38" fill="#C98A5E"/>
+    <path d="M-38,-198 a38,38 0 0 1 76,0 q-14,-14 -26,-4 -12,-12 -24,-2 -12,-8 -26,6z" fill="#5A4432"/>
+    <circle cx="-13" cy="-202" r="5" fill="#0F1420"/>
+    <circle cx="13" cy="-202" r="5" fill="#0F1420"/>
+    <path d="M-10,-184 l20,0" stroke="#0F1420" stroke-width="4" stroke-linecap="round"/>
   </g>
-  <circle cx="80" cy="80" r="74" fill="none" stroke="#FFB443" stroke-width="4"/>
 </svg>
