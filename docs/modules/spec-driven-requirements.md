@@ -74,7 +74,7 @@ Ask to record, and say why: so nobody is transcribing instead of listening. If t
 
 **Shape of the hour.** Ten minutes on the business, why this problem and why now. Thirty on the process as it works today, walked step by step. Ten on scope, what is in and what is out. Ten to read back what you heard.
 
-**The read-back is the highest-value ten minutes and the part teams skip.** Say what you understood in your own words, and watch for the correction. A client who is nodding may be being polite; a client correcting you is engaged, and the correction is usually the single most useful sentence of the meeting. The [vision statement table](https://github.com/tcu-cosc-40943/requirement-templates) is built for this: read the filled-in row set aloud, in ninety seconds, and see what they fix.
+**The read-back is the highest-value ten minutes and the part teams skip.** Say what you understood in your own words, and watch for the correction. A client who is nodding may be being polite; a client correcting you is engaged, and the correction is usually the single most useful sentence of the meeting. The [vision statement table](https://github.com/tcu-cosc-40943/course-templates) is built for this: read the filled-in row set aloud, in ninety seconds, and see what they fix.
 
 **Within 24 hours**, send written notes and the open questions. This creates the record, and it gives the client a second chance to correct you while the meeting is fresh.
 

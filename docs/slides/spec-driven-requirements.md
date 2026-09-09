@@ -100,7 +100,7 @@ You will not finish it Friday. You will start it.
 ::: note
 Third file too: OPEN-ISSUES.md, the questions you cannot answer yet. Writing "we do not know" is the correct state in week 3. What fails is knowing and not writing it down.
 
-Templates: github.com/tcu-cosc-40943/requirement-templates. Copy docs/requirements into your team repo. Do not fork.
+Templates: github.com/tcu-cosc-40943/course-templates. Copy the requirements folder into your team repo's docs/. Do not fork.
 :::
 
 ## Thursday: three roles, agreed before you walk in
