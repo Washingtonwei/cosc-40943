@@ -23,7 +23,6 @@ hooks:
 exclude_docs: |
   slides/*.md
   slides/tier1/*
-  modules/spec-driven-requirements.md
   modules/testing.md
   modules/ci-cd.md
   modules/metrics-and-tech-debt.md
@@ -123,5 +122,6 @@ nav:
       - The Method: method.md
       - Working with AI: ai.md
       - Git Workflow: git-workflow.md
+      - Requirement Types: requirement-types.md
       - Professionalism: professionalism.md
       - Resources: resources.md

@@ -17,5 +17,8 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Professionalism**](modules/professionalism.md) · [slides](slides/professionalism.html)
 : Run a team problem the way you run a defect: observe the behavior, analyze its impact, investigate before you assume, and agree on a fix with an owner and a date. The standards themselves are on the [Professionalism handbook](professionalism.md).
 
+[**Requirements as the Contract**](modules/spec-driven-requirements.md) · [slides](slides/spec-driven-requirements.html)
+: Find out what your client actually needs, and write it down so your team and your agent build the same thing. Running a first client meeting, business objectives and success metrics, the project glossary, and the scope line you will need in October. The nine kinds of requirement are in [Requirement Types](requirement-types.md). Week 4 half still being written.
+
 [**Requirements Traceability**](modules/traceability.md)
 : Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Still being written.
