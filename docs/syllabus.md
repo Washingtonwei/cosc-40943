@@ -174,19 +174,19 @@ Each team also creates a **Google Drive** for the work that does not belong in a
 
 Your project grade is **not** determined solely by the deliverables produced by the team. It is also determined by your individual contribution and your collaboration with team members. Tardiness and absenteeism are considered unprofessional and cannot be tolerated. Your team needs you to be in class, in project meetings, on time, responsive, and productive.
 
-There will be **nine weekly evaluations**, each worth 2.2% of your overall grade. Once the project starts:
+There will be **eleven weekly evaluations**, each worth about 1.8% of your overall grade (20% in total). Once the project starts:
 
 - A **weekly activity report (WAR)** is due at the beginning of every Monday class. Inflating time and activities reported in a WAR is considered academic dishonesty. Failure to submit the WAR by that time results in a zero for that week's evaluation. Late WARs will not be accepted.
 - The team must **meet regularly outside the classroom** to work on the project together. Feedback from the software industry indicates that the most effective software development happens when the team works together at the same location.
 - The team must **meet with your client regularly** to report progress and clarify questions. Advise the instructor well in advance of client meetings so he can attend as many as his schedule allows. The client evaluation is part of your overall grade.
-- **Meeting minutes** for both team meetings and client meetings must be submitted every Monday before class time. Team members take turns preparing the minutes using the provided template. Failure to submit meeting minutes results in a 2.2% grade reduction for the team member preparing the minutes that week.
+- **Meeting minutes** for both team meetings and client meetings must be submitted every Monday before class time. Team members take turns preparing the minutes using the provided template. Failure to submit meeting minutes results in a grade reduction equal to one weekly evaluation (about 1.8%) for the team member preparing the minutes that week.
 - **Prompt attendance is required.** Absence from lectures, studio, weekly team meetings, presentation practice, and client meetings is a serious problem without official documentation. Each absence causes a 1% grade reduction.
 
 Team checkpoint presentations are assessed within the weekly evaluation for the week in which they fall.
 
 ### Peer evaluations
 
-There will be **nine peer evaluations**, each worth 2.2% of your overall grade. Once the project starts, peer evaluations for your teammates (including yourself) on their performance during the past week are due every Tuesday at 10:00 AM. Your evaluation should be based on your observation of your teammates and their submitted WARs. Failure to submit peer evaluations by that time results in a zero for that week. Late peer evaluations will not be accepted.
+There will be **eleven peer evaluations**, each worth about 1.8% of your overall grade (20% in total). Once the project starts, peer evaluations for your teammates (including yourself) on their performance during the past week are due every Tuesday at 10:00 AM. Your evaluation should be based on your observation of your teammates and their submitted WARs. Failure to submit peer evaluations by that time results in a zero for that week. Late peer evaluations will not be accepted.
 
 ### Client evaluations
 
@@ -237,8 +237,8 @@ Each absence from lectures, studio, weekly team meetings, presentation practice,
 | Midterm | 15 |
 | Final | 15 |
 | Individual Project Pulse assignments (5) | 20 |
-| Senior Design project: weekly evaluations (9) | 20 |
-| Senior Design project: peer evaluations (9) | 20 |
+| Senior Design project: weekly evaluations (11) | 20 |
+| Senior Design project: peer evaluations (11) | 20 |
 | Senior Design project: client evaluations (2) | 10 |
 | **Total** | **100** |
 

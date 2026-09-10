@@ -85,7 +85,7 @@ These run every week once the project starts, and they are 40% of your grade bet
 
 **Weekly activity report (WAR)** is due at the beginning of every Monday class. Inflating time or activities in a WAR is academic dishonesty. Late WARs are not accepted, and a missing WAR is a zero for that week's evaluation.
 
-**Meeting minutes** for both team and client meetings are due every Monday before class. Team members take turns preparing them from the provided template. A missing set costs the person responsible 2.2%.
+**Meeting minutes** for both team and client meetings are due every Monday before class. Team members take turns preparing them from the provided template. A missing set costs the person responsible one weekly evaluation's worth, about 1.8%.
 
 **Peer evaluations** of your teammates and yourself are due every Tuesday at 10:00 AM, based on your own observation and on their WARs. Late peer evaluations are not accepted.
 
