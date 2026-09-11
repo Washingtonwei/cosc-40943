@@ -54,3 +54,18 @@ Put a login form on the screen and ask the room to list test cases. Collect answ
 **The AI-native turn, which is the reason to keep it:** run the same prompt against an agent live. It will produce something between the experienced and super lists in seconds, and better organized than the room's. Then ask the question that matters: which of these actually apply to *this* system, and which are ceremony? The agent generates the list. Deciding what is in scope, what the lockout threshold should be, and whether a million concurrent logins is a real requirement is the human's, and it is the delegation boundary in the one place students feel it.
 
 **Time:** four to six minutes for the room, three for the agent comparison.
+
+### What week 8 hands over, and a hollow happy path
+
+**Week 9 can assume** students have written a first unit test in given/when/then form with BDDMockito, read off a use case extension (`MODULE-implementation`, week 8). Do not reteach the syntax. Spend the time on the oracle.
+
+**Worked example: `ActivityServiceTest.testSaveActivity`** (Project Pulse, verified 2026-09-10; re-check before `stable`). It is the happy-path twin of week 8's example and tests `POST-1` of `UC-WAR-manage-activities`: a new activity is added to the weekly activity report. The test builds an activity, stubs `activityRepository.save` to return that same object, and asserts that the result has the category, description, hours, and status the test itself set. The only logic in `ActivityService.saveActivity` is the two lines that attach the submitter and her team. The test checks neither, so it passes with both lines deleted. Those lines carry `BR-team-scoped-access`: a report is filed under the submitter's own team, never one she names.
+
+The missing Then:
+
+```java
+assertThat(result.getStudent()).isEqualTo(submitter);
+assertThat(result.getTeam()).isEqualTo(team);
+```
+
+**Teach it as:** the oracle came from the test's own input, echoed back by a mock, which is CrowdStrike in miniature. Ask the room which outcome the use case and the business rule demand that the test never checks. Then delete the two lines live and run the suite green. Run the same "write tests for `saveActivity`" prompt against an agent and see which version it writes.
