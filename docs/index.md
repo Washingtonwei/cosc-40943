@@ -3,13 +3,13 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 2: your team and your client"
+!!! important "Week 3: meet your client, then start your requirements"
 
-    **[Teams, projects, clients, and TAs are published.](teams.md)** Find your team, then read your client's brief, which is **on TCU Online** under your team's number.
+    **Every team meets its client this Thursday or Friday.** Commit your filled-in interview guide the same day, as `docs/requirements/client-interview-YYYY-MM-DD.md`. It is the record everything else this week is drafted from.
 
-    Friday's [studio](studio.md) is your team's first hour together: you fix the weekly meeting time you will defend all term, sign your [team contract](team-contract.md), stand up your repository, and your TA verifies Checkpoint 0 at your row. Come having read the brief, not to read it, and [decide who will own the repository](studio.md#where-your-repository-lives) before you get there.
+    Friday's [studio](studio.md) opens with [Napkin round 0](studio.md#the-napkin-drill) on your own project, sealed. Then your team drafts the glossary, the first sections of vision and scope, and `OPEN-ISSUES.md`: one section per person, each on its own branch and pull request. Before you arrive, the repository owner turns on [branch protection](git-workflow.md#repository-settings) with status checks left off.
 
-    If your name is not on the Teams page, email the instructor today.
+    The reading for the week is [Requirements as the Contract](modules/spec-driven-requirements.md). Use cases are Monday.
 
 ## What this course is
 
