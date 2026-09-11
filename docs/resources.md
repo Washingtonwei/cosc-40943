@@ -70,7 +70,8 @@ Everything in this course is free to you, the coding agent included.
 | Markdown | Every specification and design document |
 | Mermaid | Diagrams, in Markdown, version-controlled with everything else |
 | A coding agent | Design and implementation, across the lifecycle. See [Working with AI](ai.md). |
-| Google Drive | Your team's reports, minutes, and slides. See [Senior Design Project](project.md). |
+| Project Pulse | Submitting your weekly activity reports and peer evaluations. See [Senior Design Project](project.md#weekly-mechanics). |
+| Google Drive | Your team's meeting minutes and slides. See [Senior Design Project](project.md). |
 
 No Jira. No Trello. Your GitHub repository is the project record, and it is what gets reviewed.
 

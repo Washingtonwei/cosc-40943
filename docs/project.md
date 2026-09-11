@@ -41,12 +41,12 @@ Your team also keeps a **Google Drive** for everything that is not part of that 
 
 | Team GitHub repository | Team Google Drive |
 |---|---|
-| Glossary, vision and scope, use cases, business rules, SRS | Weekly activity reports |
-| Architecture-of-record, design-of-record | Team and client meeting minutes |
-| Traceability matrix | Client-facing slides and demo decks |
-| Source code and tests | Shared working drafts and scratch |
+| Glossary, vision and scope, use cases, business rules, SRS | Team and client meeting minutes |
+| Architecture-of-record, design-of-record | Client-facing slides and demo decks |
+| Traceability matrix | Shared working drafts and scratch |
+| Source code and tests | |
 
-Anything the agent must build against, or that a consistency check must resolve, is Markdown in the repository. A use case in a Google Doc cannot be cited by an ID, diffed in a pull request, or verified against the code, so it is not a specification, it is a note about one. Everything else, where six people co-writing matters more than machine-readability, belongs in Drive. Share the Drive with the instructor and your TA at kickoff.
+Anything the agent must build against, or that a consistency check must resolve, is Markdown in the repository. A use case in a Google Doc cannot be cited by an ID, diffed in a pull request, or verified against the code, so it is not a specification, it is a note about one. Everything else, where six people co-writing matters more than machine-readability, belongs in Drive. Share the Drive with the instructor and your TA at kickoff. Weekly activity reports and peer evaluations go in neither; you submit them in Project Pulse (see [Weekly mechanics](#weekly-mechanics)).
 
 **Your repository is public, so keep your client's material out of it.** The brief stays on TCU Online, and anything your client hands you or asks you to keep private stays in Drive. What goes in the repository is what your team writes: the specification, the design, the code.
 
@@ -83,11 +83,13 @@ Checkpoint 3 is the last one. After November 13 the next thing your client sees 
 
 These run every week once the project starts, and they are 40% of your grade between them.
 
-**Weekly activity report (WAR)** is due at the beginning of every Monday class. Inflating time or activities in a WAR is academic dishonesty. Late WARs are not accepted, and a missing WAR is a zero for that week's evaluation.
+You submit weekly activity reports and peer evaluations in **Project Pulse**. Its registration invitation and the Monday and Tuesday reminders come from `peer.evaluation.tool.senior.design@gmail.com`. Add that address to your safe senders: a reminder sitting in your junk folder does not extend a deadline.
+
+**Weekly activity report (WAR)** is due in Project Pulse at the beginning of every Monday class. Inflating time or activities in a WAR is academic dishonesty. Late WARs are not accepted, and a missing WAR is a zero for that week's evaluation.
 
 **Meeting minutes** for both team and client meetings are due every Monday before class. Team members take turns preparing them from the provided template. A missing set costs the person responsible one weekly evaluation's worth, about 1.8%.
 
-**Peer evaluations** of your teammates and yourself are due every Tuesday at 10:00 AM, based on your own observation and on their WARs. Late peer evaluations are not accepted.
+**Peer evaluations** of your teammates and yourself are due in Project Pulse every Tuesday at 10:00 AM, based on your own observation and on their WARs. Late peer evaluations are not accepted.
 
 **Client evaluations** happen twice during the semester. Your client's assessment of your engagement is 10% of your grade, so be present and useful in client meetings.
 

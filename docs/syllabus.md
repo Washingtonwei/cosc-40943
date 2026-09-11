@@ -164,7 +164,7 @@ Teams of five or six students, assigned by the instructor from a short interest 
 
 **Where each thing lives.** The specification and design set are **Markdown in your team's GitHub repository**, not documents in a folder. That is not a formatting preference: your coding agent builds against those files, the consistency checks resolve the IDs in them, and traceability only works on text you can diff and review. A specification your agent cannot read is not a contract.
 
-Each team also creates a **Google Drive** for the work that does not belong in a repository: weekly activity reports, team and client meeting minutes, client-facing slides, and shared working drafts. Share it with the instructor and your TA at kickoff.
+Each team also creates a **Google Drive** for the work that does not belong in a repository: team and client meeting minutes, client-facing slides, and shared working drafts. Share it with the instructor and your TA at kickoff. Weekly activity reports and peer evaluations go in neither; you submit them in **Project Pulse**.
 
 **Checkpoints.** Four times in the term (Sep 4, Oct 2, Oct 23, Nov 13) your team presents progress to its TA during the Friday studio hour. What each checkpoint requires is on the [Senior Design Project](project.md) page.
 
@@ -176,7 +176,7 @@ Your project grade is **not** determined solely by the deliverables produced by 
 
 There will be **eleven weekly evaluations**, each worth about 1.8% of your overall grade (20% in total). Once the project starts:
 
-- A **weekly activity report (WAR)** is due at the beginning of every Monday class. Inflating time and activities reported in a WAR is considered academic dishonesty. Failure to submit the WAR by that time results in a zero for that week's evaluation. Late WARs will not be accepted.
+- A **weekly activity report (WAR)** is due in Project Pulse at the beginning of every Monday class. Inflating time and activities reported in a WAR is considered academic dishonesty. Failure to submit the WAR by that time results in a zero for that week's evaluation. Late WARs will not be accepted.
 - The team must **meet regularly outside the classroom** to work on the project together. Feedback from the software industry indicates that the most effective software development happens when the team works together at the same location.
 - The team must **meet with your client regularly** to report progress and clarify questions. Advise the instructor well in advance of client meetings so he can attend as many as his schedule allows. The client evaluation is part of your overall grade.
 - **Meeting minutes** for both team meetings and client meetings must be submitted every Monday before class time. Team members take turns preparing the minutes using the provided template. Failure to submit meeting minutes results in a grade reduction equal to one weekly evaluation (about 1.8%) for the team member preparing the minutes that week.
@@ -186,7 +186,7 @@ Team checkpoint presentations are assessed within the weekly evaluation for the 
 
 ### Peer evaluations
 
-There will be **eleven peer evaluations**, each worth about 1.8% of your overall grade (20% in total). Once the project starts, peer evaluations for your teammates (including yourself) on their performance during the past week are due every Tuesday at 10:00 AM. Your evaluation should be based on your observation of your teammates and their submitted WARs. Failure to submit peer evaluations by that time results in a zero for that week. Late peer evaluations will not be accepted.
+There will be **eleven peer evaluations**, each worth about 1.8% of your overall grade (20% in total). Once the project starts, peer evaluations for your teammates (including yourself) on their performance during the past week are due in Project Pulse every Tuesday at 10:00 AM. Your evaluation should be based on your observation of your teammates and their submitted WARs. Failure to submit peer evaluations by that time results in a zero for that week. Late peer evaluations will not be accepted.
 
 ### Client evaluations
 
