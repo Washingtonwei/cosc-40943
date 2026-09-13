@@ -3,13 +3,15 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 3: meet your client, then start your requirements"
+!!! important "Week 4: use cases, and your first Project Pulse deadlines"
 
-    **Every team meets its client this Thursday or Friday.** Commit your filled-in interview guide the same day, as `docs/requirements/client-interview-YYYY-MM-DD.md`. It is the record everything else this week is drafted from.
+    **Your first weekly activity report is due in [Project Pulse](project.md#weekly-mechanics) at the start of class on Monday, Sep 14. Your first peer evaluation is due Tuesday, Sep 15, at 10:00 AM.** Late submissions are not accepted. The reminders come from `peer.evaluation.tool.senior.design@gmail.com`, so add that address to your safe senders today.
 
-    Friday's [studio](studio.md) opens with [Napkin round 0](studio.md#the-napkin-drill) on your own project, sealed. Then your team drafts the glossary, the first sections of vision and scope, and `OPEN-ISSUES.md`: one section per person, each on its own branch and pull request. Before you arrive, the repository owner turns on [branch protection](git-workflow.md#repository-settings) with status checks left off.
+    Monday is use cases. Wednesday is business rules, quality attributes, and the specification. Before Monday, read the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide): it is the standard your use cases are reviewed against, so give it to your agent too when you ask it to review one.
 
-    The reading for the week is [Requirements as the Contract](modules/spec-driven-requirements.md). Use cases are Monday.
+    Friday's [studio](studio.md) turns your feature list into a use case list. Then the work splits: most of you write one use case in full, one person owns the business rules, and one starts the specification, each on a branch and pull request. The templates are in [`course-templates`](https://github.com/tcu-cosc-40943/course-templates).
+
+    The reading for the week is [Requirements as the Contract](modules/spec-driven-requirements.md) and the [Requirement Types](requirement-types.md) reference.
 
 ## What this course is
 
