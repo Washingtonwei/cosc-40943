@@ -1,0 +1,13 @@
+<!-- "The System" in "Place an order": the online store. The laptop is laptop() from the
+     week 1 story deck (docs/slides/tier1/fifteen-weeks-to-demo-day.part.html) with a
+     shopping cart drawn on its screen. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 84" width="140" height="84" role="img" aria-label="The online store, a laptop showing a shopping cart">
+  <g transform="translate(70,64)">
+    <path d="M-46,-56 l92,0 0,56 -92,0z" fill="#2B3346"/>
+    <rect x="-40" y="-51" width="80" height="46" fill="#4EA8F5" opacity=".85"/>
+    <path d="M-62,4 l124,0 -8,10 -108,0z" fill="#3B465F"/>
+    <path d="M-24,-42 h8 l7,20 h24 l6,-15 h-34" stroke="#0F1420" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="-5" cy="-14" r="3.5" fill="#0F1420"/>
+    <circle cx="12" cy="-14" r="3.5" fill="#0F1420"/>
+  </g>
+</svg>

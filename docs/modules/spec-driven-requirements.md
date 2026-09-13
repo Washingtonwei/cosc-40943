@@ -1,11 +1,11 @@
 # Requirements as the Contract
 
-**Slides:** [Requirements as the Contract](../slides/spec-driven-requirements.html) (the fast version).
+**Slides:** week 3, [Requirements as the Contract](../slides/spec-driven-requirements.html); week 4, [Writing the Specification](../slides/writing-the-specification.html) (the fast versions).
 
 > **Purpose (one line):** find out what your client actually needs, and write it down so that your team and your agent both build the same thing.
 
 !!! note "This module is still being written"
-    Week 3 is written: elicitation, business objectives and success metrics, the glossary, identifiers, and scope. Week 4 adds use cases, business rules, quality attributes, and the specification.
+    Written so far: elicitation, business objectives and success metrics, the glossary, identifiers, scope, and use cases. Business rules, quality attributes, and the specification arrive before Wednesday's lecture in week 4.
 
 ## 1. Learning objectives
 
@@ -17,11 +17,18 @@ By the end of week 3, a student can:
 4. Build a project glossary that binds one word to one concept, and explain what breaks in a codebase without one.
 5. Assign name-based identifiers to requirement items, and explain why numbered identifiers fail under an agent.
 
+By the end of week 4, a student can:
+
+1. Pitch a use case at the user goal level, and defend the level with the boss, elementary business process, and size tests.
+2. Explain why a team plans with user stories but has its agent build against use cases.
+3. Write a main success scenario a tester could test without asking a question, and find its extensions step by step.
+4. Review a use case against the course style guide, then compare that review with an agent's.
+
 ## 2. Where it fits
 
 - **Prerequisites:** [The AI-Augmented Team](ai-augmented-team.md), whose thesis is that the repository is the team's shared memory and the only memory the agent has. Requirements are the first thing you put in it.
 - **Leads into:** [Traceability](traceability.md). Every traceable node in this course is born here: if there is no specification, there is nothing to trace.
-- **How it's taught:** two weeks. Week 3 has a single lecture day, Wednesday, on eliciting from a real client, and its studio drafts your glossary and vision and scope. Week 4 continues with use cases, business rules, quality attributes, and the specification. You keep both documents alive all term.
+- **How it's taught:** two weeks. Week 3 has a single lecture day, Wednesday, on eliciting from a real client, and its studio drafts your glossary and vision and scope. Week 4 has two: Monday on use cases, Wednesday on business rules, quality attributes, and the specification. Its studio writes your use case list and your first full use cases. You keep every one of these documents alive all term.
 - **Course outcome it delivers:** [turning a client's problem into a specification that serves as the development contract](../syllabus.md#learning-outcomes) (outcome 1).
 
 ## 3. Motivation
@@ -225,7 +232,189 @@ The last row is the one to watch. Solution ideas arrive constantly and sound lik
 
 **The full version is in [Requirement Types](../requirement-types.md)**: each kind with its definition, where it comes from, what it sounds like, and **one worked example from Project Pulse**, so you can read the same system sliced nine ways and feel where the lines fall. Read it once before week 4.
 
-### 4.10 Knowing when to stop
+### 4.10 A use case is a conversation
+
+A **use case** describes the system's behavior under various conditions as it responds to a request from one of its stakeholders, the **primary actor** (Cockburn). It is fundamentally text, and read aloud it sounds like a play: the actors take turns, and the system is one of them.
+
+The example performed in class:
+
+| | |
+|---|---|
+| **Use case** | Place an order |
+| **Primary actor** | Shopper, registered (an account, possibly with stored billing and shipping information) or not |
+| **Secondary actors** | Fulfillment System, which processes orders for delivery; Billing System, which bills customers for orders placed |
+| **Trigger** | The Shopper indicates to order the items that have already been selected. |
+| **Precondition** | The Shopper has selected the items to be purchased. |
+| **Postconditions** | The order is placed, and the Shopper has a tracking ID and knows the estimated delivery date. Or it is not placed, and the database is consistent. |
+
+??? example "Place an order: the main success scenario and extensions"
+
+    1. The Shopper indicates to order the items that have already been selected.
+    2. The System presents the billing and shipping information that the Shopper previously stored.
+    3. The Shopper verifies the information and confirms that the existing billing and shipping information should be used for this order.
+    4. The System presents the amount that the order will cost, including applicable taxes and shipping charges.
+    5. The Shopper verifies the information and confirms that the order information is accurate.
+    6. The System provides the user with a tracking ID for the order.
+    7. The System submits the order to the Fulfillment System for evaluation.
+    8. The Fulfillment System provides the System with an estimated delivery date.
+    9. The System presents the estimated delivery date to the Shopper.
+    10. The Shopper indicates that the order shall be placed.
+    11. The System requests the Billing System to charge the Shopper for the order.
+    12. The Billing System confirms that the charge has been placed for the order.
+    13. The System submits the order to the Fulfillment System for processing.
+    14. The Fulfillment System confirms that the order is being processed.
+    15. The System indicates to the Shopper that she has been charged for the order.
+    16. The System indicates to the Shopper that the order has been placed.
+    17. The Shopper exits the System.
+
+    **Extensions**
+
+    - **3a.** The Shopper wants billing and shipping information different from what is stored. Also applies if nothing is stored, or the Shopper has no account.
+        - 3a1. The Shopper indicates that this order shall use alternate billing or shipping information.
+        - 3a2. The Shopper enters billing and shipping information for this order.
+        - 3a3. The System validates the billing and shipping information.
+        - 3a4. The use case continues.
+    - **5a.** The Shopper discovers an error in the billing or shipping information in her account.
+        - 5a1. The Shopper indicates that the billing and shipping information is incorrect.
+        - 5a2. The Shopper edits the billing and shipping information in her account.
+        - 5a3. The System validates the billing and shipping information.
+        - 5a4. The use case returns to step 2 of the normal flow.
+    - **10a.** The Shopper determines that the order is not acceptable (perhaps the estimated delivery date) and cancels the order.
+        - 10a1. The Shopper requests that the order be cancelled.
+        - 10a2. The System confirms that the order has been cancelled.
+        - 10a3. The use case terminates.
+
+Performing it shows two things a feature list hides. The System talks to other systems (steps 7 and 8, then 11 to 14) in exchanges the Shopper never sees. And the Shopper can cancel at step 10, after a tracking ID has gone out and the Fulfillment System has heard about the order, so "the database is consistent" is a promise somebody has to design.
+
+Use cases work because elicitation that asks users what they *do* produces better requirements than asking what features they want, and because a client can review a use case: it is written in the words of their business.
+
+### 4.11 User stories, and where they run out
+
+You will meet user stories in industry: "As a student, I want to submit my weekly activity report, so that my instructor can see my work." Ron Jeffries gives a story three parts: the **card** (that sentence), the **conversation** (where the detail is worked out), and the **confirmation** (the acceptance tests). The card is short on purpose, because the detail lives in the conversation.
+
+Bill Wake's INVEST checklist says a good story is Independent, **Negotiable**, Valuable, Estimable, Small, and Testable. Negotiable means *not an explicit contract*: the details are co-created by the customer and the programmer during development.
+
+That is the property that fails with a coding agent. An agent does not negotiate. It builds what is written, and where nothing is written it fills the gap and does not ask. A story's conversation happens between people who can say "what did you mean?", and the agent never says it.
+
+So the course keeps both, for different jobs: **plan and prioritize with user stories; build against use cases.** A use case carries what the card leaves to the conversation: preconditions, the steps, and the extensions.
+
+### 4.12 The right level
+
+"Get a student loan", "set up a promotion for Black Friday", "handle a return for a customer", "log in", and "move a piece on the game board" can all be use cases, at different levels, depending on the system, its boundary, and the goal. The level you want is the **user goal**: after the use case, the user can go away happy, even if their larger goal is not done yet. Craig Larman's three tests find it:
+
+| Test | Ask | Fails it |
+|---|---|---|
+| **Boss** | Your boss asks what you did all day. Is this use case the answer, and is the boss happy? | "Logged in." |
+| **Elementary business process** | One person, one place, one time, in response to a business event, adding measurable value and leaving the data consistent? | "Delete a line item." |
+| **Size** | Is it more than a single step in someone else's sequence? | "Move a piece on the game board." |
+
+A student loan is broader than one sitting (apply, view the offer, accept it, sign the promissory note, disburse), so it is a business goal made of user goals. The Black Friday promotion and the return pass all three tests. On Project Pulse, `UC-EVA-submit-evaluation` passes: a student sits down once a week, submits, and leaves.
+
+### 4.13 What is in a use case
+
+| Part | What it is |
+|---|---|
+| **Actor** | Anyone or anything with behavior, including another system |
+| **Stakeholder** | Someone with a vested interest in how the system behaves |
+| **Primary actor** | The stakeholder who starts the interaction to reach a goal |
+| **Scope** | The system under design |
+| **Preconditions and postconditions** | What is true before it starts, and what is guaranteed when it ends |
+| **Main success scenario** | The path where nothing goes wrong |
+| **Extensions** | What can happen differently along the way |
+
+![Alistair Cockburn's striped trousers: the goal "Place order" as the belt, success scenarios down one leg and failure scenarios down the other, each step a subgoal that succeeds or fails](../assets/striped-trousers.png)
+
+Cockburn draws one use case as a pair of striped trousers. The goal is the belt, each stripe is one scenario, and the successes run down one leg and the failures down the other. Each step is a subgoal that can succeed or fail, so scenarios multiply, and a step that hides a lot of work may be a smaller use case of its own. Place an order has at least four stripes: the main path, 3a, 5a, and 10a.
+
+The course's [`use-cases.md`](https://github.com/tcu-cosc-40943/course-templates/blob/main/requirements/use-cases.md) template uses Wiegers and Beatty's format, as adopted by the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide), and adds what an agent needs in order to build from it: a `UC-<AREA>-<slug>` identifier, the **trigger**, **Business Rules** as `BR-*` identifiers only, **Associated Information** (the data fields and their validation), and **Frequency of Use**, which tells your architecture which use cases carry the load. The template owns the field definitions.
+
+### 4.14 Writing the steps
+
+**Save your energy.** Cockburn writes use cases in four levels of precision. Each costs more than the last, so review and pause after each:
+
+1. **Actors and goals**, one use case per user goal. This is the use case list, and it is the cheapest thing to review with your client.
+2. **The main success scenario**, for the use cases you are pursuing now. Do not let the nice-to-haves hold the must-haves hostage.
+3. **Every failure condition**, listed completely before you handle any. Writers who start on the handling run out of energy before the list is done.
+4. **The failure handling.** Tiring and surprising work: this is where an obscure business rule surfaces, or a new actor or goal appears.
+
+The full sequence: name the scope and boundary; list the primary actors; list their goals exhaustively; pick one use case; capture its stakeholders, preconditions, and guarantees; write the main success scenario; list its extension conditions; write their handling; extract complex flows into sub use cases and merge trivial ones; readjust the set.
+
+**Every step is one of three kinds:** an interaction between two actors ("Customer enters address info"), a validation that protects a stakeholder ("System validates PIN code"), or an internal change ("System deducts amount from balance").
+
+**Ten guidelines for writing steps**, from Cockburn:
+
+| # | Guideline | Instead of | Write |
+|---|---|---|---|
+| 1 | Simple grammar: subject, verb, direct object, prepositional phrase | | The system deducts the amount from the account balance. |
+| 2 | Show who has the ball: the actor holding it is the subject | Deducts the amount. | The system deducts the amount. |
+| 3 | A bird's eye view, not the system talking to itself | Get ATM card and PIN. | The customer puts in the ATM card and PIN. |
+| 4 | Move the process forward; a main success scenario rarely needs more than nine steps. Ask why the actor is doing it. | User hits the tab key. | User enters name and address. |
+| 5 | The actor's intent, not their movements in the interface | System asks for name. User enters name. System prompts for address. User enters address. User clicks "OK". | User enters name and address. |
+| 6 | A reasonable set of actions per step, split at the natural breaks | One step that takes the order number, detects a winner, registers it, emails the sales manager, and congratulates the customer | The customer enters the order number. The system detects the match. The system registers the winner, emails, and congratulates. |
+| 7 | "Validates", not "checks whether" | The system checks whether the password is correct. If it is... | The system validates that the password is correct. (The failure is an extension.) |
+| 8 | Mention timing only when it matters | | |
+| 9 | "User has System A kick System B" | User hits FETCH, at which time the system fetches the data from system B. | User has the system fetch the data from system B. |
+| 10 | "Do steps x-y until condition" | Numbered "Do" and "End do" steps | Customer repeats steps 3-4 until indicating that they are done. |
+
+Place an order, at seventeen steps, is worth rereading against guideline 4.
+
+??? example "Standard mistakes: Register for Courses, before and after"
+
+    From Steve Adolph and Paul Bramble, *Patterns for Effective Use Cases* (2002), UC 1.1 and UC 1.3. The first version breaks guidelines 2, 4, 5, 7, and 10, and buries its only failure inside step 8.
+
+    **Before**
+
+    1. Display a blank schedule.
+    2. Display a list of all classes in the following way: The left window lists all the courses in the system in alphabetical order. The lower window displays the times the highlighted course is available. The third window shows all the courses currently in the schedule.
+    3. Do
+    4. Student clicks on a course.
+    5. Update the lower window to show the times the course is available.
+    6. Student clicks on a course time and then on the "Add Course" button.
+    7. Check if the Student has the necessary prerequisites and that the course offering is open.
+    8. If the course is open and the Student has the necessary prerequisites, add the Student to the course. Display the updated schedule showing the new course. If no, put up a message, "You are missing the prerequisites. Choose another course."
+    9. Mark the course offering as "enrolled" in the schedule.
+    10. End do when the Student clicks on "Save Schedule."
+    11. Save the schedule and return to the main selection screen.
+
+    **After** (system: Course Enrollment System; goal level: user goal)
+
+    1. Student requests to construct a schedule.
+    2. The system prepares a blank schedule form.
+    3. The system gets available courses from the Course Catalog System.
+    4. Student selects up to 4 primary and 2 alternate course offerings.
+    5. For each course, the system verifies that the Student has the necessary prerequisites, adds the Student to the course, marking Student as "enrolled" for that course in the schedule.
+    6. When the Student indicates the schedule is complete, the system saves it.
+
+    - **1a.** *Student already has a schedule:* System brings up the current version of the Student's schedule for editing instead of creating a new one.
+    - **1b.** *Current semester is closed and next semester is not yet open:* System lets Student look at existing schedules, but not create new ones.
+    - **3a.** *Course Catalog System does not respond:* The system notifies the Student and the use case ends.
+    - **5a.** *Course full or Student has not fulfilled all prerequisites:* System disables selection of that course and notifies the Student.
+
+### 4.15 Extensions: where the defects live
+
+A use case with no extensions is not finished, and an agent building from one invents the error handling without telling you. Brainstorm conditions from the first step to the last, against this checklist:
+
+- An alternative success path ("Clerk uses a shortcut code").
+- The primary actor behaves incorrectly ("Invalid password") or does nothing ("Time-out waiting for password").
+- **Every "the system validates" implies an extension** for when validation fails ("Invalid account number").
+- A supporting actor responds badly or not at all ("Time-out waiting for response").
+- An internal failure the system handles as normal business ("Cash dispenser jams").
+- An unexpected internal failure with a visible consequence ("Corrupt transaction log discovered").
+- A critical performance failure ("Response not calculated within 5 seconds").
+
+**Write the condition as what the system detects** (guideline 11). The system cannot detect "customer forgets PIN"; perhaps they walked away. It can detect "PIN entry time-out", and a condition the system can detect is one a developer can implement and a tester can trigger.
+
+**An extension is a miniature use case.** Its trigger is the condition, its goal is to complete the use case or recover, and its body is action steps written like the main success scenario, starting with the step after detection. Number it from the step it branches from and indent its steps with the count restarted (guideline 12): `2a. Insufficient funds:`, then `2a1.`, `2a2.`. Say where it rejoins, or that the use case ends.
+
+Extensions are where the agent helps most and needs you most. Asked for extensions, it proposes more than you thought of. Some are real paths in your client's business and some are generic ones it has seen elsewhere, and only someone who met the client can tell which.
+
+**Review before anyone builds.** Your use cases are reviewed against the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide). Review alone first, with the guidelines, the checklist above, and the one at the end of the template; then give your agent the use case and the style guide and ask for its review. Alone first, because a review that starts from the agent's list anchors on it. Where the two reviews disagree is where to look.
+
+### 4.16 Use cases are requirements, but not all of them
+
+Written properly, use cases are requirements: nothing needs converting into another form before a developer builds from them. They are not all of the requirements. External interfaces, data formats, business rules, complex formulas, constraints, and quality attributes are specified elsewhere, and a team with forty good use cases and nothing else has specified a fraction of its system.
+
+### 4.17 Knowing when to stop
 
 You are never entirely done, particularly building incrementally. But you are at the point of diminishing returns when the client stops producing new use cases, proposes scenarios that turn out to be variations on ones you have, repeats issues already covered, or suggests things that are all out of scope or all low priority. Users tend to raise requirements in order of decreasing importance, so the tail is genuinely the tail.
 
@@ -233,10 +422,10 @@ The one signal that is not about the client: your own team and your reviewers st
 
 ## 5. The AI-native lens
 
-- **Delegate to AI:** drafting document sections from the brief, the template, and your notes; generating a candidate interview script; producing a plain-language primer on the client's domain and acronyms before you walk in; turning a meeting recording into a first-pass glossary; listing every question it could not answer from what you gave it.
-- **Keep human:** which of its thirty questions are worth your client's limited hour; telling enthusiasm from commitment; the scope line; deciding whose word wins when two stakeholders use different terms; noticing the thing the client did not say.
-- **Context to supply:** the one-page brief, the template **including its instructions**, your meeting notes and recordings, the glossary as it grows, and the artifacts the client actually uses. The agent cannot infer your client's business, and it has never seen their spreadsheet.
-- **How to verify:** every claim in the draft must trace to something the client said or a document you have. Hunt specifically for invented specifics, since numbers, names, and features nobody mentioned are where a fluent draft goes wrong. Then read it back to the client, which is the only check that matters.
+- **Delegate to AI:** drafting document sections from the brief, the template, and your notes; generating a candidate interview script; producing a plain-language primer on the client's domain and acronyms before you walk in; turning a meeting recording into a first-pass glossary; listing every question it could not answer from what you gave it; proposing extensions for a use case you drafted; reviewing a use case against the style guide.
+- **Keep human:** which of its thirty questions are worth your client's limited hour; telling enthusiasm from commitment; the scope line; deciding whose word wins when two stakeholders use different terms; noticing the thing the client did not say; whether a proposed extension is a real path in your client's business; which of two contradictory statements in a use case is true.
+- **Context to supply:** the one-page brief, the template **including its instructions**, your meeting notes and recordings, the glossary as it grows, the artifacts the client actually uses, and the use case style guide. The agent cannot infer your client's business, and it has never seen their spreadsheet.
+- **How to verify:** every claim in the draft must trace to something the client said or a document you have. Hunt specifically for invented specifics, since numbers, names, and features nobody mentioned are where a fluent draft goes wrong. Read a main success scenario aloud to someone who has not read it, and stop wherever they ask a question. Then read it back to the client, which is the only check that matters.
 
 The difference this makes is not speed. Without an agent, a team downloads a generic interview questionnaire, skims the brief, and shows up. With one, the same team arrives with a script built from their own brief, having already learned what the client's acronyms mean. That team asks better questions for the whole hour. The agent did not do the interview; it made the humans ready for it.
 
@@ -247,14 +436,22 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 | A friendly client agrees with every feature proposed enthusiastically, so you build the yellow Walkman. The agent, handed the transcript, encodes the enthusiasm as a requirement, since it cannot tell agreement from commitment. | Watching what the client does rather than what they say. | Behavior questions, "show me", the forced MVP choice, and reading the vision statement back. |
 | The specification has gaps. The agent fills them with a plausible guess, written in the same confident register as the parts that are true, so the guess is invisible. | Knowing which parts you were told and which you inferred. | Ask the agent for what it could not answer, and put those in `OPEN-ISSUES.md` rather than resolving them yourself. |
 | Requirements are met and the product is still wrong, the MCAS failure. Cheap generation makes it faster to build the wrong thing correctly. | Validation: does this serve the business objective at all? | Trace every feature to an objective, and every objective to a metric with a baseline. |
+| A use case has a main success scenario and no extensions. The agent builds the happy path and invents the error handling, and nothing in the specification says it is wrong. | Knowing what can fail in the client's business, which the agent has never seen. | The extension checklist applied step by step, and a review against the style guide before anyone builds. |
 
 ## 7. Hands-on (studio + optional individual assignment)
 
-**Studio (team, own project)**
+**Week 3 studio (team, own project)**
 
 - **Goal:** produce the first version of the two documents your project will be built from, and a written record of what you still do not know.
 - **In studio (own project):** copy the [templates](https://github.com/tcu-cosc-40943/course-templates) into `docs/requirements/` in your team repository. Split the sections across the team, one owner each, one branch and one pull request per person. Draft the glossary from your client brief and your meeting, fill in Background, the business opportunity, business objectives with real slugs, and the vision statement, and record everything you could not answer in `OPEN-ISSUES.md`. Preceded by [Napkin](se-and-ai.md#the-napkin-six-prompts) round 0 on your own project, which is sealed unread.
 - **Deliverable and assessment:** `docs/requirements/` on your `main` branch by end of studio, with commits from every member. Assessed on whether the objectives carry numbers, whether the open issues are real questions rather than placeholders, and whether the glossary contains terms you learned from the client rather than terms you already knew.
+
+**Week 4 studio (team, own project)**
+
+- **Goal:** turn your feature list into use cases an agent could build from, and start the documents that hold everything use cases do not.
+- **Before studio:** your use case list, the first level of *save your energy*: area codes from your `FEAT-*` entries, then one row per user goal in section 3 of `use-cases.md`.
+- **In studio (own project):** agree the list as a team first. Then four members each write one high-priority use case in full, extensions included; one member owns `business-rules.md`, with a source for every rule; and one starts the specification's constraints and quality attributes. One branch and one pull request each. Send the use case list to your client for review.
+- **Deliverable and assessment:** on `main` by end of studio. Assessed on whether every use case has extensions, whether every precondition is something the system can test, whether business rules are cited by identifier and each has a source, and whether every quality attribute carries a number.
 
 **Individual assignment (Project Pulse)**: none. The requirements skills are assessed on your own project, where there is a real client to be wrong about.
 
@@ -266,6 +463,10 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - One word, one concept, written in the repository, or your codebase will grow two names for everything and the agent will keep both.
 - Identifiers are slugs, because numbered lists break silently when anything is inserted, and inserting things is what agents do.
 - A system can meet its specification and still be the wrong system. That failure is not made rarer by faster code.
+- A use case is a conversation between actors toward one goal, and the system is only one of the voices.
+- Plan with user stories; build against use cases, because an agent does not negotiate what a story leaves open.
+- Write at the user goal level, list every use case before detailing any, and list the failures before handling them.
+- Extensions are where the defects live: every "validates" implies one, and every condition is something the system can detect.
 
 ## 9. Key papers and further reading
 
@@ -275,6 +476,11 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - Nancy Leveson, *Engineering a Safer World* (2011), chapters 1 and 2, on failures as control-structure failures rather than component failures.
 - Joint Authorities Technical Review, *Boeing 737 MAX Flight Control System* (2019), and the House Committee on Transportation and Infrastructure's final report (2020). The requirements and hazard-analysis sections are the relevant ones.
 - Alexander Cowan, ["The Yellow Walkman"](https://www.alexandercowan.com/yellow-walkman-data-art-of-customer-discovery/), on what customer discovery data is worth.
+- Alistair Cockburn, *Writing Effective Use Cases* (2001). The source of the four levels of precision, the writing guidelines, the extension checklist, and the striped trousers.
+- Steve Adolph and Paul Bramble, *Patterns for Effective Use Cases* (2002). The Register for Courses before and after.
+- Craig Larman, *Applying UML and Patterns*, 3rd edition (2004), for the boss, elementary business process, and size tests.
+- Ron Jeffries, "Essential XP: Card, Conversation, Confirmation" (2001), and Bill Wake, "INVEST in Good Stories, and SMART Tasks" (2003): user stories from the people who named their parts.
+- The [use case style guide](https://github.com/Washingtonwei/use-case-style-guide), the standard your use cases are reviewed against.
 - [Requirement Types](../requirement-types.md), this course's full reference for the nine kinds.
 
 ## 10. Self-check
@@ -284,22 +490,24 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 3. Write a success metric for the objective "reduce the time students spend submitting weekly reports by 25%". Include a source and a baseline. What would you have to ask the client to fill in the baseline?
 4. Your teammate adds a new business objective to the middle of a numbered list. Name two things that break, and say why no test catches either.
 5. Your client, in the same meeting, calls the same thing a "section" and a "class". What do you do, and when?
+6. Apply the boss, elementary business process, and size tests to "Log in", "Generate a peer evaluation report of the entire course section", and "Select a week from a drop-down". Which is a user goal use case, and what are the other two?
+7. INVEST says a good user story is negotiable. Why is that the property that makes a story the wrong thing to hand a coding agent?
+8. Rewrite this as a main success scenario step plus an extension: "The system checks whether the student is on a team. If so, it shows the form; if not, it shows an error."
+9. Project Pulse's [`UC-EVA-submit-evaluation`](https://github.com/Washingtonwei/project-pulse/blob/347d48215e1d0770c09ef2d97648d1f553fbf908/docs/requirements/use-cases.md?plain=1#L2186-L2250) has at least six defects against the guidelines and the template checklist. Find them alone, then ask your agent for its review, and explain one place where the two reviews disagree.
 
 ## Related
 
 - [The AI-Augmented Team](ai-augmented-team.md): why these documents live in the repository rather than in a shared drive.
 - [Traceability](traceability.md): what happens to these identifiers once code exists.
 - [Requirement Types](../requirement-types.md): the nine kinds in full.
+- [Use case style guide](https://github.com/Washingtonwei/use-case-style-guide): the standard your use cases are reviewed against.
 - [Studio](../studio.md): what your team does with this on Friday.
 - [Schedule](../schedule.md): when this is taught.
 
 ---
 
-## Drafting notes (raw, week 4, distribute when authored, then delete)
+## Drafting notes (raw, week 4 Wednesday, distribute when authored, then delete)
 
-- **User stories are introduced, then critiqued** (`DECISION-user-stories-demoted`): teach them as the mainstream agile unit students will meet in industry, then show where they run out. A user story is a deliberately under-specified placeholder for a conversation, which is the wrong property when a coding agent builds precisely what the specification says. The use case (steps plus associated information) is the contract the agent builds against.
-- Use case anatomy from the 2025 deck: name, summary, rationale, users, precondition, main success scenario, extensions, postconditions. The Search and Replace example (`UC-8`) is worked end to end and shows extensions properly.
 - EARS templates for functional requirements (ubiquitous, event driven, state driven, optional, unwanted behavior, hybrid), from <https://alistairmavin.com/ears/>. Pairs naturally with the agent: an EARS-shaped requirement is far harder to misread than prose.
 - Business rules as the origin of requirements: the table showing how one rule propagates into a business requirement, a user requirement, a functional requirement, and a quality attribute.
 - Quality attributes list and the "how to find" listening cues; the training-room heating story (met every stated requirement, unusably loud) is the failure story for this section.
-- Week 4 studio writes use cases and business rules and starts the specification.

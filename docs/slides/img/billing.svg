@@ -1,0 +1,10 @@
+<!-- The Billing System in "Place an order": a credit card. Informal drawing in the week 1
+     palette (C[4] #C77DFF, C[1] #FFB443, INK #0F1420). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80" role="img" aria-label="The Billing System, a credit card">
+  <g transform="translate(60,40)">
+    <rect x="-52" y="-34" width="104" height="68" rx="9" fill="#C77DFF"/>
+    <rect x="-52" y="-22" width="104" height="12" fill="#2B3346"/>
+    <rect x="-40" y="-2" width="20" height="15" rx="3" fill="#FFB443"/>
+    <path d="M-40,24 h14 M-20,24 h14 M0,24 h14 M20,24 h14" stroke="#0F1420" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

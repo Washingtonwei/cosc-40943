@@ -1,0 +1,12 @@
+<!-- The Fulfillment System in "Place an order": a shipping box. Informal drawing in the
+     week 1 palette (INK #0F1420, SKIN[1] #C98A5E for cardboard). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="120" height="100" role="img" aria-label="The Fulfillment System, a shipping box">
+  <g transform="translate(60,54)">
+    <path d="M-46,-26 l14,-18 64,0 14,18z" fill="#A9714B"/>
+    <rect x="-46" y="-26" width="92" height="66" rx="3" fill="#C98A5E"/>
+    <rect x="-9" y="-44" width="18" height="84" fill="#F6DCC0"/>
+    <rect x="16" y="6" width="24" height="22" rx="2" fill="#FBF6E9"/>
+    <path d="M20,13 h16 M20,19 h10" stroke="#0F1420" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M-34,24 l0,-16 m-6,6 l6,-6 6,6" stroke="#0F1420" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
