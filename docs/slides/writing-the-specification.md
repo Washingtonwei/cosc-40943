@@ -18,6 +18,50 @@ Thirty seconds of admin first. The first weekly activity report was due in Proje
 Then the frame. Last week was what a client gives you. Today is the form you write it in, so that a teammate, a tester, and an agent all build the same thing.
 :::
 
+## From feature to use case
+
+```mermaid
+flowchart LR
+  BO["BO-PERF-instructor-efficiency"] --> FEAT["FEAT-performance-tracking"]
+  FEAT --> WAR["Area: WAR"]
+  FEAT --> EVA["Area: EVA"]
+  EVA --> UC["UC-EVA-submit-evaluation"]
+  UC -.-> LATER["Design, code, test: week 8"]
+```
+
+::: key
+Every arrow is a link you can follow, forward and backward. That is traceability.
+:::
+
+::: note
+Every team has a feature list in its vision and scope. A feature is a capability a stakeholder can see, in value terms, with no behavior; Project Pulse has six. A feature is too coarse to build from, so it is broken into use case areas, and use cases live inside the areas.
+
+This is Project Pulse's own chain. Point at UC-EVA-submit-evaluation: the room reviews it at the end of the hour.
+
+Features and areas are many-to-many, never one-to-one. A feature that reads "create, edit, delete X" is a list of use cases in disguise; a feature that lands on exactly one area should be broadened.
+
+Traceability is following these links forward to what realizes a requirement, and backward to why an artifact exists. Design, code, and tests arrive in week 8. Two minutes for this slide and the next, then the roleplay.
+:::
+
+## Your first trace
+
+| Feature | Business objectives | Use case areas |
+|---|---|---|
+| `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
+
+::: steps
+- Every feature has at least one area.
+- Every area is reached by a feature.
+:::
+
+::: note
+This table goes in docs/traceability.md in the team repository, and it is part of Friday's work. Project Pulse's own traceability.md opens with exactly this table. Objectives attach at the feature; everything below inherits them.
+
+The two checks. A feature with no area is a promise nobody has specified. An area no feature reaches is use cases no stakeholder asked for. The first time the second check ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+
+Then the bridge: an area is only a name, and what fills it is use cases. Cast the volunteers.
+:::
+
 ## Four volunteers
 
 | ![The Shopper](img/shopper.svg){ height="150" } | ![The online store](img/web-store.svg){ height="84" } | ![The Fulfillment System](img/fulfillment.svg){ height="96" } | ![The Billing System](img/billing.svg){ height="76" } |
@@ -729,13 +773,13 @@ Written properly, use cases really are requirements: you should not have to conv
 ## Before Friday
 
 ::: steps
-- **Friday:** bring your team's use case list. Actors and goals only.
+- **Friday:** bring your use case list (actors and goals only) and your feature-to-area table.
 - **Tomorrow, 10:00 AM:** peer evaluation, in Project Pulse.
 - **Wednesday:** business rules, quality attributes, the specification.
 :::
 
 ::: note
-The list goes in section 3 of docs/requirements/use-cases.md, one row per use case under its area code, built from the team's feature list. It is the cheapest thing to review with your client, so send it to them once it is committed.
+The list goes in section 3 of docs/requirements/use-cases.md, one row per use case under its area code, built from the team's feature list. It is the cheapest thing to review with your client, so send it to them once it is committed. The feature-to-area table goes in docs/traceability.md, with both checks run.
 
 Friday's studio starts from that list. A team without one spends Friday's first twenty minutes writing it.
 :::

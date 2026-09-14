@@ -5,7 +5,7 @@
 > **Purpose (one line):** find out what your client actually needs, and write it down so that your team and your agent both build the same thing.
 
 !!! note "This module is still being written"
-    Written so far: elicitation, business objectives and success metrics, the glossary, identifiers, scope, and use cases. Business rules, quality attributes, and the specification arrive before Wednesday's lecture in week 4.
+    Written so far: elicitation, business objectives and success metrics, the glossary, identifiers, scope, features and the first trace, and use cases. Business rules, quality attributes, and the specification arrive before Wednesday's lecture in week 4.
 
 ## 1. Learning objectives
 
@@ -232,7 +232,35 @@ The last row is the one to watch. Solution ideas arrive constantly and sound lik
 
 **The full version is in [Requirement Types](../requirement-types.md)**: each kind with its definition, where it comes from, what it sounds like, and **one worked example from Project Pulse**, so you can read the same system sliced nine ways and feel where the lines fall. Read it once before week 4.
 
-### 4.10 A use case is a conversation
+### 4.10 From features to use cases: the first trace
+
+Your vision and scope already lists the product's **features**: `FEAT-<slug>` entries, each a capability a stakeholder can see, written in terms of value and with no behavior. A product has a handful. Project Pulse has six, and one is `FEAT-performance-tracking`: submit and review weekly activity reports and peer evaluations.
+
+A feature is too coarse to build from, so it is not specified. It is broken down into **use case areas**, the `UC-<AREA>` groupings of interactions that belong together. `FEAT-performance-tracking` breaks down into two areas, `WAR` (weekly activity reports) and `EVA` (peer evaluations), and the use cases live inside the areas: `UC-EVA-submit-evaluation` is one of them. Features and areas are many-to-many, never one-to-one. A feature that reads "create, edit, delete X" is really a list of use cases, and a feature that lands on exactly one area should be broadened to the theme that area belongs to. [The method](../method.md#features-and-use-case-areas-different-views-not-different-fragments) explains why the two lists are kept apart.
+
+Put the pieces in a line and you have the spine of everything this course builds:
+
+```mermaid
+flowchart LR
+  BO["Business objective<br>BO-PERF-instructor-efficiency"] --> FEAT["Feature<br>FEAT-performance-tracking"]
+  FEAT --> AREA["Use case area<br>EVA"]
+  AREA --> UC["Use case<br>UC-EVA-submit-evaluation"]
+  UC -.-> LATER["Design, code, test<br>(week 8)"]
+```
+
+Each arrow is a link somebody can follow. **Traceability** is being able to follow them in both directions: forward from a requirement to whatever realizes it, and backward from any artifact to the reason it exists. The identifiers are what make a link followable, which is why they are slugs. Design, code, and tests do not exist yet; [Traceability](traceability.md) picks the chain up in week 8, when they do.
+
+**The first trace is this week's work.** Record, in `docs/traceability.md`, which objectives each feature serves and which areas realize it. Objectives attach here, at the feature, and everything below inherits them:
+
+| Feature | Business objectives | Use case areas |
+|---|---|---|
+| `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
+
+Then run two checks. **Every feature has at least one area**, or the vision promises something nobody has specified. **Every area is reached by a feature**, or you have use cases no stakeholder asked for. The second check earns its place: the first time it ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+
+An area is still only a name. What fills it is use cases, and a use case is where behavior finally gets written down.
+
+### 4.11 A use case is a conversation
 
 A **use case** describes the system's behavior under various conditions as it responds to a request from one of its stakeholders, the **primary actor** (Cockburn). It is fundamentally text, and read aloud it sounds like a play: the actors take turns, and the system is one of them.
 
@@ -288,7 +316,7 @@ Performing it shows two things a feature list hides. The System talks to other s
 
 Use cases work because elicitation that asks users what they *do* produces better requirements than asking what features they want, and because a client can review a use case: it is written in the words of their business.
 
-### 4.11 User stories, and where they run out
+### 4.12 User stories, and where they run out
 
 You will meet user stories in industry: "As a student, I want to submit my weekly activity report, so that my instructor can see my work." Ron Jeffries gives a story three parts: the **card** (that sentence), the **conversation** (where the detail is worked out), and the **confirmation** (the acceptance tests). The card is short on purpose, because the detail lives in the conversation.
 
@@ -298,7 +326,7 @@ That is the property that fails with a coding agent. An agent does not negotiate
 
 So the course keeps both, for different jobs: **plan and prioritize with user stories; build against use cases.** A use case carries what the card leaves to the conversation: preconditions, the steps, and the extensions.
 
-### 4.12 The right level
+### 4.13 The right level
 
 "Get a student loan", "set up a promotion for Black Friday", "handle a return for a customer", "log in", and "move a piece on the game board" can all be use cases, at different levels, depending on the system, its boundary, and the goal. The level you want is the **user goal**: after the use case, the user can go away happy, even if their larger goal is not done yet. Craig Larman's three tests find it:
 
@@ -310,7 +338,7 @@ So the course keeps both, for different jobs: **plan and prioritize with user st
 
 A student loan is broader than one sitting (apply, view the offer, accept it, sign the promissory note, disburse), so it is a business goal made of user goals. The Black Friday promotion and the return pass all three tests. On Project Pulse, `UC-EVA-submit-evaluation` passes: a student sits down once a week, submits, and leaves.
 
-### 4.13 What is in a use case
+### 4.14 What is in a use case
 
 | Part | What it is |
 |---|---|
@@ -328,7 +356,7 @@ Cockburn draws one use case as a pair of striped trousers. The goal is the belt,
 
 The course's [`use-cases.md`](https://github.com/tcu-cosc-40943/course-templates/blob/main/requirements/use-cases.md) template uses Wiegers and Beatty's format, as adopted by the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide), and adds what an agent needs in order to build from it: a `UC-<AREA>-<slug>` identifier, the **trigger**, **Business Rules** as `BR-*` identifiers only, **Associated Information** (the data fields and their validation), and **Frequency of Use**, which tells your architecture which use cases carry the load. The template owns the field definitions.
 
-### 4.14 Writing the steps
+### 4.15 Writing the steps
 
 **Save your energy.** Cockburn writes use cases in four levels of precision. Each costs more than the last, so review and pause after each:
 
@@ -390,7 +418,7 @@ Place an order, at seventeen steps, is worth rereading against guideline 4.
     - **3a.** *Course Catalog System does not respond:* The system notifies the Student and the use case ends.
     - **5a.** *Course full or Student has not fulfilled all prerequisites:* System disables selection of that course and notifies the Student.
 
-### 4.15 Extensions: where the defects live
+### 4.16 Extensions: where the defects live
 
 A use case with no extensions is not finished, and an agent building from one invents the error handling without telling you. Brainstorm conditions from the first step to the last, against this checklist:
 
@@ -410,11 +438,11 @@ Extensions are where the agent helps most and needs you most. Asked for extensio
 
 **Review before anyone builds.** Your use cases are reviewed against the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide). Review alone first, with the guidelines, the checklist above, and the one at the end of the template; then give your agent the use case and the style guide and ask for its review. Alone first, because a review that starts from the agent's list anchors on it. Where the two reviews disagree is where to look.
 
-### 4.16 Use cases are requirements, but not all of them
+### 4.17 Use cases are requirements, but not all of them
 
 Written properly, use cases are requirements: nothing needs converting into another form before a developer builds from them. They are not all of the requirements. External interfaces, data formats, business rules, complex formulas, constraints, and quality attributes are specified elsewhere, and a team with forty good use cases and nothing else has specified a fraction of its system.
 
-### 4.17 Knowing when to stop
+### 4.18 Knowing when to stop
 
 You are never entirely done, particularly building incrementally. But you are at the point of diminishing returns when the client stops producing new use cases, proposes scenarios that turn out to be variations on ones you have, repeats issues already covered, or suggests things that are all out of scope or all low priority. Users tend to raise requirements in order of decreasing importance, so the tail is genuinely the tail.
 
