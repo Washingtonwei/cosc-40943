@@ -228,6 +228,8 @@ figcaption{font-size:var(--fs-tiny); color:var(--ink-dim); margin-top:10px; lett
   margin:0 0 14px; min-height:0; flex:1 1 auto; overflow:hidden;
 }
 .mermaid svg{max-width:100%; max-height:100%; height:auto}
+/* The slide's paragraph size and margin must not reach inside a diagram label. */
+.mermaid p{font-size:inherit; line-height:1.25; margin:0; max-width:none}
 
 /* ============================================================
    SLIDE CHROME

@@ -123,15 +123,34 @@
 
   function renderMermaid(slide) {
     if (typeof window.mermaid === "undefined") return;
+    /* Initialize first: it turns off mermaid's own render-on-load, which
+       would otherwise draw every diagram in the default theme at the scaled
+       size while this function waits for fonts. */
     initMermaid();
+    /* Measure labels in the deck's own font, not the fallback it replaces. */
+    if (document.fonts && document.fonts.status !== "loaded") {
+      document.fonts.ready.then(function () { renderMermaid(slide); });
+      return;
+    }
     var pending = slide.querySelectorAll(".mermaid:not([data-done])");
     if (!pending.length) return;
     Array.prototype.forEach.call(pending, function (el) {
       el.setAttribute("data-done", "1");
     });
     try {
-      window.mermaid.run({ nodes: pending });
+      /* Lay the diagram out on the unscaled 1280x720 canvas, then scale it
+         back. Mermaid measures label text on screen, so a slide scaled down
+         by fit() measures labels too small and clips their text. */
+      slide.style.transform = "none";
+      var restore = function () { fit(); };
+      var running = window.mermaid.run({ nodes: pending });
+      if (running && typeof running.then === "function") {
+        running.then(restore, restore);
+      } else {
+        restore();
+      }
     } catch (e) {
+      fit();
       Array.prototype.forEach.call(pending, function (el) {
         el.innerHTML = '<p class="small">Diagram failed to render. Check the mermaid block.</p>';
       });
