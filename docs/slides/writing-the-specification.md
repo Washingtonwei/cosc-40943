@@ -8,7 +8,7 @@ week: 4
 
 Week 4 · Requirements as the Contract, part 2
 
-## Monday: use cases {.center}
+## Monday: from features to use cases {.center}
 
 The unit your agent builds against
 
