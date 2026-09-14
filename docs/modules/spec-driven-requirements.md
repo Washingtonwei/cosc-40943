@@ -248,15 +248,17 @@ flowchart LR
   UC -.-> LATER["Design, code, test<br>(week 8)"]
 ```
 
-Each arrow is a link somebody can follow. **Traceability** is being able to follow them in both directions: forward from a requirement to whatever realizes it, and backward from any artifact to the reason it exists. The identifiers are what make a link followable, which is why they are slugs. Design, code, and tests do not exist yet; [Traceability](traceability.md) picks the chain up in week 8, when they do.
+Each arrow is a link somebody can follow. **Traceability** is being able to follow them in both directions: forward from a requirement to whatever realizes it, and backward from any artifact to the reason it exists. The identifiers are what make a link followable, which is why they are slugs. Design, code, and tests do not exist yet; [Traceability](traceability.md) picks the chain up in week 8, when they do. Every module that adds a link to the chain marks it the way the box below does.
 
-**The first trace is this week's work.** Record, in `docs/traceability.md`, which objectives each feature serves and which areas realize it. Objectives attach here, at the feature, and everything below inherits them:
+!!! trace "Trace: feature to use case area"
 
-| Feature | Business objectives | Use case areas |
-|---|---|---|
-| `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
+    **The first trace is this week's work.** Record, in `docs/traceability.md`, which objectives each feature serves and which areas realize it. Objectives attach here, at the feature, and everything below inherits them:
 
-Then run two checks. **Every feature has at least one area**, or the vision promises something nobody has specified. **Every area is reached by a feature**, or you have use cases no stakeholder asked for. The second check earns its place: the first time it ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+    | Feature | Business objectives | Use case areas |
+    |---|---|---|
+    | `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
+
+    Then run two checks. **Every feature has at least one area**, or the vision promises something nobody has specified. **Every area is reached by a feature**, or you have use cases no stakeholder asked for. The second check earns its place: the first time it ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
 
 An area is still only a name. What fills it is use cases, and a use case is where behavior finally gets written down.
 
@@ -477,9 +479,9 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 **Week 4 studio (team, own project)**
 
 - **Goal:** turn your feature list into use cases an agent could build from, and start the documents that hold everything use cases do not.
-- **Before studio:** your use case list, the first level of *save your energy*: area codes from your `FEAT-*` entries, then one row per user goal in section 3 of `use-cases.md`.
+- **Before studio:** your use case list, the first level of *save your energy*: area codes from your `FEAT-*` entries, then one row per user goal in section 3 of `use-cases.md`. Record which areas realize each feature in `docs/traceability.md`, and run both checks.
 - **In studio (own project):** agree the list as a team first. Then four members each write one high-priority use case in full, extensions included; one member owns `business-rules.md`, with a source for every rule; and one starts the specification's constraints and quality attributes. One branch and one pull request each. Send the use case list to your client for review.
-- **Deliverable and assessment:** on `main` by end of studio. Assessed on whether every use case has extensions, whether every precondition is something the system can test, whether business rules are cited by identifier and each has a source, and whether every quality attribute carries a number.
+- **Deliverable and assessment:** on `main` by end of studio. Assessed on whether every use case has extensions, whether every precondition is something the system can test, whether business rules are cited by identifier and each has a source, whether every quality attribute carries a number, and whether the feature-to-area table passes both checks.
 
 **Individual assignment (Project Pulse)**: none. The requirements skills are assessed on your own project, where there is a real client to be wrong about.
 

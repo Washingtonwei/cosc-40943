@@ -58,3 +58,27 @@ pre.diagram svg {
   color: var(--md-default-fg-color);
   border-left: .2rem solid var(--md-primary-fg-color);
 }
+
+/* The traceability thread. Every module that adds a link to the chain from
+   objective to verified code marks it with `!!! trace "Trace: ..."`, so a
+   reader connects the thread across modules. The three-node symbol and the
+   pink match the ::: trace callout on the slides (decks/hook.py, deck.css). */
+:root {
+  --trace-color: #B8326F;
+  --md-admonition-icon--trace: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="18" r="2.5"/><circle cx="12" cy="12" r="2.5"/><circle cx="19" cy="6" r="2.5"/><path d="M6.9 16.4l3.2-2.8M13.9 10.4l3.2-2.8"/></svg>');
+}
+[data-md-color-scheme="slate"] { --trace-color: #FF7AB6; }
+.md-typeset .admonition.trace,
+.md-typeset details.trace {
+  border-color: var(--trace-color);
+}
+.md-typeset .trace > .admonition-title,
+.md-typeset .trace > summary {
+  background-color: color-mix(in srgb, var(--trace-color) 12%, transparent);
+}
+.md-typeset .trace > .admonition-title::before,
+.md-typeset .trace > summary::before {
+  background-color: var(--trace-color);
+  -webkit-mask-image: var(--md-admonition-icon--trace);
+          mask-image: var(--md-admonition-icon--trace);
+}

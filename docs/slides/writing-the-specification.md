@@ -49,7 +49,7 @@ Traceability is following these links forward to what realizes a requirement, an
 |---|---|---|
 | `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
 
-::: steps
+::: trace Trace: feature to use case area
 - Every feature has at least one area.
 - Every area is reached by a feature.
 :::
@@ -58,6 +58,8 @@ Traceability is following these links forward to what realizes a requirement, an
 This table goes in docs/traceability.md in the team repository, and it is part of Friday's work. Project Pulse's own traceability.md opens with exactly this table. Objectives attach at the feature; everything below inherits them.
 
 The two checks. A feature with no area is a promise nobody has specified. An area no feature reaches is use cases no stakeholder asked for. The first time the second check ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+
+Point at the pink box once. The three-node symbol marks every place the course adds a link to this chain, on slides and module pages alike, and it comes back in week 8.
 
 Then the bridge: an area is only a name, and what fills it is use cases. Cast the volunteers.
 :::

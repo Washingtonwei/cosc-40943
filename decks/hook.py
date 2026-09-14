@@ -52,10 +52,11 @@ ICONS = {
     "key":        '<circle cx="8" cy="12" r="4" fill="none" stroke-width="2"/><path d="M12 12h9M18 12v3M15 12v2" stroke-width="2"/>',
     "warn":       '<path d="M12 3l9.5 17H2.5z" fill="none" stroke-width="2"/><path d="M12 9v5" stroke-width="2"/><circle cx="12" cy="17" r="1.2"/>',
     "joke":       '<circle cx="12" cy="12" r="9" fill="none" stroke-width="2"/><path d="M8 14c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4" fill="none" stroke-width="2"/><circle cx="9" cy="10" r="1.2"/><circle cx="15" cy="10" r="1.2"/>',
+    "trace":      '<circle cx="5" cy="18" r="2.5" fill="none" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="none" stroke-width="2"/><circle cx="19" cy="6" r="2.5" fill="none" stroke-width="2"/><path d="M6.9 16.4l3.2-2.8M13.9 10.4l3.2-2.8" stroke-width="2"/>',
 }
 
-CALLOUT_ICON = {"key": "key", "ask": "question", "warn": "warn", "ai": "agent", "joke": "joke"}
-CALLOUT_TAG = {"key": "Key point", "ask": "Ask the room", "warn": "Pitfall", "ai": "The agent", "joke": ""}
+CALLOUT_ICON = {"key": "key", "ask": "question", "warn": "warn", "ai": "agent", "joke": "joke", "trace": "trace"}
+CALLOUT_TAG = {"key": "Key point", "ask": "Ask the room", "warn": "Pitfall", "ai": "The agent", "joke": "", "trace": "Trace"}
 
 
 def icon_svg(name: str) -> str:

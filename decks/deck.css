@@ -25,6 +25,7 @@
   --alarm:#FF4D4D;           /* pitfalls, "never do this"    */
   --ai:#5BE0E6;              /* anything the agent did       */
   --amber:#FFB443;           /* the joke, asides             */
+  --trace:#FF7AB6;           /* the traceability thread      */
 
   /* --- type ----------------------------------------------- */
   --font-display:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -168,6 +169,8 @@ td:has(> code:only-child){font-variant-numeric:tabular-nums}
 .callout.joke .ico svg{fill:var(--amber);   stroke:var(--amber)}
 .callout.joke .body{font-family:var(--font-hand); font-size:30px; line-height:1.3; color:var(--amber)}
 .callout.joke p{font-size:30px; max-width:none}
+.callout.trace{border-left-color:var(--trace)}
+.callout.trace .ico svg{fill:var(--trace);  stroke:var(--trace)}
 
 .callout .tag{
   display:block; font-size:var(--fs-tiny); font-weight:600;
@@ -178,6 +181,7 @@ td:has(> code:only-child){font-variant-numeric:tabular-nums}
 .callout.warn .tag{color:var(--alarm)}
 .callout.ai   .tag{color:var(--ai)}
 .callout.joke .tag{color:var(--amber); font-family:var(--font-body)}
+.callout.trace .tag{color:var(--trace)}
 
 /* ============================================================
    LAYOUT HELPERS  ( ::: cols  split on |||  )
