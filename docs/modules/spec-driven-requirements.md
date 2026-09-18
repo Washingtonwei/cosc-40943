@@ -441,7 +441,7 @@ Written properly, use cases are requirements: nothing needs converting into anot
 
 A senior manager at a software company once convened sixty employees for a day-long voice-of-the-customer workshop on a next-generation flagship product, and compiled the results into a hundred-page document he called a requirements specification. It was a pile of information. Nothing in it had been classified, organized, analyzed, or processed into anything describing a proposed solution. There were real requirements buried in it, and no developer could have found them.
 
-That is the distance between collecting requirements and specifying them. The **software requirements specification** states the functions the system must provide, its characteristics, and the constraints it must respect, described completely enough to say how the system behaves under various conditions and how well it behaves.
+That is the distance between collecting requirements and specifying them. The **software requirements specification** (SRS) states the functions the system must provide, its characteristics, and the constraints it must respect, described completely enough to say how the system behaves under various conditions and how well it behaves. In this course it is one file per project, `docs/requirements/software-requirements-specification.md`, copied from the [course template](https://github.com/tcu-cosc-40943/course-templates/blob/main/requirements/software-requirements-specification.md), which follows Wiegers and Beatty; the international standard for an SRS's contents is ISO/IEC/IEEE 29148. You keep it current all term, like everything else in `docs/`.
 
 It is not written for you. Seven kinds of reader take something different out of it:
 

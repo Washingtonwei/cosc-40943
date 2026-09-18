@@ -808,7 +808,25 @@ Collecting is not specifying.
 :::
 
 ::: note
-Ask the room: what does a specification have that his pile does not? Take one answer, then give the definition: the functions the system must provide, its characteristics, and the constraints it must respect, completely enough to say how the system behaves under various conditions and how well it behaves. Behavior and quality, both.
+Ask the room: what does a specification have that his pile does not? Take one answer, then go to the next slide for the definition.
+:::
+
+## The software requirements specification (SRS)
+
+The functions the system must provide, its characteristics, and the constraints it must respect, described completely enough to say how the system behaves under various conditions, and how well.
+
+::: steps
+- **One per project**, in `docs/requirements/software-requirements-specification.md`.
+- **Our template** follows Wiegers and Beatty. The international standard is ISO/IEC/IEEE 29148.
+- **Kept current all term**, like every other file in `docs/`.
+:::
+
+::: note
+This is the formal introduction. Behavior and quality, both: "how the system behaves" is what use cases and functional requirements say; "how well" is section 9.
+
+It is the document the rest of today is about. From here on, "the specification" means this file. Week 3 gave them vision and scope and the glossary; Monday gave them use cases; the SRS is the document that holds the set together and adds what none of those say.
+
+It is kept current, not written once and filed. A specification that stops matching the system is the drift problem week 8 comes back to.
 :::
 
 ## It is not written for you
