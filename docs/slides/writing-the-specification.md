@@ -792,37 +792,23 @@ Say clearly that Friday is a lecture, not a studio, and that the team work moves
 Everything a use case does not say
 
 ::: note
-Monday gave you the unit your agent builds against. Today is everything that is not in it, plus the document that holds the set together.
+Monday gave you the unit your agent builds against. Today is everything that is not in it, and the document that holds the set together.
 
-Remind them there was no class Wednesday, so this hour is carrying two days of material. It moves fast and the reading carries the detail.
+Remind them there was no class Wednesday, so this hour carries two days of material. It moves fast and the reading carries the detail. The order today is the order of the specification template itself, section by section, with a Project Pulse example for each.
 :::
 
 ## A pile of information
 
-Sixty employees. One day-long workshop. A hundred pages.
+A senior manager gathered sixty employees for a day-long workshop on his company's next flagship product. Facilitators, brainstorming, ideas everywhere. He compiled it all into a hundred-page document and called it a requirements specification.
 
-::: note
-A senior manager at a software company convened about sixty employees for a day-long "voice-of-the-customer" workshop on the company's next flagship product. Facilitators, brainstorming, ideas everywhere. He compiled the results into a hundred-page document and called it a requirements specification.
+Nothing in it was classified, organized, or analyzed. The real requirements were in there somewhere. No developer could have found them.
 
-It was nothing more than a pile of information. Nothing in it had been classified, organized, analyzed, or processed into anything describing a proposed solution. There were nuggets of real requirements buried in the chaff, and no developer could have found them.
-
-Ask the room: what does he have that a specification does not, or what does a specification have that he does not? Take one answer, then move.
-:::
-
-## Collecting is not specifying
-
-::: cols
-**A pile**
-
-Everything anyone said, in the order they said it.
-|||
-**A specification**
-
-The functions the system must provide, its characteristics, and the constraints it must respect.
+::: key
+Collecting is not specifying.
 :::
 
 ::: note
-The definition matters: completely enough to say how the system behaves under various conditions, and how well it behaves. Behavior and quality, both.
+Ask the room: what does a specification have that his pile does not? Take one answer, then give the definition: the functions the system must provide, its characteristics, and the constraints it must respect, completely enough to say how the system behaves under various conditions and how well it behaves. Behavior and quality, both.
 :::
 
 ## It is not written for you
@@ -837,166 +823,43 @@ The definition matters: completely enough to say how the system behaves under va
 | Training | Course material |
 | Legal | Whether it complies with the law |
 
-::: note
-Do not read the table. Point at three rows.
-
-The tester, who derives cases from it and will find your ambiguities the expensive way. The maintainer, who reads it in three years with nobody left to ask, and who is what most of this room will be within two years of graduating. And legal, which is not a joke on a contract: subcontractors are an eighth reader and can be held legally to what the document says.
-:::
-
-## The eighth reader
-
 ::: ai
-It reads the specification as its instructions. It is the only reader that cannot walk down the hall.
+The eighth reader is your agent, and it cannot walk down the hall. Good enough for a teammate is not good enough for an agent.
 :::
+
+::: note
+Do not read the table. Point at three rows. The tester, who derives cases from it and will find your ambiguities the expensive way. The maintainer, who reads it in three years with nobody left to ask, and who is what most of this room will be within two years of graduating. And legal: on a contract, subcontractors can be held to what the document says.
+
+Then the agent. Every other reader, meeting a sentence that could mean two things, asks somebody. The agent picks one meaning, silently, and writes it up in the same confident prose as the parts that are true. The questions your teammate would have asked were doing work you never noticed.
+:::
+
+## The specification is a hub, not a book
+
+| Section | Holds | Lives |
+|---|---|---|
+| 2.4, 2.5 | Constraints; assumptions and dependencies | Here |
+| 5.1 | Use cases | Link to `use-cases.md` |
+| 5.2 | Requirements no use case contains | Here |
+| 6 | Business rules | Link to `business-rules.md` |
+| 7, 8 | Data; external interfaces | Here |
+| 9 | Quality attributes | Here |
 
 ::: key
-Good enough for a teammate is not good enough for an agent.
+A fact in two documents means one of them is wrong, and it is the one you are reading.
 :::
 
 ::: note
-Every other reader on that table, meeting a sentence that could mean two things, asks somebody. The agent picks one meaning, silently, and writes it up in exactly the same confident prose as the parts that are true. You find out when you read the code. Or later.
+Open the template on screen next to this if you can. The tempting move is to paste the use cases into section 5 so the document is complete on its own. The right move is a link. Sections 3 and 4 link to the glossary and to vision and scope the same way; risks live in vision and scope.
 
-The line to land, slowly: the questions your teammate would have asked were doing work you never noticed, because you never saw the questions they did not need to ask.
+This table is the map for the rest of the hour: we walk it top to bottom.
 :::
 
-## "It says I haven't taken a training class in over a year."
-
-::: note
-Jackie, a chemist, calling Tim, the product owner of the chemical tracking system. She needs more phosgene for her dyes and the system will not accept the request.
-
-Tim: Contoso requires an annual refresher class in the safe handling of hazardous chemicals. Corporate policy, based on OSHA regulations. The system just enforces it. The stockroom used to hand you whatever you asked for. They cannot anymore.
-
-Ask the room, and wait for it: is that a requirement of the software?
-:::
-
-## No. It is a property of the business.
-
-Corporate policies · government regulations · laws · industry standards · computational algorithms
-
-::: key
-The rule existed before the software, and survives the software being switched off.
-:::
-
-::: note
-So a business rule is not a software requirement as it stands. It is the origin of requirements, usually several, of different kinds: a business objective, a user requirement, a functional requirement that enforces it, a quality attribute. The propagation table is on the Requirement Types page.
-:::
-
-## Whose rule is this?
-
-::: cols
-**`BR-evaluation-submission-window`**
-
-A student may submit a peer evaluation only for the previous week, and has that one week to complete it. Later edits included.
-|||
-**The course's.**
-
-Project Pulse enforces it. Change the syllabus and the software is wrong.
-:::
-
-::: note
-Worth saying out loud: this is the rule they are all living under right now, and the peer evaluation due yesterday was governed by it. Their own project has rules exactly like this, and most of them have not been written down.
-:::
-
-## Every rule has a source
-
-::: steps
-- Who says so, and where it is written down.
-- A syllabus section. A policy number. A regulation with a citation. A sentence your client said, with the date.
-- No source? It is not a rule yet. It is an `OPEN-ISSUES.md` entry.
-:::
-
-::: note
-This is not bureaucracy, and here is why. In November somebody questions the rule and you need to check it against something. And a rule with no source cannot be told apart from one a teammate assumed, or one your agent supplied because it is the kind of rule a business like this usually has.
-:::
-
-::: joke
-"Must comply with all applicable regulations." Which ones? "The applicable ones."
-:::
-
-## "I'm practically shouting over the fan and I'm getting hoarse."
-
-::: note
-Clarice, teaching in the new training room, calling Sam, the maintenance supervisor. Is the heating system broken?
-
-Sam: it is working normally. It meets the requirements the engineers gave me. It circulates the right amount of air per minute, it controls temperature to within half a degree from 60 to 85, and it has every profile-programming capability that was requested. Nobody said anything about noise, so I bought the cheapest system that satisfied the requirements.
-
-Clarice: the temperature control is fine. But this is a training room.
-:::
-
-## Every requirement met. Room unusable.
-
-::: key
-Quality attributes are how *well* the system does what it does.
-:::
-
-::: note
-Nobody lied and nobody was lazy. Sam did exactly what he was asked. And the unit cannot be replaced now, because it was cheap for a reason.
-
-This is where a system that passes every functional test still fails the people using it, which makes section 9 the section you cannot treat as a formality.
-:::
-
-## An adjective is not a requirement
-
-::: cols
-**What they say**
-
-"The dashboard should be fast."
-|||
-**`PER-report-load`**
-
-Return the dashboard and report views within 500 ms at the 95th percentile, under peak near-deadline concurrency.
-:::
-
-::: note
-Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about in November, because there is nothing there to argue with.
-
-Fast, easy, reliable, secure, user-friendly. Every one is the start of a conversation. Your job is to sit with the client until the verifiable goal underneath comes out.
-:::
-
-## A number and a way to measure it
-
-::: key
-Both halves.
-:::
-
-::: note
-A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. "500 ms at p95" still needs somebody to say how p95 is measured, and under what load.
-
-Their section 9 entries are graded on both halves.
-:::
-
-## Where did this number come from?
-
-::: ai
-Ask an agent for quality attributes and you get 99.9% uptime and a 200 ms response. Plausible, well-formed, conventional, traceable to nothing.
-:::
-
-::: steps
-- Your client said it.
-- You measured it.
-- Your team decided it, and can defend it.
-:::
-
-::: key
-There is no fourth source.
-:::
-
-## Say "not applicable" out loud
-
-`SAF-not-applicable`: this system controls nothing physical and stores no data whose disclosure could injure someone.
-
-::: note
-One sentence with a reason is information. Silence cannot be told apart from not having thought about it, and the reviewer cannot tell which one you did.
-
-Most projects in this room have no safety requirements. Saying so, with the reason, is the deliverable.
-:::
-
-## Constraints
+## Constraints (2.4)
 
 ::: cols
 **`CO-vue-spring-stack`**
 
-Vue.js on the client. Spring Boot on the backend.
+The client in Vue.js. The backend in Java on Spring Boot.
 |||
 **`CO-ferpa`**
 
@@ -1007,12 +870,8 @@ Comply with FERPA when storing and transmitting student educational records.
 Not a feature. It removes an option you would otherwise have had.
 :::
 
-## Where constraints come from
-
-Mandated or banned technologies · the operating environment · required conventions and standards · backward compatibility · regulation · hardware limits · systems that already exist
-
 ::: note
-The full list is on the Requirement Types page. The point here is that constraints arrive from outside, and you do not get to negotiate most of them. They go in section 2.4.
+Where constraints come from: mandated or banned technologies, the operating environment, required conventions and standards, backward compatibility, regulation, hardware limits, and systems that already exist. The full list is on the Requirement Types page. Constraints arrive from outside, and you do not get to negotiate most of them.
 :::
 
 ## The one nobody asks
@@ -1031,42 +890,62 @@ Tell them to ask it at their next client meeting, and to write the answer down a
 Constraint discovered in week 14: the client's laptop cannot run Docker.
 :::
 
-## Data requirements
+## The assumption nobody wrote down (2.5)
 
-A requirement document's status is `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`.
+Project Pulse's specification lists `DE-gmail-smtp`: email notifications depend on the Gmail SMTP integration.
 
-Submitted goes to returned or accepted. Accepted is read-only.
+It does not list the assumption underneath: that mail from a Gmail sender reaches a TCU inbox. TCU's filter can junk it. That is why you were told to add the address to your safe senders, in a course where a late peer evaluation is not accepted.
 
-::: note
-Entities, fields, allowed values, defaults, formats, and the reports built from them. Section 7.
-
-The allowed values and the legal transitions between them are the data requirement. Get them wrong and you have built a workflow your client does not have, which is worse than building nothing, because it looks finished.
-:::
-
-## Invented precision
-
-::: ai
-A plausible field list reads exactly like a real one.
+::: key
+An unwritten assumption fails exactly like a written one. Nobody planned for it.
 :::
 
 ::: note
-A ZIP code has five digits, an optional hyphen, and four more that default to 0000. Anyone can check that against the world. A status enumeration has whatever values your client's process actually has, which is not the set that appears most often in the training data.
+An assumption is something you believe and have not checked. A dependency is something outside your control that you rely on. Writing them down does not make them true; it makes them visible, so that when one fails somebody already knows what breaks.
 
-This is the hardest kind of hallucination to catch, because there is nothing wrong with the shape of it. Only with the content, and only someone who met the client can tell.
+This one is in their inbox every week, which is why it is the example.
 :::
 
-## Not everything is a use case
+## Every dependency and risk ends somewhere
 
-::: steps
-- A session expires after a period of inactivity.
-- Every write to a student record is audited.
-- Every night, a reminder goes to each student with an unsubmitted evaluation.
+::: cols
+**Dependency**
+
+`DE-llm-service`: the AI features depend on an external LLM service.
+
+`AVL-llm-degradation`: while it is down, everything else keeps working.
+|||
+**Risk**
+
+`RI-scalability`: heavy use in large capstone programs may stress the infrastructure.
+
+`SCA-cohort-load`: about 70 students, up to 100 concurrent editors.
+:::
+
+::: key
+A risk ends in a requirement that mitigates it, or in an acceptance with a reason.
 :::
 
 ::: note
-None of those is a user's goal. Forcing them into use case shape produces bad use cases with imaginary actors, and everyone has seen the "Actor: System" use case that results.
+Risks live in vision and scope, as `RI-<slug>`. Project Pulse's `RI-cross-browser` is marked Accepted, with its reason, because nothing in the software guards against it. A risk that ends in neither place is a risk nobody decided about.
 
-They go in section 5.2, and they are still requirements.
+Hold on to `SCA-cohort-load`. It comes back in section 9 as the load a performance number is measured under.
+:::
+
+## Not everything is a use case (5.2)
+
+**`FR-NOT-weekly-reminder`**
+
+On a course section's weekly due day for activity reports or peer evaluations, the system shall email each student in that section a reminder listing what is due and when.
+
+::: key
+No student asked for it. It is still a requirement.
+:::
+
+::: note
+That is the email they get every Monday and Tuesday. Section 5.1 links to the use case file; 5.2 holds what belongs to no use case: things that are always true, things across every interaction, things triggered by a clock rather than an actor.
+
+Forcing them into use case shape produces bad use cases with imaginary actors, and everyone has seen the "Actor: System" use case that results.
 :::
 
 ## EARS: five shapes
@@ -1079,42 +958,68 @@ They go in section 5.2, and they are still requirements.
 | **Optional** | **Where** `<feature is included>` |
 | **Unwanted behavior** | **If** `<precondition>`, then |
 
-::: note
-Do not read the table. Read the four keywords: When, While, Where, If. All five with worked examples are on the Requirement Types page.
-
-A requirement written in one of these is markedly harder for a human or an agent to misread than the same requirement in prose.
-:::
-
-## The shape teams skip
-
 ::: key
-**If.**
+The shape teams skip: **If.**
 :::
 
 ::: note
-Which is why so many specifications describe a system in which nothing ever goes wrong. It is the same failure as a use case with no extensions, one document further down.
+Do not read the table. Read the four keywords: When, While, Where, If. The reminder on the previous slide is event driven. All five with worked examples are on the Requirement Types page.
+
+The one teams skip is If, which is why so many specifications describe a system in which nothing ever goes wrong. It is the same failure as a use case with no extensions, one document further down.
 
 Converting prose into EARS is worth handing to your agent. Deciding which shape a requirement belongs in is a decision about what you meant, and that one is yours.
 :::
 
-## The specification is a hub, not a book
+## "It says I haven't taken a training class in over a year."
 
-::: cols
-**Tempting**
+Jackie, a chemist, needs more phosgene for her dyes. The chemical tracking system will not accept her request, so she calls Tim, the product owner.
 
-Paste the use cases into section 5 so the document is complete on its own.
-|||
-**Right**
-
-5.1 points at `use-cases.md`. 6 points at `business-rules.md`. 4 points at vision and scope.
-:::
+Tim: Contoso requires an annual refresher class in the safe handling of hazardous chemicals. Corporate policy, based on OSHA regulations. The system just enforces it.
 
 ::: key
-A fact in two documents means one of them is wrong, and it is the one you are reading.
+Is that a requirement of the software?
 :::
 
 ::: note
-This is the same rule the repository runs on, and it is what the identifiers have been for since week 3. A link you can follow is only possible if the thing at the other end has a name.
+Ask the room, and wait for it. The stockroom used to hand out whatever anyone asked for. It cannot anymore, and the software is not the reason.
+:::
+
+## A property of the business (6)
+
+::: cols
+**`BR-evaluation-submission-window`**
+
+A student may submit a peer evaluation only for the previous week, and has that one week to complete it. Later edits included.
+|||
+**The course's rule.**
+
+Project Pulse enforces it. Change the policy and the software is wrong.
+:::
+
+::: key
+The rule existed before the software, and survives the software being switched off.
+:::
+
+::: note
+Business rules come from corporate policies, government regulations, laws, industry standards, and computational algorithms. A rule is not a software requirement as it stands. It is the origin of requirements, usually several, of different kinds; the propagation table is on the Requirement Types page.
+
+Worth saying out loud: this is the rule they are all living under right now. Their own project has rules exactly like this, and most of them have not been written down.
+:::
+
+## Every rule has a source
+
+::: steps
+- Who says so, and where it is written down.
+- A syllabus section. A policy number. A regulation with a citation. A sentence your client said, with the date.
+- No source? It is not a rule yet. It is an `OPEN-ISSUES.md` entry.
+:::
+
+::: note
+This is not bureaucracy. In November somebody questions the rule and you need to check it against something. And a rule with no source cannot be told apart from one a teammate assumed, or one your agent supplied because it is the kind of rule a business like this usually has.
+:::
+
+::: joke
+"Must comply with all applicable regulations." Which ones? "The applicable ones."
 :::
 
 ## One more link in the chain
@@ -1128,6 +1033,116 @@ This is the same rule the repository runs on, and it is what the identifiers hav
 A second table in docs/traceability.md: rule, source, enforced by. For example BR-evaluation-submission-window, enforced by UC-EVA-submit-evaluation step 7 and extension 1b.
 
 The two checks fail in opposite directions. The first catches a policy your software quietly ignores. The second catches a draft citing BR-late-penalty because a late penalty is the kind of thing a course usually has, which is aimed squarely at generated text.
+:::
+
+## Data requirements (7)
+
+A requirement document's status is `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`.
+
+Submitted goes to returned or accepted. Accepted is read-only.
+
+::: ai
+Invented precision: a plausible field list reads exactly like a real one.
+:::
+
+::: note
+Entities, fields, allowed values, defaults, formats, and the reports built from them. The allowed values and the legal transitions between them are the data requirement. Get them wrong and you have built a workflow your client does not have, which is worse than building nothing, because it looks finished.
+
+A ZIP code has five digits, an optional hyphen, and four more that default to 0000; anyone can check that. A status enumeration has whatever values your client's process actually has, which is not the set that appears most often in the training data. Only someone who met the client can tell.
+:::
+
+## Mars Climate Orbiter, September 1999
+
+One team's ground software reported thruster impulse in pound-force seconds. The navigation software, built by another team, expected newton-seconds, as the interface specification required.
+
+Every trajectory correction was off by a factor of 4.45. The spacecraft flew too low into the Martian atmosphere. A $327.6 million mission was gone.
+
+::: key
+Each side worked. The failure was in the space between them.
+:::
+
+::: note
+Source: NASA's Mishap Investigation Board Phase I report, November 1999. The interface was specified; one side did not follow it, and nothing checked. Section 8 is where that space gets written down.
+:::
+
+## External interfaces (8)
+
+::: cols
+**`SI-llm-proxy-only`**
+
+The browser never calls the LLM service directly, only through the server's AI proxy.
+|||
+**`SI-import-allowlist`**
+
+Uploads accept PDF and PowerPoint, up to 25 MB by default. Nothing else.
+:::
+
+::: key
+Hardware interfaces: "No hardware interfaces have been identified." That sentence is information.
+:::
+
+::: note
+Section 8 covers the user interface, hardware, other software, and communications. The proxy rule is what keeps the service's credentials off every student's machine. Both are the kind of sentence two people building two halves need to agree on before either starts.
+
+An empty section with a sentence in it is information. An empty section without one is a question.
+:::
+
+## "I'm practically shouting over the fan and I'm getting hoarse."
+
+Clarice is teaching in the new training room. She calls Sam, the maintenance supervisor: is the heating broken?
+
+Sam: it is working normally. The right airflow, temperature held within half a degree from 60 to 85, every programming feature requested. Nobody said anything about noise, so I bought the cheapest unit that met the requirements.
+
+::: key
+Every requirement met. Room unusable.
+:::
+
+::: note
+Nobody lied and nobody was lazy. Sam did exactly what he was asked. And the unit cannot be replaced now, because it was cheap for a reason.
+
+Quality attributes are how well the system does what it does. This is where a system that passes every functional test still fails the people using it, which makes section 9 the section you cannot treat as a formality.
+:::
+
+## An adjective is not a requirement (9)
+
+::: cols
+**What they say**
+
+"The dashboard should be fast."
+|||
+**`PER-report-load`**
+
+Return the dashboard and report views within 500 ms at the 95th percentile, under the load of `SCA-cohort-load`.
+:::
+
+::: key
+A number **and** a way to measure it.
+:::
+
+::: note
+Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about in November, because there is nothing there to argue with. And the load it holds under is the one the risk named, twenty minutes ago.
+
+Fast, easy, reliable, secure, user-friendly: each is the start of a conversation. A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. Their section 9 entries are graded on both halves.
+:::
+
+## Where did this number come from?
+
+::: ai
+Ask an agent for quality attributes and you get 99.9% uptime and a 200 ms response. Plausible, well-formed, conventional, traceable to nothing.
+:::
+
+::: steps
+- Your client said it.
+- You measured it.
+- Your team decided it, and can defend it.
+:::
+
+::: key
+There is no fourth source.
+:::
+
+::: note
+And say "not applicable" out loud. Project Pulse's `SAF-not-applicable`: no physical actuation and no safety-critical functions, so no safety requirements apply. One sentence with a reason is information; silence cannot be told apart from not having thought about it. Same move as the hardware interfaces sentence.
 :::
 
 ## Your turn: where did this number come from?
@@ -1154,7 +1169,7 @@ What they will find is that most of the numbers are in the fourth category, and 
 :::
 
 ::: note
-No studio this week, so this happens in the team's own weekly meeting slot. One branch and one pull request each, as always.
+No studio this week, so this happens in the team's own weekly meeting slot. One branch and one pull request each, as always. Copy `traceability.md` from the templates repository if you already copied `requirements/`.
 
 Last thing: Monday is context engineering, which is where the specification they just started gets handed to an agent on purpose.
 :::
