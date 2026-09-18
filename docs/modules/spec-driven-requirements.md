@@ -263,7 +263,7 @@ Each arrow is a link somebody can follow. **Traceability** is being able to foll
     |---|---|---|
     | `FEAT-performance-tracking` | `BO-PERF-instructor-efficiency`, `BO-PERF-student-participation` | `WAR`, `EVA` |
 
-    Then run two checks. **Every feature has at least one area**, or the vision promises something nobody has specified. **Every area is reached by a feature**, or you have use cases no stakeholder asked for. The second check earns its place: the first time it ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+    Then run two checks. **Every feature has at least one area**, or the vision promises something nobody has specified. **Every area is reached by a feature**, or you have use cases no stakeholder asked for.
 
 An area is still only a name. What fills it is use cases, and a use case is where behavior finally gets written down.
 
@@ -521,7 +521,7 @@ The specification **links rather than repeats**. Section 5.1 does not contain yo
 
     | Business rule | Source | Enforced by |
     |---|---|---|
-    | `BR-evaluation-submission-window` | Course syllabus, Fall 2026, "Peer evaluations" | `UC-EVA-submit-evaluation` step 2 and extension 4a, `FR-EVA-window-check` |
+    | `BR-evaluation-submission-window` | Not recorded | `UC-EVA-submit-evaluation` step 7 and extension 1b |
 
     Two checks, and they fail in opposite directions. **Every rule is enforced by something**, or it is a policy your software quietly ignores, which is worth knowing on purpose rather than in November. **Every requirement that cites a rule cites one that exists**, which is the check that catches a draft citing `BR-late-penalty` because a late penalty is the kind of thing a course usually has.
 

@@ -57,7 +57,7 @@ Traceability is following these links forward to what realizes a requirement, an
 ::: note
 This table goes in docs/traceability.md in the team repository, and it is part of Friday's work. Project Pulse's own traceability.md opens with exactly this table. Objectives attach at the feature; everything below inherits them.
 
-The two checks. A feature with no area is a promise nobody has specified. An area no feature reaches is use cases no stakeholder asked for. The first time the second check ran on Project Pulse, it found two areas, the glossary and document authoring, that no feature pointed at.
+The two checks. A feature with no area is a promise nobody has specified. An area no feature reaches is use cases no stakeholder asked for.
 
 Point at the pink box once. The three-node symbol marks every place the course adds a link to this chain, on slides and module pages alike, and it comes back in week 8.
 
@@ -1125,7 +1125,7 @@ This is the same rule the repository runs on, and it is what the identifiers hav
 :::
 
 ::: note
-A second table in docs/traceability.md: rule, source, enforced by. For example BR-evaluation-submission-window, sourced to the syllabus, enforced by UC-EVA-submit-evaluation step 2 and extension 4a.
+A second table in docs/traceability.md: rule, source, enforced by. For example BR-evaluation-submission-window, enforced by UC-EVA-submit-evaluation step 7 and extension 1b.
 
 The two checks fail in opposite directions. The first catches a policy your software quietly ignores. The second catches a draft citing BR-late-penalty because a late penalty is the kind of thing a course usually has, which is aimed squarely at generated text.
 :::
