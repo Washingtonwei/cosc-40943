@@ -775,13 +775,386 @@ Written properly, use cases really are requirements: you should not have to conv
 ## Before Friday
 
 ::: steps
-- **Friday:** bring your use case list (actors and goals only) and your feature-to-area table.
+- **No class Wednesday.**
+- **Friday:** the rest of the specification, in this room. There is no studio this week.
+- **Bring:** your use case list (actors and goals only) and your feature-to-area table.
 - **Tomorrow, 10:00 AM:** peer evaluation, in Project Pulse.
-- **Wednesday:** business rules, quality attributes, the specification.
 :::
 
 ::: note
 The list goes in section 3 of docs/requirements/use-cases.md, one row per use case under its area code, built from the team's feature list. It is the cheapest thing to review with your client, so send it to them once it is committed. The feature-to-area table goes in docs/traceability.md, with both checks run.
 
-Friday's studio starts from that list. A team without one spends Friday's first twenty minutes writing it.
+Say clearly that Friday is a lecture, not a studio, and that the team work moves to each team's own weekly meeting slot. Their TA checks it at the start of studio on Friday Sep 25.
+:::
+
+## Friday: the rest of the specification {.center}
+
+Everything a use case does not say
+
+::: note
+Monday gave you the unit your agent builds against. Today is everything that is not in it, plus the document that holds the set together.
+
+Remind them there was no class Wednesday, so this hour is carrying two days of material. It moves fast and the reading carries the detail.
+:::
+
+## A pile of information
+
+Sixty employees. One day-long workshop. A hundred pages.
+
+::: note
+A senior manager at a software company convened about sixty employees for a day-long "voice-of-the-customer" workshop on the company's next flagship product. Facilitators, brainstorming, ideas everywhere. He compiled the results into a hundred-page document and called it a requirements specification.
+
+It was nothing more than a pile of information. Nothing in it had been classified, organized, analyzed, or processed into anything describing a proposed solution. There were nuggets of real requirements buried in the chaff, and no developer could have found them.
+
+Ask the room: what does he have that a specification does not, or what does a specification have that he does not? Take one answer, then move.
+:::
+
+## Collecting is not specifying
+
+::: cols
+**A pile**
+
+Everything anyone said, in the order they said it.
+|||
+**A specification**
+
+The functions the system must provide, its characteristics, and the constraints it must respect.
+:::
+
+::: note
+The definition matters: completely enough to say how the system behaves under various conditions, and how well it behaves. Behavior and quality, both.
+:::
+
+## It is not written for you
+
+| Reader | Takes |
+|---|---|
+| Project managers | Schedule, effort, resources |
+| Developers | What to build |
+| Testers | Test plans and procedures |
+| Maintenance | What each part is supposed to do, years later |
+| Doc writers | Manuals and help screens |
+| Training | Course material |
+| Legal | Whether it complies with the law |
+
+::: note
+Do not read the table. Point at three rows.
+
+The tester, who derives cases from it and will find your ambiguities the expensive way. The maintainer, who reads it in three years with nobody left to ask, and who is what most of this room will be within two years of graduating. And legal, which is not a joke on a contract: subcontractors are an eighth reader and can be held legally to what the document says.
+:::
+
+## The eighth reader
+
+::: ai
+It reads the specification as its instructions. It is the only reader that cannot walk down the hall.
+:::
+
+::: key
+Good enough for a teammate is not good enough for an agent.
+:::
+
+::: note
+Every other reader on that table, meeting a sentence that could mean two things, asks somebody. The agent picks one meaning, silently, and writes it up in exactly the same confident prose as the parts that are true. You find out when you read the code. Or later.
+
+The line to land, slowly: the questions your teammate would have asked were doing work you never noticed, because you never saw the questions they did not need to ask.
+:::
+
+## "It says I haven't taken a training class in over a year."
+
+::: note
+Jackie, a chemist, calling Tim, the product owner of the chemical tracking system. She needs more phosgene for her dyes and the system will not accept the request.
+
+Tim: Contoso requires an annual refresher class in the safe handling of hazardous chemicals. Corporate policy, based on OSHA regulations. The system just enforces it. The stockroom used to hand you whatever you asked for. They cannot anymore.
+
+Ask the room, and wait for it: is that a requirement of the software?
+:::
+
+## No. It is a property of the business.
+
+Corporate policies · government regulations · laws · industry standards · computational algorithms
+
+::: key
+The rule existed before the software, and survives the software being switched off.
+:::
+
+::: note
+So a business rule is not a software requirement as it stands. It is the origin of requirements, usually several, of different kinds: a business objective, a user requirement, a functional requirement that enforces it, a quality attribute. The propagation table is on the Requirement Types page.
+:::
+
+## Whose rule is this?
+
+::: cols
+**`BR-evaluation-submission-window`**
+
+A student may submit a peer evaluation only for the previous week, and has that one week to complete it. Later edits included.
+|||
+**The course's.**
+
+Project Pulse enforces it. Change the syllabus and the software is wrong.
+:::
+
+::: note
+Worth saying out loud: this is the rule they are all living under right now, and the peer evaluation due yesterday was governed by it. Their own project has rules exactly like this, and most of them have not been written down.
+:::
+
+## Every rule has a source
+
+::: steps
+- Who says so, and where it is written down.
+- A syllabus section. A policy number. A regulation with a citation. A sentence your client said, with the date.
+- No source? It is not a rule yet. It is an `OPEN-ISSUES.md` entry.
+:::
+
+::: note
+This is not bureaucracy, and here is why. In November somebody questions the rule and you need to check it against something. And a rule with no source cannot be told apart from one a teammate assumed, or one your agent supplied because it is the kind of rule a business like this usually has.
+:::
+
+::: joke
+"Must comply with all applicable regulations." Which ones? "The applicable ones."
+:::
+
+## "I'm practically shouting over the fan and I'm getting hoarse."
+
+::: note
+Clarice, teaching in the new training room, calling Sam, the maintenance supervisor. Is the heating system broken?
+
+Sam: it is working normally. It meets the requirements the engineers gave me. It circulates the right amount of air per minute, it controls temperature to within half a degree from 60 to 85, and it has every profile-programming capability that was requested. Nobody said anything about noise, so I bought the cheapest system that satisfied the requirements.
+
+Clarice: the temperature control is fine. But this is a training room.
+:::
+
+## Every requirement met. Room unusable.
+
+::: key
+Quality attributes are how *well* the system does what it does.
+:::
+
+::: note
+Nobody lied and nobody was lazy. Sam did exactly what he was asked. And the unit cannot be replaced now, because it was cheap for a reason.
+
+This is where a system that passes every functional test still fails the people using it, which makes section 9 the section you cannot treat as a formality.
+:::
+
+## An adjective is not a requirement
+
+::: cols
+**What they say**
+
+"The dashboard should be fast."
+|||
+**`PER-report-load`**
+
+Return the dashboard and report views within 500 ms at the 95th percentile, under peak near-deadline concurrency.
+:::
+
+::: note
+Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about in November, because there is nothing there to argue with.
+
+Fast, easy, reliable, secure, user-friendly. Every one is the start of a conversation. Your job is to sit with the client until the verifiable goal underneath comes out.
+:::
+
+## A number and a way to measure it
+
+::: key
+Both halves.
+:::
+
+::: note
+A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. "500 ms at p95" still needs somebody to say how p95 is measured, and under what load.
+
+Their section 9 entries are graded on both halves.
+:::
+
+## Where did this number come from?
+
+::: ai
+Ask an agent for quality attributes and you get 99.9% uptime and a 200 ms response. Plausible, well-formed, conventional, traceable to nothing.
+:::
+
+::: steps
+- Your client said it.
+- You measured it.
+- Your team decided it, and can defend it.
+:::
+
+::: key
+There is no fourth source.
+:::
+
+## Say "not applicable" out loud
+
+`SAF-not-applicable`: this system controls nothing physical and stores no data whose disclosure could injure someone.
+
+::: note
+One sentence with a reason is information. Silence cannot be told apart from not having thought about it, and the reviewer cannot tell which one you did.
+
+Most projects in this room have no safety requirements. Saying so, with the reason, is the deliverable.
+:::
+
+## Constraints
+
+::: cols
+**`CO-vue-spring-stack`**
+
+Vue.js on the client. Spring Boot on the backend.
+|||
+**`CO-ferpa`**
+
+Comply with FERPA when storing and transmitting student educational records.
+:::
+
+::: key
+Not a feature. It removes an option you would otherwise have had.
+:::
+
+## Where constraints come from
+
+Mandated or banned technologies · the operating environment · required conventions and standards · backward compatibility · regulation · hardware limits · systems that already exist
+
+::: note
+The full list is on the Requirement Types page. The point here is that constraints arrive from outside, and you do not get to negotiate most of them. They go in section 2.4.
+:::
+
+## The one nobody asks
+
+::: key
+Who maintains this after you graduate, and what do they already know how to run?
+:::
+
+::: note
+A client whose entire technical staff is one part-time student worker cannot inherit a Kubernetes cluster, however correct it is. That is a constraint on your architecture, and it stays invisible until somebody asks the question.
+
+Tell them to ask it at their next client meeting, and to write the answer down as a `CO-` entry.
+:::
+
+::: joke
+Constraint discovered in week 14: the client's laptop cannot run Docker.
+:::
+
+## Data requirements
+
+A requirement document's status is `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`.
+
+Submitted goes to returned or accepted. Accepted is read-only.
+
+::: note
+Entities, fields, allowed values, defaults, formats, and the reports built from them. Section 7.
+
+The allowed values and the legal transitions between them are the data requirement. Get them wrong and you have built a workflow your client does not have, which is worse than building nothing, because it looks finished.
+:::
+
+## Invented precision
+
+::: ai
+A plausible field list reads exactly like a real one.
+:::
+
+::: note
+A ZIP code has five digits, an optional hyphen, and four more that default to 0000. Anyone can check that against the world. A status enumeration has whatever values your client's process actually has, which is not the set that appears most often in the training data.
+
+This is the hardest kind of hallucination to catch, because there is nothing wrong with the shape of it. Only with the content, and only someone who met the client can tell.
+:::
+
+## Not everything is a use case
+
+::: steps
+- A session expires after a period of inactivity.
+- Every write to a student record is audited.
+- Every night, a reminder goes to each student with an unsubmitted evaluation.
+:::
+
+::: note
+None of those is a user's goal. Forcing them into use case shape produces bad use cases with imaginary actors, and everyone has seen the "Actor: System" use case that results.
+
+They go in section 5.2, and they are still requirements.
+:::
+
+## EARS: five shapes
+
+| Shape | Opens with |
+|---|---|
+| **Ubiquitous** | The `<system>` shall `<response>` |
+| **Event driven** | **When** `<trigger>` |
+| **State driven** | **While** `<in a state>` |
+| **Optional** | **Where** `<feature is included>` |
+| **Unwanted behavior** | **If** `<precondition>`, then |
+
+::: note
+Do not read the table. Read the four keywords: When, While, Where, If. All five with worked examples are on the Requirement Types page.
+
+A requirement written in one of these is markedly harder for a human or an agent to misread than the same requirement in prose.
+:::
+
+## The shape teams skip
+
+::: key
+**If.**
+:::
+
+::: note
+Which is why so many specifications describe a system in which nothing ever goes wrong. It is the same failure as a use case with no extensions, one document further down.
+
+Converting prose into EARS is worth handing to your agent. Deciding which shape a requirement belongs in is a decision about what you meant, and that one is yours.
+:::
+
+## The specification is a hub, not a book
+
+::: cols
+**Tempting**
+
+Paste the use cases into section 5 so the document is complete on its own.
+|||
+**Right**
+
+5.1 points at `use-cases.md`. 6 points at `business-rules.md`. 4 points at vision and scope.
+:::
+
+::: key
+A fact in two documents means one of them is wrong, and it is the one you are reading.
+:::
+
+::: note
+This is the same rule the repository runs on, and it is what the identifiers have been for since week 3. A link you can follow is only possible if the thing at the other end has a name.
+:::
+
+## One more link in the chain
+
+::: trace Trace: business rule to what enforces it
+- Every rule is enforced by something.
+- Every requirement that cites a rule cites one that exists.
+:::
+
+::: note
+A second table in docs/traceability.md: rule, source, enforced by. For example BR-evaluation-submission-window, sourced to the syllabus, enforced by UC-EVA-submit-evaluation step 2 and extension 4a.
+
+The two checks fail in opposite directions. The first catches a policy your software quietly ignores. The second catches a draft citing BR-late-penalty because a late penalty is the kind of thing a course usually has, which is aimed squarely at generated text.
+:::
+
+## Your turn: where did this number come from?
+
+::: steps
+- Your agent drafts section 9 of your specification, from your brief and your notes.
+- Label every number **client**, **measured**, **decided**, or **nobody knows**.
+- Every "nobody knows" becomes an `OPEN-ISSUES.md` entry, or gets deleted.
+:::
+
+::: note
+Ten minutes, in teams, one screen per team is fine. Walk the room.
+
+What they will find is that most of the numbers are in the fourth category, and that is the whole lesson. Much better felt than told. Ask two teams to read out one number they deleted and one they kept, and why they could defend the one they kept.
+:::
+
+## Before your next team meeting
+
+::: steps
+- **Agree your use case list**, then split: four write one use case in full, one owns `business-rules.md`, one owns constraints and quality attributes.
+- **Both tables** in `docs/traceability.md`, with their checks.
+- **Send the use case list to your client.**
+- **Your TA checks all of it** at the start of studio, Friday Sep 25.
+:::
+
+::: note
+No studio this week, so this happens in the team's own weekly meeting slot. One branch and one pull request each, as always.
+
+Last thing: Monday is context engineering, which is where the specification they just started gets handed to an agent on purpose.
 :::

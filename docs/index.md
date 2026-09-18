@@ -7,9 +7,9 @@ Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00
 
     **Your first weekly activity report is due in [Project Pulse](project.md#weekly-mechanics) at the start of class on Monday, Sep 14. Your first peer evaluation is due Tuesday, Sep 15, at 10:00 AM.** Late submissions are not accepted. The reminders come from `peer.evaluation.tool.senior.design@gmail.com`, so add that address to your safe senders today.
 
-    Monday is use cases. Wednesday is business rules, quality attributes, and the specification. Before Monday, read the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide): it is the standard your use cases are reviewed against, so give it to your agent too when you ask it to review one.
+    **There is no class Wednesday, Sep 16, and no studio this week.** Monday is use cases. Friday is business rules, quality attributes, constraints, and the specification, in the lecture room. Read the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide): it is the standard your use cases are reviewed against, so give it to your agent too when you ask it to review one.
 
-    Friday's [studio](studio.md) turns your feature list into a use case list. Then the work splits: most of you write one use case in full, one person owns the business rules, and one starts the specification, each on a branch and pull request. The templates are in [`course-templates`](https://github.com/tcu-cosc-40943/course-templates).
+    **The team work happens in your own weekly meeting slot this week.** Turn your feature list into a use case list, then split it: four of you write one use case in full, one owns the business rules, one starts the specification's constraints and quality attributes, each on a branch and pull request. The templates are in [`course-templates`](https://github.com/tcu-cosc-40943/course-templates). Your TA checks all of it at the start of studio on Friday, Sep 25.
 
     The reading for the week is [Requirements as the Contract](modules/spec-driven-requirements.md) and the [Requirement Types](requirement-types.md) reference.
 

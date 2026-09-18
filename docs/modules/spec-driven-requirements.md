@@ -23,12 +23,17 @@ By the end of week 4, a student can:
 2. Explain why a team plans with user stories but has its agent build against use cases.
 3. Write a main success scenario a tester could test without asking a question, and find its extensions step by step.
 4. Review a use case against the course style guide, then compare that review with an agent's.
+5. Name who reads a software requirements specification, and say what an agent reading it cannot do that every other reader can.
+6. Tell a business rule from a requirement, and give every rule a source that someone else could check.
+7. Turn a client's adjective into a quality attribute with a number and a way to measure it, and say where the number came from.
+8. Write a requirement that belongs in no use case in the right EARS shape, and recognize the shape teams leave out.
+9. Explain why the specification links to the use case file instead of containing it.
 
 ## 2. Where it fits
 
 - **Prerequisites:** [The AI-Augmented Team](ai-augmented-team.md), whose thesis is that the repository is the team's shared memory and the only memory the agent has. Requirements are the first thing you put in it.
 - **Leads into:** [Traceability](traceability.md). Every traceable node in this course is born here: if there is no specification, there is nothing to trace.
-- **How it's taught:** two weeks. Week 3 has a single lecture day, Wednesday, on eliciting from a real client, and its studio drafts your glossary and vision and scope. Week 4 has two: Monday on use cases, Wednesday on business rules, quality attributes, and the specification. Its studio writes your use case list and your first full use cases. You keep every one of these documents alive all term.
+- **How it's taught:** two weeks. Week 3 has a single lecture day, Wednesday, on eliciting from a real client, and its studio drafts your glossary and vision and scope. Week 4 has two: Monday on use cases, Friday on business rules, quality attributes, and the specification. Its team work, done in your own meeting slot, writes your use case list and your first full use cases. You keep every one of these documents alive all term.
 - **Course outcome it delivers:** [turning a client's problem into a specification that serves as the development contract](../syllabus.md#learning-outcomes) (outcome 1).
 
 ## 3. Motivation
@@ -371,22 +376,12 @@ The full sequence: name the scope and boundary; list the primary actors; list th
 
 **Every step is one of three kinds:** an interaction between two actors ("Customer enters address info"), a validation that protects a stakeholder ("System validates PIN code"), or an internal change ("System deducts amount from balance").
 
-**Ten guidelines for writing steps**, from Cockburn:
+**Ten guidelines for writing steps**, from Cockburn, are on the [slides](../slides/writing-the-specification.html) in full and in the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide), which is what your review runs against. Four of them catch most of what goes wrong:
 
-| # | Guideline | Instead of | Write |
-|---|---|---|---|
-| 1 | Simple grammar: subject, verb, direct object, prepositional phrase | | The system deducts the amount from the account balance. |
-| 2 | Show who has the ball: the actor holding it is the subject | Deducts the amount. | The system deducts the amount. |
-| 3 | A bird's eye view, not the system talking to itself | Get ATM card and PIN. | The customer puts in the ATM card and PIN. |
-| 4 | Move the process forward; a main success scenario rarely needs more than nine steps. Ask why the actor is doing it. | User hits the tab key. | User enters name and address. |
-| 5 | The actor's intent, not their movements in the interface | System asks for name. User enters name. System prompts for address. User enters address. User clicks "OK". | User enters name and address. |
-| 6 | A reasonable set of actions per step, split at the natural breaks | One step that takes the order number, detects a winner, registers it, emails the sales manager, and congratulates the customer | The customer enters the order number. The system detects the match. The system registers the winner, emails, and congratulates. |
-| 7 | "Validates", not "checks whether" | The system checks whether the password is correct. If it is... | The system validates that the password is correct. (The failure is an extension.) |
-| 8 | Mention timing only when it matters | | |
-| 9 | "User has System A kick System B" | User hits FETCH, at which time the system fetches the data from system B. | User has the system fetch the data from system B. |
-| 10 | "Do steps x-y until condition" | Numbered "Do" and "End do" steps | Customer repeats steps 3-4 until indicating that they are done. |
-
-Place an order, at seventeen steps, is worth rereading against guideline 4.
+- **Show who has the ball.** The actor doing the work is the subject of the sentence. "Deducts the amount" hides who deducts it, and a step with no subject is a step nobody has been assigned.
+- **Write the actor's intent, not their movements.** "User enters name and address", not four steps about prompts, fields, and an OK button. A step that describes the interface has specified a design nobody chose.
+- **"Validates", not "checks whether".** "The system checks whether the password is correct. If it is..." puts a branch in the main success scenario. "The system validates the password" states the success, and the failure becomes an extension, which is where you will actually look for it.
+- **Move the process forward.** A main success scenario rarely needs more than nine steps. Place an order, at seventeen, is worth rereading against this one.
 
 ??? example "Standard mistakes: Register for Courses, before and after"
 
@@ -444,7 +439,93 @@ Extensions are where the agent helps most and needs you most. Asked for extensio
 
 Written properly, use cases are requirements: nothing needs converting into another form before a developer builds from them. They are not all of the requirements. External interfaces, data formats, business rules, complex formulas, constraints, and quality attributes are specified elsewhere, and a team with forty good use cases and nothing else has specified a fraction of its system.
 
-### 4.18 Knowing when to stop
+### 4.18 Who reads the specification
+
+A senior manager at a software company once convened sixty employees for a day-long voice-of-the-customer workshop on a next-generation flagship product, and compiled the results into a hundred-page document he called a requirements specification. It was a pile of information. Nothing in it had been classified, organized, analyzed, or processed into anything describing a proposed solution. There were real requirements buried in it, and no developer could have found them.
+
+That is the distance between collecting requirements and specifying them. The **software requirements specification** states the functions the system must provide, its characteristics, and the constraints it must respect, described completely enough to say how the system behaves under various conditions and how well it behaves.
+
+It is not written for you. Seven kinds of reader take something different out of it:
+
+| Reader | What they take |
+|---|---|
+| Project managers | Estimates of schedule, effort, and resources |
+| Developers | What to build |
+| Testers | Requirements-based tests, test plans, and test procedures |
+| Maintenance and support staff | What each part is supposed to do, years later |
+| Documentation writers | The basis for user manuals and help screens |
+| Training staff | Educational material |
+| Legal staff | Whether the requirements comply with applicable law |
+
+On a contract there is an eighth, the subcontractor, who can be held legally to what the document says. Your project has a different eighth, and it is the one this course is about.
+
+!!! warning "The reader that cannot ask"
+
+    Your agent reads the specification as its instructions, and it is the only reader on that list that cannot walk down the hall. Every other one, meeting a sentence that could mean two things, asks somebody. The agent picks a meaning, silently, and writes it up in the same confident prose as the parts that are true. You find out when you read the code, or later.
+
+    A specification that is good enough for a human teammate is therefore not good enough for an agent. The questions your teammate would have asked were doing work you never noticed, because you never saw the questions they did not need to ask.
+
+### 4.19 Business rules: every rule has a source
+
+Jackie called the product owner of the chemical tracking system because it would not let her request phosgene. The system said she had not taken the hazardous-materials refresher class in over a year. The software was not malfunctioning. Contoso requires an annual refresher, on the basis of OSHA regulations, and the system enforces the policy. The rule existed on paper before the software did, and it would outlive the software being switched off.
+
+That is what makes a **business rule** different in kind from everything else you have written down. Corporate policies, government regulations, laws, industry standards, and computational algorithms are properties of the business, not of your system. They are not software requirements as they stand. They are the *origin* of requirements, and one rule usually produces several of different kinds; [Requirement Types §3](../requirement-types.md#3-business-rules) has the propagation table.
+
+Project Pulse's `BR-evaluation-submission-window` says a student may submit a peer evaluation only for the previous week, and has that one week to complete it, later edits included. That is the course's policy. Project Pulse enforces it. Change the policy and the software becomes wrong; delete the software and the policy still stands.
+
+Rules go in `business-rules.md`, and **every rule carries a source**: who says so, and where it is written down. A syllabus section, a university policy number, a federal regulation with a citation, or a sentence your client said in a meeting, with the date. The reason is not bureaucratic. A rule with no source cannot be checked in November when somebody questions it, and it cannot be told apart from something a team member assumed or an agent supplied because it is the kind of rule a business like this usually has. If you cannot name the source, you do not have a rule yet. You have an entry for `OPEN-ISSUES.md`.
+
+### 4.20 Quality attributes: an adjective is not a requirement
+
+Clarice was teaching in a new training room and going hoarse shouting over the heating system. It was not broken. It circulated the specified air volume, held temperature to within half a degree from 60 to 85 degrees, and had every profile-programming capability that had been asked for. Nobody had said anything about noise, so the maintenance supervisor bought the cheapest unit that met the stated requirements, and by the time anyone noticed, replacing it was expensive.
+
+Every functional requirement was met and the room was unusable. **Quality attributes** describe how *well* the system does what it does, and they are where a system that passes every functional test still fails the people using it.
+
+Clients state them as adjectives: fast, easy, reliable, secure, user-friendly. An adjective is where the conversation starts. "The dashboard should be fast" cannot be tested, cannot be designed against, and cannot even be argued about in November, because there is nothing there to argue with. `PER-report-load` can be: Project Pulse shall return the instructor progress-monitoring dashboard and the report views within 500 milliseconds at the 95th percentile, under the peak near-deadline concurrency envelope. Same wish, now with a number, a percentile, and the load it holds under.
+
+The rule for section 9 of your specification is **a number and a way to measure it**. Both halves. A threshold nobody can measure is a threshold nobody will check, and you will discover that in the week you planned to demonstrate it.
+
+Where the number comes from is the hard part, and it is precisely the part an agent will do for you without being asked. Request quality attributes and you get 99.9% uptime and a 200-millisecond response: plausible, well-formed, conventional, and traceable to nothing. Every number in your specification came from your client, from a measurement you took, or from a decision your team made deliberately and can defend. There is no fourth source.
+
+Say **not applicable** out loud for the attributes your project does not have, and give a reason. Most projects in this course have no safety requirements, and `SAF-not-applicable` with one sentence explaining why is information. Silence cannot be told apart from not having thought about it.
+
+### 4.21 Constraints and data requirements
+
+Two more kinds fill in sections 2.4 and 7 of the template, and both are routinely underspecified because neither feels like a requirement when you hear it.
+
+A **constraint** restricts the design and implementation choices available to you. Project Pulse's `CO-vue-spring-stack` (Vue.js on the client, Spring Boot on the backend) and `CO-ferpa` (comply with FERPA when storing and transmitting student educational records) are not features and not preferences. They remove options you would otherwise have had. Constraints arrive from technologies that must be used or avoided, the operating environment, required conventions and standards, backward compatibility, regulation, hardware limits, and interfaces to systems that already exist. [Requirement Types §7](../requirement-types.md#7-constraints) lists the sources in full.
+
+The constraint most often left unasked is the one this course cares about most: **who maintains this after you graduate, and what do they already know how to run.** A client whose technical staff is one part-time student worker cannot inherit a Kubernetes cluster, however correct it is. That is a constraint on your architecture, and it stays invisible until somebody asks the question.
+
+**Data requirements** are the subject matter: entities, their fields, allowed values, defaults, formats, and the reports built from them. In Project Pulse a requirement document's status is one of `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`; a submitted document is either returned for revision or accepted, and an accepted one is read-only. The allowed values and the legal transitions between them are data requirements, and getting them wrong builds a workflow your client does not have.
+
+Data is also where invented precision is hardest to catch, because a plausible field list reads exactly like a real one. A ZIP code has five digits, an optional hyphen, and four more defaulting to 0000, and anyone can check that. A status enumeration has whatever values your client's process actually has, which is not the set that appears most often in the agent's training data.
+
+### 4.22 The requirements that no use case contains
+
+Some functional requirements belong to no use case at all. Things that are always true, things that apply across every interaction, things triggered by a clock rather than by an actor. A session expires after a period of inactivity. Every write to a student record is audited. Every night, a reminder goes to each student with an unsubmitted evaluation. None of those is a user's goal, and forcing them into use case shape produces bad use cases with imaginary actors.
+
+They go in section 5.2, and they are written in **EARS** shape: five sentence templates that are hard to misread. [Requirement Types §4](../requirement-types.md#ears-a-template-that-is-hard-to-misread) carries all five with examples. Ubiquitous requirements are always active. Event-driven ones open with *When*. State-driven ones open with *While*. Optional ones open with *Where*. Unwanted behavior opens with *If*, and that fifth shape is the one teams skip, which is why so many specifications describe a system in which nothing ever goes wrong.
+
+EARS earns its awkwardness for the reason §4.18 gave. Prose is ambiguous in ways nobody notices until something has been built wrong, and the reader who will not notice, and will not ask, is the one writing your code. Converting prose into EARS is worth delegating. Deciding which shape a requirement belongs in is a decision about what you meant, and that is yours.
+
+### 4.23 The specification is a hub, not a book
+
+You now have a glossary, a vision and scope document, a use case file, a business rules catalog, and a specification. The obvious move is to paste the use cases into section 5 so the specification is complete on its own, and it is the wrong move. The moment a requirement exists in two places, one of them is wrong and nobody knows which. In practice it is the one you happen to be reading.
+
+The specification **links rather than repeats**. Section 5.1 does not contain your use cases; it points at `use-cases.md` and says which ones are in scope for this release. Section 6 points at `business-rules.md`. Section 4 points at vision and scope. Every fact has exactly one owner, and the specification is the hub that makes the set navigable from any direction. This is the rule your repository already runs on, and it is what the identifiers are for: a link you can follow is only possible if the thing at the other end has a name.
+
+!!! trace "Trace: business rule to what enforces it"
+
+    Add a second table to `docs/traceability.md`. A rule is a property of the business; what makes it yours is the set of requirements that enforce it.
+
+    | Business rule | Source | Enforced by |
+    |---|---|---|
+    | `BR-evaluation-submission-window` | Course syllabus, Fall 2026, "Peer evaluations" | `UC-EVA-submit-evaluation` step 2 and extension 4a, `FR-EVA-window-check` |
+
+    Two checks, and they fail in opposite directions. **Every rule is enforced by something**, or it is a policy your software quietly ignores, which is worth knowing on purpose rather than in November. **Every requirement that cites a rule cites one that exists**, which is the check that catches a draft citing `BR-late-penalty` because a late penalty is the kind of thing a course usually has.
+
+### 4.24 Knowing when to stop
 
 You are never entirely done, particularly building incrementally. But you are at the point of diminishing returns when the client stops producing new use cases, proposes scenarios that turn out to be variations on ones you have, repeats issues already covered, or suggests things that are all out of scope or all low priority. Users tend to raise requirements in order of decreasing importance, so the tail is genuinely the tail.
 
@@ -476,12 +557,12 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - **In studio (own project):** copy the [templates](https://github.com/tcu-cosc-40943/course-templates) into `docs/requirements/` in your team repository. Split the sections across the team, one owner each, one branch and one pull request per person. Draft the glossary from your client brief and your meeting, fill in Background, the business opportunity, business objectives with real slugs, and the vision statement, and record everything you could not answer in `OPEN-ISSUES.md`. Preceded by [Napkin](se-and-ai.md#the-napkin-six-prompts) round 0 on your own project, which is sealed unread.
 - **Deliverable and assessment:** `docs/requirements/` on your `main` branch by end of studio, with commits from every member. Assessed on whether the objectives carry numbers, whether the open issues are real questions rather than placeholders, and whether the glossary contains terms you learned from the client rather than terms you already knew.
 
-**Week 4 studio (team, own project)**
+**Week 4 team work (own project, in your own meeting slot)**
 
 - **Goal:** turn your feature list into use cases an agent could build from, and start the documents that hold everything use cases do not.
-- **Before studio:** your use case list, the first level of *save your energy*: area codes from your `FEAT-*` entries, then one row per user goal in section 3 of `use-cases.md`. Record which areas realize each feature in `docs/traceability.md`, and run both checks.
-- **In studio (own project):** agree the list as a team first. Then four members each write one high-priority use case in full, extensions included; one member owns `business-rules.md`, with a source for every rule; and one starts the specification's constraints and quality attributes. One branch and one pull request each. Send the use case list to your client for review.
-- **Deliverable and assessment:** on `main` by end of studio. Assessed on whether every use case has extensions, whether every precondition is something the system can test, whether business rules are cited by identifier and each has a source, whether every quality attribute carries a number, and whether the feature-to-area table passes both checks.
+- **First:** your use case list, the first level of *save your energy*: area codes from your `FEAT-*` entries, then one row per user goal in section 3 of `use-cases.md`. Record which areas realize each feature in `docs/traceability.md`, and run both checks. Agree the list as a team before anybody writes a scenario.
+- **Then split it.** Four members each write one high-priority use case in full, extensions included. One member owns `business-rules.md`, with a source for every rule. One starts the specification's constraints and quality attributes, and runs "where did this number come from?" over section 9. Add the business-rule table to `docs/traceability.md` with both checks. One branch and one pull request each. Send the use case list to your client for review.
+- **Deliverable and assessment:** on `main` before your TA checks it at the start of the week 5 studio. Assessed on whether every use case has extensions, whether every precondition is something the system can test, whether business rules are cited by identifier and each has a source, whether every quality attribute carries a number and a way to measure it, and whether both traceability tables pass their checks.
 
 **Individual assignment (Project Pulse)**: none. The requirements skills are assessed on your own project, where there is a real client to be wrong about.
 
@@ -497,6 +578,11 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - Plan with user stories; build against use cases, because an agent does not negotiate what a story leaves open.
 - Write at the user goal level, list every use case before detailing any, and list the failures before handling them.
 - Extensions are where the defects live: every "validates" implies one, and every condition is something the system can detect.
+- A specification has seven readers before the agent, and the agent is the only one that cannot ask you a question.
+- A business rule is a property of the business, not of your software, and a rule with no source cannot be told apart from one somebody invented.
+- An adjective is not a quality attribute. A number and a way to measure it is, and the number came from your client, a measurement, or a decision you can defend.
+- The requirements that belong in no use case are still requirements. Write them in EARS shape, and do not skip the *If* shape.
+- The specification links rather than repeats. A fact in two documents means one of them is wrong and nobody knows which.
 
 ## 9. Key papers and further reading
 
@@ -510,6 +596,7 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - Steve Adolph and Paul Bramble, *Patterns for Effective Use Cases* (2002). The Register for Courses before and after.
 - Craig Larman, *Applying UML and Patterns*, 3rd edition (2004), for the boss, elementary business process, and size tests.
 - Ron Jeffries, "Essential XP: Card, Conversation, Confirmation" (2001), and Bill Wake, "INVEST in Good Stories, and SMART Tasks" (2003): user stories from the people who named their parts.
+- Alistair Mavin et al., ["EARS: Easy Approach to Requirements Syntax"](https://alistairmavin.com/ears/), the five templates and the reasoning behind them.
 - The [use case style guide](https://github.com/Washingtonwei/use-case-style-guide), the standard your use cases are reviewed against.
 - [Requirement Types](../requirement-types.md), this course's full reference for the nine kinds.
 
@@ -523,7 +610,11 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 6. Apply the boss, elementary business process, and size tests to "Log in", "Generate a peer evaluation report of the entire course section", and "Select a week from a drop-down". Which is a user goal use case, and what are the other two?
 7. INVEST says a good user story is negotiable. Why is that the property that makes a story the wrong thing to hand a coding agent?
 8. Rewrite this as a main success scenario step plus an extension: "The system checks whether the student is on a team. If so, it shows the form; if not, it shows an error."
-9. Project Pulse's [`UC-EVA-submit-evaluation`](https://github.com/Washingtonwei/project-pulse/blob/347d48215e1d0770c09ef2d97648d1f553fbf908/docs/requirements/use-cases.md?plain=1#L2186-L2250) has at least six defects against the guidelines and the template checklist. Find them alone, then ask your agent for its review, and explain one place where the two reviews disagree.
+9. Your client says "all grade changes have to be approved by the department chair." Is that a business rule, a functional requirement, or both? What do you write down, where, and what do you have to go and find before you can write it?
+10. Rewrite "the app should load quickly" as a quality attribute. Then say how you would measure it, and name the three places the number could legitimately have come from.
+11. Which EARS shape does each of these take? "The system logs every failed login." "Reminders go out nightly to students who have not submitted." "The system refuses uploads over 25 MB."
+12. Your teammate pastes the full text of four use cases into section 5.1 of the specification so reviewers do not have to click through. Name what goes wrong, and say how long it takes to go wrong.
+13. Project Pulse's [`UC-EVA-submit-evaluation`](https://github.com/Washingtonwei/project-pulse/blob/347d48215e1d0770c09ef2d97648d1f553fbf908/docs/requirements/use-cases.md?plain=1#L2186-L2250) has at least six defects against the guidelines and the template checklist. Find them alone, then ask your agent for its review, and explain one place where the two reviews disagree.
 
 ## Related
 
@@ -531,13 +622,7 @@ The difference this makes is not speed. Without an agent, a team downloads a gen
 - [Traceability](traceability.md): what happens to these identifiers once code exists.
 - [Requirement Types](../requirement-types.md): the nine kinds in full.
 - [Use case style guide](https://github.com/Washingtonwei/use-case-style-guide): the standard your use cases are reviewed against.
-- [Studio](../studio.md): what your team does with this on Friday.
+- [Studio](../studio.md): what your team does with this on its own project.
 - [Schedule](../schedule.md): when this is taught.
 
 ---
-
-## Drafting notes (raw, week 4 Wednesday, distribute when authored, then delete)
-
-- EARS templates for functional requirements (ubiquitous, event driven, state driven, optional, unwanted behavior, hybrid), from <https://alistairmavin.com/ears/>. Pairs naturally with the agent: an EARS-shaped requirement is far harder to misread than prose.
-- Business rules as the origin of requirements: the table showing how one rule propagates into a business requirement, a user requirement, a functional requirement, and a quality attribute.
-- Quality attributes list and the "how to find" listening cues; the training-room heating story (met every stated requirement, unusably loud) is the failure story for this section.
