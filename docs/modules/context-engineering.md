@@ -269,10 +269,10 @@ One thing the loop eventually produces: when you have assembled the same shape o
 - **In studio (own project):** your TA checks week 4's requirements work first. Then pick the use case your team will build first. Write its issue as citations: the `UC-<AREA>-<slug>` it realizes, the `BR-*` rules it honors, the quality attributes and constraints that bite, and the paths you expect it to touch. Then run the questions test. Hand the issue and your repository to an agent and ask it, before it writes anything, to state every assumption it would have to make. Each assumption you did not intend is a gap. Decide for each one whether it belongs in the specification, in the charter, or in the issue, and put it there.
 - **Deliverable and assessment:** the issue on your team's board, and the commits that close the gaps the agent's assumption list exposed. Assessed on whether the issue cites rather than copies, and on whether the gaps went to the right home.
 
-**Individual assignment (Project Pulse)**, *Spec a feature*
+**Individual assignment (Project Pulse)**, [*Spec a feature*](../assignments/spec-a-feature.md)
 
-- **Task (AI-workflow-framed):** write a use case with acceptance criteria for a feature Project Pulse is missing, turn it into a build-context, and evaluate what the agent produced against what you wrote.
-- **Deliverable and assessment (per student):** see the [assignment page](../assignments.md) for the specification and due date. Graded on the quality of the specification and of your evaluation of the gap, not on whether the generated code ran.
+- **Task (AI-workflow-framed):** Project Pulse emails every student in a course section a submission reminder whether or not they have already submitted, and nothing exists to see who is missing or to nudge only them. Specify that feature as a use case in Project Pulse's own template, turn it into a build-context, then ask the agent for its assumptions and route every gap to its right home.
+- **Deliverable and assessment (per student):** a pull request into your fork, adding the use case and any new business rule, with the gap analysis in the description. Graded on the decisions you defend and the edge cases you find, not on whether anything ran. The [assignment page](../assignments/spec-a-feature.md) has the specification and the due date.
 
 ## 8. Summary / key takeaways
 

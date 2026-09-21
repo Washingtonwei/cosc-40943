@@ -751,10 +751,36 @@ Write them by hand first. A wrapper around a thing you have never done teaches y
 
 ## Assignment 2: Spec a feature
 
-Write a use case with acceptance criteria for a feature Project Pulse is **missing**, turn it into a build-context, then evaluate what the agent produced against what you wrote.
+::: ask
+Who got a reminder email on Monday, for something you had already submitted?
+:::
 
 ::: note
-Announce the date from the assignment page. Say plainly that it is graded on the specification and on your evaluation of the gap, not on whether the generated code ran.
+Wait for the hands. They will go up. Do not explain yet; the next slide is the explanation and it lands harder for the pause.
+:::
+
+## That is the feature
+
+Project Pulse emails **every** student in the section. Nothing checks whether you already submitted.
+
+::: steps
+- Nobody can see who has not submitted
+- Nobody can nudge only those students
+- The scheduled reminder does not skip the finished
+:::
+
+::: key
+You can specify this and an agent cannot, because you have received the email and it has not.
+:::
+
+---
+
+**Due Friday, October 2**, moved from Sep 25. Fork `tcu-cosc-40943/spec-a-feature`.
+
+Graded on your decisions and your edge cases. Not on whether anything ran.
+
+::: note
+Say "moved" out loud; some students wrote down Sep 25 in week 1. Mention that it shares the Friday with Checkpoint 1, submitted before class rather than presented. Do not walk the page, it is written to be read.
 :::
 
 ## Leave with this {.center}
