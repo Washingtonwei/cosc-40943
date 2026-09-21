@@ -64,7 +64,7 @@ One of them is used before Friday, not on it. `client-interview-guide.md` is you
 
 ## The Napkin drill
 
-On five non-checkpoint Fridays, studio opens with a twenty-minute warm-up before the main objective. You are handed a one-paragraph brief for a system you have never seen and asked to size it up on six points: shape, the hard part, the bottleneck, stack, three kill risks, and a verdict.
+Six times across the term, a twenty-minute warm-up opens the hour before the main objective, usually on a non-checkpoint Friday and twice in a lecture. You are handed a one-paragraph brief for a system you have never seen and asked to size it up on six points: shape, the hard part, the bottleneck, stack, three kill risks, and a verdict. The [schedule](schedule.md#the-napkin-drill) says when each round runs.
 
 **[The frame, the rubric, and what separates a good answer from risk bingo are in the module](modules/se-and-ai.md#the-napkin-six-prompts).** Read it once before round 0; you will use it six times.
 

@@ -28,7 +28,7 @@ Dates from the TCU Registrar's [Fall 2026 academic dates](https://registrar.tcu.
 | 2 | Aug 31, Sep 2, 4 | The AI-augmented team and GitHub as single source of truth; professionalism, team contract, conflict protocol<br>[Mon slides](slides/ai-augmented-team.html){ .mat } [Mon reading](modules/ai-augmented-team.md){ .mat } [Wed slides](slides/professionalism.html){ .mat } [Wed reading](modules/professionalism.md){ .mat } | Your team's first hour together: fix your meeting slot, sign the contract, stand up repo, board, and Slack. **Checkpoint 0** is verified in the room as you work. | Teams, clients, and project briefs released Wed Sep 2; contract signed, board and Slack up, first client meeting requested |
 | 3 | ~~Sep 7~~, 9, 11 | *Labor Day, no class Monday.* Requirements as the contract (1 of 2): eliciting from a real client, the glossary, vision and scope<br>[Slides](slides/spec-driven-requirements.html){ .mat } [Reading](modules/spec-driven-requirements.md){ .mat } [Requirement types](requirement-types.md){ .mat } | Napkin **round 0** on your own project, then draft your glossary and vision and scope | First client meetings; requirements elicitation begins |
 | 4 | Sep 14, ~~16~~, 18 | *No class Wednesday.* Requirements as the contract (2 of 2): use cases Monday; business rules, quality attributes, constraints, and the specification Friday<br>[Slides](slides/writing-the-specification.html){ .mat } [Reading](modules/spec-driven-requirements.md){ .mat } [Use case style guide](https://github.com/Washingtonwei/use-case-style-guide){ .mat } | *No studio.* Write your use cases and business rules and draft the SRS in your team's own meeting slot; your TA checks it at the start of week 5's studio | Draft specification underway |
-| 5 | Sep 21, 23, 25 | Context engineering: the specification is the context, and when is it enough | Week 4's team work checked by your TA, then Napkin **round 1**, then turn one use case into an agent build-context | Draft specification validated against build-contexts |
+| 5 | Sep 21, 23, 25 | Context engineering: the specification is the context, and when is it enough. Napkin **round 1** opens Wednesday<br>[Slides](slides/context-engineering.html){ .mat } [Reading](modules/context-engineering.md){ .mat } | Week 4's team work checked by your TA, then turn one use case into an agent build-context and run the questions test on it | Draft specification validated against build-contexts |
 | 6 | Sep 28, 30, Oct 2 | Software architecture, just enough: breadth-complete and depth-shallow, architecturally significant requirements, security as a quality attribute | **Checkpoint 1** to your TA | Specification reviewed; architecture-of-record drafted |
 | 7 | Oct 5, 7, ~~9~~ | Design-of-record and design decisions; the design gate; proving the architecture with one vertical slice | *Fall break, no studio.* Take one high-risk use case through design-of-record **out of class**, before week 8 | Proving slice built |
 | 8 | Oct 12, 14, 16 | AI-assisted implementation, and the traceability anchor: forward and backward<br>[Reading](modules/traceability.md){ .mat } | Napkin **round 2**, then implement a use case with the agent and trace it design to code to first test | Fan-out begins |
@@ -80,12 +80,12 @@ Some topics get no row of their own because they are practiced continuously rath
 
 ## The Napkin drill
 
-Six times across the term, studio opens with a twenty-minute warm-up: size up an unfamiliar problem brief, naming its shape, the hard part, the bottleneck, a plausible stack, three kill risks, and a feasibility verdict. You write yours alone first, then reconcile as a team, then compare against the agent's version. The comparison is where the learning is.
+Six times across the term, a twenty-minute warm-up opens the hour, usually Friday's studio and twice a lecture: size up an unfamiliar problem brief, naming its shape, the hard part, the bottleneck, a plausible stack, three kill risks, and a feasibility verdict. You write yours alone first, then reconcile as a team, then compare against the agent's version. The comparison is where the learning is.
 
 | Round | When |
 |---|---|
 | 0, your own client project, sealed | Fri Sep 11 |
-| 1 | Fri Sep 25 |
+| 1 | Wed Sep 23, in lecture |
 | 2 | Fri Oct 16 |
 | 3 | Fri Oct 30 |
 | 4 | Fri Nov 6 |

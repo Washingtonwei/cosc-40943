@@ -3,15 +3,15 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 4: use cases, and your first Project Pulse deadlines"
+!!! important "Week 5: context engineering, and your TA checks last week's work"
 
-    **Your first weekly activity report is due in [Project Pulse](project.md#weekly-mechanics) at the start of class on Monday, Sep 14. Your first peer evaluation is due Tuesday, Sep 15, at 10:00 AM.** Late submissions are not accepted. The reminders come from `peer.evaluation.tool.senior.design@gmail.com`, so add that address to your safe senders today.
+    **Studio is back this Friday, Sep 25, and it opens with your TA checking the requirements work from week 4.** Have `docs/requirements/` populated and `traceability.md` copied from [`course-templates`](https://github.com/tcu-cosc-40943/course-templates) before you walk in. Teams that copied `requirements/` back in week 3 will not have `traceability.md` yet.
 
-    **There is no class Wednesday, Sep 16, and no studio this week.** Monday is use cases. Friday is business rules, quality attributes, constraints, and the specification, in the lecture room. Read the [use case style guide](https://github.com/Washingtonwei/use-case-style-guide): it is the standard your use cases are reviewed against, so give it to your agent too when you ask it to review one.
+    **Napkin round 1 moved to Wednesday's lecture**, so Friday belongs to your own project. Bring nothing; you are handed the brief in the room.
 
-    **The team work happens in your own weekly meeting slot this week.** Turn your feature list into a use case list, then split it: four of you write one use case in full, one owns the business rules, one starts the specification's constraints and quality attributes, each on a branch and pull request. The templates are in [`course-templates`](https://github.com/tcu-cosc-40943/course-templates). Your TA checks all of it at the start of studio on Friday, Sep 25.
+    **Monday and Wednesday are context engineering:** the specification you spent two weeks writing is the context your agent needs, and the question the rest of the course keeps asking is how you know when you have supplied enough. The reading is [Context Engineering](modules/context-engineering.md).
 
-    The reading for the week is [Requirements as the Contract](modules/spec-driven-requirements.md) and the [Requirement Types](requirement-types.md) reference.
+    **Assignment 2, Spec a feature, is now due Friday, Oct 2** rather than Sep 25. It asks you to specify a feature Project Pulse does not have, turn it into a build-context, and judge what the agent did with it. The [assignments page](assignments.md) carries the details.
 
 ## What this course is
 
