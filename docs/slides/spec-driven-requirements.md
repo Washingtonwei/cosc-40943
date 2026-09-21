@@ -470,6 +470,8 @@ The glossary is the cheapest document to start and the one that keeps paying, be
 The entries worth having are not words your teammates already know. They are the words two stakeholders use differently, the words that sound generic but are not ("active", "complete", "week"), and your client's acronyms.
 
 Ask directly: "is there a word your team uses here that I would not guess the meaning of?"
+
+**Next time this is taught, this slide should carry the search argument, which week 5 later pays off.** An agent does not read a repository, it searches it, and it builds the search out of the words you used. On Project Pulse, `peerReview` matches 0 files and `PeerEvaluation` matches 83, so asking about a "peer review score" misses on the first try and the agent goes hunting through the context window. The glossary is what makes the first guess land. The module carries this in 4.6; it is a note rather than a slide because week 3 was already delivered.
 :::
 
 ## What happens without one

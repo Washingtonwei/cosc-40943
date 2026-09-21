@@ -193,6 +193,8 @@ The entries worth having are not the words your teammates already know. They are
 
 If two words mean the same thing and nothing in the repository says so, your team will use both, and so will your agent. You get a `Team` class and a `Group` table, a `submitReport` endpoint and a `war_entry` row, and each of those pairs is a defect waiting for the day you join them. The agent cannot fix this by itself: asked to add a feature, it reads what is already there and imitates it, faithfully reproducing an inconsistency, and it will invent a plausible synonym for anything the repository never names.
 
+There is a second cost, and it arrives before a line of code is written. **An agent does not read your repository, it searches it**, and it builds the search out of the words you used. Ask about a *peer review score* in a codebase that says `PeerEvaluation` and the first search returns nothing at all: across Project Pulse, `peerReview` matches **0** files and `PeerEvaluation` matches **83**. A miss does not stop the agent. It widens, reads whatever it lands on, and reaches the right file eventually with your context window part full and your budget part spent. So a glossary is not housekeeping, it is what makes the first guess land. [Context Engineering](context-engineering.md) takes that mechanism apart in week 5.
+
 The half that stays human is noticing. When your client says "cycle" in one sentence and "sprint" in the next, ask which they mean, in the room, while they are in front of you. An agent reading the transcript afterward cannot ask.
 
 ### 4.7 Identifiers: slugs, not numbers
