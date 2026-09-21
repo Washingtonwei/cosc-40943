@@ -11,7 +11,7 @@ Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00
 
     **Monday and Wednesday are context engineering:** the specification you spent two weeks writing is the context your agent needs, and the question the rest of the course keeps asking is how you know when you have supplied enough. The reading is [Context Engineering](modules/context-engineering.md).
 
-    **Assignment 2, Spec a feature, is now due Friday, Oct 2** rather than Sep 25. It asks you to specify a feature Project Pulse does not have, turn it into a build-context, and judge what the agent did with it. The [assignments page](assignments.md) carries the details.
+    **[Assignment 2, Spec a feature](assignments/spec-a-feature.md), is released, and is due Friday, Oct 2** rather than Sep 25. Project Pulse emails you a reminder whether or not you already submitted; you specify the feature that fixes that, then find out what an agent assumes when you hand it your own use case. Fork the repository early, the two GitHub settings go wrong the same way they did last time.
 
 ## What this course is
 

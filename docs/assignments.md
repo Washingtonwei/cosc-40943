@@ -14,7 +14,7 @@ Each one has the shape of real work on a codebase you did not write: **open a we
 | # | Assignment | Due | Task |
 |---|---|---|---|
 | 1 | **[Hello, Project Pulse](assignments/hello-project-pulse.md)** | Fri **Sep 4** | Set up and run Project Pulse, read one package with the agent and catch a claim the code does not support, open a well-formed issue, and submit a small pull request. |
-| 2 | **Spec a feature** | Fri **Oct 2** | Write a use case with acceptance criteria for a feature Project Pulse is missing, then turn it into an agent build-context and evaluate what the agent produced against what you wrote. |
+| 2 | **[Spec a feature](assignments/spec-a-feature.md)** | Fri **Oct 2** | Specify a feature Project Pulse is missing: the reminder emails every student whether or not they already submitted. Write the use case, turn it into an agent build-context, and evaluate what the agent assumed that you never told it. |
 | 3 | **Add a use case** | Fri **Oct 16** | Take one use case end to end with the agent, wire it into the traceability matrix, and add AI-generated tests that you have vetted. |
 | 4 | **Triage the analyzers** | Fri **Nov 6** | Run linters, SpotBugs, and SonarQube on Project Pulse. Separate real findings from false positives, fix a set, and show them passing in CI. The triage is the assignment. |
 | 5 | **Hunt the bug** | Fri **Nov 20** | Localize a planted bug using logs, traces, and the agent. Fix it and add the regression test that would have caught it. |
