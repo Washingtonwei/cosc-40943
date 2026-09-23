@@ -487,7 +487,7 @@ CLAUDE.md      one line: @AGENTS.md
 ::: note
 Do not maintain two copies. Two files that say the same thing are two files that will stop saying the same thing, which is this module's failure aimed at your own feet.
 
-Around two dozen tools read AGENTS.md: Codex, Gemini CLI, Cursor, Copilot's coding agent, Zed, Aider. Claude Code is the exception and reads CLAUDE.md, hence the one-line import.
+Around two dozen tools read AGENTS.md: Codex, Gemini CLI, Cursor, Copilot's coding agent, Zed, Aider. Claude Code reads AGENTS.md only as a fallback when no CLAUDE.md exists (since v2.1.277), and a teammate's CLAUDE.local.md switches that off, hence the one-line import: it works in every session.
 
 Not a symlink: on Windows it needs Developer Mode, and a clone without symlink support checks it out as a text file containing the path, which the agent then reads as your whole charter.
 :::
