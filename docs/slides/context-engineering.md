@@ -463,6 +463,35 @@ Twenty minutes. You know the drill.
 Wednesday opens here. Run it as usual: five minutes alone and silent, four reconciling with your neighbour, then the agent's napkin and the diff in both directions.
 :::
 
+## Napkin round 1: seat alerts
+
+The Registrar wants to text students when a seat opens in a full course section they are waiting on. Last spring about 4,000 students watched at least one full section, most of them for a handful of popular MWF morning sections. The registration system is a vendor product the university cannot modify; it offers a read-only seat-count feed that can be queried at most once a minute per section. Students sign up for alerts on a new page, and whoever registers first after the text gets the seat. It has to be live for spring registration in November, and the Provost has said it will "end the refresh-button problem."
+
+::: warn
+Five minutes. Alone, silently. No agent, no neighbour, no phone. Six lines: shape, hard part, bottleneck, stack, three kill risks, verdict.
+:::
+
+::: note
+Read the paragraph once, then hold the silence. At five, "turn to your neighbour and reconcile, four minutes". The numbers are hypothetical; adjust them to whatever you know about real registration.
+
+The brief was chosen because everyone in the room has been through registration and the agent has not. What the room should find that the agent probably will not:
+
+- **Seat trades.** Friends swap seats: one drops at an agreed minute, the other adds. An alert that reaches thirty strangers breaks the trade, or teaches students to script around it.
+- **The text reaches people who cannot act on it.** A hold, an unmet prerequisite, a registration window not yet open. Only a student knows how common that is.
+- **It does not end the refresh problem, it moves it.** A once-a-minute poll texts everyone at the same moment, and SMS delivery is not ordered, so the seat goes to whoever's carrier is fastest.
+- **"Waiting" is not a waitlist.** There is no queue, only a race. That is the vocabulary-and-policy question later in the hour, arriving in the brief.
+:::
+
+## What the agent said
+
+*The agent's napkin on this brief is pasted here before class.*
+
+::: note
+Generate it the night before: paste the brief and the six prompts into Copilot CLI **outside any repository**, so the agent has no context the room lacks, and replace this slide's body with its answer, condensed to fit, noting the model and date.
+
+Run the diff in both directions. Where it named something the room missed, is the mechanism real? Where the room beat it, what did the room know that it could not? That second list is the bridge on the next slide.
+:::
+
 ## What the diff just showed you
 
 ::: key
@@ -585,7 +614,29 @@ A question from the agent is the cheapest defect report you will ever get. It ar
 Plan mode works out what it intends to do, and shows you, **before it touches a file**.
 
 ::: note
-Claude Code has the same thing. Demo it live if the room is with you: Shift+Tab, then hand it the issue from Monday.
+Claude Code has the same thing. **The live demo is the next slide: switch to the terminal now.**
+:::
+
+## Live: plan mode on Project Pulse
+
+> **Copy last week's activities into this week**
+> Students retype the same activities every week. Add a button on My Activities that copies last week's activities into the current week so they only have to update the hours.
+
+::: key
+What in this plan did nobody tell it?
+:::
+
+::: note
+**Do the demo.** Copilot CLI open at the Project Pulse repository root, on `main`.
+
+1. Shift+Tab until the mode reads plan. Let the room see the switch.
+2. Paste the issue above. Say nothing while it works.
+3. Read the plan out loud and ask the question on the slide, not "is it good?"
+4. Prompt with whatever the room misses: which week is "last week" (calendar or active, `BR-active-weeks`); which clock (browser `moment()` versus the `Clock` bean); which fields copy (`actualHours`, `status`, and never `comments`); a second click; a frontend loop over `POST /activities` versus a new bulk endpoint (OI-46).
+5. End on: did it touch `docs/requirements/`? A plan that goes straight to Vue and Java skipped the use case.
+6. Shift+Tab out. Execute nothing.
+
+If the plan comes back clean, say so: the context was sufficient this time, and you only know because you checked. The full answer key is in the week 5 lecture plan.
 :::
 
 ## Read the plan for the right thing
