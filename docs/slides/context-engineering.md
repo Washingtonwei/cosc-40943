@@ -140,7 +140,7 @@ Everything competes for the same fixed space:
 
 | Model | Advertised window |
 |---|---|
-| Claude Opus 5, Sonnet 5, Fable 5 | 1M |
+| Claude Fable 5.1, Opus 5.5, Sonnet 5 | 1M |
 | GPT-5.x | ~1M |
 | Gemini 3.1 Pro | 1M |
 | Gemini 3 Pro, Llama 4 Scout | 10M |

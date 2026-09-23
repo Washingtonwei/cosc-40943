@@ -49,7 +49,7 @@ Week 2 explained the **context window** from the machinery: a fixed budget of te
 
 | Model | Advertised window |
 |---|---|
-| Claude Opus 5, Sonnet 5, Fable 5 | 1M tokens |
+| Claude Fable 5.1, Opus 5.5, Sonnet 5 | 1M tokens |
 | GPT-5.x | about 1M |
 | Gemini 3.1 Pro | 1M |
 | Gemini 3 Pro, Llama 4 Scout | 10M |
