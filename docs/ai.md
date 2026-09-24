@@ -56,17 +56,19 @@ The [Napkin drill](studio.md) exists partly for this. A napkin written before th
 
 ## Getting access
 
-**The baseline for this course is [GitHub Copilot CLI](https://docs.github.com/en/copilot), free to verified students through the [GitHub Student Developer Pack](https://education.github.com/pack).** Everyone can get it, so nobody is blocked by cost.
+**The baseline for this course is [Claude Code](https://docs.claude.com/en/docs/claude-code/overview), on your own Claude subscription.** Every demo runs on it, and so do the workflow commands the course provides (`/design`, `/implement`, `/spec-build`).
 
-**Do this in week 1, not the night before an assignment.** Verification requires a school-issued email or dated proof of enrollment, and activation can take several days after you are approved. GitHub also re-checks eligibility monthly, so keep your student status current.
+**No Claude subscription? Use [GitHub Copilot CLI](https://docs.github.com/en/copilot), free through the [GitHub Student Developer Pack](https://education.github.com/pack).** Nobody is blocked by cost. Copilot CLI reads the same instruction files as Claude Code (`CLAUDE.md` and `AGENTS.md`), so it follows the same project rules. The workflow commands are written for Claude Code, so on Copilot CLI you run those steps by hand.
+
+**If you take the Copilot route, set it up now, not the night before an assignment.** Verification requires a school-issued email or dated proof of enrollment, and activation can take several days after you are approved. GitHub also re-checks eligibility monthly, so keep your student status current.
 
 1. Apply for the Student Developer Pack at [education.github.com/pack](https://education.github.com/pack).
 2. Once verified, activate Copilot from your GitHub education benefits settings.
 3. Install the Copilot CLI and confirm it can read your cloned Project Pulse repository.
 
-Two things to know about the student plan. Code completions are unlimited, but **chat and agent usage draw on a metered allowance of AI credits**, and model choice is automatic rather than yours. This course leans on *agent* usage, not completions, so budget it: do the thinking before you open the session, and do not burn credits letting an agent wander. That habit is the [agenda capture](#two-failures-to-watch-for-in-yourself) lesson with a price tag attached.
+Two things to know about the Copilot student plan. Code completions are unlimited, but **chat and agent usage draw on a metered allowance of AI credits**, and model choice is automatic rather than yours. This course leans on *agent* usage, not completions, so budget it: do the thinking before you open the session, and do not burn credits letting an agent wander. That habit is the [agenda capture](#two-failures-to-watch-for-in-yourself) lesson with a price tag attached.
 
-**Already paying for your own agent?** Keep using it. Claude Code, Cursor, Codex, or anything else with real agentic capability is fine, and if you have one you will hit fewer limits. **If your client offers to sponsor licenses for your team, take it** and tell the instructor. Not every client can afford six or seven seats, which is exactly why the Copilot student baseline exists.
+**Already using Codex, Cursor, or another agent?** Keep using it, as long as it has real agentic capability; you run the workflow steps by hand, as on Copilot CLI. **If your client offers to sponsor licenses for your team, take it** and tell the instructor.
 
 The method this course teaches is deliberately tool-agnostic. Artifacts, approval gates, the challenge loop, and traceability are the point; the agent is interchangeable and will change again before you graduate.
 

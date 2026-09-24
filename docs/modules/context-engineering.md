@@ -65,7 +65,7 @@ It is not, for a reason that has nothing to do with the limit. **The advertised 
 
 So context engineering is a **selection** problem, not an accumulation problem. The professional question is not "how much can I give it?" but "what does this task actually require, and where does that live?"
 
-**Your session fills up, and you manage it with three commands.** Every long session accumulates: files read, commands run, dead ends explored. GitHub Copilot CLI, the course's baseline, gives you the same three moves most agents do.
+**Your session fills up, and you manage it with three commands.** Every long session accumulates: files read, commands run, dead ends explored. Claude Code, the course's baseline, gives you the same three moves most agents do, and Copilot CLI uses the same three commands.
 
 | Command | What it does | When |
 |---|---|---|
@@ -73,7 +73,7 @@ So context engineering is a **selection** problem, not an accumulation problem. 
 | `/compact` | Summarizes the session so far and continues | Mid-task, when you need the history but not at full detail. `/compact focus on <topic>` keeps named detail and discards the rest |
 | `/clear` | Wipes the conversation, keeps your authentication and configuration | Between unrelated tasks |
 
-Copilot CLI compacts automatically at around 80% of the window and will pause at about 95% to finish, so this happens whether you ask for it or not. Two judgments follow from that, and they are the reason this is in a software engineering course rather than a tool manual. **Compaction is lossy**: a summary of your session is not your session, and the detail it drops is chosen for you. So when you finish a task, `/clear` rather than carrying a summary of unrelated work into the next one. And **anything that must survive does not belong in the session at all.** It belongs in the repository, which is week 2's thesis arriving with a mechanism attached.
+Claude Code compacts automatically as the window nears its limit, clearing old tool output first and then summarizing the conversation (Copilot CLI starts at about 80%), so this happens whether you ask for it or not. Two judgments follow from that, and they are the reason this is in a software engineering course rather than a tool manual. **Compaction is lossy**: a summary of your session is not your session, and the detail it drops is chosen for you. So when you finish a task, `/clear` rather than carrying a summary of unrelated work into the next one. And **anything that must survive does not belong in the session at all.** It belongs in the repository, which is week 2's thesis arriving with a mechanism attached.
 
 ### 4.2 How the agent finds things
 
@@ -199,7 +199,7 @@ The bad answer is introspection. How thorough the prompt felt, how long the issu
 
 A question from the agent is the cheapest defect report your project will ever receive. It arrives before the code exists.
 
-**Your tool has a mode for this.** Asking for assumptions by hand works, and both Copilot CLI and Claude Code will do it for you. In Copilot CLI, Shift+Tab cycles the session between standard, **plan**, and autopilot. Plan mode has the agent work out and show you what it intends to do before it touches a file; you then correct the plan rather than the code.
+**Your tool has a mode for this.** Asking for assumptions by hand works, and both Claude Code and Copilot CLI will do it for you. In Claude Code, Shift+Tab cycles the permission modes until the status bar reads **plan mode on**, or you type `/plan`. In Copilot CLI, Shift+Tab cycles standard, **plan**, and autopilot. Plan mode has the agent work out and show you what it intends to do before it touches a file; you then correct the plan rather than the code.
 
 Use plan mode when the task is multi-step, when you are not certain the context is sufficient, or when the change is expensive to unpick. Skip it for a one-line fix, where reading the plan costs more than reading the diff. What makes it a context tool rather than a safety feature is what you do with the plan: **read it for things you never told it.** A plan that names a file you did not mention, or assumes a rule you never wrote down, has just shown you the gap. That is the questions test with the agent doing the asking.
 
@@ -288,8 +288,8 @@ One thing the loop eventually produces: when you have assembled the same shape o
 
 - [The Method](../method.md), the spec-driven, agent-assisted method this module serves. Principle 8, specify requirements and derive implementation, is the pinning litmus in 4.8.
 - [Project Pulse's charter files](https://github.com/Washingtonwei/project-pulse/blob/main/CLAUDE.md), the worked example throughout: the root file, and `backend/CLAUDE.md`, `frontend/CLAUDE.md`, and `docs/CLAUDE.md` beside the code they govern.
-- [Managing context in GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/context-management), the reference for `/context`, `/compact`, and `/clear` on the course's baseline agent, including when it compacts without being asked.
-- [GitHub Copilot CLI custom instructions](https://docs.github.com/en/copilot), for which filenames the baseline agent reads and where it looks for them.
+- [How Claude Code works: the context window](https://code.claude.com/docs/en/how-claude-code-works#the-context-window), the reference for `/context`, `/compact`, and automatic compaction on the course's baseline agent, and [Claude Code's memory files](https://code.claude.com/docs/en/memory), for how it reads `CLAUDE.md` and `AGENTS.md`.
+- For the free fallback: [Managing context in GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/context-management), including when it compacts without being asked, and [GitHub Copilot CLI custom instructions](https://docs.github.com/en/copilot), for which filenames it reads.
 - *Moffatt v. Air Canada*, [2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html), British Columbia Civil Resolution Tribunal, February 2024. The bereavement-fare chatbot decision in section 3, and worth reading in full: it is short, and the reasoning about who owns an agent's words is the whole argument.
 - [Requirement Types](../requirement-types.md), for the nine kinds of requirement a build-context cites, and which container each lives in.
 

@@ -192,7 +192,7 @@ The cost lands on your most specific instruction.
 | `/compact` | Summarize and keep going. `/compact focus on <topic>` keeps the detail you name |
 | `/clear` | Wipe the conversation, keep your login |
 
-Copilot CLI compacts on its own at about **80%**, and pauses at **95%** to finish.
+Claude Code compacts on its own **as the window nears its limit**. Copilot CLI starts at about **80%**.
 
 ## Two judgments, not two commands
 
@@ -487,7 +487,7 @@ The brief was chosen because everyone in the room has been through registration 
 *The agent's napkin on this brief is pasted here before class.*
 
 ::: note
-Generate it the night before: paste the brief and the six prompts into Copilot CLI **outside any repository**, so the agent has no context the room lacks, and replace this slide's body with its answer, condensed to fit, noting the model and date.
+Generate it the night before: paste the brief and the six prompts into Claude Code **outside any repository**, so the agent has no context the room lacks, and replace this slide's body with its answer, condensed to fit, noting the model and date.
 
 Run the diff in both directions. Where it named something the room missed, is the mechanism real? Where the room beat it, what did the room know that it could not? That second list is the bridge on the next slide.
 :::
@@ -609,12 +609,12 @@ A question from the agent is the cheapest defect report you will ever get. It ar
 
 ## Your tool has a mode for this
 
-**Shift+Tab** in Copilot CLI cycles: standard → **plan** → autopilot.
+**Shift+Tab** in Claude Code until the status bar reads **plan mode on**, or type `/plan`.
 
 Plan mode works out what it intends to do, and shows you, **before it touches a file**.
 
 ::: note
-Claude Code has the same thing. **The live demo is the next slide: switch to the terminal now.**
+Copilot CLI has the same thing: Shift+Tab cycles standard, plan, autopilot. **The live demo is the next slide: switch to the terminal now.**
 :::
 
 ## Live: plan mode on Project Pulse
@@ -627,9 +627,9 @@ What in this plan did nobody tell it?
 :::
 
 ::: note
-**Do the demo.** Copilot CLI open at the Project Pulse repository root, on `main`.
+**Do the demo.** Claude Code open at the Project Pulse repository root, on `main`.
 
-1. Shift+Tab until the mode reads plan. Let the room see the switch.
+1. Shift+Tab until the status bar reads plan mode on. Let the room see the switch.
 2. Paste the issue above. Say nothing while it works.
 3. Read the plan out loud and ask the question on the slide, not "is it good?"
 4. Prompt with whatever the room misses: which week is "last week" (calendar or active, `BR-active-weeks`); which clock (browser `moment()` versus the `Clock` bean); which fields copy (`actualHours`, `status`, and never `comments`); a second click; a frontend loop over `POST /activities` versus a new bulk endpoint (OI-46).
