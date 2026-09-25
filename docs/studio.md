@@ -29,7 +29,7 @@ Team numbers are on the [Teams page](teams.md).
 **One member owns it, under their own GitHub account.** Name that person before you create anything, and write their name and the repository URL into your contract's header.
 
 - The repository is **public**, named `cosc-40943-team-NN-<slug>` to match your brief on TCU Online. Create it with a README so it has a `main` branch from the start. Public means your client's material does not go in it: see [what belongs in the repository and what belongs in Drive](project.md#what-you-deliver-this-fall).
-- The owner invites **nine collaborators**: the other members, all three TAs, and the instructor. A personal repository gives every collaborator write access, which is what you want.
+- The owner invites **every other member, all three TAs, and the instructor** as collaborators: nine people for a team of six, eight for a team of five. A personal repository gives every collaborator write access, which is what you want.
 - **A Project's access list is separate from the repository's.** Everyone can be on the repository and still be unable to move a card. After you create the Project and link it, the owner adds the team and your TA under the Project's own settings. This is the step teams forget, and your TA checks it from an account that is not the owner's.
 - **The owner has to be someone continuing into COSC 40993 in the spring.** If they leave the course, transfer the repository before they go. Everyone clones on day one, so no single account is ever holding your history hostage.
 
@@ -90,7 +90,7 @@ One section per studio, in date order. If you missed one, the section says what 
 | 15-25 | Stood up the repository and the Projects board, in the order under [Where your repository lives](#where-your-repository-lives). |
 | 25-33 | Read the brief together, wrote the three questions to ask the client first, and sent the meeting request. |
 | 33-45 | Filled in the [team contract](team-contract.md) as `docs/team-contract.md`. Each member signed it in the browser, in their own commit. This was the one time anyone committed straight to `main`. |
-| 45-50 | Your TA cleared Checkpoint 0. Teams that were clear opened their first two issues from the brief. |
+| 45-50 | Your TA cleared Checkpoint 0, starting at minute 40. Teams already clear opened their first two issues from the brief. |
 
 **What you produced:** `docs/team-contract.md`, signed; the repository, Projects board, and Slack channel, with your TA and the instructor on each; a sent client meeting request with a date proposed.
 
@@ -98,22 +98,29 @@ One section per studio, in date order. If you missed one, the section says what 
 
 ### Week 3, Sep 11: Napkin round 0, then the first requirements
 
-**Objective:** `docs/requirements/` in your repository with a real glossary start, the first sections of vision and scope, and an honest `OPEN-ISSUES.md`, all written on branches through pull requests.
+**Objective:** your team's first hour on your client's requirements: Napkin round 0 on your own project, then the first draft of `docs/requirements/`, written on branches through pull requests. Also the deadline to register in Project Pulse.
 
-**Before you arrived:** the repository owner turned on branch protection with status checks left off. A team that had already met its client committed its `client-interview-YYYY-MM-DD.md`.
+**Before you arrived:**
 
-| Min | What your team did |
+- The repository owner turned on branch protection for `main` with "Require status checks to pass" left off, following [Git Workflow](git-workflow.md#repository-settings).
+- A team that had met its client committed its notes as `docs/requirements/client-interview-YYYY-MM-DD.md`.
+- Everyone brought a laptop and the client brief.
+
+**In the hour:**
+
+| Time | What your team did |
 |---|---|
-| 0-3 | Confirmed branch protection. Teams that had met their client said so. |
-| 3-20 | [Napkin](#the-napkin-drill) round 0 on your own project: seven minutes alone and silent, ten to reconcile as a team. Sealed in `docs/napkin-round-0.md`. |
-| 20-45 | Copied the templates in and drafted, one section per member, one branch and one pull request each. |
-| 45-50 | Merged, and committed `OPEN-ISSUES.md`. |
+| 10 min | [Napkin](#the-napkin-drill) round 0 on your own project, committed as `docs/napkin-round-0.md` and sealed. |
+| 25 min | Copied the [templates](#where-your-requirements-documents-live) in and drafted, one person per section, each on its own branch and pull request: Background, Business Opportunity, Business Objectives (each with a number), Vision Statement, Glossary, and `OPEN-ISSUES.md`. |
+| By 10:50 | Pull requests merged, with commits from every member. |
 
-The six sections were Background, the business opportunity, business objectives, the vision statement, the glossary, and `OPEN-ISSUES.md`, whose owner collected everything the other five could not answer. Four of them edit `vision-and-scope.md`, so the branches collided; that was the git lesson. Process flows, stakeholder profiles, and the feature list waited for week 4, after every team had met its client.
+Three rules for the drafting: expect merge conflicts in `vision-and-scope.md` and resolve them locally; do not finish the document; do not invent content, and put anything you do not know in `OPEN-ISSUES.md`. A vision and scope generated by AI that nobody read fails.
 
-**What you produced:** `docs/napkin-round-0.md`, sealed until the last full week of class; `docs/requirements/` with the six sections; commits from every member.
+**Project Pulse registration closed at 10:50.** The invitation came from peer.evaluation.tool.senior.design@gmail.com, which also sends the weekly activity report and peer evaluation reminders every Monday and Tuesday. Late submissions are not accepted, so keep that address out of junk: mark it "Not junk" and add it to Safe senders (Outlook on the web: Settings, Mail, Junk email, Safe senders and domains). If you never received the invitation, tell your TA.
 
-**How your TA checked it:** business objectives carry numbers, and are not revenue or market share for a client who is not selling the software; `OPEN-ISSUES.md` holds real questions rather than placeholders; the glossary has at least one term you learned from the client; the interview record is committed if the meeting happened; commits come from more than one account.
+**What you produced:** `docs/napkin-round-0.md`, sealed until the last full week of class; the six sections in `docs/requirements/`; commits from every member; a Project Pulse account.
+
+**How your TA checked it:** branch protection is on, business objectives carry numbers, commits come from more than one member, and every member is registered in Project Pulse.
 
 ### Week 5, Sep 25: your first build-context
 
