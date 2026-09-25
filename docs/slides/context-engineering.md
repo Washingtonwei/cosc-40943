@@ -794,11 +794,13 @@ Write them by hand first. A wrapper around a thing you have never done teaches y
 ## Friday studio
 
 ::: steps
-- Your TA checks week 4's requirements work first, fifteen minutes
-- Pick the use case your team will build first
-- Write its issue as **citations**: the `UC-<AREA>-<slug>`, the `BR-*` rules, the attributes and constraints that bite, the paths
-- Then run the questions test on it, and close the gaps it exposes
+- Check your own week 4 work tonight; your TA already has
+- Pick your **riskiest** use case before class
+- In pairs, write each issue as **citations**: the `UC-<AREA>-<slug>`, the `BR-*` rules, the attributes and constraints that bite, the paths
+- Then run the questions test on it, and sort every gap: specification, charter, or issue
 :::
+
+The skeleton, the prompt, and the checklist: [Studio, week 5](https://washingtonwei.github.io/cosc-40943/studio/#week-5-sep-25-your-first-build-context)
 
 ## Assignment 2: Spec a feature
 
