@@ -92,10 +92,10 @@ Use the template that every use case in `docs/requirements/use-cases.md` already
 
 Now the week 5 move, on your own writing.
 
-1. **Assemble the build-context.** Write it as your issue: the use case ID you just created, the `BR-*` rules it cites, the file paths you expect to change, and nothing else. **Cite, do not paste.** If you find yourself copying your use case into the issue, that is the defect week 5 warned you about.
+1. **Assemble the build-context.** Write it as your issue: the use case ID you just created, the file paths you expect to change, and nothing else. **Cite, do not paste.** Your use case already cites its `BR-*` rules in its Business Rules field, so the issue does not list them again; a second list goes stale like a second copy. If you find yourself copying your use case, or its rules, into the issue, that is the defect week 5 warned you about.
 2. **Hand it to an agent** and ask it, *before it writes any code*, to state every assumption it would have to make to build this. Plan mode does this for you if your agent has it.
 3. **Read the list for what you never told it.** Every assumption you did not supply and did not intend is a gap in your specification.
-4. **Fix the specification, not the agent.** Each gap goes back into the use case, into a business rule, or into the issue, whichever is its right home. Commit that fix. The commit history is the evidence you did this.
+4. **Fix the specification, not the agent.** Each gap goes back into the use case, into a business rule, or into the issue, whichever is its right home. A new rule goes in `business-rules.md` and its identifier goes in your use case's Business Rules field; an existing rule your use case forgot to cite needs only the second edit. Commit that fix. The commit history is the evidence you did this.
 
 Then, in the pull request description, answer four things:
 
