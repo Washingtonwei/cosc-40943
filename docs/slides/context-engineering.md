@@ -424,16 +424,23 @@ From the root charter, pointing at the architecture document rather than restati
 flowchart LR
     CH["Agent charter<br/>durable, read every session"] --> S(("Agent<br/>session"))
     ISS["Issue<br/>the build-context"] --> S
-    ISS -. cites by ID and path .-> SPEC
+    ISS -. cites by ID and path .-> UC
+    ISS -. names .-> CODE["Files it will touch"]
     subgraph SPEC["The specification, cited and never copied"]
         direction TB
         UC["UC-AREA-slug"]
         BR["BR-slug"]
-        SRS["Quality attributes,<br/>constraints"]
-        CODE["Files it will touch"]
+        SRS["Quality attributes"]
     end
+    UC -. Business Rules .-> BR
+    UC -. Associated Information .-> SRS
     SPEC --> S
+    CODE --> S
 ```
+
+::: note
+The issue cites the use case and stops. The use case already carries its BR identifiers in its Business Rules field and its quality attributes in Associated Information, so an issue that lists them again holds a second list, and it drifts like a pasted use case. Project-wide constraints live in the charter.
+:::
 
 ## So what does the issue say in its own words?
 
@@ -796,7 +803,7 @@ Write them by hand first. A wrapper around a thing you have never done teaches y
 ::: steps
 - Check your own week 4 work tonight; your TA already has
 - Pick your **riskiest** use case before class
-- In pairs, write each issue as **citations**: the `UC-<AREA>-<slug>`, the `BR-*` rules, the attributes and constraints that bite, the paths
+- In pairs, write each issue as **citations**: the `UC-<AREA>-<slug>` and the paths. The use case already cites its rules
 - Then run the questions test on it, and sort every gap: specification, charter, or issue
 :::
 

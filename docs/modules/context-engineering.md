@@ -148,21 +148,26 @@ The rule that makes it work:
 
 An issue that pastes in the use case has created a second use case. One of them will be edited on Thursday and the other will not, and nothing will tell you which one the agent read. You have manufactured exactly the drift the whole method exists to prevent. Project Pulse's own root charter follows this discipline on itself, pointing at the architecture document rather than restating it: "When the architecture changes, update *that* doc; the summary below is just orientation for working in the code."
 
-So a build-context is a short list of pointers plus the small amount of context that exists nowhere else yet:
+The same holds one level down. A use case already cites the business rules that govern it, by identifier, in its Business Rules field, and names the quality attributes that apply in its Associated Information. So the issue cites the use case and stops there. An issue that lists the rules again holds a second list of them, and that list drifts exactly as a pasted use case does. Constraints that bind the whole project (the stack, the hosting, the client's systems) are not per task at all; they belong in the charter.
+
+So a build-context is one or two pointers plus the small amount of context that exists nowhere else yet:
 
 ```mermaid
 flowchart LR
-    CH["Agent charter<br/>durable, read every session"] --> S(("Agent<br/>session"))
+    CH["Agent charter<br/>durable, read every session<br/>project-wide constraints"] --> S(("Agent<br/>session"))
     ISS["Issue for one use case<br/>the build-context"] --> S
-    ISS -. cites by ID and path .-> SPEC
+    ISS -. cites by ID and path .-> UC
+    ISS -. names .-> CODE["The files it will touch"]
     subgraph SPEC["The specification, cited and never copied"]
         direction TB
         UC["use-cases.md<br/>UC-AREA-slug"]
         BR["business-rules.md<br/>BR-slug"]
-        SRS["SRS: quality attributes,<br/>constraints"]
-        CODE["The files it will touch"]
+        SRS["SRS<br/>quality attributes"]
     end
+    UC -. Business Rules field .-> BR
+    UC -. Associated Information .-> SRS
     SPEC --> S
+    CODE --> S
 ```
 
 What an issue carries in its own words is the residue: the decision made in this week's client meeting that has not reached the specification yet, the reason this use case is being built before that one, the file you already know it will have to touch. Everything else is a citation.
@@ -266,7 +271,7 @@ One thing the loop eventually produces: when you have assembled the same shape o
 **Studio (team, own project)**
 
 - **Goal:** turn one of your own use cases into a build-context an agent could work from, and find out what your specification does not yet say.
-- **In studio (own project):** in pairs, write the issue for one of your riskiest use cases as citations: the `UC-<AREA>-<slug>` it realizes, the `BR-*` rules it honors, the quality attributes and constraints that bite, and the paths you expect it to touch. Then run the questions test: hand the issue and your repository to an agent in plan mode and ask it, before it writes anything, to state every assumption it would have to make. Each assumption you did not intend is a gap. Decide for each one whether it belongs in the specification, in the charter, or in the issue, and put it there. The skeleton, the prompt, and the timing are on the [studio page](../studio.md#week-5-sep-25-your-first-build-context).
+- **In studio (own project):** in pairs, write the issue for one of your riskiest use cases as citations: the `UC-<AREA>-<slug>` it realizes, which already cites its `BR-*` rules and quality attributes, and the paths you expect it to touch. Then run the questions test: hand the issue and your repository to an agent in plan mode and ask it, before it writes anything, to state every assumption it would have to make. Each assumption you did not intend is a gap. Decide for each one whether it belongs in the specification, in the charter, or in the issue, and put it there. A rule the use case should have cited is a gap in the use case. The skeleton, the prompt, and the timing are on the [studio page](../studio.md#week-5-sep-25-your-first-build-context).
 - **Deliverable and assessment:** one issue per pair on your team's board with its sorted gap list as a comment, and the pull requests that close the gaps before Checkpoint 1. Assessed on whether the issue cites rather than copies, and on whether the gaps went to the right home.
 
 **Individual assignment (Project Pulse)**, [*Spec a feature*](../assignments/spec-a-feature.md)
@@ -291,7 +296,7 @@ One thing the loop eventually produces: when you have assembled the same shape o
 - [How Claude Code works: the context window](https://code.claude.com/docs/en/how-claude-code-works#the-context-window), the reference for `/context`, `/compact`, and automatic compaction on the course's baseline agent, and [Claude Code's memory files](https://code.claude.com/docs/en/memory), for how it reads `CLAUDE.md` and `AGENTS.md`.
 - For the free fallback: [Managing context in GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/context-management), including when it compacts without being asked, and [GitHub Copilot CLI custom instructions](https://docs.github.com/en/copilot), for which filenames it reads.
 - *Moffatt v. Air Canada*, [2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html), British Columbia Civil Resolution Tribunal, February 2024. The bereavement-fare chatbot decision in section 3, and worth reading in full: it is short, and the reasoning about who owns an agent's words is the whole argument.
-- [Requirement Types](../requirement-types.md), for the nine kinds of requirement a build-context cites, and which container each lives in.
+- [Requirement Types](../requirement-types.md), for the nine kinds of requirement a build-context reaches through its use case, and which container each lives in.
 
 ## 10. Self-check
 

@@ -124,13 +124,14 @@ Three rules for the drafting: expect merge conflicts in `vision-and-scope.md` an
 
 ### Week 5, Sep 25: your first build-context
 
-**Objective:** each pair on your team leaves with one use case written up as a build-context, an issue that cites your specification instead of copying it, and a sorted list of the gaps an agent's assumptions exposed. The reading is [Context Engineering](modules/context-engineering.md), sections 4.5 and 4.7.
+**Objective:** each pair on your team leaves with one use case written up as a build-context, an issue that cites the use case instead of copying it, and a sorted list of the gaps an agent's assumptions exposed. The reading is [Context Engineering](modules/context-engineering.md), sections 4.5 and 4.7.
 
 **Before you arrive:** week 4 had no studio, so your TA checks that work on GitHub before class. Check it yourself first:
 
 - [ ] `docs/requirements/` exists and has your content, not only the blank templates.
 - [ ] Your use cases came in through pull requests, not straight commits to `main`.
 - [ ] `business-rules.md` has at least one rule, with a source.
+- [ ] Each use case lists the `BR-*` identifiers that govern it in its **Business Rules** field, and the quality attributes that apply in **Associated Information**.
 - [ ] `docs/traceability.md` exists. See [the copy command](#where-your-requirements-documents-live) if it does not.
 - [ ] At least one member has a working agent session on a laptop they are bringing.
 
@@ -140,18 +141,16 @@ Three rules for the drafting: expect merge conflicts in `vision-and-scope.md` an
 |---|---|
 | 0-3 | Your TA tells you what the pre-class check found. |
 | 3-8 | The frame, from the front. |
-| 8-26 | **Write the issues, in pairs.** The pair with your riskiest use case takes it; the other pairs take the next two. A team of five runs a pair and a trio. One person writes, the other checks that every cited ID exists at the path you gave. |
+| 8-26 | **Write the issues, in pairs.** The pair with your riskiest use case takes it; the other pairs take the next two. A team of five runs a pair and a trio. One person writes, the other checks that the use case exists at the path you gave and that its Business Rules field is filled in. |
 | 26-42 | **Run the questions test, in pairs,** then sort what comes back. |
 | 42-50 | **Pool as a team.** Each pair reads out its specification pile. Questions only your client can answer go into `OPEN-ISSUES.md`. Each pair posts its sorted list as a comment on its issue. |
 
-**The issue is citations.** Open it on your board and fill in this skeleton. Anything longer than a line or two under "Not yet in the specification" belongs in the specification: write it there, then cite it.
+**The issue cites the use case, and the use case cites the rest.** Its Business Rules field carries the `BR-*` identifiers and its Associated Information carries the quality attributes, so the issue does not list them again; a second list goes stale the same way a pasted use case does. Project-wide constraints (the stack, the hosting, the client's systems) belong in your charter, which the agent reads every session. Open the issue on your board and fill in this skeleton. Anything longer than a line or two under "Not yet in the specification" belongs in the specification: write it there, then cite it.
 
 ```markdown
 ## Build-context: UC-<AREA>-<slug>
 
 **Realizes:** UC-<AREA>-<slug> (docs/requirements/use-cases.md)
-**Honors:** BR-<slug>, BR-<slug> (docs/requirements/business-rules.md)
-**Constrained by:** <quality attribute and constraint IDs> (docs/requirements/software-requirements-specification.md)
 **Touches:** <paths you expect it to change, or "new:" and the path>
 
 ### Not yet in the specification
@@ -163,21 +162,21 @@ Do not paste the use case in. A pasted use case is a second use case, and one of
 **The questions test.** Open your agent at the root of your team repository, switch to plan mode (Shift+Tab in Claude Code), paste in the issue body, and then this:
 
 ```text
-Read the files this issue cites. Before writing any code, list every
-assumption you would have to make to implement it: rules, thresholds,
-terms, data, who may do what, and which files you would change.
-For each one, say whether you found it in the repository (and where)
-or had to invent it.
+Read the use case this issue cites and everything it references.
+Before writing any code, list every assumption you would have to
+make to implement it: rules, thresholds, terms, data, who may do
+what, and which files you would change. For each one, say whether
+you found it in the repository (and where) or had to invent it.
 ```
 
 Agreeing with the list is not the output. A decision on each invented assumption is. Sort every one into a pile:
 
-- **Specification.** A rule, a threshold, or a term that should be written down where your client can see it. Usually the biggest pile.
-- **Charter.** A convention or constraint about how the project runs, for your `AGENTS.md`, because the agent reads it every session.
+- **Specification.** A rule, a threshold, or a term that should be written down where your client can see it. Usually the biggest pile. A new rule goes in `business-rules.md` and its identifier goes in the use case's Business Rules field; a rule that exists but the use case never cited needs only the second edit.
+- **Charter.** A convention or project-wide constraint about how the project runs, for your `AGENTS.md`, because the agent reads it every session.
 - **Issue.** True of this task only.
 
 If everything landed in the issue pile, go around again.
 
 **What you produce:** one issue per pair on your board, with its sorted list as a comment, and new entries in `OPEN-ISSUES.md`. The specification and charter piles are closed by pull request before [Checkpoint 1](project.md#checkpoints) on Oct 2, where the specification is reviewed.
 
-**How your TA checks it:** the issue cites rather than copies; every cited ID resolves; the sorted list is posted; not everything is in the issue pile.
+**How your TA checks it:** the issue cites the use case rather than copying it or listing its rules; the use case it cites exists; the sorted list is posted; not everything is in the issue pile.
