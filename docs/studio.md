@@ -24,11 +24,12 @@ Led by **Hiep Nguyen**. Each TA takes four or five of the thirteen teams and kee
 
 Team numbers are on the [Teams page](teams.md).
 
-## The first studio is different
+## The first two studios
 
-Your team was formed on Wednesday and your project barely exists yet, so the first studio is guided onboarding rather than project work:
+Every later studio builds on these two. If you missed one, this is what your team did, and your repository is the record of it.
 
-- **Week 2, Sep 4.** Your team's first hour together. Introduce yourselves, fix the recurring weekly meeting slot you will defend all term, read your client brief as a team, draft and sign your [team contract](team-contract.md), and stand up your GitHub repository, Projects board, Issues and Sub-issues, and Slack channel. The contract is committed to the repository as `docs/team-contract.md`, not kept in a document somewhere. Your TA verifies **Checkpoint 0** in the room while you work.
+- **Week 2, Sep 4: your team's first hour.** Teams introduced themselves, fixed the recurring weekly meeting slot they defend all term, read the client brief together, signed the [team contract](team-contract.md) as `docs/team-contract.md` with one commit per member, and stood up the repository, Projects board, and Slack channel. The TA verified **[Checkpoint 0](project.md#checkpoints)** in the room.
+- **Week 3, Sep 11: Napkin round 0, then the first requirements.** Each member napkinned the client project alone and silently, the team reconciled, and the result was sealed in `docs/napkin-round-0.md`. Then the team copied the templates into `docs/requirements/` and drafted the glossary, the first sections of vision and scope (Background, the business opportunity, business objectives, the vision statement), and `OPEN-ISSUES.md`, one section per member on its own branch. Process flows, stakeholder profiles, and the feature list followed in week 4.
 
 ### Where your repository lives
 
@@ -41,9 +42,7 @@ Your team was formed on Wednesday and your project barely exists yet, so the fir
 
 Once it exists, the owner turns on branch protection and the merge settings in the [Git Workflow](git-workflow.md#repository-settings) page, in week 3. Everyone else reads that page before their first branch.
 
-Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), due that same day, so arrive with the [setup steps](resources.md) already done. With 77 students and three TAs, studio cannot absorb 77 cold installations.
-
-From week 3 onward, studio is your project.
+Environment setup is not studio work. Getting Project Pulse running on your own machine is [assignment 1](assignments/hello-project-pulse.md), and the [setup steps](resources.md) are the place to start if yours still does not run. With 77 students and three TAs, studio cannot absorb cold installations.
 
 ### Where your requirements documents live
 

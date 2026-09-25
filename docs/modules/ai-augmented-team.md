@@ -378,8 +378,8 @@ Every module from here on closes by asking the same four questions about its own
 **Studio (team, own project)**
 
 - **Goal:** stand up your team's shared memory in one hour, and fix the meeting time you will defend all term.
-- **In studio (own project):** introduce yourselves and fix the recurring weekly slot. Read your client brief together. Draft and sign `docs/team-contract.md` and commit it. Create the repository, the Projects board with its columns, and the Slack channel. Open your first two issues from the brief, each with acceptance criteria a stranger could check.
-- **Deliverable and assessment:** this is [Checkpoint 0](../project.md#checkpoints), verified in the room by your TA rather than presented. The contract is checked for a named meeting time and six signatures; the issues are checked for acceptance criteria, not for volume.
+- **In studio (own project):** introduce yourselves and fix the recurring weekly slot. Read your client brief together. Draft and sign `docs/team-contract.md` and commit it. Create the repository, the Projects board with its columns, and the Slack channel. A team that finishes early opens its first two issues from the brief, each with acceptance criteria a stranger could check.
+- **Deliverable and assessment:** this is [Checkpoint 0](../project.md#checkpoints), verified in the room by your TA rather than presented. The contract is checked for a named meeting time and one signature commit per member. The issues are not a checkpoint item; where a team opened them, they are read for acceptance criteria, not for volume.
 
 **Individual assignment (Project Pulse):** none. The individual work due this week, [Hello, Project Pulse](../assignments/hello-project-pulse.md), belongs to week 1 and includes opening a well-formed issue, which is the same skill on a codebase you did not write.
 
