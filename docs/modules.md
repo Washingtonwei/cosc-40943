@@ -23,5 +23,8 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Context Engineering**](modules/context-engineering.md) · [slides](slides/context-engineering.html)
 : Assemble, for one unit of work, the context an agent cannot infer out of the specification you already wrote, and tell whether you supplied enough by measuring what got built rather than how good the prompt felt. How big the context window really is, how an agent finds code, managing a session that fills up, and why you cite the specification instead of copying it.
 
+[**Software Architecture, Just Enough**](modules/architecture.md) · [slides](slides/architecture.html)
+: Decide, before the code exists, the few things that will be expensive to change, and let the quality attributes your client cares about choose them rather than the feature list. Architecturally significant requirements, C4 context and container diagrams, dividing a system by domain, one deployable or several, writing a decision down, and the trust boundary.
+
 [**Requirements Traceability**](modules/traceability.md)
 : Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Still being written.

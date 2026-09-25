@@ -75,7 +75,7 @@ The one rule to remember in the room: **write yours alone and silently first, th
 
 ## Each studio
 
-One section per studio, in date order. If you missed one, the section says what your team did and what it produced; your repository is the record of it. Checkpoint Fridays are on the [Project](project.md#checkpoints) page, and Fridays with no studio are marked on the [Schedule](schedule.md).
+One section per studio, in date order. If you missed one, the section says what your team did and what it produced; your repository is the record of it. What each checkpoint reviews is on the [Project](project.md#checkpoints) page; a checkpoint Friday gets a section here when the hour also has work in it, as Sep 4 and Oct 2 do. Fridays with no studio are marked on the [Schedule](schedule.md).
 
 ### Week 2, Sep 4: your team's first hour
 
@@ -126,7 +126,7 @@ Three rules for the drafting: expect merge conflicts in `vision-and-scope.md` an
 
 ### Week 5, Sep 25: finish the specification for Checkpoint 1
 
-**Objective:** bring your specification to what [Checkpoint 1](project.md#checkpoints) reviews on Oct 2, and have your TA review one use case with you. This is the supervised hour week 4's work did not get. Checkpoint 1's other half, the architecture-of-record, comes from week 6's lectures.
+**Objective:** bring your specification to what [Checkpoint 1](project.md#checkpoints) reviews on Oct 2, and have your TA review one use case with you. This is the supervised hour week 4's work did not get. Checkpoint 1's other half, the architecture-of-record, comes from week 6's lectures and is drafted in the [Oct 2 studio](#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
 
 **Before you arrive:** your TA checks week 4's work on GitHub before class. Check it yourself first:
 
@@ -167,6 +167,48 @@ What to work on, as the [week 4 team work](modules/spec-driven-requirements.md#7
 **How your TA checks it:** the pre-class check, the six questions on your riskiest use case, and commits from every member.
 
 The use case your TA reviews is also your first build-context, in [week 8](#week-8-oct-16-your-first-build-context).
+
+### Week 6, Oct 2: Checkpoint 1, and your architecture-of-record
+
+**Objective:** your TA reviews your specification with you, which is the first half of [Checkpoint 1](project.md#checkpoints), and your team drafts its architecture-of-record, the second half. The reading is [Software Architecture, Just Enough](modules/architecture.md), and [assignment 2](assignments/spec-a-feature.md) is due before class the same morning.
+
+**Before you arrive:**
+
+- Copy the architecture template into your repository. From the root of your team repository, with the [course templates](https://github.com/tcu-cosc-40943/course-templates) cloned beside it:
+
+    ```bash
+    git -C ../course-templates pull
+    mkdir -p docs/design
+    cp ../course-templates/design/architectural-design.md docs/design/
+    ```
+
+    The first line updates the copy you cloned in week 3. If you never cloned it, run `git clone https://github.com/tcu-cosc-40943/course-templates.git` beside your team repository first.
+
+- Section 9 of your specification has a number in every quality attribute. The architecture's requirements table is built from them.
+- Your use case areas are settled enough to list. Every area gets a row in the architecture.
+- Read Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md): its Quality Goals, its architecturally significant requirements, and `KD-1`, `KD-3`, and `KD-7`.
+
+| When | What your team does |
+|---|---|
+| 0-5 | The frame, from the front: what the weekend check reads, and the order to fill the template in. |
+| 5-50 | **Draft the architecture-of-record**, one owner per section, one branch and one pull request each. Your TA sits with each of its teams for about eight minutes to review the specification. |
+
+**The specification review.** Your TA reads your specification with you against what Checkpoint 1 names: glossary, vision and scope, use cases, business rules, and the draft specification. It starts from the riskiest use case reviewed on Sep 25 and whether its revision landed.
+
+**The order to draft in.** The template marks what is due now: sections 1 through 6 and section 7.1. Start with the ranked table of architecturally significant requirements (section 6.1), because every other section cites it. Then the context diagram with its trust boundary, the container diagram, and the component table, running the two checks at its end. Write `KD-deployment-shape` last, with the requirement that would have forced the other answer. Your agent draws the diagrams; the ranking and the decision stay with the team.
+
+**What you produce:** `docs/design/architectural-design.md`, merged to `main` by **11:59 pm Friday**. Whatever is on `main` then is what your TA reads.
+
+**How your TA checks it,** over the weekend, with feedback as one issue in your repository by **8 pm Sunday**:
+
+1. Every use case area in `use-cases.md` has a row in the component table (section 5.2).
+2. Every external system on the context diagram appears in some "Depends on" cell, and the diagram shows a trust boundary.
+3. The requirements table (section 6.1) reuses your specification's identifiers and includes at least one `SEC-*`.
+4. `KD-deployment-shape` cites the requirement that drives it and names a rejected alternative.
+5. Section 7.1 answers all three questions: how users authenticate, what each role may see beyond its role, and where sensitive data lives.
+6. Nothing is designed below responsibility: no endpoints, no classes, no columns.
+
+Fix what the issue raises by pull request, and close the issue from it. Week 7's design-of-record builds on this map from Monday.
 
 ### Week 8, Oct 16: your first build-context
 
