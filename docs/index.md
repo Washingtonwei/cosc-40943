@@ -3,11 +3,11 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 5: context engineering, and your TA checks last week's work"
+!!! important "Week 5: Friday is for finishing your specification"
 
-    **Studio is back this Friday, Sep 25, and it opens with your TA checking the requirements work from week 4.** Have `docs/requirements/` populated and `traceability.md` copied from [`course-templates`](https://github.com/tcu-cosc-40943/course-templates) before you walk in. Teams that copied `requirements/` back in week 3 will not have `traceability.md` yet.
+    **Studio this Friday, Sep 25, is a requirements hour, not the build-context.** Your TA checks your week 4 work on GitHub before class and reviews your riskiest use case with you in the room; the rest of the hour goes to what [Checkpoint 1](project.md#checkpoints) reviews on Oct 2. Pick your riskiest use case before you walk in, and run the [self-check](studio.md#week-5-sep-25-finish-the-specification-for-checkpoint-1) tonight. Teams that copied `requirements/` back in week 3 will not have `traceability.md` yet; the copy command is on the Studio page.
 
-    **Napkin round 1 moved to Wednesday's lecture**, so Friday belongs to your own project. Bring nothing; you are handed the brief in the room.
+    **Your team's first build-context moves to the week 8 studio**, just before you build. [Assignment 2](assignments/spec-a-feature.md) is your individual practice run.
 
     **Monday and Wednesday are context engineering:** the specification you spent two weeks writing is the context your agent needs, and the question the rest of the course keeps asking is how you know when you have supplied enough. The reading is [Context Engineering](modules/context-engineering.md).
 

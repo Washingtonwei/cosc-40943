@@ -20,7 +20,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [The AI-Augmented Team](ai-augmented-team.md), which established that the repository is the only memory the agent has and told you to write the charter thin; and [Requirements as the Contract](spec-driven-requirements.md), which is where you wrote the specification this module treats as context.
 - **Leads into:** architecture in week 6, where the quality attributes and constraints you assembled here become the inputs that drive design decisions, and [Requirements Traceability](traceability.md) in week 8, where the citation discipline practiced here becomes a standing check.
-- **How it's taught:** two lecture days, then a [studio](../studio.md) in which your team assembles its first build-context on its own project. The question it asks, "have I supplied enough?", recurs in every module after it.
+- **How it's taught:** two lecture days in week 5. Your team assembles its first build-context on its own project in the [week 8 studio](../studio.md#week-8-oct-16-your-first-build-context), just before it builds, and practices it alone first in [assignment 2](../assignments/spec-a-feature.md). The question it asks, "have I supplied enough?", recurs in every module after it.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle, supplying the context it cannot infer](../syllabus.md#learning-outcomes) (outcome 6).
 
 ## 3. Motivation
@@ -268,11 +268,11 @@ One thing the loop eventually produces: when you have assembled the same shape o
 
 ## 7. Hands-on (studio and individual assignment)
 
-**Studio (team, own project)**
+**Studio (team, own project, week 8)**
 
 - **Goal:** turn one of your own use cases into a build-context an agent could work from, and find out what your specification does not yet say.
-- **In studio (own project):** in pairs, write the issue for one of your riskiest use cases as citations: the `UC-<AREA>-<slug>` it realizes, which already cites its `BR-*` rules and quality attributes, and the paths you expect it to touch. Then run the questions test: hand the issue and your repository to an agent in plan mode and ask it, before it writes anything, to state every assumption it would have to make. Each assumption you did not intend is a gap. Decide for each one whether it belongs in the specification, in the charter, or in the issue, and put it there. A rule the use case should have cited is a gap in the use case. The skeleton, the prompt, and the timing are on the [studio page](../studio.md#week-5-sep-25-your-first-build-context).
-- **Deliverable and assessment:** one issue per pair on your team's board with its sorted gap list as a comment, and the pull requests that close the gaps before Checkpoint 1. Assessed on whether the issue cites rather than copies, and on whether the gaps went to the right home.
+- **In studio (own project):** in pairs, write the issue for one of your riskiest use cases as citations: the `UC-<AREA>-<slug>` it realizes, which already cites its `BR-*` rules and quality attributes, and the paths you expect it to touch. Then run the questions test: hand the issue and your repository to an agent in plan mode and ask it, before it writes anything, to state every assumption it would have to make. Each assumption you did not intend is a gap. Decide for each one whether it belongs in the specification, in the charter, or in the issue, and put it there. A rule the use case should have cited is a gap in the use case. The skeleton, the prompt, and the timing are on the [studio page](../studio.md#week-8-oct-16-your-first-build-context).
+- **Deliverable and assessment:** one issue per pair on your team's board with its sorted gap list as a comment, and the pull requests that close the gaps before the agent builds from the issue. Assessed on whether the issue cites rather than copies, and on whether the gaps went to the right home.
 
 **Individual assignment (Project Pulse)**, [*Spec a feature*](../assignments/spec-a-feature.md)
 

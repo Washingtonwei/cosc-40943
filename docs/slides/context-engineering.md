@@ -802,12 +802,12 @@ Write them by hand first. A wrapper around a thing you have never done teaches y
 
 ::: steps
 - Check your own week 4 work tonight; your TA already has
-- Pick your **riskiest** use case before class
-- In pairs, write each issue as **citations**: the `UC-<AREA>-<slug>` and the paths. The use case already cites its rules
-- Then run the questions test on it, and sort every gap: specification, charter, or issue
+- Pick your **riskiest** use case before class; your TA reviews it with you
+- The rest of the hour: finish the specification Checkpoint 1 reviews on Oct 2
+- Your team's first build-context comes in **week 8**, just before you build. Assignment 2 is your practice run
 :::
 
-The skeleton, the prompt, and the checklist: [Studio, week 5](https://washingtonwei.github.io/cosc-40943/studio/#week-5-sep-25-your-first-build-context)
+Details: [Studio, week 5](https://washingtonwei.github.io/cosc-40943/studio/#week-5-sep-25-finish-the-specification-for-checkpoint-1)
 
 ## Assignment 2: Spec a feature
 
