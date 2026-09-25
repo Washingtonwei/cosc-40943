@@ -68,6 +68,8 @@ The [Napkin drill](studio.md) exists partly for this. A napkin written before th
 
 Two things to know about the Copilot student plan. Code completions are unlimited, but **chat and agent usage draw on a metered allowance of AI credits**, and model choice is automatic rather than yours. This course leans on *agent* usage, not completions, so budget it: do the thinking before you open the session, and do not burn credits letting an agent wander. That habit is the [agenda capture](#two-failures-to-watch-for-in-yourself) lesson with a price tag attached.
 
+**Once you have access, follow [Agent Setup](agent-setup.md)** to install the agent, connect it to GitHub, and set its guardrails.
+
 **Already using Codex, Cursor, or another agent?** Keep using it, as long as it has real agentic capability; you run the workflow steps by hand, as on Copilot CLI. **If your client offers to sponsor licenses for your team, take it** and tell the instructor.
 
 The method this course teaches is deliberately tool-agnostic. Artifacts, approval gates, the challenge loop, and traceability are the point; the agent is interchangeable and will change again before you graduate.

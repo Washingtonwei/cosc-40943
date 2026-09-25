@@ -2,7 +2,7 @@
 
 **Due Friday, October 2, at the beginning of class.** Individual work. 4% of your grade.
 
-Project Pulse emails you a reminder every Monday telling you your weekly activity report is due. It emails you whether or not you already submitted it. If you filed on Sunday night, you still get the Monday email, because the code that sends it never asks.
+Project Pulse emails you a reminder every Monday telling you your weekly activity report is due, and another every Tuesday for your peer evaluation. It emails you whether or not you already submitted. If you filed your report on Sunday night, you still get the Monday email, because the code that sends it never asks.
 
 This week you specify the feature that fixes that, and then you find out what an agent does with what you wrote.
 
@@ -24,7 +24,7 @@ for (Student student : section.getStudents()) {
 }
 ```
 
-Every student in the course section, every time. The `try` handles an address the mail server rejects, and there is a comment above the loop explaining why. Nothing anywhere checks whether this student has already submitted anything.
+Every student in the course section, every time. The scheduler runs on each section's configured due days, and the email lists whatever is due that day: the weekly activity report, the peer evaluation, or both. The `try` handles an address the mail server rejects, and there is a comment above the loop explaining why. Nothing anywhere checks whether this student has already submitted anything.
 
 Three things are missing, and they are one feature:
 
@@ -48,6 +48,9 @@ Same two settings as last time, and they still go wrong the same two ways.
 !!! warning "2. Point your pull request at your own fork"
     GitHub sets the **base repository** to `tcu-cosc-40943/spec-a-feature`. Change it to **your own fork**, base branch `main`. Miss it and you have opened your pull request against the class repository, in front of everyone, and it is not your submission.
 
+!!! tip "Optional: let your agent reach GitHub"
+    Your agent works in your clone and cannot see your issues or pull requests on its own. [Agent Setup](../agent-setup.md#6-get-an-assignment-repository-onto-your-laptop) connects it, step by step. The line that matters is `gh repo set-default <your-username>/spec-a-feature`: without it, a pull request your agent opens lands in the class repository, which is warning 2 again. Whatever the agent files under your name, you answer for in class.
+
 ## What you submit
 
 One pull request **in your own fork**, on a branch, linked to one issue you opened there. **Submit the pull request's URL to TCU Online** by the beginning of class on Friday, October 2.
@@ -65,9 +68,9 @@ Everything else, the build-context and your evaluation of the agent, goes in the
 
 Before you write a line, make three decisions. They are the assignment; the writing is how you record them.
 
-**Which use case is it?** "Nudge the non-submitters" could be one use case or three. The instructor seeing a list, the instructor sending a nudge, and the scheduler skipping the finished are not obviously the same actor doing the same thing at the same time. Larman's three tests from week 4 apply. Pick a scope and defend it in one sentence.
+**Which use case is it?** "Nudge the non-submitters" could be one use case or three. The instructor seeing a list, the instructor sending a nudge, and the scheduler skipping the finished are not obviously the same actor doing the same thing at the same time. Larman's three tests from week 4 apply. Pick a scope and defend it in one sentence. If you decide it is more than one use case, write the one the instructor triggers, and name the others in your pull request.
 
-**Which area does it live in?** Every use case ID is `UC-<AREA>-<slug>`, and the area is baked in permanently. Read the areas already in use. `WAR`, `EVA`, `SEC`, `STU`, `TEA`, `INS`. None of them is obviously right for a notification, and there is no `UC-NOT` area, though the specification does carry `FR-NOT-weekly-reminder`. Choose, and say why in the pull request. There is no answer key here; there is a defensible choice and an undefensible one.
+**Which area does it live in?** Every use case ID is `UC-<AREA>-<slug>`, and the area is baked in permanently. Read the areas already in use: `WAR`, `EVA`, `SEC`, `STU`, `TEA`, `INS`, `CFG`, and a dozen more. None of them is obviously right for a notification, and there is no `UC-NOT` area, though the specification does carry `FR-NOT-weekly-reminder`. Choose, and say why in the pull request. There is no answer key here; there is a defensible choice and an undefensible one.
 
 **What does "has not submitted" mean?** This is the decision the whole feature turns on, and the one an agent will get wrong quietly. A weekly activity report and a peer evaluation are different artifacts on different deadlines. Decide, precisely, and write it down.
 
@@ -77,7 +80,7 @@ Use the template that every use case in `docs/requirements/use-cases.md` already
 
 **Your extensions are where the grade is.** The main success scenario is the easy half and everybody writes it correctly. The edge cases are the specification. At minimum, decide what your use case does about each of these, because Project Pulse already has rules that bite:
 
-- A student who is **not assigned to a team** cannot submit a peer evaluation at all (`BR-team-assignment-required`). Is she a non-submitter? Does she get nudged?
+- A student who is **not assigned to a team** cannot submit a weekly activity report or a peer evaluation at all (`BR-team-assignment-required`). Is she a non-submitter? Does she get nudged?
 - The week's **submission window has closed**, so the nudge cannot help. Do you send it anyway?
 - The week is **not one of the section's active weeks** (`BR-active-weeks`).
 - The student **submitted, then deleted** what they submitted.

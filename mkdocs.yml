@@ -124,6 +124,7 @@ nav:
   - Reference:
       - The Method: method.md
       - Working with AI: ai.md
+      - Agent Setup: agent-setup.md
       - Git Workflow: git-workflow.md
       - Requirement Types: requirement-types.md
       - Professionalism: professionalism.md

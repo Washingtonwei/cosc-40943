@@ -27,7 +27,7 @@ Getting it to start is the goal this week. Understanding it is not, yet.
 
 ### 3. Set up your AI coding agent
 
-Confirm it can read the cloned repository. See [Working with AI](ai.md) for access.
+Follow [Agent Setup](agent-setup.md): Git, the GitHub CLI, and Claude Code installed and logged in, step by step, assuming you have used none of them. See [Working with AI](ai.md) for which agent and how to get access.
 
 ### 4. Have a GitHub account
 
