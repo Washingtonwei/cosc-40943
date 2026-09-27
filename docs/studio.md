@@ -195,7 +195,7 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 
 **The specification review.** Your TA reads your specification with you against what Checkpoint 1 names: glossary, vision and scope, use cases, business rules, and the draft specification. It starts from the riskiest use case reviewed on Sep 25 and whether its revision landed.
 
-**The order to draft in.** The template marks what is due now: sections 1 through 6 and section 7.1. Start with the ranked table of architecturally significant requirements (section 6.1), because every other section cites it. Then the context diagram with its trust boundary, the container diagram, and the component table, running the two checks at its end. Write `KD-deployment-shape` last, with the requirement that would have forced the other answer. Your agent draws the diagrams; the ranking and the decision stay with the team.
+**The order to draft in.** The template marks what is due now: sections 1 through 5, section 8.1, and section 9. Start with the ranked table of architecturally significant requirements (section 9.1), because every other section cites it. Then the context diagram with its trust boundary, the container diagram, and the component table, running the two checks at its end. Write `KD-deployment-shape` last, with the requirement that would have forced the other answer. Your agent draws the diagrams; the ranking and the decision stay with the team.
 
 **What you produce:** `docs/design/architectural-design.md`, merged to `main` by **11:59 pm Friday**. Whatever is on `main` then is what your TA reads.
 
@@ -203,9 +203,9 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 
 1. Every use case area in `use-cases.md` has a row in the component table (section 5.2).
 2. Every external system on the context diagram appears in some "Depends on" cell, and the diagram shows a trust boundary.
-3. The requirements table (section 6.1) reuses your specification's identifiers and includes at least one `SEC-*`.
+3. The requirements table (section 9.1) reuses your specification's identifiers and includes at least one `SEC-*`.
 4. `KD-deployment-shape` cites the requirement that drives it and names a rejected alternative.
-5. Section 7.1 answers all three questions: how users authenticate, what each role may see beyond its role, and where sensitive data lives.
+5. Section 8.1 answers all three questions: how users authenticate, what each role may see beyond its role, and where sensitive data lives.
 6. Nothing is designed below responsibility: no endpoints, no classes, no columns.
 
 Fix what the issue raises by pull request, and close the issue from it. Week 7's design-of-record builds on this map from Monday.

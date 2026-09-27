@@ -8,17 +8,23 @@ week: 6
 
 Week 6 · Decide what is expensive to change
 
-## Two teams, one specification {.center}
+## Team A: seven services
 
-::: cols
-**Team A**
+![Team A: seven services](img/architecture-team-a.svg){ height="520" }
 
-Seven services, seven databases, an API gateway, Kubernetes.
-|||
-**Team B**
-
-One Spring Boot application, the Vue app bundled inside, one database, one container.
+::: note
+One service per use case area, each with its own database, behind a gateway, on Kubernetes. Each row is one service and the database it owns. Point at the four dotted amber arrows: each one is a network call that used to be a method call or a join.
 :::
+
+## Team B: one deployable
+
+![Team B: one deployable](img/architecture-team-b.svg){ height="520" }
+
+::: note
+The same seven areas, as packages inside one application instead of services, and the same four calls, now method calls. Read the two counters in the top-right corners side by side. Gmail, the language model, and file storage are left off both because both designs use them the same way.
+:::
+
+## Two teams, one specification {.center}
 
 ::: ask
 Both deliver every use case. Both pass every functional test. Which one should the client get?
@@ -92,6 +98,22 @@ Each part described to its responsibility and no further. Nothing designed befor
 The map with holes: two people build the same thing. The map that is too deep: you committed to guesses.
 :::
 
+## Seven attributes, seven pushes
+
+| Attribute | Project Pulse says | So the architecture has |
+|---|---|---|
+| Security | a student sees only their own team's work | a trust boundary; every query scoped |
+| Maintainability | a new feature edits no sibling module | packages by domain |
+| Availability | up 99% of a term | one instance, and that is enough |
+| Performance | 500 ms at the 95th percentile | no needless network hops |
+| Scalability | about 75 users, 100 at once | one deployable; uploads in object storage |
+| Robustness | a crash loses at most 10 seconds | a save to the server at least every 10 seconds |
+| Operability | one instructor, no operations team | one container, a staging slot |
+
+::: note
+Read it row by row: the left column is what students wrote in section 9 in week 4, the right column is the rest of this deck. Stop on availability: 99% of a term is about a day of downtime, and one instance passes. Ask what 99.99% would do (about 16 minutes a term; now you need redundancy). The number decides, not the adjective. Usability is the contrast: it is met screen by screen, so it rarely changes the structure.
+:::
+
 ## Quality attributes decide it
 
 ::: steps
@@ -125,19 +147,19 @@ The SEI calls this a utility tree. High on both, plus any hard constraint (a man
 
 ## Project Pulse's top four
 
-| Rank | Requirement | Handles |
-|---|---|---|
-| 1 | Student records stay confidential (FERPA) | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` |
-| 2 | One instructor, no operations team | `AVL-uptime` |
-| 3 | Next year's students can extend it | `MNT-feature-locality`, `MNT-service-layer` |
-| 4 | No lost work under concurrent editing | `ROB-no-overwrite` |
+| Rank | Requirement | Handles | Drives |
+|---|---|---|---|
+| 1 | Student records stay confidential (FERPA) | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | `KD-2`, `KD-4` |
+| 2 | One instructor, no operations team | `AVL-uptime` | `KD-1`, `KD-3` |
+| 3 | Next year's students can extend it | `MNT-feature-locality`, `MNT-service-layer` | `KD-2`, `KD-5`, `KD-7` |
+| 4 | No lost work under concurrent editing | `ROB-no-overwrite` | `KD-6` |
 
 ::: key
 Reuse the identifiers you already have. Include at least one `SEC-*`.
 :::
 
 ::: note
-From the architecture-of-record on main, under Architecture Decisions. Seven in total; these are the top four. The security rule: every client system this year stores something about a real person. If no security requirement makes the list, its protection was never designed.
+From the architecture-of-record on main, under Architecture Decisions. Seven in total; these are the top four. Not the same seven as the attribute slide: an ASR is a specific requirement, not a category, so availability feeds two ASRs and usability feeds none. Drives points at the key decisions each one forced, which is where Wednesday picks up. Row 4: real-time editing is deferred, so the MVP meets it with section locking, the simple way. The security rule: every client system this year stores something about a real person. If no security requirement makes the list, its protection was never designed.
 :::
 
 ## Drawing it {.center}
@@ -357,13 +379,79 @@ If nothing in the specification needs one part to scale, deploy, or fail indepen
 ## Patterns you will meet
 
 ::: steps
-- **Layered:** inside every component you build
-- **Model-view-controller:** Spring controllers, Vue components
-- **Pipes and filters:** Spring Security is a filter chain
+- A **pattern**: a reusable solution to a problem that keeps occurring
+- **Three you will use:** layered, model-view-controller, pipes and filters
+- **Six to recognize**, so you can tell when an agent reaches for one without a reason
+:::
+
+## Layered
+
+![Layered](img/pattern-layered.svg){ height="450" }
+
+::: note
+This is the activity package from the "area by area" slide, opened up. The red arc is the rule: each layer knows only the one below it.
+:::
+
+## Model-view-controller
+
+![Model-view-controller](img/pattern-mvc.svg){ height="450" }
+
+::: note
+Same idea on both sides of the wire. The problem it solves: the screen changes more often than anything else, so keep it apart from the data and the rules.
+:::
+
+## Pipes and filters
+
+![Pipes and filters](img/pattern-pipes-and-filters.svg){ height="450" }
+
+::: note
+Spring Security is a filter chain. Plant the amber question, "no rule matched?", and leave it: the trust boundary slides answer it.
+:::
+
+## Broker
+
+![Broker](img/pattern-broker.svg){ height="420" }
+
+**You need it when:** Many services, located and replaced dynamically.
+
+## Publish-subscribe
+
+![Publish-subscribe](img/pattern-publish-subscribe.svg){ height="420" }
+
+**You need it when:** Work that can wait, spikes to absorb, many independent consumers of one event.
+
+## Message queue
+
+![Message queue](img/pattern-message-queue.svg){ height="420" }
+
+**You need it when:** A job longer than a user will wait, or bursts the database cannot absorb.
+
+## Source-replica
+
+![Source-replica](img/pattern-source-replica.svg){ height="420" }
+
+**You need it when:** Reads far above writes, or an availability target one server cannot meet.
+
+## Main-worker
+
+![Main-worker](img/pattern-main-worker.svg){ height="420" }
+
+**You need it when:** Batch computation that can be parallelized.
+
+## API gateway
+
+![API gateway](img/pattern-api-gateway.svg){ height="420" }
+
+**You need it when:** You have already chosen microservices.
+
+## Read that line as a requirement {.center}
+
+::: key
+If your specification contains none of those needs, your system uses none of those patterns. That is a correct architecture, not an unambitious one.
 :::
 
 ::: note
-The rest (broker, publish-subscribe, message queues, source-replica, main-worker, API gateway) are in the reading's table, each with "you need it when". Read that column as requirements. If your specification has none of them, you use none of them, and that is correct.
+Six slides, one "you need it when" each. Read the six as requirements, then ask the room whether any of them are in their specification. For almost every team the answer is no.
 :::
 
 ## Writing a decision down
@@ -459,7 +547,7 @@ It proposes the architecture it has read about most, which was built for a compa
 :::
 
 ::: note
-Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 has a number, and read Project Pulse's quality goals and KD-1, KD-3, KD-7. The six-point checklist is on the Studio page; point at it, do not read it out.
+Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 of your specification has a number, and read Project Pulse's quality goals and KD-1, KD-3, KD-7. The six-point checklist is on the Studio page; point at it, do not read it out.
 :::
 
 ## Draft in this order

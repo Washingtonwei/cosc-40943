@@ -31,6 +31,12 @@ By the end of this module, a student can:
 
 Team A builds seven services, one per area, each with its own database, talking over HTTP behind an API gateway, deployed to a Kubernetes cluster. Team B builds one Spring Boot application with a Vue front end bundled inside it, one relational database, deployed as one container.
 
+![Team A: seven services on a Kubernetes cluster, each with its own database, behind an API gateway, with four service-to-service calls over the network](../slides/img/architecture-team-a.svg)
+
+![Team B: one Spring Boot application in one Docker container, seven domain packages calling each other in-process, one relational database](../slides/img/architecture-team-b.svg)
+
+Both figures show the container view, and each carries its own key. Gmail, the language model service, and file storage are left out of both, because both designs use them the same way. Count the arrows that cross a network in each.
+
 Nothing in the use cases tells them apart. Both are correct. And yet one of them is a disaster for the client, and you can tell which only by asking questions the use cases never raise. Who runs this after you graduate? (One instructor, with no operations staff.) How many users? (About 75 per term.) What is the worst thing that can happen? (A student's evaluations leak to another student, which is a federal privacy problem.) What will change most often? (Features, added by next year's students who have never seen the code.)
 
 Those are quality attributes and constraints, and they are what Project Pulse's actual [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) leads with: security and privacy first, then maintainability, then usability, then low operational burden. Team B's system is Project Pulse's real one. Team A's is what an agent proposes when nobody tells it those four things.
@@ -62,7 +68,21 @@ This is the **reversibility test**, and it is the architecture version of a rule
 
 ### 4.2 Quality attributes choose the architecture
 
-Recall the two kinds of requirement from week 4. **Functional requirements** say what the system does; your use cases carry them. **Quality attributes** say how well; section 9 of your specification carries them, each with a number and a way to measure it.
+Recall the two kinds of requirement from week 4. **Functional requirements** say what the system does; your use cases carry them. **Quality attributes** say how well; [section 9 of your specification](spec-driven-requirements.md#426-quality-attributes-section-9) carries them, each with a number and a way to measure it.
+
+Here are the attributes that most often shape an architecture, each with the question it asks, Project Pulse's answer from its [specification](https://github.com/Washingtonwei/project-pulse/blob/main/docs/requirements/software-requirements-specification.md), and the structure that answer pushes toward. The last column is a map of the rest of this module.
+
+| Attribute | The question it asks | Project Pulse's answer | What it pushes in the architecture |
+|---|---|---|---|
+| **Security** | Who may see or change what, and what must never leak? | `SEC-authorization`: a student reaches only the work of their own team. `SEC-llm-proxy`: the language model's credentials never reach the browser. | A trust boundary around the whole application, every request authenticated, every query scoped to the caller's team, and the language model called only from the server ([4.9](#49-security-as-a-quality-attribute-the-trust-boundary)) |
+| **Maintainability** | How cheaply can someone who did not write it change it? | `MNT-feature-locality`: a new feature is a self-contained module that edits no sibling module. | Packages divided by domain, with the layers inside each ([4.5](#45-decomposing-by-domain-from-use-case-areas-to-components)) |
+| **Availability** | How much downtime is acceptable, and when? | `AVL-uptime`: up 99% of each term, with deadlines prioritized. | 99% of a term allows about a day of downtime, so one instance is enough. 99.99% would allow about 16 minutes, and would demand redundant instances and database replicas ([4.7](#47-a-catalog-of-patterns-and-which-ones-you-will-meet)). |
+| **Performance** | How fast, at what percentile, under what load? | `PER-report-load`: the instructor dashboard and report views in 500 ms at the 95th percentile. | At this load, one application and one database, with calls between modules made in-process. Every network hop added spends part of the 500 ms. |
+| **Scalability** | How much load, and how fast does it grow? | `SCA-cohort-load`: about 75 users, with up to 100 people editing at once near a deadline. | One deployable is enough ([4.6](#46-one-deployable-or-several)). Uploaded files are the only store that grows, so they go to object storage, not the database (`CO-blob-source-material`). |
+| **Robustness** | What happens when something fails? | `ROB-edit-loss-bound`: a crash loses at most 10 seconds of edits. `AVL-llm-degradation`: when the language model is down, everything else keeps working. | The browser saves to the server at least every 10 seconds. The language model sits behind one server-side proxy, so its failure is contained in one place. |
+| **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. The specification has no section 9 entry for this; the architecture-of-record records it as an organizational constraint. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-1`, [4.6](#46-one-deployable-or-several)) |
+
+Read the availability row twice. The adjective "available" says nothing about structure; the number decides it. At 99%, the simplest deployment passes. At 99.99%, it fails, and the architecture changes.
 
 Any reasonable structure can deliver the functional requirements. You assign responsibilities to components and the features work. Quality attributes are different in two ways:
 
@@ -73,7 +93,9 @@ This is the argument of Bass, Clements, and Kazman's *Software Architecture in P
 
 ### 4.3 Architecturally significant requirements
 
-Not every quality attribute shapes the architecture. "Error messages shall name the field that failed validation" is a real requirement, and it is met by one line in one component. The **architecturally significant requirements** are the few where a wrong guess costs a redesign rather than a bug fix. They are almost always quality attributes and constraints.
+Not every quality attribute shapes the architecture. Usability is the clearest case. `USE-wcag-aa` and `USE-keyboard-operable` are real requirements, and they matter to every user, but they are met screen by screen, in the design of each view; getting one wrong early costs a redesign of a page, not of the system. The same holds for single requirements: "Error messages shall name the field that failed validation" is met by one line in one component. The **architecturally significant requirements** (ASRs) are the few where a wrong guess costs a redesign rather than a bug fix. They are almost always quality attributes and constraints.
+
+An ASR is a specific requirement, not an attribute category. One attribute can produce several ASRs, or none: Project Pulse's availability requirements feed two of its seven ASRs (ranks 2 and 7), and its usability requirements feed none.
 
 To find them, rank each candidate on two axes, as the SEI's utility tree does:
 
@@ -82,12 +104,14 @@ To find them, rank each candidate on two axes, as the SEI's utility tree does:
 
 The significant few are the ones high on both, plus any hard constraint (a mandated platform, a regulation, an existing system you must integrate with). Project Pulse ranks seven, and they are worth reading as a set:
 
-| Rank | Requirement | Specification handles | Importance × difficulty |
-|---|---|---|---|
-| 1 | Confidentiality of student records, which are regulated under FERPA | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | High × High |
-| 2 | Low operational burden: one instructor, no operations team | `AVL-uptime`, plus the no-operations-team constraint | High × Medium |
-| 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium |
-| 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium |
+| Rank | Requirement | Specification handles | Importance × difficulty | Drives |
+|---|---|---|---|---|
+| 1 | Confidentiality of student records, which are regulated under FERPA | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | High × High | `KD-2`, `KD-4`, and the two-layer ownership and membership authorization |
+| 2 | Low operational burden: one instructor, no operations team | `AVL-uptime`, plus the no-operations-team constraint | High × Medium | `KD-1` (single deployable), `KD-3` (one relational database) |
+| 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium | `KD-2`, `KD-5`, `KD-7` (domain slices, layered within) |
+| 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium | `KD-6` (section-level locking), plus autosave |
+
+The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [section 4.8](#48-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
 
 (The remaining three, single self-hosted authentication, responsive graph queries at cohort scale, and graceful degradation when the language model is unavailable, rank lower. The full table is in Project Pulse's architecture-of-record, under Architecture Decisions.)
 
@@ -142,7 +166,7 @@ C4Context
 - **A key,** whenever you use anything beyond plain boxes and arrows.
 - **Beware acronyms,** especially domain ones. `WAR` is obvious to anyone on Project Pulse and to no one else.
 
-**Why mermaid.** Every diagram in this course is text in a fenced mermaid block, for the same reason as the rest of your specification: text diffs in git, a reviewer can see what changed, and your agent can read it. A PNG exported from a drawing tool is invisible to the agent and silently stale. Mermaid's C4 syntax is still marked experimental and its automatic layout is sometimes awkward; if a diagram becomes unreadable, a plain `flowchart` with the same labels is an acceptable substitute. The labels are the diagram.
+**Why mermaid.** Every diagram in this course is text in a fenced mermaid block, for the same reason as the rest of your specification: text diffs in git, a reviewer can see what changed, and your agent can read it. A PNG exported from a drawing tool is invisible to the agent and silently stale. Mermaid's C4 syntax is still marked experimental and its automatic layout is sometimes awkward; if a diagram becomes unreadable, a plain `flowchart` with the same labels is an acceptable substitute. The labels are the diagram. (The figures in the [Motivation](#3-motivation) and in [section 4.7](#47-a-catalog-of-patterns-and-which-ones-you-will-meet) are illustrations drawn for the lecture; what your team commits is mermaid.)
 
 ### 4.5 Decomposing by domain: from use case areas to components
 
@@ -205,9 +229,15 @@ An **architectural pattern** is a reusable solution to a problem that keeps occu
 
 **Layered** (presentation, domain logic, data access) is inside every component you build, as section 4.5 described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
 
+![Layered: ActivityController calls ActivityService, which calls ActivityRepository, which talks to the database; a controller never skips to the repository](../slides/img/pattern-layered.svg)
+
 **Model-view-controller** is how the user interface is organized, on both sides. In Spring, a controller receives the request and returns data for a view; in Vue, a component's template is the view over reactive state. The problem it solves: the user interface changes more often than anything else in an application, so keep it separate from the data and rules it displays.
 
+![Model-view-controller in a Vue component and in Spring: event handlers update state that re-renders the template; a Spring controller returns the model as a JSON view](../slides/img/pattern-mvc.svg)
+
 **Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.9 is about what happens when a request reaches the end of that chain without matching any rule.
+
+![Pipes and filters: an HTTP request passes CORS, authentication, and authorization filters before the controller, and each can reject it; a machine learning pipeline has the same shape](../slides/img/pattern-pipes-and-filters.svg)
 
 The rest of the catalog you should recognize by name and by the problem it solves, so you can tell when an agent reaches for one without a reason:
 
@@ -220,7 +250,21 @@ The rest of the catalog you should recognize by name and by the problem it solve
 | **Main-worker** | A large job can be split into identical independent pieces | Batch computation that can be parallelized |
 | **API gateway** | Many services behind one entry point, with cross-cutting concerns in one place | You have already chosen microservices |
 
-Read the right-hand column as a set of requirements. If your specification contains none of them, your system uses none of these patterns, and that is a correct architecture, not an unambitious one.
+Here is what each one looks like:
+
+![Broker: clients ask the broker for a service by name, and it forwards to a live instance from its registry](../slides/img/pattern-broker.svg)
+
+![Publish-subscribe: the evaluation service publishes one event, and email, grade, audit, and a later analytics subscriber each receive it](../slides/img/pattern-publish-subscribe.svg)
+
+![Message queue: the web app enqueues a report job and answers 202 at once; workers take jobs at their own pace and email the result](../slides/img/pattern-message-queue.svg)
+
+![Source-replica: every write goes to the source, reads spread across replicas that copy it, and a replica is promoted if the source fails](../slides/img/pattern-source-replica.svg)
+
+![Main-worker: a main process splits 1,000 test suites across four identical workers and merges their results](../slides/img/pattern-main-worker.svg)
+
+![API gateway: browser, mobile, and partner clients call one gateway that authenticates, rate-limits, logs, and routes to the services](../slides/img/pattern-api-gateway.svg)
+
+Read the table's right-hand column as a set of requirements. If your specification contains none of them, your system uses none of these patterns, and that is a correct architecture, not an unambitious one.
 
 ### 4.8 Writing a decision down
 
@@ -242,7 +286,7 @@ The **trade-off** is the part that shows you understood the decision. Every real
 
 Security is not a feature you add. It is a property of the whole system's shape, and it begins at the context diagram with one line: the **trust boundary**, between what you control and what you do not. Every request that crosses it, from a browser, from another system, from the internet at large, must be authenticated, authorized, and treated as possibly hostile. Every piece of sensitive data that crosses it outward is a disclosure you must be able to justify.
 
-Section 7.1 of the template asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second question has a part people miss. Roles are not enough. A student is allowed to read weekly activity reports, but only their own team's. Project Pulse enforces that twice, once at the route with an authorization manager that checks team membership, and again in the query itself, scoped to the caller's team. The route check alone is not enough if a request can name another team's object ID.
+Section 8.1 of the template asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second question has a part people miss. Roles are not enough. A student is allowed to read weekly activity reports, but only their own team's. Project Pulse enforces that twice, once at the route with an authorization manager that checks team membership, and again in the query itself, scoped to the caller's team. The route check alone is not enough if a request can name another team's object ID.
 
 **The trust boundary is drawn around the whole application, not around the API.** Project Pulse learned this on September 6, 2026. Its security rules protected every route under `/api/v1/**`. Spring Boot Actuator's management endpoints live at `/actuator/**`, outside that prefix, so they fell through to the last rule in the chain, `.anyRequest().permitAll()`. With the `env` endpoint exposed and its masking turned off, any anonymous caller could fetch one URL and read the production database and mail credentials in plain text. They were stored in Azure Key Vault and had never been committed to git. Every item on the usual secrets checklist was satisfied, and the secrets leaked anyway, through an endpoint no feature used and no use case mentioned.
 
@@ -275,7 +319,7 @@ Nobody wrote a rule that made actuator public. It was the absence of a rule. The
 **Studio (team, own project), Fri Oct 2**
 
 - **Goal:** draft your team's architecture-of-record, breadth-complete and depth-shallow, from your specification. This is the second half of [Checkpoint 1](../project.md#checkpoints); your TA reviews the first half, the specification, with you during the same hour.
-- **In studio:** fill template sections 1 through 6 and section 7.1, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
+- **In studio:** fill template sections 1 through 5, section 8.1, and section 9, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
 - **Deliverable and assessment:** the document, merged to `main` by 11:59 pm Friday. Your TA checks it over the weekend against the six-point checklist on the studio page and replies by Sunday evening with one issue in your repository. The check reads whether every use case area and every external system has a home, whether each decision cites the requirement that forced it and names what it rejected, and whether the security section answers its three questions. It does not reward length: a short document that names everything is the goal.
 
 There is no individual assignment for this module. The Project Pulse architecture-of-record is your worked example: read its Quality Goals, its ASR table, and `KD-1`, `KD-3`, and `KD-7` before you write your own.
