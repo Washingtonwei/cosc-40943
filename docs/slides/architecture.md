@@ -150,7 +150,7 @@ The SEI calls this a utility tree. High on both, plus any hard constraint (a man
 | Rank | Requirement | Handles | Drives |
 |---|---|---|---|
 | 1 | Student records stay confidential (FERPA) | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | `KD-2`, `KD-4` |
-| 2 | One instructor, no operations team | `AVL-uptime` | `KD-1`, `KD-3` |
+| 2 | One instructor, no operations team | `AVL-uptime`, `CO-no-ops-team` | `KD-1`, `KD-3` |
 | 3 | Next year's students can extend it | `MNT-feature-locality`, `MNT-service-layer` | `KD-2`, `KD-5`, `KD-7` |
 | 4 | No lost work under concurrent editing | `ROB-no-overwrite` | `KD-6` |
 
@@ -554,9 +554,10 @@ Assignment 2 is due before class the same morning. Before Friday: copy the templ
 
 ::: steps
 - The ranked requirements table
-- Context diagram, with the trust boundary
+- Context diagram
 - Container diagram
 - Component table, and its two checks
+- Security, 8.1: name the boundary, answer the three questions
 - `KD-deployment-shape`, last
 :::
 
