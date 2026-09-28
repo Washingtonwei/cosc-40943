@@ -332,13 +332,97 @@ Here is how that looks in Project Pulse, against the packages on the `main` bran
 
 Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by the time the last area ships.
 
-The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it.
+The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it. Here is that diagram:
+
+```mermaid
+C4Component
+    title Component Diagram: RAM components inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "RAM authoring views; calls each component's REST API over JSON/HTTPS")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(req, "requirement", "Spring MVC + Spring Data JPA", "Requirement artifacts, artifact links and tracing, key-prefix sequences: the requirements graph")
+        Component(doc, "document", "Spring MVC + Spring Data JPA", "Requirement documents and document sections, templates and provisioning, section locking, autosave")
+        Component(uc, "usecase", "Spring MVC + Spring Data JPA", "Use cases: main steps, extensions, locking")
+        Component(glo, "glossary", "Spring MVC", "Glossary terms and terminology invariants")
+        Component(val, "validation", "Spring MVC", "ReqLint structural and consistency checks")
+        Component(col, "collaboration", "Spring MVC + Spring Data JPA", "Comment threads; real-time presence and broadcast are a deferred layer")
+        Component(rev, "review", "Spring MVC + Spring Data JPA", "Review and submission workflow")
+        Component(exp, "export", "Spring MVC", "Renders documents to PDF, DOCX, and Markdown")
+        Component(src, "sourcematerial", "Spring MVC + Spring Data JPA", "Project source material: upload, storage, server-side text extraction")
+        Component(ai, "ai", "Spring MVC + Spring Data JPA", "AI configuration, AI assistants, LLM proxy")
+        Component_Ext(security, "security", "Shared foundation", "Authenticates every API request")
+        Component_Ext(org, "team · user", "Shared foundation", "Teams that own RAM content; users as authors")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "RAM artifacts, links, documents, document sections, comments, AI configuration")
+    ContainerDb(blob, "Blob Storage", "Azure Blob Storage", "Uploaded project source material")
+    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
+
+    Rel(spa, security, "Sends every RAM request through", "JSON/HTTPS")
+    Rel(security, req, "Passes authenticated requests to (and to every other RAM component)")
+    BiRel(doc, req, "Places artifacts in document sections")
+    Rel(uc, req, "Is a requirement artifact in")
+    Rel(glo, req, "Derives glossary terms from")
+    Rel(col, doc, "Anchors comment threads to")
+    Rel(col, req, "Anchors comment threads to")
+    Rel(val, req, "Checks artifacts and links in")
+    Rel(val, glo, "Checks terminology against")
+    Rel(rev, doc, "Locks and submits")
+    Rel(exp, doc, "Renders")
+    Rel(ai, doc, "Reads context from; proposes edits to")
+    Rel(ai, src, "Reads extracted text from")
+    Rel(doc, org, "Scopes documents to a team in")
+    Rel(req, db, "Reads & writes", "JDBC")
+    Rel(doc, db, "Reads & writes", "JDBC")
+    Rel(uc, db, "Reads & writes", "JDBC")
+    Rel(col, db, "Reads & writes", "JDBC")
+    Rel(rev, db, "Reads & writes", "JDBC")
+    Rel(src, db, "Stores references and extracted text", "JDBC")
+    Rel(ai, db, "Reads & writes", "JDBC")
+    Rel(src, blob, "Stores & reads files", "HTTPS")
+    Rel(ai, llm, "Proxies AI requests", "HTTPS")
+```
+
+`requirement` is the hub: the requirements graph lives there, and most other components are views over it or checks against it. `sourcematerial` and `ai` are the only components that reach beyond the database, to Blob Storage and the LLM service, and both are among the five with no code yet.
 
 **Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place.
 
 That is a choice, and the alternative is common enough that you have probably seen it: **layered packaging**, with all controllers in one package, all services in another, and all repositories in a third. The Spring PetClinic sample application exists in both forms, which makes it the cleanest comparison available: [`spring-framework-petclinic`](https://github.com/spring-petclinic/spring-framework-petclinic) is packaged by layer (`web`, `service`, `repository`), while [`spring-petclinic`](https://github.com/spring-projects/spring-petclinic) is packaged by domain (`owner`, `vet`, `system`).
 
 Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-7` records. Its quality scenario `QS-3` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-13`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
+
+Project Pulse's performance-tracking component diagram shows the rule at work:
+
+```mermaid
+C4Component
+    title Component Diagram: performance-tracking components inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "Course management UI: WARs, peer evaluations, dashboards")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(activity, "activity", "Spring MVC + Spring Data JPA", "Weekly activity reports")
+        Component(evaluation, "evaluation", "Spring MVC + Spring Data JPA", "Peer evaluations and their scoring")
+        Component_Ext(security, "security", "Shared foundation", "Authenticates and authorizes every API request")
+        Component_Ext(org, "course · section · team · student", "Shared foundation", "The org/enrollment model")
+        Component_Ext(rubric, "rubric", "Shared foundation", "Rubrics and criteria")
+        Component_Ext(notify, "notifications", "Shared foundation", "Email; weekly WAR and peer evaluation reminders")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "WARs, peer evaluations")
+
+    Rel(spa, security, "Submits and reviews WARs and peer evaluations", "JSON/HTTPS")
+    Rel(security, activity, "Checks WAR ownership and team membership in; passes authorized requests to")
+    Rel(security, evaluation, "Checks evaluation ownership in; passes authorized requests to")
+    Rel(evaluation, rubric, "Scores peer evaluations against criteria from")
+    Rel(activity, org, "Reads team members and instructors from")
+    Rel(evaluation, org, "Reads course sections and students from")
+    Rel(evaluation, notify, "Sends confirmation email via")
+    Rel(activity, db, "Reads & writes", "JDBC")
+    Rel(evaluation, db, "Reads & writes", "JDBC")
+```
+
+No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` packages, so the foundation depends on the features, which the rule forbids; `TD-13` records it, and the fix is to move those managers next to the feature they guard.
 
 **The same argument applies to teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
 

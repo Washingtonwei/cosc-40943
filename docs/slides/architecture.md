@@ -369,6 +369,56 @@ Your use case areas.
 From backend/src/main/java/team/projectpulse on main. Two lessons. Every area has a home, but not necessarily its own: ten RAM areas share five packages. And the cross-cutting components are named, or every area builds its own email sender and permission check.
 :::
 
+## RAM: the map ahead of the code
+
+```mermaid
+flowchart TB
+    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
+    subgraph API["REST API Application [Container: Spring Boot]"]
+        direction TB
+        SEC["security<br/><i>[Shared foundation]</i>"]
+        subgraph BUILT["RAM: built"]
+            direction LR
+            UC["usecase"]
+            GLO["glossary"]
+            REQ["requirement<br/><i>the graph: the hub</i>"]
+            DOC["document"]
+            COL["collaboration"]
+        end
+        subgraph PLANNED["RAM: planned, no code yet"]
+            direction LR
+            VAL["validation"]
+            REV["review"]
+            EXP["export"]
+            AI["ai"]
+            SRC["sourcematerial"]
+        end
+        ORG["team · user<br/><i>[Shared foundation]</i>"]
+    end
+    LLM["LLM Service<br/><i>[External System]</i>"]
+    BLOB[("Blob Storage<br/><i>[Container]</i>")]
+    SPA -->|"Every RAM request"| SEC
+    SEC -->|"Passes authenticated requests"| REQ
+    UC --> REQ
+    GLO --> REQ
+    DOC <--> REQ
+    COL --> DOC
+    COL --> REQ
+    VAL --> REQ
+    VAL --> GLO
+    REV --> DOC
+    EXP --> DOC
+    AI --> DOC
+    AI --> SRC
+    DOC -->|"Scopes to a team"| ORG
+    AI -->|"[HTTPS]"| LLM
+    SRC -->|"[HTTPS]"| BLOB
+```
+
+::: note
+Project Pulse's RAM component diagram, redrawn as a flowchart. Ten components, and five of them have no package yet: they were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your component table records. Blob Storage and the LLM service exist on the map only because of two planned components. Point at requirement: it is the hub, and most other components are views over it or checks against it. Arrow labels are left off inside RAM to keep the slide legible; each arrow is a dependency (use case is an artifact in requirement, glossary derives terms from it, collaboration anchors threads to documents and artifacts, and so on), and Project Pulse's architecture-of-record labels every one. The one security arrow stands for every RAM component, and the database is left off to keep the slide legible.
+:::
+
 ## By layer, or by domain?
 
 ::: cols
@@ -391,6 +441,39 @@ The most common change on any project is "change how this one feature works." Ho
 
 ::: note
 Three versus one. Layering is good, inside a domain. As the top-level division it spreads every feature across the tree. Project Pulse's activity package holds the whole slice: Activity, ActivityController, ActivityService, ActivityRepository, ActivitySecurityService. KD-7 records it.
+:::
+
+## Features lean on the foundation
+
+```mermaid
+flowchart TB
+    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
+    subgraph API["REST API Application [Container: Spring Boot]"]
+        direction TB
+        SEC["security<br/><i>[Shared foundation]</i>"]
+        subgraph FEAT["Performance tracking"]
+            direction LR
+            ACT["activity<br/><i>weekly activity reports</i>"]
+            EVA["evaluation<br/><i>peer evaluations</i>"]
+        end
+        subgraph FOUND["Shared foundation"]
+            direction LR
+            ORG["course · section · team · student"]
+            RUB["rubric"]
+            NOTIFY["notifications"]
+        end
+    end
+    SPA -->|"WARs and evaluations"| SEC
+    SEC -->|"Checks WAR ownership"| ACT
+    SEC -->|"Checks evaluation ownership"| EVA
+    ACT -->|"Reads members, instructors"| ORG
+    EVA -->|"Reads sections, students"| ORG
+    EVA -->|"Scores against criteria"| RUB
+    EVA -->|"Confirmation email"| NOTIFY
+```
+
+::: note
+Project Pulse's performance-tracking component diagram, redrawn. This is KD-7's rule drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Both also read and write MySQL; the database is left off to keep the slide legible. Project Pulse's QS-3 makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-13 records it, and the fix is to move those managers next to the feature they guard.
 :::
 
 ## Divide the team the same way
