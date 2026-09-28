@@ -232,7 +232,8 @@ def team_b():
     return s + "</svg>\n"
 
 
-OUT.mkdir(parents=True, exist_ok=True)
-(OUT / "architecture-team-a.svg").write_text(team_a(), encoding="utf-8")
-(OUT / "architecture-team-b.svg").write_text(team_b(), encoding="utf-8")
-print("ok")
+if __name__ == "__main__":
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "architecture-team-a.svg").write_text(team_a(), encoding="utf-8")
+    (OUT / "architecture-team-b.svg").write_text(team_b(), encoding="utf-8")
+    print("ok")
