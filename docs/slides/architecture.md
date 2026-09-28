@@ -98,6 +98,14 @@ Each part described to its responsibility and no further. Nothing designed befor
 The map with holes: two people build the same thing. The map that is too deep: you committed to guesses.
 :::
 
+## Twin Peaks
+
+![The Twin Peaks model](img/twin-peaks.svg){ height="500" }
+
+::: note
+Nuseibeh, 2001. Requirements and architecture are built together, not in sequence, and each pass between them makes both more detailed. They stay two documents: the specification is the problem, the architecture-of-record is the solution. The first time you draw your context diagram you will find an external system no use case mentions. That sends you back to the specification with a question for your client. That is the process working.
+:::
+
 ## Seven attributes, seven pushes
 
 | Attribute | Project Pulse says | So the architecture has |
@@ -162,6 +170,39 @@ Reuse the identifiers you already have. Include at least one `SEC-*`.
 From the architecture-of-record on main, under Architecture Decisions. Seven in total; these are the top four. Not the same seven as the attribute slide: an ASR is a specific requirement, not a category, so availability feeds two ASRs and usability feeds none. Drives points at the key decisions each one forced, which is where Wednesday picks up. Row 4: real-time editing is deferred, so the MVP meets it with section locking, the simple way. The security rule: every client system this year stores something about a real person. If no security requirement makes the list, its protection was never designed.
 :::
 
+## One architecture, four views
+
+| Template section | Answers | Drawn at |
+|---|---|---|
+| 3. Context and Scope | What is it, who uses it, what does it talk to? | Checkpoint 1 |
+| 5. Building Block View | What is it made of, and who owns what? | Checkpoint 1 |
+| 6. Runtime View | How do the parts carry out one use case? | Checkpoint 2 |
+| 7. Deployment View | Where does it run, and how does a change get there? | Checkpoint 3 |
+
+::: note
+Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it, and so does your template. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday.
+:::
+
+## Draw what you can know
+
+::: cols
+**Now, from the specification**
+
+Context. Building blocks. These are the decisions you are making this week.
+|||
+**Later, from real code**
+
+Runtime, after the proving slice. Deployment, after the pipeline.
+:::
+
+::: key
+A sequence diagram of code nobody has written describes a guess.
+:::
+
+::: note
+The reversibility test applied to diagrams, and Twin Peaks in practice. Project Pulse's runtime view traces sign-in: BCrypt check, a two-hour JWT, then an ownership or membership check on every request. Its deployment view: one Azure Web App, one container, a staging slot swapped into production, Flyway migrations at deploy time. Neither could have been written before the code and the pipeline existed.
+:::
+
 ## Drawing it {.center}
 
 ::: ask
@@ -178,10 +219,10 @@ Who has seen an architecture diagram they could not read without its author in t
 :::
 
 ::: note
-Simon Brown's C4 model. Agree on the things first, the shapes second. The four levels are zoom levels on a map: zoom out for context, zoom in for detail, and you only draw the zoom levels your conversation needs.
+Simon Brown's C4 model. Agree on the things first, the shapes second. The four levels are zoom levels on a map: zoom out for context, zoom in for detail, and you only draw the zoom levels your conversation needs. Level 1 draws section 3; levels 2 and 3 draw section 5.
 :::
 
-## Level 1: context
+## Level 1: context (section 3)
 
 ```mermaid
 flowchart LR
@@ -193,7 +234,7 @@ flowchart LR
 
 Who uses it. What it talks to. Readable by your client.
 
-## Level 2: containers
+## Level 2: containers (section 5.1)
 
 ::: steps
 - **SPA** [Vue.js]: the user interface in the browser
@@ -209,7 +250,7 @@ What runs, what stores data, which technology. The shape of the system on one pa
 ## Level 3 and 4
 
 ::: cols
-**Components: a table, this week**
+**Components: a table, section 5.2**
 
 One row per use case area. Responsibility, dependencies, status.
 |||

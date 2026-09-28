@@ -11,7 +11,7 @@ By the end of this module, a student can:
 1. Define architecture as the set of decisions that are expensive to change, and use the reversibility test to sort a decision into "decide now" or "defer to the design of one use case area."
 2. Explain why the same features can be delivered by many structures, and why quality attributes and constraints, not functionality, choose among them.
 3. Identify a project's architecturally significant requirements, rank them by importance and difficulty, and cite them by their existing specification identifiers.
-4. Draw C4 context and container diagrams in mermaid that stand on their own: titled, keyed, and readable with the colors removed.
+4. Name the four views an architecture-of-record describes, the question each answers, and why two of them wait for code; draw C4 context and container diagrams in mermaid that stand on their own: titled, keyed, and readable with the colors removed.
 5. Decompose a system by domain, mapping use case areas to components, and explain why layering belongs inside a domain module rather than above it.
 6. Choose between one deployable and several for a given set of requirements, name the requirement that would force the other choice, and resist a distributed design no requirement asks for.
 7. Record a key decision with its driving requirement, context, rejected alternative, and trade-off.
@@ -64,7 +64,9 @@ This is the **reversibility test**, and it is the architecture version of a rule
 
 **Breadth-complete, depth-shallow.** The architecture-of-record names *every* part of the system, so the map is whole: no use case area without a home, no external system discovered halfway through the build. But it describes each part only to the level of its responsibility, so nothing is designed before anyone has built against it. This is the method's answer to the two classic failures of up-front design: a map with holes, which lets two people build the same thing twice, and a map that is too detailed, which commits you to guesses. See [The Method](../method.md), Principle 2.
 
-**It evolves with the specification.** Requirements and architecture are not a sequence where one finishes before the other starts. Bashar Nuseibeh called this the Twin Peaks model: each one informs the other, in alternation. You will see it the first time you draw your context diagram and discover an external system no use case mentions, which sends you back to your specification with a question for your client. That is the process working, not failing.
+**It evolves with the specification.** Requirements and architecture are not a sequence where one finishes before the other starts. Bashar Nuseibeh called this the Twin Peaks model: the two are developed together, and each pass between them makes both more detailed. They still stay two documents, one describing the problem and the other the solution, which is why your team keeps a specification and a separate architecture-of-record. You will see it the first time you draw your context diagram and discover an external system no use case mentions, which sends you back to your specification with a question for your client. That is the process working, not failing.
+
+![The Twin Peaks model: a requirements peak and an architecture peak side by side, with a spiral weaving between them from general at the top to detailed at the bottom; requirements are implementation-independent, architecture implementation-dependent. Adapted from Nuseibeh (2001), Figure 1](../slides/img/twin-peaks.svg)
 
 ### 4.2 Quality attributes choose the architecture
 
@@ -117,9 +119,26 @@ The **Drives** column is the bridge to the rest of the architecture: each ASR na
 
 Two rules for your own table. **Reuse the identifiers your specification already has**; an ASR is not a new kind of requirement, it is a label on an existing one, and a new ID space would give each requirement two names. And **include at least one security requirement.** Every system your team builds this year stores something about a real person. If no `SEC-*` makes your list, its protection was never designed, and it will be added later, which is where security defects come from.
 
-### 4.4 Drawing it: C4, and why abstractions come before notation
+### 4.4 Describing it: views, and C4 to draw them
 
-Most architecture diagrams fail the same way. Someone draws boxes and arrows on a whiteboard, the team nods, someone photographs it, and six months later a new member finds the photo and cannot tell what any box is, what any arrow means, or whether any of it is still true. The diagram only ever worked with its author standing next to it.
+The ASR table says what the architecture has to achieve. The rest of the architecture-of-record shows the shape that achieves it, and no single drawing can show that shape. A house is built from a floor plan, a wiring plan, and a site plan, each drawn for a different trade, and nobody expects one sheet to serve all three. Software is described the same way: one system, several **views**, each answering one question for one reader. Philippe Kruchten made this argument in 1995 with his "4+1" view model, and arc42, the structure your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows, inherits it.
+
+Your template has four views:
+
+| Template section | The question it answers | Who needs the answer | Drawn at | Drawn as |
+|---|---|---|---|---|
+| 3. Context and Scope | What is this system, who uses it, and what does it talk to? | Anyone, your client included | Checkpoint 1 | A C4 system context diagram |
+| 5. Building Block View | What is it made of, and what does each part own? | Your team and its agents | Checkpoint 1 | A C4 container diagram and a component table |
+| 6. Runtime View | How do the parts cooperate to carry out one use case? | Whoever builds or debugs that use case | Checkpoint 2 | A sequence diagram |
+| 7. Deployment View | Where does each part run, and how does a change get there? | Whoever runs the system | Checkpoint 3 | Where each container runs, as a diagram or a short list |
+
+Read the "Drawn at" column. The first two views describe what the system is and what it is made of. Those are the decisions you are making now, and your specification is enough to draw them. The other two describe things that do not exist yet. A sequence diagram of code nobody has written describes a guess, and so does a deployment view before there is a pipeline to deploy with. So the runtime view waits for the proving slice at Checkpoint 2, and the deployment view waits for the pipeline at Checkpoint 3. This is the reversibility test of section 4.1 applied to diagrams, and the Twin Peaks spiral in practice: each view is drawn once a pass down the peaks has made it knowable.
+
+Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) has all four, and its last two show what the wait buys. Its runtime view traces sign-in and one authorized request: the browser sends credentials, the API checks a BCrypt hash and returns a two-hour JWT, and every later request passes an ownership or membership check before it reaches any data. Its deployment view says one Azure Web App runs one container, releases go to a staging slot and are swapped into production, and schema changes ship as Flyway migrations at deploy time. Neither could have been written truthfully before the code and the pipeline existed.
+
+Sections 8 and 9 of the template are not views. They cut across all four: section 8.1 is security ([section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) below), and section 9 holds the ASR table and the decisions it drives (sections [4.3](#43-architecturally-significant-requirements) and [4.8](#48-writing-a-decision-down)). What goes inside the building block view is sections 4.5 through 4.7.
+
+**Drawing a view a stranger can read.** Most architecture diagrams fail the same way. Someone draws boxes and arrows on a whiteboard, the team nods, someone photographs it, and six months later a new member finds the photo and cannot tell what any box is, what any arrow means, or whether any of it is still true. The diagram only ever worked with its author standing next to it.
 
 Simon Brown's **C4 model** fixes this by agreeing on the *things* before agreeing on the shapes. It has four abstractions, nested:
 
@@ -128,9 +147,9 @@ Simon Brown's **C4 model** fixes this by agreeing on the *things* before agreein
 - A container is made of **components**: groups of related functionality behind a clear responsibility.
 - A component is implemented by **code**.
 
-Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out, you see the system and the world around it; zoomed in, you see what runs where. You do not need all four, and you draw them in whatever order the conversation needs.
+Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out, you see the system and the world around it; zoomed in, you see what runs where. You do not need all four, and you draw them in whatever order the conversation needs. The levels line up with your template's views: level 1 draws section 3, and levels 2 and 3 draw section 5. C4 also defines a dynamic diagram and a deployment diagram for the other two views; for the runtime view, a mermaid `sequenceDiagram` does the same job, and it is what Project Pulse uses.
 
-**Level 1, the system context diagram,** shows your system as one box, the people who use it, and every external system it depends on. It answers "what is this, who uses it, and what does it talk to?" for anyone, including your client. From Project Pulse:
+**Level 1, the system context diagram,** shows your system as one box, the people who use it, and every external system it depends on. It answers "what is this, who uses it, and what does it talk to?" for anyone, including your client, and it is section 3 of your template. From Project Pulse:
 
 ```mermaid
 C4Context
@@ -151,9 +170,9 @@ C4Context
     Rel(pulse, llm, "Requests AI review")
 ```
 
-**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside.
+**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page, and it goes in section 5.1. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside.
 
-**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (section 4.5). A component diagram showing controllers and services is design, and it belongs in the design-of-record for that area in week 7.
+**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (template section 5.2, and section 4.5 below). A component diagram showing controllers and services is design, and it belongs in the design-of-record for that area in week 7.
 
 **Level 4, code,** is a class diagram. Almost nobody should draw one by hand; your IDE and your agent can produce it from the code whenever it is needed, and a hand-drawn one is out of date the day after it is committed.
 
@@ -166,7 +185,7 @@ C4Context
 - **A key,** whenever you use anything beyond plain boxes and arrows.
 - **Beware acronyms,** especially domain ones. `WAR` is obvious to anyone on Project Pulse and to no one else.
 
-**Why mermaid.** Every diagram in this course is text in a fenced mermaid block, for the same reason as the rest of your specification: text diffs in git, a reviewer can see what changed, and your agent can read it. A PNG exported from a drawing tool is invisible to the agent and silently stale. Mermaid's C4 syntax is still marked experimental and its automatic layout is sometimes awkward; if a diagram becomes unreadable, a plain `flowchart` with the same labels is an acceptable substitute. The labels are the diagram. (The figures in the [Motivation](#3-motivation) and in [section 4.7](#47-a-catalog-of-patterns-and-which-ones-you-will-meet) are illustrations drawn for the lecture; what your team commits is mermaid.)
+**Why mermaid.** Every diagram in this course is text in a fenced mermaid block, for the same reason as the rest of your specification: text diffs in git, a reviewer can see what changed, and your agent can read it. A PNG exported from a drawing tool is invisible to the agent and silently stale. Mermaid's C4 syntax is still marked experimental and its automatic layout is sometimes awkward; if a diagram becomes unreadable, a plain `flowchart` with the same labels is an acceptable substitute. The labels are the diagram. (The other figures in this module are illustrations drawn for the lecture; what your team commits is mermaid.)
 
 ### 4.5 Decomposing by domain: from use case areas to components
 
@@ -268,7 +287,7 @@ Read the table's right-hand column as a set of requirements. If your specificati
 
 ### 4.8 Writing a decision down
 
-A decision that lives only in the heads of the people who made it will be re-argued every time someone new joins, and it will eventually be reversed by someone who never knew why it was made. Michael Nygard proposed the fix in 2011, as the architecture decision record: a short, numbered, never-edited note per decision. The course template uses the same idea, as `KD-<slug>` entries in section 6.2, each in this form:
+A decision that lives only in the heads of the people who made it will be re-argued every time someone new joins, and it will eventually be reversed by someone who never knew why it was made. Michael Nygard proposed the fix in 2011, as the architecture decision record: a short, numbered, never-edited note per decision. The course template uses the same idea, as `KD-<slug>` entries in section 9.2, each in this form:
 
 - **Driving requirements:** the ASRs that forced it, by identifier.
 - **Context:** the facts about this project that made it a question at all.
@@ -329,6 +348,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 - Architecture is the decisions that are expensive to change. Decide those now; leave the rest to be designed against real code.
 - The same features fit many structures. Quality attributes and constraints choose among them, so build the architecture from those, not from the feature list.
 - The architecturally significant requirements are the few where a wrong guess costs a redesign. Reuse their existing identifiers, and include at least one security requirement.
+- An architecture is described in views, each for one reader. Draw context and building blocks from the specification now; draw the runtime and deployment views once there is code and a pipeline to describe.
 - A diagram has to stand on its own: titled, keyed, every box and arrow described in words. Keep it in mermaid, in the repository, next to the code it describes.
 - Divide the system by domain first, from your use case areas, and layer inside each domain. Name the cross-cutting components, or every area builds its own.
 - Start with one deployable, divided inside by domain. Several deployables need a requirement that forces them, and at your scale there usually is not one.
@@ -342,7 +362,8 @@ There is no individual assignment for this module. The Project Pulse architectur
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
 - Michael Nygard, [*Documenting Architecture Decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the origin of the architecture decision record.
-- Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001. The Twin Peaks model in four pages.
+- Philippe Kruchten, "The 4+1 View Model of Architecture," *IEEE Software* 12(6), 1995, pp. 42–50. The origin of describing one architecture through several views, which arc42 inherits.
+- Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. The Twin Peaks model in three pages.
 - David Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM* 15(12), 1972. Still the best argument for dividing a system by what is likely to change.
 - Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) and [software architecture primer](https://github.com/Washingtonwei/project-pulse/blob/main/docs/guides/software-architecture-primer.md), the worked example throughout.
 - [The Method](../method.md), Principle 2, for how the architecture-of-record fits the spec-driven, agent-assisted method.
@@ -359,6 +380,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 8. Project Pulse's security rules covered every route under `/api/v1/**`, and the production credentials leaked anyway. Explain how, and say which line of the fix makes the same mistake impossible for a new endpoint.
 9. A key decision in your document reads: "We use PostgreSQL." Say what is missing, and rewrite it.
 10. Months later, your team reverses `KD-deployment-shape` because one part really does need to scale on its own. What happens to the original entry, and why does it stay in the document?
+11. A teammate wants to fill in the runtime view before Checkpoint 1, with a sequence diagram for every use case, so the agent has a complete picture. What do you tell them, and when does that view get drawn?
 
 ## Related
 
