@@ -225,46 +225,60 @@ Simon Brown's C4 model. Agree on the things first, the shapes second. The four l
 ## Level 1: context (section 3)
 
 ```mermaid
-flowchart LR
-    I["Instructor<br/><i>[Person]</i><br/>Teaches a course section"]
-    S["Senior Design Student<br/><i>[Person]</i><br/>Member of a team"]
-    P["Project Pulse<br/><i>[Software System]</i><br/>Tracks team performance;<br/>supports requirements authoring"]
-    G["Gmail<br/><i>[External System]</i><br/>Email system"]
-    L["LLM Service<br/><i>[External System]</i><br/>AI-assisted requirement review"]
-    I -->|"Manages courses;<br/>reviews requirements"| P
-    S -->|"Submits work;<br/>authors requirements"| P
-    P -->|"Sends emails using"| G
-    G -->|"Sends emails to"| I
-    G -->|"Sends emails to"| S
-    P -->|"Requests AI review"| L
+C4Context
+    title System Context Diagram for Project Pulse
+
+    Person(instructor, "Instructor", "Teaches a course section; a course admin is an instructor who also runs the course")
+    Person(student, "Senior Design Student", "Member of a team in a course section")
+
+    System(pulse, "Project Pulse", "Tracks team performance and supports requirements authoring")
+
+    System_Ext(gmail, "Gmail", "Email system")
+    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
+
+    Rel_R(instructor, pulse, "Manages courses;<br/>reviews requirements")
+    Rel_R(student, pulse, "Submits work;<br/>authors requirements")
+    Rel_R(pulse, gmail, "Sends emails using")
+    Rel_D(gmail, student, "Sends emails to")
+    Rel_D(gmail, instructor, "Sends emails to")
+    Rel_D(pulse, llm, "Requests AI review")
+
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
 
 ::: note
-Project Pulse's context diagram, from its architecture-of-record on main, redrawn as a plain flowchart with the same boxes and labels because mermaid's C4 layout is unreadable when projected. The module has the C4 originals for all three levels. The system is one box. Two kinds of person, two external systems, and every arrow says what it does. This is the diagram your client can read. The LLM service is planned: no code calls it yet, but it is on the map so nobody discovers it late.
+Project Pulse's context diagram, from its architecture-of-record on main,, the same diagram as in the module. The system is one box. Two kinds of person, two external systems, and every arrow says what it does. This is the diagram your client can read. The LLM service is planned: no code calls it yet, but it is on the map so nobody discovers it late.
 :::
 
 ## Level 2: containers (section 5.1)
 
 ```mermaid
-flowchart LR
-    I["Instructor<br/><i>[Person]</i>"]
-    S["Senior Design Student<br/><i>[Person]</i>"]
-    subgraph PP["Project Pulse [Software System]"]
-        SPA["SPA<br/><i>[Container: Vue 3 / TypeScript]</i><br/>Runs in the browser"]
-        API["REST API Application<br/><i>[Container: Java 21 / Spring Boot]</i><br/>Delivers the SPA; serves the APIs"]
-        DB[("Database<br/><i>[Container: MySQL 8]</i>")]
-        BLOB[("Blob Storage<br/><i>[Container: Azure Blob Storage]</i><br/>Uploaded source material")]
-    end
-    G["Gmail<br/><i>[External System]</i>"]
-    L["LLM Service<br/><i>[External System]</i>"]
-    I -->|"Uses [HTTPS]"| SPA
-    S -->|"Uses [HTTPS]"| SPA
-    SPA -->|"API calls [JSON/HTTPS]"| API
-    API -->|"Delivers [HTTPS]"| SPA
-    API -->|"Reads & writes [JDBC]"| DB
-    API -->|"Stores & reads files [HTTPS]"| BLOB
-    API -->|"Sends email [SMTP]"| G
-    API -->|"Requests AI review [HTTPS]"| L
+C4Container
+    title Container Diagram for Project Pulse
+
+    Person(instructor, "Instructor", "Teaches a course section; a course admin is an instructor who also runs the course")
+    Person(student, "Senior Design Student", "Member of a team in a course section")
+
+    System_Boundary(pulse, "Project Pulse") {
+        Container(spa, "SPA", "Vue 3 / TypeScript", "Runs in the browser; the user interface for performance tracking and requirements authoring")
+        Container(api, "REST API Application", "Java 21 / Spring Boot", "Delivers the SPA; serves the performance-tracking and RAM APIs")
+        ContainerDb(db, "Database", "MySQL 8", "Courses, teams, WARs, peer evaluations, and RAM artifacts, links, and documents")
+        ContainerDb(blob, "Blob Storage", "Azure Blob Storage", "Uploaded project source material (PDF/PPTX)")
+    }
+
+    System_Ext(gmail, "Gmail", "Email system")
+    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
+
+    Rel_R(instructor, spa, "Uses", "HTTPS")
+    Rel_R(student, spa, "Uses", "HTTPS")
+    Rel_U(api, spa, "Delivers", "HTTPS")
+    Rel_D(spa, api, "API calls", "JSON/HTTPS")
+    Rel_D(api, db, "Reads & writes", "JDBC")
+    Rel_D(api, blob, "Stores & reads files", "HTTPS")
+    Rel_R(api, gmail, "Sends email", "SMTP")
+    Rel_R(api, llm, "Requests AI review", "HTTPS")
+    Rel_D(gmail, student, "Sends emails to")
+    Rel_D(gmail, instructor, "Sends emails to")
 ```
 
 ::: key
@@ -278,35 +292,44 @@ Open the system box. Four containers. The SPA and the REST API are two container
 ## Level 3: components
 
 ```mermaid
-flowchart TB
-    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
-    subgraph API["REST API Application [Container: Spring Boot]"]
-        direction TB
-        WEB["SPA serving<br/><i>[static resources]</i>"]
-        SEC["security<br/><i>[Spring Security filter chain]</i>"]
-        ACT["actuator<br/><i>[Spring Boot Actuator]</i>"]
-        NOTIFY["notifications<br/><i>[Spring Mail + @Scheduled]</i>"]
-        USER["user<br/><i>[Spring MVC + JPA]</i>"]
-        ORG["course · section · team<br/><i>[Spring MVC + JPA]</i>"]
-        PEOPLE["student · instructor<br/><i>[Spring MVC + JPA]</i>"]
-        RUB["rubric<br/><i>[Spring MVC + JPA]</i>"]
-    end
-    G["Gmail<br/><i>[External System]</i>"]
-    WEB -->|"Delivers"| SPA
-    SPA -->|"Every API request"| SEC
-    SEC -->|"Guards"| ACT
-    SEC -->|"Loads the user"| USER
-    SEC -->|"Checks ownership, membership"| ORG
-    SEC -->|"Passes requests"| PEOPLE
-    SEC -->|"Checks rubric ownership"| RUB
-    ORG -->|"Owns and assigns"| RUB
-    USER -->|"Invitation, reset emails"| NOTIFY
-    NOTIFY -->|"Finds sections due a reminder"| ORG
-    NOTIFY -->|"SMTP"| G
+C4Component
+    title Component Diagram: shared foundation inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "Course and team administration UI")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(security, "security", "Spring Security filter chain", "JWT login and request authentication; AuthorizationManagers check ownership and membership")
+        Component(web, "SPA serving", "Spring MVC static resources", "Serves the bundled SPA; forwards UI routes to index.html")
+        Component(actuator, "actuator", "Spring Boot Actuator", "Health and info management endpoints")
+        Component(user, "user", "Spring MVC + Spring Data JPA", "User accounts, invitations, password reset")
+        Component(org, "course · section · team", "Spring MVC + Spring Data JPA", "Courses, course sections, teams: the org/enrollment model")
+        Component(people, "student · instructor", "Spring MVC + Spring Data JPA", "Course participants and their roles")
+        Component(rubric, "rubric", "Spring MVC + Spring Data JPA", "Rubrics and criteria: owned by a course, assigned to course sections")
+        Component(notify, "notifications", "Spring Mail + @Scheduled", "EmailService; WeeklyReminderScheduler sends each week's reminders")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "Users, courses, course sections, teams, rubrics")
+    System_Ext(gmail, "Gmail", "Email system")
+
+    Rel(web, spa, "Delivers", "HTTPS")
+    Rel(spa, security, "Logs in; sends every API request through", "JSON/HTTPS")
+    Rel(security, user, "Loads the authenticated user from; passes authorized requests to")
+    Rel(security, org, "Checks ownership and membership in; passes authorized requests to")
+    Rel(security, people, "Passes authorized requests to")
+    Rel(security, rubric, "Checks rubric ownership in; passes authorized requests to")
+    Rel(org, rubric, "Owns and assigns rubrics")
+    Rel(security, actuator, "Guards")
+    Rel(user, notify, "Sends invitation and reset emails via")
+    Rel(notify, org, "Finds course sections due a reminder in")
+    Rel(user, db, "Reads & writes", "JDBC")
+    Rel(org, db, "Reads & writes", "JDBC")
+    Rel(people, db, "Reads & writes", "JDBC")
+    Rel(rubric, db, "Reads & writes", "JDBC")
+    Rel(notify, gmail, "Sends email", "SMTP")
 ```
 
 ::: note
-Zoom into one container, the REST API application: its shared foundation. Point at the four ways in: API calls from the SPA, the static files that deliver the SPA, the actuator, and the reminder schedule, which fires on a clock with nobody asking. Those four are the attack surface, and the credential leak you will see on Wednesday came through one of them. Then the direction: every request reaches the org model, rubrics, and users only through security. The database is left off this slide to keep it legible: user, the org model, the participants, and rubric each read and write MySQL over JDBC, as the module's full diagram shows. Project Pulse draws two more of these, performance tracking and RAM, in its architecture-of-record.
+Zoom into one container, the REST API application: its shared foundation. Point at the four ways in: API calls from the SPA, the static files that deliver the SPA, the actuator, and the reminder schedule, which fires on a clock with nobody asking. Those four are the attack surface, and the credential leak you will see on Wednesday came through one of them. Then the direction: every request reaches the org model, rubrics, and users only through security. Project Pulse draws two more of these, performance tracking and RAM, in its architecture-of-record.
 :::
 
 ## Level 3 and 4
@@ -372,51 +395,57 @@ From backend/src/main/java/team/projectpulse on main. Two lessons. Every area ha
 ## RAM: the map ahead of the code
 
 ```mermaid
-flowchart TB
-    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
-    subgraph API["REST API Application [Container: Spring Boot]"]
-        direction TB
-        SEC["security<br/><i>[Shared foundation]</i>"]
-        subgraph BUILT["RAM: built"]
-            direction LR
-            UC["usecase"]
-            GLO["glossary"]
-            REQ["requirement<br/><i>the graph: the hub</i>"]
-            DOC["document"]
-            COL["collaboration"]
-        end
-        subgraph PLANNED["RAM: planned, no code yet"]
-            direction LR
-            VAL["validation"]
-            REV["review"]
-            EXP["export"]
-            AI["ai"]
-            SRC["sourcematerial"]
-        end
-        ORG["team · user<br/><i>[Shared foundation]</i>"]
-    end
-    LLM["LLM Service<br/><i>[External System]</i>"]
-    BLOB[("Blob Storage<br/><i>[Container]</i>")]
-    SPA -->|"Every RAM request"| SEC
-    SEC -->|"Passes authenticated requests"| REQ
-    UC --> REQ
-    GLO --> REQ
-    DOC <--> REQ
-    COL --> DOC
-    COL --> REQ
-    VAL --> REQ
-    VAL --> GLO
-    REV --> DOC
-    EXP --> DOC
-    AI --> DOC
-    AI --> SRC
-    DOC -->|"Scopes to a team"| ORG
-    AI -->|"[HTTPS]"| LLM
-    SRC -->|"[HTTPS]"| BLOB
+C4Component
+    title Component Diagram: RAM components inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "RAM authoring views; calls each component's REST API over JSON/HTTPS")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(req, "requirement", "Spring MVC + Spring Data JPA", "Requirement artifacts, artifact links and tracing, key-prefix sequences: the requirements graph")
+        Component(doc, "document", "Spring MVC + Spring Data JPA", "Requirement documents and document sections, templates and provisioning, section locking, autosave")
+        Component(uc, "usecase", "Spring MVC + Spring Data JPA", "Use cases: main steps, extensions, locking")
+        Component(glo, "glossary", "Spring MVC", "Glossary terms and terminology invariants")
+        Component(val, "validation", "Spring MVC", "ReqLint structural and consistency checks")
+        Component(col, "collaboration", "Spring MVC + Spring Data JPA", "Comment threads; real-time presence and broadcast are a deferred layer")
+        Component(rev, "review", "Spring MVC + Spring Data JPA", "Review and submission workflow")
+        Component(exp, "export", "Spring MVC", "Renders documents to PDF, DOCX, and Markdown")
+        Component(src, "sourcematerial", "Spring MVC + Spring Data JPA", "Project source material: upload, storage, server-side text extraction")
+        Component(ai, "ai", "Spring MVC + Spring Data JPA", "AI configuration, AI assistants, LLM proxy")
+        Component_Ext(security, "security", "Shared foundation", "Authenticates every API request")
+        Component_Ext(org, "team · user", "Shared foundation", "Teams that own RAM content; users as authors")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "RAM artifacts, links, documents, document sections, comments, AI configuration")
+    ContainerDb(blob, "Blob Storage", "Azure Blob Storage", "Uploaded project source material")
+    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
+
+    Rel(spa, security, "Sends every RAM request through", "JSON/HTTPS")
+    Rel(security, req, "Passes authenticated requests to (and to every other RAM component)")
+    BiRel(doc, req, "Places artifacts in document sections")
+    Rel(uc, req, "Is a requirement artifact in")
+    Rel(glo, req, "Derives glossary terms from")
+    Rel(col, doc, "Anchors comment threads to")
+    Rel(col, req, "Anchors comment threads to")
+    Rel(val, req, "Checks artifacts and links in")
+    Rel(val, glo, "Checks terminology against")
+    Rel(rev, doc, "Locks and submits")
+    Rel(exp, doc, "Renders")
+    Rel(ai, doc, "Reads context from; proposes edits to")
+    Rel(ai, src, "Reads extracted text from")
+    Rel(doc, org, "Scopes documents to a team in")
+    Rel(req, db, "Reads & writes", "JDBC")
+    Rel(doc, db, "Reads & writes", "JDBC")
+    Rel(uc, db, "Reads & writes", "JDBC")
+    Rel(col, db, "Reads & writes", "JDBC")
+    Rel(rev, db, "Reads & writes", "JDBC")
+    Rel(src, db, "Stores references and extracted text", "JDBC")
+    Rel(ai, db, "Reads & writes", "JDBC")
+    Rel(src, blob, "Stores & reads files", "HTTPS")
+    Rel(ai, llm, "Proxies AI requests", "HTTPS")
 ```
 
 ::: note
-Project Pulse's RAM component diagram, redrawn as a flowchart. Ten components, and five of them have no package yet: they were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your component table records. Blob Storage and the LLM service exist on the map only because of two planned components. Point at requirement: it is the hub, and most other components are views over it or checks against it. Arrow labels are left off inside RAM to keep the slide legible; each arrow is a dependency (use case is an artifact in requirement, glossary derives terms from it, collaboration anchors threads to documents and artifacts, and so on), and Project Pulse's architecture-of-record labels every one. The one security arrow stands for every RAM component, and the database is left off to keep the slide legible.
+Project Pulse's RAM component diagram, the same as in the module. Ten components, and five of them have no package yet (validation, review, export, sourcematerial, ai; the diagram does not mark them, so name them): they were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your component table records. Blob Storage and the LLM service exist on the map only because of two planned components. Point at requirement: it is the hub, and most other components are views over it or checks against it. The one security arrow stands for every RAM component.
 :::
 
 ## By layer, or by domain?
@@ -446,34 +475,35 @@ Three versus one. Layering is good, inside a domain. As the top-level division i
 ## Features lean on the foundation
 
 ```mermaid
-flowchart TB
-    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
-    subgraph API["REST API Application [Container: Spring Boot]"]
-        direction TB
-        SEC["security<br/><i>[Shared foundation]</i>"]
-        subgraph FEAT["Performance tracking"]
-            direction LR
-            ACT["activity<br/><i>weekly activity reports</i>"]
-            EVA["evaluation<br/><i>peer evaluations</i>"]
-        end
-        subgraph FOUND["Shared foundation"]
-            direction LR
-            ORG["course · section · team · student"]
-            RUB["rubric"]
-            NOTIFY["notifications"]
-        end
-    end
-    SPA -->|"WARs and evaluations"| SEC
-    SEC -->|"Checks WAR ownership"| ACT
-    SEC -->|"Checks evaluation ownership"| EVA
-    ACT -->|"Reads members, instructors"| ORG
-    EVA -->|"Reads sections, students"| ORG
-    EVA -->|"Scores against criteria"| RUB
-    EVA -->|"Confirmation email"| NOTIFY
+C4Component
+    title Component Diagram: performance-tracking components inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "Course management UI: WARs, peer evaluations, dashboards")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(activity, "activity", "Spring MVC + Spring Data JPA", "Weekly activity reports")
+        Component(evaluation, "evaluation", "Spring MVC + Spring Data JPA", "Peer evaluations and their scoring")
+        Component_Ext(security, "security", "Shared foundation", "Authenticates and authorizes every API request")
+        Component_Ext(org, "course · section · team · student", "Shared foundation", "The org/enrollment model")
+        Component_Ext(rubric, "rubric", "Shared foundation", "Rubrics and criteria")
+        Component_Ext(notify, "notifications", "Shared foundation", "Email; weekly WAR and peer evaluation reminders")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "WARs, peer evaluations")
+
+    Rel(spa, security, "Submits and reviews WARs and peer evaluations", "JSON/HTTPS")
+    Rel(security, activity, "Checks WAR ownership and team membership in; passes authorized requests to")
+    Rel(security, evaluation, "Checks evaluation ownership in; passes authorized requests to")
+    Rel(evaluation, rubric, "Scores peer evaluations against criteria from")
+    Rel(activity, org, "Reads team members and instructors from")
+    Rel(evaluation, org, "Reads course sections and students from")
+    Rel(evaluation, notify, "Sends confirmation email via")
+    Rel(activity, db, "Reads & writes", "JDBC")
+    Rel(evaluation, db, "Reads & writes", "JDBC")
 ```
 
 ::: note
-Project Pulse's performance-tracking component diagram, redrawn. This is KD-7's rule drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Both also read and write MySQL; the database is left off to keep the slide legible. Project Pulse's QS-3 makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-13 records it, and the fix is to move those managers next to the feature they guard.
+Project Pulse's performance-tracking component diagram, the same as in the module; the shared foundation is in grey. This is KD-7's rule drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Project Pulse's QS-3 makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-13 records it, and the fix is to move those managers next to the feature they guard.
 :::
 
 ## Divide the team the same way
