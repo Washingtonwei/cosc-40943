@@ -94,7 +94,7 @@ Single source of truth stops being a filing rule when you read it that way. A de
 
 It would not help, and why it would not is worth more than the thesis it appears to threaten. **Read access is not a source of truth.**
 
-- **A chat log has no notion of current.** Git replaces; chat accumulates. A decision made in September and reversed in October sit in the stream looking exactly alike. Your repository holds one current version of the rule, and its history is a separate thing you go looking for.
+- **A chat log has no notion of current.** Git replaces; chat accumulates. A decision made one week and reversed a month later sit in the stream looking exactly alike. Your repository holds one current version of the rule, and its history is a separate thing you go looking for.
 - **Retrieval returns the argument, not the conclusion.** Ask a connected agent what your team decided about time zones and you get the four messages where people disagreed, a joke, and somebody's lunch plan. The message that actually settled it carries no marking that distinguishes it from the three that did not.
 - **It does not fit.** A semester of Slack is far larger than any context window, so something has to select a handful of messages, and which handful is close to a lottery.
 - **Nothing in Slack was reviewed.** A change to your charter arrives as a pull request that a teammate approved. A message in Slack arrives because somebody typed it at midnight.
@@ -188,13 +188,13 @@ Usually that is one sub-issue. Sometimes it is a whole use case. The size is a j
 
 **The use case is the unit of *done*; the branch is the unit of *merge*.** This is the distinction teams get wrong. Merging your pull request does not mean the use case works. The issue closes when the use case works end to end and its tests pass, which usually takes several merges.
 
-**Splitting for merge is not splitting for ownership, and confusing the two is the classic way a senior design team fails.** You saw it in week 1: "I'll take the front end", "I'll take login." It feels efficient in September and it is fatal by November, because the use case now has no owner. The defect that only appears when the front end meets the back end belongs to nobody, "done" requires two people to agree they are finished, and neither of them learns the stack.
+**Splitting for merge is not splitting for ownership, and confusing the two is the classic way a senior design team fails.** You saw it in week 1: "I'll take the front end", "I'll take login." It feels efficient in the first sprint and it is fatal by the last one, because the use case now has no owner. The defect that only appears when the front end meets the back end belongs to nobody, "done" requires two people to agree they are finished, and neither of them learns the stack.
 
 So:
 
 > **One developer owns a use case end to end: front end, back end, tests, and the pipeline that ships it.**
 
-You are not the front-end person, the database person, or the tester. Every one of you is full stack, on your own use cases, all term. This is a course requirement, not a preference: the layer specialist is the most comfortable role on a student team and the least employable one, and it is how a team arrives in November with six parts and no product.
+You are not the front-end person, the database person, or the tester. Every one of you is full stack, on your own use cases, all term. This is a course requirement, not a preference: the layer specialist is the most comfortable role on a student team and the least employable one, and it is how a team arrives at the final checkpoint with six parts and no product.
 
 The owner may still cut three branches, because three reviewable merges beat one enormous one. Same person, sequential, each leaving `main` green. What you do not do is hand the layers to different people. Parallelism happens **across use cases, not inside one**: six people means up to six use cases moving at once, each with an owner who can answer for it.
 
@@ -214,7 +214,7 @@ There is a second reason branches matter now, and it is bigger than merge confli
 
 Put those together and the merge gate is the **last structural point at which a human is required to look at all**. Push straight to `main` and there is no such point. That is the real argument for branching on an AI-augmented team, and it is not about conflicts.
 
-Which makes **"LGTM"** the characteristic failure of this era of software engineering. It was always lazy. It is now the mechanism by which code that nobody has read, written by something that cannot be asked what it meant, becomes your team's problem in November.
+Which makes **"LGTM"** the characteristic failure of this era of software engineering. It was always lazy. It is now the mechanism by which code that nobody has read, written by something that cannot be asked what it meant, becomes your team's problem a month later.
 
 What to do instead, in order:
 
@@ -256,7 +256,7 @@ Then Maya does the same for #43 and #44. When the third merges, #41 closes and t
 
 Four things the example does on purpose. **One owner across the whole stack**, so the integration defect has somebody's name on it. The **branch name carries the number**, so six months later `git log` on a strange line leads to the branch, the branch to #42, #42 to #41, and #41 to the use case, and that chain survives everyone forgetting. The **split is by deployable slice**, so each piece merges without breaking `main`. And the **reviewer is not the owner**, because the point of review is a reader who was not there when the decisions were made.
 
-**An honest note about the running example.** Project Pulse uses no Projects board and no milestones. It carries a traceability document instead, which is the same idea with more machinery than your team needs in September. You will use the board. What Project Pulse demonstrates is the discipline underneath both: every unit of work has an identifier, and that identifier connects a requirement to the code satisfying it.
+**An honest note about the running example.** Project Pulse uses no Projects board and no milestones. It carries a traceability document instead, which is the same idea with more machinery than your team needs in its first weeks. You will use the board. What Project Pulse demonstrates is the discipline underneath both: every unit of work has an identifier, and that identifier connects a requirement to the code satisfying it.
 
 ### 4.9 The traceability chain
 
@@ -351,7 +351,7 @@ What it fixes:
 | AI usage guidelines | What your team delegates, and what a human signs before merge |
 | What happens when someone does not deliver | Agreed in week 2, while nobody is angry |
 
-Fix the meeting time first. The most reliable predictor of a struggling senior design team is not weak technical skill; it is a team that never found a time to meet. Teams that lock a recurring slot in week 2 and defend it tend to do well, and teams that schedule week to week around whoever is busiest tend to drift, miss checkpoints, and discover in November that nobody owns anything.
+Fix the meeting time first. The most reliable predictor of a struggling senior design team is not weak technical skill; it is a team that never found a time to meet. Teams that lock a recurring slot in week 2 and defend it tend to do well, and teams that schedule week to week around whoever is busiest tend to drift, miss checkpoints, and discover halfway through the build that nobody owns anything.
 
 The rest of professional practice, what your team owes each other and what happens when it breaks down, is Wednesday's lecture.
 

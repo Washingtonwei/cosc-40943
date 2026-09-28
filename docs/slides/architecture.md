@@ -373,7 +373,7 @@ Which requirement would force several deployables?
 :::
 
 ::: note
-If nothing in the specification needs one part to scale, deploy, or fail independently, that is the answer and the rejected alternative. Your client has tens or hundreds of users, and someone has to run it next spring.
+If nothing in the specification needs one part to scale, deploy, or fail independently, that is the answer and the rejected alternative. Your client has tens or hundreds of users, and someone has to run it after your team hands it off.
 :::
 
 ## Patterns you will meet

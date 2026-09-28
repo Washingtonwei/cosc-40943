@@ -299,7 +299,7 @@ And: the branch is the unit of *merge*; the use case is the unit of *done*.
 ::: warn
 "I'll take the front end." "I'll take login."
 
-You saw this in week 1. It is fatal by November.
+You saw this in week 1. It is fatal by the last sprint.
 :::
 
 ::: key

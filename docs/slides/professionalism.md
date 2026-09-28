@@ -327,7 +327,7 @@ Your name on the pull request is the claim.
 ::: note
 Week 1's rule: you are accountable for what the agent writes.
 
-Say this out loud now, in week 2, before it happens, so nobody discovers in October that it was never going to work. The claim does not come apart later because the defect turned out to be embarrassing.
+Say this out loud now, in week 2, before it happens, so nobody discovers mid-project that it was never going to work. The claim does not come apart later because the defect turned out to be embarrassing.
 :::
 
 ::: joke
@@ -407,7 +407,7 @@ Say it exactly like that.
 ::: note
 Ninety seconds, and it will not need them. It dies in about four seconds and the room laughs, which is the design: they were told to say it, so the failure belongs to the script and not to anybody sitting there.
 
-Let the laugh run. Then ask one pair to replay their worst one at the front. That is the thirty seconds people still have in November.
+Let the laugh run. Then ask one pair to replay their worst one at the front. That is the thirty seconds people still have late in the project.
 :::
 
 ::: joke

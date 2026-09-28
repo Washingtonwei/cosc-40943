@@ -378,7 +378,7 @@ Postings in 2026 list AI-assisted development as a requirement, not a perk.
 :::
 
 ::: note
-This is the slide that converts anxiety into a to-do list. The course is the evidence: by December they will have shipped a client MVP with an agent on the team and can write that sentence honestly.
+This is the slide that converts anxiety into a to-do list. The course is the evidence: by the final demo they will have shipped a client MVP with an agent on the team and can write that sentence honestly.
 :::
 
 ## The kitchen you are about to run

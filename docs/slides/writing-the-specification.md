@@ -1033,7 +1033,7 @@ Worth saying out loud: this is the rule they are all living under right now. The
 :::
 
 ::: note
-This is not bureaucracy. In November somebody questions the rule and you need to check it against something. And a rule with no source cannot be told apart from one a teammate assumed, or one your agent supplied because it is the kind of rule a business like this usually has.
+This is not bureaucracy. Months later somebody questions the rule and you need to check it against something. And a rule with no source cannot be told apart from one a teammate assumed, or one your agent supplied because it is the kind of rule a business like this usually has.
 :::
 
 ::: joke
@@ -1138,7 +1138,7 @@ A number **and** a way to measure it.
 :::
 
 ::: note
-Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about in November, because there is nothing there to argue with. And the load it holds under is the one the risk named, twenty minutes ago.
+Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about, because there is nothing there to argue with. And the load it holds under is the one the risk named, twenty minutes ago.
 
 Fast, easy, reliable, secure, user-friendly: each is the start of a conversation. A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. Their section 9 entries are graded on both halves.
 :::

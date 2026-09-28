@@ -239,7 +239,7 @@ Your client is Gerhard. Yours has given you one page.
 ::: note
 Sommerville and Sawyer, 1997. Put it on screen and read the three nouns out loud. Stop on the third, because nobody expects it: a requirement can be about your development process rather than about the running system at all.
 
-Project Pulse carries both of the unexpected kinds. CO-ferpa, comply with FERPA when storing student educational records. CO-vue-spring-stack, Vue on the front and Spring Boot on the back. Neither is a feature anyone would demo, and either one discovered in November is a rewrite.
+Project Pulse carries both of the unexpected kinds. CO-ferpa, comply with FERPA when storing student educational records. CO-vue-spring-stack, Vue on the front and Spring Boot on the back. Neither is a feature anyone would demo, and either one discovered halfway through the build is a rewrite.
 
 Then the three reasons to write any of it down: understand, communicate, control. Control is the one that makes the word "contract" in the title honest.
 
@@ -355,7 +355,7 @@ The point: "would you use this?" reliably produces yes, because agreeing is free
 | Instead of | Ask |
 |---|---|
 | Would you use a dashboard? | Walk me through the last time you needed that number. What did you do? |
-| Is this important? | If we ship only one thing in December, which one? |
+| Is this important? | If we ship only one thing by the final demo, which one? |
 | Would this save time? | How long does it take today, and how do you know? |
 | Do you like this? | **Show me the spreadsheet you use now.** |
 
@@ -518,7 +518,7 @@ One more tell: in the old file, RI-3 is missing its colon. Nobody noticed for ye
 The exception, so they do not over-apply it: OPEN-ISSUES uses OI-1, OI-2, because that list only grows at the bottom and is cited lightly.
 :::
 
-## The sentence you will need in October
+## The sentence you will need when the client asks for more
 
 A marketing manager wants one small button added. "The developers are going to be in the code anyway. How hard is one tiny feature?"
 
@@ -529,9 +529,9 @@ Write down what is **out** as explicitly as what is in.
 ::: note
 The hard part is not the analysis. It is that he does not have the business objectives in mind, and she has to say why, out loud, without sounding obstructive.
 
-Your client is enthusiastic and likes you, and in October they will suggest something genuinely good that costs you the semester.
+Your client is enthusiastic and likes you, and a month in they will suggest something genuinely good that costs you the semester.
 
-The forcing question, ask it Thursday: if we deliver only one of these in December, which one? A client who cannot choose has not thought about it yet, and you need to know that now rather than in November.
+The forcing question, ask it Thursday: if we deliver only one of these by the final demo, which one? A client who cannot choose has not thought about it yet, and you need to know that now rather than halfway through the build.
 :::
 
 ## Your turn: build Thursday's script

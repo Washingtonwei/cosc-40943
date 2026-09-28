@@ -128,7 +128,7 @@ A project whose scope, schedule, and resources are all fixed has nothing left to
 
 **There is no agreed definition of success.** In Scott Ambler's [2013 survey](https://ambysoft.com/surveys/success2013.html), 58% of practitioners valued being on schedule, 36% on budget, 14% building to specification, and only 8% all three. Your client, your teammates, and your instructor may each be using a different definition without knowing it, so ask early which corner your client cares about. They will not volunteer it and they will grade you on it.
 
-Now the failure mode. Projects rarely fail because a team could not build the thing. They fail because the constraints were set unrealistically and **the team never renegotiated them**, and nobody wanted to say so. The MVP shrinks quietly instead, and the client finds out in December.
+Now the failure mode. Projects rarely fail because a team could not build the thing. They fail because the constraints were set unrealistically and **the team never renegotiated them**, and nobody wanted to say so. The MVP shrinks quietly instead, and the client finds out at the final demo.
 
 This is why the course has four checkpoints and a scoped MVP rather than one deadline. A checkpoint is a scheduled chance to renegotiate while it is still cheap. Use them for that, not to report that things are fine.
 
@@ -226,7 +226,7 @@ A job is not one thing. It is three, and AI is doing something different to each
 
 **Taste is the trainable core of judgment:** knowing what good looks like without a rubric. Which abstraction will hurt in six months, which test is theater, which explanation is fluent and hollow. It is what lets you *reject* work, and without it you approve whatever arrives. It is built by making decisions rather than generating answers, by catching the agent when it is wrong, and by seeing enough good and bad work to tell them apart.
 
-Agency is the harder one to build in a classroom, which is why this course is not a classroom for most of its hours. A real client, a problem nobody has scoped, and something that has to work in December is the only reliable way to get it.
+Agency is the harder one to build in a classroom, which is why this course is not a classroom for most of its hours. A real client, a problem nobody has scoped, and something that has to work by the final demo is the only reliable way to get it.
 
 **And the risk underneath all of it:** AI makes it easy to look competent without being competent. Polished output, shallow thinking, confidence growing faster than competence. The gap does not show up in a demo. It shows up in the first interview question that goes one level deeper than the artifact you brought.
 
@@ -236,7 +236,7 @@ Agency is the harder one to build in a classroom, which is why this course is no
 
 Every one is a life-cycle activity from the diagram above, and not one is typing. These postings predate agents that could code well, which is what makes them useful: the industry was already paying a premium for the part AI has not absorbed. The premium got larger.
 
-**New in 2026:** postings name the tools (Claude Code, Cursor, GitHub Copilot), ask for evidence you have shipped real work with them rather than tried them, and increasingly ask for judgment about when *not* to. "Familiar with AI coding tools" is now what "familiar with version control" was in 2010: written not because it impresses but because its absence disqualifies. You can satisfy it honestly in December, with a client MVP built with an agent in the workflow and your contribution visible in the git history.
+**New in 2026:** postings name the tools (Claude Code, Cursor, GitHub Copilot), ask for evidence you have shipped real work with them rather than tried them, and increasingly ask for judgment about when *not* to. "Familiar with AI coding tools" is now what "familiar with version control" was in 2010: written not because it impresses but because its absence disqualifies. You can satisfy it honestly by the end of this course, with a client MVP built with an agent in the workflow and your contribution visible in the git history.
 
 ### The team you will run
 
@@ -256,7 +256,7 @@ flowchart TD
 
 The executive chef does not cook most of the food. The chef decides what the restaurant is for, writes the menu, sets the standard, and stands at **the pass**, where every plate is inspected before it leaves. Nothing reaches a customer the chef has not seen.
 
-Map it onto your team. The menu is your specification and design of record; the stations are agents, many at once; the pass is code review, and you are standing at it; service is the client demo in December.
+Map it onto your team. The menu is your specification and design of record; the stations are agents, many at once; the pass is code review, and you are standing at it; service is the final client demo.
 
 Two things the metaphor gets right that "AI will write the code" gets wrong:
 
@@ -411,7 +411,7 @@ Every module carries one, naming the classic failure for its topic and the one A
 2. Give the IEEE definition of software engineering and explain what work each of the three adjectives is doing.
 3. Rewrite each of these as a requirement that passes the verifiability test: "the app should be secure"; "reports should load quickly"; "students shouldn't be able to cheat on peer evaluations."
 4. A teammate says "the agent wrote it, so the bug is not mine." What is wrong with that claim, precisely?
-5. Your client asks for the December demo two weeks earlier. Name the three trades available to you, and say which corner of the triangle each one spends.
+5. Your client asks for the final demo two weeks earlier. Name the three trades available to you, and say which corner of the triangle each one spends.
 6. You are twelve turns into a session and have written a lot of working code. What two checks tell you whether you are still working on what you sat down to do?
 7. Rewrite this kill risk as a mechanism: "there is a risk of integration problems with the client's system."
 8. A feature appears in your demo that the client never asked for, and nobody on the team remembers deciding to build it. Where in the chain from business need to shipped code should that have been caught, and what artifact would have caught it?

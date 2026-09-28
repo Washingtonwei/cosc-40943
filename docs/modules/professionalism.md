@@ -19,7 +19,7 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** [SE and What AI Changes](se-and-ai.md), which made you accountable for what the agent writes, and [The AI-Augmented Team](ai-augmented-team.md), which put the team's memory in the repository.
-- **Leads into:** every remaining week. It is taught once and practiced until December.
+- **Leads into:** every remaining week. It is taught once and practiced until the final demo.
 - **How it's taught:** half of one lecture day in week 2, on the day your team is announced. The reference version (values, expectations, the full accountability process, and the FAQ) is the [Professionalism handbook](../professionalism.md), which you read on your own. Clause 7 of your [team contract](../team-contract.md) is where your team writes down its own version, and you sign that on Friday.
 - **Course outcome it delivers:** [act as a professional teammate](../syllabus.md#learning-outcomes) (outcome 9), and it supports [giving and receiving engineering feedback](../syllabus.md#learning-outcomes) (outcome 7).
 
@@ -190,7 +190,7 @@ Two of the six are new, and they are the ones this course has to teach because t
 
 **Merged, Unread.** The behavior is not "you used AI." Everyone here uses AI, and the course requires it. The behavior is *submitting code you cannot explain*, and clause 6 of your team contract is where your team writes that down: every member can explain any line submitted under their name, and no agent output is merged that nobody has read. The observation is a question asked in review, not an accusation made in a meeting. If the author can walk you through it, there was never a problem. If they cannot, you have your finding, and it is about review discipline rather than about the tool.
 
-**"The agent wrote it."** Week 1's rule settles this: you are accountable for what the agent writes. Putting your name on a pull request is claiming the work, and the claim does not come apart later because the defect turned out to be embarrassing. Worth naming out loud in week 2, before it happens, so nobody discovers in October that it was never going to work.
+**"The agent wrote it."** Week 1's rule settles this: you are accountable for what the agent writes. Putting your name on a pull request is claiming the work, and the claim does not come apart later because the defect turned out to be embarrassing. Worth naming out loud in week 2, before it happens, so nobody discovers mid-project that it was never going to work.
 
 The [handbook](../professionalism.md) carries these patterns as a self-check you can run on yourself in any week of the term, phrased as questions rather than labels.
 

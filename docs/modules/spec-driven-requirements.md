@@ -102,7 +102,7 @@ So what did Cynthia want that Gerhard had not given her? The definition is delib
 
 Read the three nouns. **Behavior** is what the system does, and it is the only one most teams write down. A **property or attribute** is what the system must *be*, and what its data has to look like: fast, available, auditable, five digits then an optional hyphen. A **constraint on the development process** is not about the running system at all. It restricts how you are permitted to build it.
 
-That breadth is the point. **"The requirements" is not one kind of statement. It is an umbrella over several kinds of information that only mean something together**, which is why §4.9 lists nine of them and why they end up in four different documents. A team that hears only the first noun ships a feature list. Project Pulse's specification carries `CO-ferpa` (comply with FERPA when storing and transmitting student educational records) and `CO-server-side-llm-proxy` (every call to the language model routes through the server, so credentials never reach the browser). Neither is a behavior anyone would demo, and either one discovered in November is a rewrite.
+That breadth is the point. **"The requirements" is not one kind of statement. It is an umbrella over several kinds of information that only mean something together**, which is why §4.9 lists nine of them and why they end up in four different documents. A team that hears only the first noun ships a feature list. Project Pulse's specification carries `CO-ferpa` (comply with FERPA when storing and transmitting student educational records) and `CO-server-side-llm-proxy` (every call to the language model routes through the server, so credentials never reach the browser). Neither is a behavior anyone would demo, and either one discovered halfway through the build is a rewrite.
 
 Week 1 gave you the test for whether one sentence qualifies: [a capability or a constraint, agreed with the people who can accept the system, and specific enough to verify](se-and-ai.md#what-a-requirement-is). This definition tells you what that sentence is allowed to be *about*. You need both.
 
@@ -112,7 +112,7 @@ Week 1 gave you the test for whether one sentence qualifies: [a capability or a 
 - **Communicate** that understanding precisely to everyone who builds, tests, or accepts it. On your team that is five other people, three of whom were not in the meeting, and an agent that was in no meeting at all.
 - **Control** production, so that what ships matches the specification, including after the specification changes. It will change.
 
-The third is the one teams skip, and it is what makes the word *contract* in this module's title honest. A requirement nobody can hold you to is not a contract, and neither is one you can quietly edit in December to match what you happened to build.
+The third is the one teams skip, and it is what makes the word *contract* in this module's title honest. A requirement nobody can hold you to is not a contract, and neither is one you can quietly edit the week before the demo to match what you happened to build.
 
 ### 4.3 The first client meeting
 
@@ -145,7 +145,7 @@ What people say in an interview is data about the interview. Asking "would you u
 | Instead of | Ask |
 |---|---|
 | Would you use a dashboard? | Walk me through the last time you needed that number. What did you actually do? |
-| Is this important? | If we can ship only one of these in December, which one? |
+| Is this important? | If we can ship only one of these by the final demo, which one? |
 | Would this save time? | How long does it take today, and how do you know? |
 | Do you like this? | Show me the spreadsheet you use now. |
 
@@ -179,7 +179,7 @@ Nearly every objective a senior design client has lives in the right-hand column
 
 Platitudes are the failure mode. "Become recognized as a world-class provider" and "provide a more rewarding customer experience" are not objectives, because no measurement could ever contradict them.
 
-A **success metric** tells you whether you are on track to get there, and can be measured much sooner. That gap is why they are separate things. An objective may not be measurable until long after your semester ends, and may depend on work beyond your project, but you still need to know in October whether you are pointed the right way. Sometimes the two are the same sentence, when the objective happens to be measurable early.
+A **success metric** tells you whether you are on track to get there, and can be measured much sooner. That gap is why they are separate things. An objective may not be measurable until long after your semester ends, and may depend on work beyond your project, but you still need to know within weeks whether you are pointed the right way. Sometimes the two are the same sentence, when the objective happens to be measurable early.
 
 Every metric needs a **baseline**, and the question that produces it is the one students forget: not "how will you know this worked?" but the follow-up, **"what is that number today?"** If the client cannot say, you have found something worth writing down. A metric with no baseline cannot be met or missed.
 
@@ -209,13 +209,13 @@ Rules: coin the slug from the concept, keep it short and unique within its space
 
 Numbers are not banned everywhere. `OPEN-ISSUES.md` uses `OI-1` upward, because that list only ever grows at the bottom and is cited lightly. The convention is not "slugs everywhere"; it is slugs wherever items get reordered or cited often.
 
-### 4.8 Scope, and the line you will need in October
+### 4.8 Scope, and the line you will need when the client asks for more
 
 A business analyst is reviewing a specification when the marketing manager asks to add a "like this product" button. It sounds small. His argument is the one you will hear: the developers are going to be in the code anyway, so how hard is one tiny feature? Her analysis says it does not serve the objective the project exists for, and is not simple to build. The hard part is not the analysis. It is that the manager does not have the business objectives in mind and she has to be able to say why, out loud, without sounding obstructive.
 
-That is what the scope section is for. It is not paperwork. It is the sentence you will need in October when your client, who likes you and is enthusiastic, suggests something genuinely good that will cost you the semester.
+That is what the scope section is for. It is not paperwork. It is the sentence you will need a month in, when your client, who likes you and is enthusiastic, suggests something genuinely good that will cost you the semester.
 
-Write down what is **out** as explicitly as what is in, and ask the forcing question in the first meeting: *if we deliver only one of these in December, which one?* A client who cannot choose has not thought about it yet, and you need to know that now rather than in November.
+Write down what is **out** as explicitly as what is in, and ask the forcing question in the first meeting: *if we deliver only one of these by the final demo, which one?* A client who cannot choose has not thought about it yet, and you need to know that now rather than halfway through the build.
 
 ### 4.9 The nine kinds of requirement
 
@@ -519,7 +519,7 @@ That is what makes a **business rule** different in kind from everything else yo
 
 Project Pulse's `BR-evaluation-submission-window` says a student may submit a peer evaluation only for the previous week, and has that one week to complete it, later edits included. That is the course's policy. Project Pulse enforces it. Change the policy and the software becomes wrong; delete the software and the policy still stands.
 
-Rules go in `business-rules.md`, and **every rule carries a source**: who says so, and where it is written down. A syllabus section, a university policy number, a federal regulation with a citation, or a sentence your client said in a meeting, with the date. The reason is not bureaucratic. A rule with no source cannot be checked in November when somebody questions it, and it cannot be told apart from something a team member assumed or an agent supplied because it is the kind of rule a business like this usually has. If you cannot name the source, you do not have a rule yet. You have an entry for `OPEN-ISSUES.md`.
+Rules go in `business-rules.md`, and **every rule carries a source**: who says so, and where it is written down. A syllabus section, a university policy number, a federal regulation with a citation, or a sentence your client said in a meeting, with the date. The reason is not bureaucratic. A rule with no source cannot be checked months later when somebody questions it, and it cannot be told apart from something a team member assumed or an agent supplied because it is the kind of rule a business like this usually has. If you cannot name the source, you do not have a rule yet. You have an entry for `OPEN-ISSUES.md`.
 
 !!! trace "Trace: business rule to what enforces it"
 
@@ -529,7 +529,7 @@ Rules go in `business-rules.md`, and **every rule carries a source**: who says s
     |---|---|---|
     | `BR-evaluation-submission-window` | Not recorded | `UC-EVA-submit-evaluation` step 7 and extension 1b |
 
-    Two checks, and they fail in opposite directions. **Every rule is enforced by something**, or it is a policy your software quietly ignores, which is worth knowing on purpose rather than in November. **Every requirement that cites a rule cites one that exists**, which is the check that catches a draft citing `BR-late-penalty` because a late penalty is the kind of thing a course usually has.
+    Two checks, and they fail in opposite directions. **Every rule is enforced by something**, or it is a policy your software quietly ignores, which is worth knowing now rather than when a user hits it. **Every requirement that cites a rule cites one that exists**, which is the check that catches a draft citing `BR-late-penalty` because a late penalty is the kind of thing a course usually has.
 
 ### 4.24 Data requirements (section 7)
 
@@ -551,7 +551,7 @@ Clarice was teaching in a new training room and going hoarse shouting over the h
 
 Every functional requirement was met and the room was unusable. **Quality attributes** describe how *well* the system does what it does, and they are where a system that passes every functional test still fails the people using it.
 
-Clients state them as adjectives: fast, easy, reliable, secure, user-friendly. An adjective is where the conversation starts. "The dashboard should be fast" cannot be tested, cannot be designed against, and cannot even be argued about in November, because there is nothing there to argue with. `PER-report-load` can be: Project Pulse shall return the instructor progress-monitoring dashboard and the report views within 500 milliseconds at the 95th percentile, under the peak near-deadline concurrency envelope of `SCA-cohort-load`. Same wish, now with a number, a percentile, and the load it holds under, and that load is the one §4.21's risk named.
+Clients state them as adjectives: fast, easy, reliable, secure, user-friendly. An adjective is where the conversation starts. "The dashboard should be fast" cannot be tested, cannot be designed against, and cannot even be argued about, because there is nothing there to argue with. `PER-report-load` can be: Project Pulse shall return the instructor progress-monitoring dashboard and the report views within 500 milliseconds at the 95th percentile, under the peak near-deadline concurrency envelope of `SCA-cohort-load`. Same wish, now with a number, a percentile, and the load it holds under, and that load is the one §4.21's risk named.
 
 The rule for section 9 of your specification is **a number and a way to measure it**. Both halves. A threshold nobody can measure is a threshold nobody will check, and you will discover that in the week you planned to demonstrate it.
 

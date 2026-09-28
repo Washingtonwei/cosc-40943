@@ -62,7 +62,7 @@ That definition does two things. It tells you what to spend time on now: the dec
 
 This is the **reversibility test**, and it is the architecture version of a rule you met in [Context Engineering](context-engineering.md#48-the-two-directions-you-can-be-wrong): pin down what would be expensive to get wrong, and leave the rest to be derived when it is built. A decision that fails the test, one that is local and cheap to change, belongs in the design-of-record for one use case area in week 7, not here.
 
-**Breadth-complete, depth-shallow.** The architecture-of-record names *every* part of the system, so the map is whole: no use case area without a home, no external system discovered in November. But it describes each part only to the level of its responsibility, so nothing is designed before anyone has built against it. This is the method's answer to the two classic failures of up-front design: a map with holes, which lets two people build the same thing twice, and a map that is too detailed, which commits you to guesses. See [The Method](../method.md), Principle 2.
+**Breadth-complete, depth-shallow.** The architecture-of-record names *every* part of the system, so the map is whole: no use case area without a home, no external system discovered halfway through the build. But it describes each part only to the level of its responsibility, so nothing is designed before anyone has built against it. This is the method's answer to the two classic failures of up-front design: a map with holes, which lets two people build the same thing twice, and a map that is too detailed, which commits you to guesses. See [The Method](../method.md), Principle 2.
 
 **It evolves with the specification.** Requirements and architecture are not a sequence where one finishes before the other starts. Bashar Nuseibeh called this the Twin Peaks model: each one informs the other, in alternation. You will see it the first time you draw your context diagram and discover an external system no use case mentions, which sends you back to your specification with a question for your client. That is the process working, not failing.
 
@@ -186,7 +186,7 @@ Here is how that looks in Project Pulse, against the packages on the `main` bran
 | Ten RAM areas (documents, artifacts, links, glossary, collaboration, and more) | five packages under `ram/`: `document`, `requirement`, `usecase`, `glossary`, `collaboration` |
 | Cross-cutting | `security` (authentication), `system` (email, the response envelope, clocks, scheduling) |
 
-Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by November.
+Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by the time the last area ships.
 
 **Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place.
 
@@ -221,7 +221,7 @@ It also goes the other way at scale. In 2023 Amazon's Prime Video team described
 
 **The middle option is the one to aim for: a modular monolith.** One deployable, but divided inside by domain, with each module owning its own slice of the code (section 4.5) and talking to the others through their service interfaces rather than reaching into their tables. You get the simple operations of a monolith and most of the maintainability of services, and if one module ever does need to scale separately, the boundary is already drawn. This is what Project Pulse is.
 
-**For your project,** the question is not "which is better?" It is "which requirement would force several deployables?" Write that requirement down. If your specification has no such requirement, if nothing in it needs one part to scale, deploy, or fail independently of the rest, you have your answer and your rejected alternative. Your client's system will serve tens or hundreds of users, and next spring someone will have to run it.
+**For your project,** the question is not "which is better?" It is "which requirement would force several deployables?" Write that requirement down. If your specification has no such requirement, if nothing in it needs one part to scale, deploy, or fail independently of the rest, you have your answer and your rejected alternative. Your client's system will serve tens or hundreds of users, and after your team hands it off, someone will have to run it.
 
 ### 4.7 A catalog of patterns, and which ones you will meet
 
@@ -355,10 +355,10 @@ There is no individual assignment for this module. The Project Pulse architectur
 4. An agent proposes separate services for users, orders, and notifications, each with its own database, for a system with 200 users. Name the requirement that would justify it, and write the rejected-alternative line you would put in `KD-deployment-shape` if your specification has no such requirement.
 5. Your context diagram shows the system, three kinds of user, and nothing else. What question should your team ask the client before Checkpoint 1, and why is the answer an architecture question?
 6. A teammate packages the backend as `controllers`, `services`, and `repositories`. Describe the most common change on your project, and say how many packages it touches under that layout and under a domain layout.
-7. Your component table has a row for every use case area and none for email, although four use cases send email. What will happen by November?
+7. Your component table has a row for every use case area and none for email, although four use cases send email. What will happen by the time the last area is built?
 8. Project Pulse's security rules covered every route under `/api/v1/**`, and the production credentials leaked anyway. Explain how, and say which line of the fix makes the same mistake impossible for a new endpoint.
 9. A key decision in your document reads: "We use PostgreSQL." Say what is missing, and rewrite it.
-10. Your team reversed `KD-deployment-shape` in November because one part really did need to scale on its own. What happens to the original entry, and why does it stay in the document?
+10. Months later, your team reverses `KD-deployment-shape` because one part really does need to scale on its own. What happens to the original entry, and why does it stay in the document?
 
 ## Related
 
