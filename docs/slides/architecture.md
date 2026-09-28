@@ -226,25 +226,87 @@ Simon Brown's C4 model. Agree on the things first, the shapes second. The four l
 
 ```mermaid
 flowchart LR
-    I["Instructor<br/><i>person</i>"] --> P["Project Pulse<br/><i>software system</i><br/>WARs, peer evaluations, RAM"]
-    S["Student<br/><i>person</i>"] --> P
-    P -->|"sends email using"| G["Gmail<br/><i>external system</i>"]
-    P -->|"requests AI review"| L["LLM service<br/><i>external system</i>"]
+    I["Instructor<br/><i>[Person]</i><br/>Teaches a course section"]
+    S["Senior Design Student<br/><i>[Person]</i><br/>Member of a team"]
+    P["Project Pulse<br/><i>[Software System]</i><br/>Tracks team performance;<br/>supports requirements authoring"]
+    G["Gmail<br/><i>[External System]</i><br/>Email system"]
+    L["LLM Service<br/><i>[External System]</i><br/>AI-assisted requirement review"]
+    I -->|"Manages courses;<br/>reviews requirements"| P
+    S -->|"Submits work;<br/>authors requirements"| P
+    P -->|"Sends emails using"| G
+    G -->|"Sends emails to"| I
+    G -->|"Sends emails to"| S
+    P -->|"Requests AI review"| L
 ```
 
-Who uses it. What it talks to. Readable by your client.
+::: note
+Project Pulse's context diagram, from its architecture-of-record on main, redrawn as a plain flowchart with the same boxes and labels because mermaid's C4 layout is unreadable when projected. The module has the C4 originals for all three levels. The system is one box. Two kinds of person, two external systems, and every arrow says what it does. This is the diagram your client can read. The LLM service is planned: no code calls it yet, but it is on the map so nobody discovers it late.
+:::
 
 ## Level 2: containers (section 5.1)
 
-::: steps
-- **SPA** [Vue.js]: the user interface in the browser
-- **REST API application** [Java, Spring Boot]: the APIs, and it serves the SPA
-- **Database** [relational]: WARs, evaluations, requirements
-- **Blob storage** [Azure]: uploaded files
-:::
+```mermaid
+flowchart LR
+    I["Instructor<br/><i>[Person]</i>"]
+    S["Senior Design Student<br/><i>[Person]</i>"]
+    subgraph PP["Project Pulse [Software System]"]
+        SPA["SPA<br/><i>[Container: Vue 3 / TypeScript]</i><br/>Runs in the browser"]
+        API["REST API Application<br/><i>[Container: Java 21 / Spring Boot]</i><br/>Delivers the SPA; serves the APIs"]
+        DB[("Database<br/><i>[Container: MySQL 8]</i>")]
+        BLOB[("Blob Storage<br/><i>[Container: Azure Blob Storage]</i><br/>Uploaded source material")]
+    end
+    G["Gmail<br/><i>[External System]</i>"]
+    L["LLM Service<br/><i>[External System]</i>"]
+    I -->|"Uses [HTTPS]"| SPA
+    S -->|"Uses [HTTPS]"| SPA
+    SPA -->|"API calls [JSON/HTTPS]"| API
+    API -->|"Delivers [HTTPS]"| SPA
+    API -->|"Reads & writes [JDBC]"| DB
+    API -->|"Stores & reads files [HTTPS]"| BLOB
+    API -->|"Sends email [SMTP]"| G
+    API -->|"Requests AI review [HTTPS]"| L
+```
 
 ::: key
-What runs, what stores data, which technology. The shape of the system on one page.
+What runs, what stores data, which technology, and the protocol on every arrow.
+:::
+
+::: note
+Open the system box. Four containers. The SPA and the REST API are two containers although they ship in one jar: a container is something that runs, and the SPA runs in the browser while the API runs on the server. The Delivers arrow is the API handing the SPA to the browser. Blob Storage is its own container because uploaded files grow and the database should not. Blob Storage and the LLM service are planned, with no code yet: a real architecture runs ahead of its code, and an honest one says which parts are planned.
+:::
+
+## Level 3: components
+
+```mermaid
+flowchart TB
+    SPA["SPA<br/><i>[Container: Vue 3]</i>"]
+    subgraph API["REST API Application [Container: Spring Boot]"]
+        direction TB
+        WEB["SPA serving<br/><i>[static resources]</i>"]
+        SEC["security<br/><i>[Spring Security filter chain]</i>"]
+        ACT["actuator<br/><i>[Spring Boot Actuator]</i>"]
+        NOTIFY["notifications<br/><i>[Spring Mail + @Scheduled]</i>"]
+        USER["user<br/><i>[Spring MVC + JPA]</i>"]
+        ORG["course · section · team<br/><i>[Spring MVC + JPA]</i>"]
+        PEOPLE["student · instructor<br/><i>[Spring MVC + JPA]</i>"]
+        RUB["rubric<br/><i>[Spring MVC + JPA]</i>"]
+    end
+    G["Gmail<br/><i>[External System]</i>"]
+    WEB -->|"Delivers"| SPA
+    SPA -->|"Every API request"| SEC
+    SEC -->|"Guards"| ACT
+    SEC -->|"Loads the user"| USER
+    SEC -->|"Checks ownership, membership"| ORG
+    SEC -->|"Passes requests"| PEOPLE
+    SEC -->|"Checks rubric ownership"| RUB
+    ORG -->|"Owns and assigns"| RUB
+    USER -->|"Invitation, reset emails"| NOTIFY
+    NOTIFY -->|"Finds sections due a reminder"| ORG
+    NOTIFY -->|"SMTP"| G
+```
+
+::: note
+Zoom into one container, the REST API application: its shared foundation. Point at the four ways in: API calls from the SPA, the static files that deliver the SPA, the actuator, and the reminder schedule, which fires on a clock with nobody asking. Those four are the attack surface, and the credential leak you will see on Wednesday came through one of them. Then the direction: every request reaches the org model, rubrics, and users only through security. The database is left off this slide to keep it legible: user, the org model, the participants, and rubric each read and write MySQL over JDBC, as the module's full diagram shows. Project Pulse draws two more of these, performance tracking and RAM, in its architecture-of-record.
 :::
 
 ## Level 3 and 4

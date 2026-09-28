@@ -134,7 +134,57 @@ Your template has four views:
 
 Read the "Drawn at" column. The first two views describe what the system is and what it is made of. Those are the decisions you are making now, and your specification is enough to draw them. The other two describe things that do not exist yet. A sequence diagram of code nobody has written describes a guess, and so does a deployment view before there is a pipeline to deploy with. So the runtime view waits for the proving slice at Checkpoint 2, and the deployment view waits for the pipeline at Checkpoint 3. This is the reversibility test of section 4.1 applied to diagrams, and the Twin Peaks spiral in practice: each view is drawn once a pass down the peaks has made it knowable.
 
-Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) has all four, and its last two show what the wait buys. Its runtime view traces sign-in and one authorized request: the browser sends credentials, the API checks a BCrypt hash and returns a two-hour JWT, and every later request passes an ownership or membership check before it reaches any data. Its deployment view says one Azure Web App runs one container, releases go to a staging slot and are swapped into production, and schema changes ship as Flyway migrations at deploy time. Neither could have been written truthfully before the code and the pipeline existed.
+Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) has all four, and its last two show what the wait buys. The context diagram and the container diagram appear with the C4 levels below. Here are the other two, as they stand on `main`.
+
+Its **runtime view** traces sign-in and one authorized request:
+
+```mermaid
+sequenceDiagram
+    actor U as User (browser)
+    participant SPA
+    participant API as REST API
+    participant DB
+    U->>SPA: enter email + password
+    SPA->>API: POST /api/v1/users/login (HTTP Basic)
+    API->>DB: load user, verify BCrypt-12 hash
+    API-->>SPA: Result { token: JWT (RSA-2048, 2h) }
+    SPA->>SPA: store token (Pinia), set Bearer header
+    SPA->>API: GET /api/v1/... (Bearer JWT)
+    API->>API: verify JWT, then AuthorizationManager (ownership/membership)
+    API-->>SPA: Result { data }
+```
+
+Every participant is a container from the container diagram, and the second-to-last step is the authorization check that [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) returns to: a valid token is not enough, the request must also concern something the caller owns or belongs to.
+
+Its **deployment view** shows where each container runs:
+
+```mermaid
+flowchart LR
+    browser["Student / Instructor<br/>Browser"]
+    subgraph azure["Azure"]
+        subgraph webapp["Azure Web App (single instance)"]
+            slot["Production slot<br/>1 container: Spring Boot jar<br/>(REST API + bundled Vue SPA)"]
+            staging["Staging slot<br/>(deploy target)"]
+        end
+        db[("Azure Database<br/>for MySQL")]
+        blob[("Azure Blob Storage<br/>(project source files)")]
+    end
+    gmail["Gmail<br/>(SMTP)"]
+    llm["LLM Service<br/>(HTTPS)"]
+
+    browser -->|HTTPS| slot
+    slot -->|JDBC| db
+    slot -->|Blob SDK / HTTPS| blob
+    slot -->|SMTP| gmail
+    slot -->|HTTPS| llm
+    staging -. swap .-> slot
+```
+
+The SPA and the REST API share one container in production, because the jar serves the Vue app (`KD-1`). Releases go to the staging slot and are swapped into production, and the text beside the diagram adds that schema changes ship as Flyway migrations at deploy time. It is a plain `flowchart`, not C4 syntax, which is the substitute this section allows below.
+
+The sequence names a real endpoint and a real token lifetime, and the deployment names a real staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
+
+One caution, and it is a lesson in its own right. Blob Storage and the LLM service appear on Project Pulse's container and deployment diagrams, but no code calls either of them yet; they are planned, drawn so the map is complete. A real project's architecture runs ahead of its code. The honest move is to say which parts are planned, which is what the `provisional` status in your template's component table is for.
 
 Sections 8 and 9 of the template are not views. They cut across all four: section 8.1 is security ([section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) below), and section 9 holds the ASR table and the decisions it drives (sections [4.3](#43-architecturally-significant-requirements) and [4.8](#48-writing-a-decision-down)). What goes inside the building block view is sections 4.5 through 4.7.
 
@@ -155,24 +205,99 @@ Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out,
 C4Context
     title System Context Diagram for Project Pulse
 
-    Person(instructor, "Instructor", "Senior design course instructor")
-    Person(student, "Senior Design Student", "Enrolled in the course")
+    Person(instructor, "Instructor", "Teaches a course section; a course admin is an instructor who also runs the course")
+    Person(student, "Senior Design Student", "Member of a team in a course section")
 
-    System(pulse, "Project Pulse", "Hosts WARs, peer evaluations, and the RAM requirements module")
+    System(pulse, "Project Pulse", "Tracks team performance and supports requirements authoring")
 
     System_Ext(gmail, "Gmail", "Email system")
     System_Ext(llm, "LLM Service", "AI-assisted requirement review")
 
-    Rel(instructor, pulse, "Manages courses; reviews requirements")
-    Rel(student, pulse, "Submits work; authors requirements")
-    Rel(pulse, gmail, "Sends emails using")
-    Rel(gmail, student, "Sends emails to")
-    Rel(pulse, llm, "Requests AI review")
+    Rel_R(instructor, pulse, "Manages courses;<br/>reviews requirements")
+    Rel_R(student, pulse, "Submits work;<br/>authors requirements")
+    Rel_R(pulse, gmail, "Sends emails using")
+    Rel_D(gmail, student, "Sends emails to")
+    Rel_D(gmail, instructor, "Sends emails to")
+    Rel_D(pulse, llm, "Requests AI review")
+
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
 
-**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page, and it goes in section 5.1. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside.
+**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page, and it goes in section 5.1. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside:
 
-**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (template section 5.2, and section 4.5 below). A component diagram showing controllers and services is design, and it belongs in the design-of-record for that area in week 7.
+```mermaid
+C4Container
+    title Container Diagram for Project Pulse
+
+    Person(instructor, "Instructor", "Teaches a course section; a course admin is an instructor who also runs the course")
+    Person(student, "Senior Design Student", "Member of a team in a course section")
+
+    System_Boundary(pulse, "Project Pulse") {
+        Container(spa, "SPA", "Vue 3 / TypeScript", "Runs in the browser; the user interface for performance tracking and requirements authoring")
+        Container(api, "REST API Application", "Java 21 / Spring Boot", "Delivers the SPA; serves the performance-tracking and RAM APIs")
+        ContainerDb(db, "Database", "MySQL 8", "Courses, teams, WARs, peer evaluations, and RAM artifacts, links, and documents")
+        ContainerDb(blob, "Blob Storage", "Azure Blob Storage", "Uploaded project source material (PDF/PPTX)")
+    }
+
+    System_Ext(gmail, "Gmail", "Email system")
+    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
+
+    Rel_R(instructor, spa, "Uses", "HTTPS")
+    Rel_R(student, spa, "Uses", "HTTPS")
+    Rel_U(api, spa, "Delivers", "HTTPS")
+    Rel_D(spa, api, "API calls", "JSON/HTTPS")
+    Rel_D(api, db, "Reads & writes", "JDBC")
+    Rel_D(api, blob, "Stores & reads files", "HTTPS")
+    Rel_R(api, gmail, "Sends email", "SMTP")
+    Rel_R(api, llm, "Requests AI review", "HTTPS")
+    Rel_D(gmail, student, "Sends emails to")
+    Rel_D(gmail, instructor, "Sends emails to")
+```
+
+Every arrow carries a protocol (HTTPS, JDBC, SMTP), which is arc42's technical context. The SPA and the REST API are two containers although they ship in one jar, because a container is something that runs: the SPA runs in the browser, the API on the server, and the "Delivers" arrow shows the API handing the SPA to the browser. The Gmail and LLM boxes are the same two external systems as on the context diagram, now attached to the one container that talks to them. Blob Storage is a separate container because uploaded files grow and the database should not (`CO-blob-source-material`), and that is the kind of reason every container on your own diagram needs.
+
+**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (template section 5.2, and section 4.5 below). A table is what your template asks for, because it can be checked row by row against your use cases.
+
+Project Pulse's architecture-of-record draws this level as three C4 component diagrams: the shared foundation, performance tracking, and the RAM module. Here is the shared foundation inside the REST API application:
+
+```mermaid
+C4Component
+    title Component Diagram: shared foundation inside the REST API Application
+
+    Container(spa, "SPA", "Vue 3 / TypeScript", "Course and team administration UI")
+
+    Container_Boundary(api, "REST API Application (Spring Boot)") {
+        Component(security, "security", "Spring Security filter chain", "JWT login and request authentication; AuthorizationManagers check ownership and membership")
+        Component(web, "SPA serving", "Spring MVC static resources", "Serves the bundled SPA; forwards UI routes to index.html")
+        Component(actuator, "actuator", "Spring Boot Actuator", "Health and info management endpoints")
+        Component(user, "user", "Spring MVC + Spring Data JPA", "User accounts, invitations, password reset")
+        Component(org, "course · section · team", "Spring MVC + Spring Data JPA", "Courses, course sections, teams: the org/enrollment model")
+        Component(people, "student · instructor", "Spring MVC + Spring Data JPA", "Course participants and their roles")
+        Component(rubric, "rubric", "Spring MVC + Spring Data JPA", "Rubrics and criteria: owned by a course, assigned to course sections")
+        Component(notify, "notifications", "Spring Mail + @Scheduled", "EmailService; WeeklyReminderScheduler sends each week's reminders")
+    }
+
+    ContainerDb(db, "Database", "MySQL 8", "Users, courses, course sections, teams, rubrics")
+    System_Ext(gmail, "Gmail", "Email system")
+
+    Rel(web, spa, "Delivers", "HTTPS")
+    Rel(spa, security, "Logs in; sends every API request through", "JSON/HTTPS")
+    Rel(security, user, "Loads the authenticated user from; passes authorized requests to")
+    Rel(security, org, "Checks ownership and membership in; passes authorized requests to")
+    Rel(security, people, "Passes authorized requests to")
+    Rel(security, rubric, "Checks rubric ownership in; passes authorized requests to")
+    Rel(org, rubric, "Owns and assigns rubrics")
+    Rel(security, actuator, "Guards")
+    Rel(user, notify, "Sends invitation and reset emails via")
+    Rel(notify, org, "Finds course sections due a reminder in")
+    Rel(user, db, "Reads & writes", "JDBC")
+    Rel(org, db, "Reads & writes", "JDBC")
+    Rel(people, db, "Reads & writes", "JDBC")
+    Rel(rubric, db, "Reads & writes", "JDBC")
+    Rel(notify, gmail, "Sends email", "SMTP")
+```
+
+This diagram shows two things a table cannot. First, **every way into the container**: API requests from the SPA, the static files that deliver the SPA, the actuator management endpoints, and the reminder schedule, which fires on a clock with no request at all. Together they are the container's attack surface, and the September 2026 credential leak in [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) came through one of them. Second, **which way the dependencies run**: requests reach the org model, rubrics, and users only through `security`, and `notifications` is reached by `user` for invitation and reset emails. A component diagram that opens a box to show its controllers and services is design, and it belongs in the design-of-record for that area in week 7.
 
 **Level 4, code,** is a class diagram. Almost nobody should draw one by hand; your IDE and your agent can produce it from the code whenever it is needed, and a hand-drawn one is out of date the day after it is committed.
 
@@ -207,11 +332,13 @@ Here is how that looks in Project Pulse, against the packages on the `main` bran
 
 Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by the time the last area ships.
 
+The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it.
+
 **Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place.
 
 That is a choice, and the alternative is common enough that you have probably seen it: **layered packaging**, with all controllers in one package, all services in another, and all repositories in a third. The Spring PetClinic sample application exists in both forms, which makes it the cleanest comparison available: [`spring-framework-petclinic`](https://github.com/spring-petclinic/spring-framework-petclinic) is packaged by layer (`web`, `service`, `repository`), while [`spring-petclinic`](https://github.com/spring-projects/spring-petclinic) is packaged by domain (`owner`, `vet`, `system`).
 
-Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-7` records and what its quality scenario `QS-3` measures: a new domain package can be added with zero changes to any other.
+Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-7` records. Its quality scenario `QS-3` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-13`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
 **The same argument applies to teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
 
