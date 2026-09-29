@@ -170,6 +170,26 @@ Reuse the identifiers you already have. Include at least one `SEC-*`.
 From the architecture-of-record on main, under Architecture Decisions. Seven in total; these are the top four. Not the same seven as the attribute slide: an ASR is a specific requirement, not a category, so availability feeds two ASRs and usability feeds none. Drives points at the key decisions each one forced, which is where Wednesday picks up. Row 4: real-time editing is deferred, so the MVP meets it with section locking, the simple way. The security rule: every client system this year stores something about a real person. If no security requirement makes the list, its protection was never designed.
 :::
 
+## Your architecture-of-record: arc42
+
+::: cols
+**You write**
+
+1.2 Quality goals · 3 Context · 4 Solution strategy · 5 Building blocks · 6 Runtime · 7 Deployment · 8 Crosscutting · 9 Decisions · 10.2 Quality scenarios · 11 Technical risks
+|||
+**You link**
+
+1.1 Requirements · 1.3 Stakeholders · 2 Constraints · 10.1 Quality attributes · 12 Glossary
+:::
+
+::: key
+A fact written in two places is soon wrong in one.
+:::
+
+::: note
+arc42, Gernot Starke and Peter Hruschka: a free template, twelve sections, each one question about the system. It says what to write, not how to draw; C4 is next. The template keeps arc42's order, numbering, and titles, so anyone who knows arc42 can find their way around yours, and Project Pulse's architecture-of-record fills every section. Five of the twelve overlap your requirements documents (sections 1, 2, 10, 11, 12): there the template cites by identifier or links, and adds only what the architecture needs. The order is by topic, not by when you write it: 6 and 7 wait for code and a pipeline. Each template section says when it is due.
+:::
+
 ## One architecture, four views
 
 | Template section | Answers | Drawn at |
@@ -182,7 +202,7 @@ From the architecture-of-record on main, under Architecture Decisions. Seven in 
 **arc42:** what to write · **C4:** how to draw it
 
 ::: note
-Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it, and so does your template. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday. More than half of the twelve sections overlap your requirements documents (stakeholders, constraints, quality attributes, risks, glossary); there the template links to the owner and adds only what the architecture needs. A fact written in two places is soon wrong in one.
+Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday.
 :::
 
 ## Draw what you can know
