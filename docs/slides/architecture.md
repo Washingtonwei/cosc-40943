@@ -332,7 +332,7 @@ Architecture is the expensive decisions, chosen by quality attributes, drawn so 
 :::
 
 ::: note
-Wednesday: how to divide it, how many deployables, how to write a decision down, and the trust boundary. Friday is Checkpoint 1, and you draft this document in the room.
+Wednesday: how to divide it, how many deployables, the trust boundary, what every component does the same way, and how to write a decision down. Friday is Checkpoint 1, and you draft this document in the room.
 :::
 
 ## Where components come from {.center}
@@ -558,48 +558,6 @@ If your specification contains none of those needs, your system uses none of tho
 Six slides, one "you need it when" each. Read the six as requirements, then ask the room whether any of them are in their specification. For almost every team the answer is no.
 :::
 
-## Writing a decision down
-
-::: steps
-- **Driving requirements:** by identifier
-- **Context:** why this was a question at all
-- **Decision:** one or two sentences
-- **Rejected:** what you did not choose, and why
-- **Trade-off:** what it costs
-:::
-
-::: key
-Without a rejected alternative it is a description. Without a trade-off you have not understood it.
-:::
-
-## Rewrite this {.center}
-
-> **KD-database:** We use PostgreSQL.
-
-::: ask
-What is missing? Rewrite it in two minutes with your neighbour.
-:::
-
-::: note
-Take two or three. Then show Project Pulse's KD-3: one relational database, not relational plus a graph database for requirement links, because a second store is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL. Trade-off: deep traversals are joins. That tells next year's team what not to propose, and when it would become right.
-:::
-
-## Follow one requirement down
-
-```mermaid
-flowchart LR
-    s1["SEC-authorization"] --> s2["ASR 1"] --> s3["KD-4 +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-1"] --> s6["tests pass"]
-    m1["MNT-feature-locality"] --> m2["ASR 3"] --> m3["KD-7"] --> m4["package<br/>per domain"] --> m5["QS-3"] -.-> m6["no test:<br/>12 violations"]
-```
-
-::: key
-A chain with no test at the end is a decision you are trusting people to remember.
-:::
-
-::: note
-Two of Project Pulse's chains, from its architecture-of-record and traceability matrix. Forward: does every significant requirement reach a proof? Backward: does every part exist because a requirement asked? Security is proved on every build. Maintainability is proved by nothing: KD-7 is recorded, the packages are drawn, and the code breaks the rule 12 times (TD-13), because nothing fails when it drifts. The recorded fix is an ArchUnit test. Checkpoint 1 asks for the first four links; week 8 teaches the whole chain.
-:::
-
 ## The trust boundary
 
 Between what you control and what you do not.
@@ -699,6 +657,48 @@ A convention nothing checks is one you are trusting the agent to remember.
 
 ::: note
 Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the normative source, and its backend CLAUDE.md says so and carries the Clock rule. Start with error handling and time; the template's 8.2 lists the rest with when each starts to matter.
+:::
+
+## Writing a decision down
+
+::: steps
+- **Driving requirements:** by identifier
+- **Context:** why this was a question at all
+- **Decision:** one or two sentences
+- **Rejected:** what you did not choose, and why
+- **Trade-off:** what it costs
+:::
+
+::: key
+Without a rejected alternative it is a description. Without a trade-off you have not understood it.
+:::
+
+## Rewrite this {.center}
+
+> **KD-database:** We use PostgreSQL.
+
+::: ask
+What is missing? Rewrite it in two minutes with your neighbour.
+:::
+
+::: note
+Take two or three. Then show Project Pulse's KD-3: one relational database, not relational plus a graph database for requirement links, because a second store is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL. Trade-off: deep traversals are joins. That tells next year's team what not to propose, and when it would become right.
+:::
+
+## Follow one requirement down
+
+```mermaid
+flowchart LR
+    s1["SEC-authorization"] --> s2["ASR 1"] --> s3["KD-4 +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-1"] --> s6["tests pass"]
+    m1["MNT-feature-locality"] --> m2["ASR 3"] --> m3["KD-7"] --> m4["package<br/>per domain"] --> m5["QS-3"] -.-> m6["no test:<br/>12 violations"]
+```
+
+::: key
+A chain with no test at the end is a decision you are trusting people to remember.
+:::
+
+::: note
+Two of Project Pulse's chains, from its architecture-of-record and traceability matrix. Forward: does every significant requirement reach a proof? Backward: does every part exist because a requirement asked? Security is proved on every build. Maintainability is proved by nothing: KD-7 is recorded, the packages are drawn, and the code breaks the rule 12 times (TD-13), because nothing fails when it drifts. The recorded fix is an ArchUnit test. Checkpoint 1 asks for the first four links; week 8 teaches the whole chain.
 :::
 
 ## Ask the agent for an architecture

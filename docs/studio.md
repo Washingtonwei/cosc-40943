@@ -214,7 +214,7 @@ Fix what the issue raises by pull request, and close the issue from it. Week 7's
 
 **Objective:** each pair on your team writes one use case up as a build-context, an issue that cites the use case instead of copying it, runs the questions test on it, and sorts the gaps it exposes before building. The reading is [Context Engineering](modules/context-engineering.md), sections 4.5 and 4.7, and your individual practice run was [assignment 2](assignments/spec-a-feature.md).
 
-**Before you arrive:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Section 8.2 of your architecture-of-record names at least **error handling** and **time**, and your charter carries a one-line rule for each that cites it ([why](modules/architecture.md#411-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
+**Before you arrive:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Section 8.2 of your architecture-of-record names at least **error handling** and **time**, and your charter carries a one-line rule for each that cites it ([why](modules/architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
 
 | When | What your team does |
 |---|---|

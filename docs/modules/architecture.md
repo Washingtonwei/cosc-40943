@@ -14,9 +14,9 @@ By the end of this module, a student can:
 4. Name the four views an architecture-of-record describes, the question each answers, and why two of them wait for code; draw C4 context and container diagrams in mermaid that stand on their own: titled, keyed, and readable with the colors removed.
 5. Decompose a system by domain, mapping use case areas to components, and explain why layering belongs inside a domain module rather than above it.
 6. Choose between one deployable and several for a given set of requirements, name the requirement that would force the other choice, and resist a distributed design no requirement asks for.
-7. Record a key decision with its driving requirement, context, rejected alternative, and trade-off.
-8. Name a system's trust boundary and explain how a system can leak data that no feature ever touched.
-9. Name the crosscutting concepts every component must share, write the first ones before an agent builds a second component, and keep each rule's reasoning in the architecture-of-record with a one-line instruction in the charter.
+7. Name a system's trust boundary and explain how a system can leak data that no feature ever touched.
+8. Name the crosscutting concepts every component must share, write the first ones before an agent builds a second component, and keep each rule's reasoning in the architecture-of-record with a one-line instruction in the charter.
+9. Record a key decision with its driving requirement, context, rejected alternative, and trade-off.
 10. Judge an agent's proposed architecture by asking which requirement forces each part of it.
 
 ## 2. Where it fits
@@ -77,7 +77,7 @@ Here are the attributes that most often shape an architecture, each with the que
 
 | Attribute | The question it asks | Project Pulse's answer | What it pushes in the architecture |
 |---|---|---|---|
-| **Security** | Who may see or change what, and what must never leak? | `SEC-authorization`: a student reaches only the work of their own team. `SEC-llm-proxy`: the language model's credentials never reach the browser. | A trust boundary around the whole application, every request authenticated, every query scoped to the caller's team, and the language model called only from the server ([4.10](#410-security-as-a-quality-attribute-the-trust-boundary)) |
+| **Security** | Who may see or change what, and what must never leak? | `SEC-authorization`: a student reaches only the work of their own team. `SEC-llm-proxy`: the language model's credentials never reach the browser. | A trust boundary around the whole application, every request authenticated, every query scoped to the caller's team, and the language model called only from the server ([4.9](#49-security-as-a-quality-attribute-the-trust-boundary)) |
 | **Maintainability** | How cheaply can someone who did not write it change it? | `MNT-feature-locality`: a new feature is a self-contained module that edits no sibling module. | Packages divided by domain, with the layers inside each ([4.6](#46-decomposing-by-domain-from-use-case-areas-to-components)) |
 | **Availability** | How much downtime is acceptable, and when? | `AVL-uptime`: up 99% of each term, with deadlines prioritized. | 99% of a term allows about a day of downtime, so one instance is enough. 99.99% would allow about 16 minutes, and would demand redundant instances and database replicas ([4.8](#48-a-catalog-of-patterns-and-which-ones-you-will-meet)). |
 | **Performance** | How fast, at what percentile, under what load? | `PER-report-load`: the instructor dashboard and report views in 500 ms at the 95th percentile. | At this load, one application and one database, with calls between modules made in-process. Every network hop added spends part of the 500 ms. |
@@ -114,7 +114,7 @@ The significant few are the ones high on both, plus any hard constraint (a manda
 | 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium | `KD-2`, `KD-5`, `KD-7` (domain slices, layered within) |
 | 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium | `KD-6` (section-level locking), plus autosave |
 
-The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [section 4.9](#49-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
+The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [section 4.11](#411-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
 
 (The remaining three, single self-hosted authentication, responsive graph queries at cohort scale, and graceful degradation when the language model is unavailable, rank lower. The full table is in Project Pulse's architecture-of-record, under Architecture Decisions.)
 
@@ -135,8 +135,8 @@ Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/des
 | 5. Building Block View | What is it made of, and what does each part own? | A C4 container diagram, and a component table from your use case areas ([4.5](#45-describing-it-views-and-c4-to-draw-them), [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components)) |
 | 6. Runtime View | How do the parts carry out one use case? | A sequence diagram, once that use case is built |
 | 7. Deployment View | Where does each part run, and how does a change get there? | Your pipeline, once it exists |
-| 8. Crosscutting Concepts | What must every component do the same way? | 8.1 is security: the trust boundary ([4.10](#410-security-as-a-quality-attribute-the-trust-boundary)). 8.2 holds the rest ([4.11](#411-crosscutting-concepts-what-every-component-does-the-same-way)) |
-| 9. Architecture Decisions | What was decided, and what forced it? | The ASR table ([4.3](#43-architecturally-significant-requirements)) and the key decisions ([4.7](#47-one-deployable-or-several), [4.9](#49-writing-a-decision-down)) |
+| 8. Crosscutting Concepts | What must every component do the same way? | 8.1 is security: the trust boundary ([4.9](#49-security-as-a-quality-attribute-the-trust-boundary)). 8.2 holds the rest ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)) |
+| 9. Architecture Decisions | What was decided, and what forced it? | The ASR table ([4.3](#43-architecturally-significant-requirements)) and the key decisions ([4.7](#47-one-deployable-or-several), [4.11](#411-writing-a-decision-down)) |
 | 10. Quality Requirements | How will you know a quality attribute holds? | 10.1 links to section 9 of your specification; 10.2 adds quality scenarios, each naming the test that verifies it |
 | 11. Risks and Technical Debt | What might go wrong, and which shortcuts did we take on purpose? | Technical risks only; business risks stay in vision and scope |
 | 12. Glossary | What do our terms mean? | Your project glossary, linked |
@@ -271,7 +271,7 @@ C4Component
     Rel(notify, gmail, "Sends email", "SMTP")
 ```
 
-This diagram shows two things a table cannot. First, **every way into the container**: API requests from the SPA, the static files that deliver the SPA, the actuator management endpoints, and the reminder schedule, which fires on a clock with no request at all. Together they are the container's attack surface, and the September 2026 credential leak in [section 4.10](#410-security-as-a-quality-attribute-the-trust-boundary) came through one of them. Second, **which way the dependencies run**: requests reach the org model, rubrics, and users only through `security`, and `notifications` is reached by `user` for invitation and reset emails. A component diagram that opens a box to show its controllers and services is design, and it belongs in the design-of-record for that area in week 7.
+This diagram shows two things a table cannot. First, **every way into the container**: API requests from the SPA, the static files that deliver the SPA, the actuator management endpoints, and the reminder schedule, which fires on a clock with no request at all. Together they are the container's attack surface, and the September 2026 credential leak in [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) came through one of them. Second, **which way the dependencies run**: requests reach the org model, rubrics, and users only through `security`, and `notifications` is reached by `user` for invitation and reset emails. A component diagram that opens a box to show its controllers and services is design, and it belongs in the design-of-record for that area in week 7.
 
 **Level 4, code,** is a class diagram. Almost nobody should draw one by hand; your IDE and your agent can produce it from the code whenever it is needed, and a hand-drawn one is out of date the day after it is committed.
 
@@ -306,7 +306,7 @@ sequenceDiagram
     API-->>SPA: Result { data }
 ```
 
-Every participant is a container from the container diagram, and the second-to-last step is the authorization check that [section 4.10](#410-security-as-a-quality-attribute-the-trust-boundary) returns to: a valid token is not enough, the request must also concern something the caller owns or belongs to.
+Every participant is a container from the container diagram, and the second-to-last step is the authorization check that [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) returns to: a valid token is not enough, the request must also concern something the caller owns or belongs to.
 
 Its **deployment view** shows where each container runs:
 
@@ -491,7 +491,7 @@ An **architectural pattern** is a reusable solution to a problem that keeps occu
 
 ![Model-view-controller in a Vue component and in Spring: event handlers update state that re-renders the template; a Spring controller returns the model as a JSON view](../slides/img/pattern-mvc.svg)
 
-**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.10 is about what happens when a request reaches the end of that chain without matching any rule.
+**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.9 is about what happens when a request reaches the end of that chain without matching any rule.
 
 ![Pipes and filters: an HTTP request passes CORS, authentication, and authorization filters before the controller, and each can reject it; a machine learning pipeline has the same shape](../slides/img/pattern-pipes-and-filters.svg)
 
@@ -522,7 +522,62 @@ Here is what each one looks like:
 
 Read the table's right-hand column as a set of requirements. If your specification contains none of them, your system uses none of these patterns, and that is a correct architecture, not an unambitious one.
 
-### 4.9 Writing a decision down
+### 4.9 Security as a quality attribute: the trust boundary
+
+Security is not a feature you add. It is a property of the whole system's shape, and it begins with one line you write down: the **trust boundary**, between what you control and what you do not. Every request that crosses it, from a browser, from another system, from the internet at large, must be authenticated, authorized, and treated as possibly hostile. Every piece of sensitive data that crosses it outward is a disclosure you must be able to justify.
+
+Section 8.1 of the template names the trust boundary and then asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second question has a part people miss. Roles are not enough. A student is allowed to read weekly activity reports, but only their own team's. Project Pulse enforces that twice, once at the route with an authorization manager that checks team membership, and again in the query itself, scoped to the caller's team. The route check alone is not enough if a request can name another team's object ID.
+
+**The trust boundary is the REST API application, and it covers every path that application answers, not only `/api/v1`.** The Vue app runs in the user's browser, outside the boundary, so every request is authenticated and authorized on the server. Project Pulse learned this on September 6, 2026. Its security rules protected every route under `/api/v1/**`. Spring Boot Actuator's management endpoints live at `/actuator/**`, outside that prefix, so they fell through to the last rule in the chain, `.anyRequest().permitAll()`. With the `env` endpoint exposed and its masking turned off, any anonymous caller could fetch one URL and read the production database and mail credentials in plain text. They were stored in Azure Key Vault and had never been committed to git. Every item on the usual secrets checklist was satisfied, and the secrets leaked anyway, through an endpoint no feature used and no use case mentioned.
+
+Nobody wrote a rule that made actuator public. It was the absence of a rule. The fix, in [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), made it structural: any API route without an explicit rule is now **denied** by default, so a new endpoint fails closed until someone writes its rule, and the actuator endpoints get rules of their own. The final `permitAll()` is still there, because the same jar serves the Vue app's files to every browser, which is a direct consequence of `KD-1`. That is the lesson for your trust boundary: an architecture decision about deployment shaped the security surface, and the boundary has to cover everything the deployable exposes, including what came with the framework. The incident, the exposed values, and the credential rotation are recorded as `TD-1` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and the full case is taught in week 12 with observability.
+
+**Secrets never appear in the architecture document or the repository.** Say where they will live (environment variables, a vault) and who can read them, never what they are.
+
+### 4.10 Crosscutting concepts: what every component does the same way
+
+Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. Security is 8.1, the section above. Section 8.2 holds the rest.
+
+They pass the reversibility test from [section 4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
+
+**With an agent writing the code, they matter more.** Every agent session starts with no memory of the last one, so each behaves like a new teammate. Asked for an endpoint, it picks an error format that looks reasonable, and the next session picks a different one. [Context Engineering](context-engineering.md#3-motivation) opened on the same failure with time: the agent writes `LocalDateTime.now()`, correct Java and wrong for Project Pulse. A crosscutting concept is exactly what an agent cannot work out from the one file in front of it, because the rule lives in every other file.
+
+**Error handling, in Project Pulse.** Every controller returns the same envelope, a `Result` with four fields (`flag`, `code`, `message`, `data`), and no controller builds its own error. Services throw exceptions, and one class turns each kind into that envelope ([`ExceptionHandlerAdvice.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/exception/ExceptionHandlerAdvice.java), abridged):
+
+```java
+@RestControllerAdvice
+public class ExceptionHandlerAdvice {
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    Result handleObjectNotFoundException(ObjectNotFoundException ex) {
+        return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
+    }
+
+    // ... one handler per kind of failure ...
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    Result handleOtherException(Exception ex) {
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
+    }
+}
+```
+
+The Vue app unwraps every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. Now read the last handler again. It is the fallback for every exception nobody anticipated, and it sends that exception's message to the browser as `data`. A database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too, and this one belongs on the security side of the ledger in section 4.9.
+
+**Time, in Project Pulse.** Every time-dependent class injects one `Clock` bean and never calls the system clock directly. Which clock depends on the profile. In development it is fixed at Sunday, August 20, 2023, 11:30 pm, half an hour before a week ends, which is exactly where deadline bugs live. In staging and production it is the real clock, in the time zone set by `app.timezone`.
+
+**Where the rule lives: three places, one owner.** Project Pulse keeps its conventions in its architecture-of-record, under [Crosscutting Concepts](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#crosscutting-concepts), which calls itself "the normative source" its charters point to. Its [backend charter](https://github.com/Washingtonwei/project-pulse/blob/main/backend/CLAUDE.md) says so ("The binding conventions every package follows are normative in the architecture-of-record's Architectural Conventions") and then carries the one-line rules an agent must follow, the `Clock` rule among them. The code shows each rule done. Do the same:
+
+- **Write them before your agent builds its second component,** not after the first inconsistency. With an agent, the second component arrives the same afternoon.
+- **Name the file that shows the rule done right.** An agent imitates the code it sees more reliably than it follows prose, so an entry in 8.2 points at the class, not only at a sentence.
+- **Put the one-line instruction in your charter, and cite 8.2.** The charter is always in the agent's context; the architecture document is not. Section 8.2 owns the reasoning, the charter carries the rule, and the citation shows when the two drift apart.
+- **Where a tool can check the rule, add the check,** such as a lint rule that rejects `LocalDateTime.now()` with no argument. A convention nothing checks is one you are trusting the agent to remember.
+
+Which concepts first? Error handling and time; one or both is in almost every proving slice. The template's section 8.2 lists the others (validation, API conventions, configuration and secrets, logging, concurrency, auditing, testing) with the moment each usually starts to matter, so you add each one just before it does.
+
+### 4.11 Writing a decision down
 
 A decision that lives only in the heads of the people who made it will be re-argued every time someone new joins, and it will eventually be reversed by someone who never knew why it was made. Michael Nygard proposed the fix in 2011, as the architecture decision record: a short, numbered, never-edited note per decision. The course template uses the same idea, as `KD-<slug>` entries in section 9.2, each in this form:
 
@@ -562,66 +617,11 @@ The dashed arrow is the point of the second chain. Project Pulse's most importan
 
 Your template asks for the first four links at Checkpoint 1. A quality scenario joins them at Checkpoint 2, the tests arrive as you build, and week 8 teaches the whole chain as traceability.
 
-### 4.10 Security as a quality attribute: the trust boundary
-
-Security is not a feature you add. It is a property of the whole system's shape, and it begins with one line you write down: the **trust boundary**, between what you control and what you do not. Every request that crosses it, from a browser, from another system, from the internet at large, must be authenticated, authorized, and treated as possibly hostile. Every piece of sensitive data that crosses it outward is a disclosure you must be able to justify.
-
-Section 8.1 of the template names the trust boundary and then asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second question has a part people miss. Roles are not enough. A student is allowed to read weekly activity reports, but only their own team's. Project Pulse enforces that twice, once at the route with an authorization manager that checks team membership, and again in the query itself, scoped to the caller's team. The route check alone is not enough if a request can name another team's object ID.
-
-**The trust boundary is the REST API application, and it covers every path that application answers, not only `/api/v1`.** The Vue app runs in the user's browser, outside the boundary, so every request is authenticated and authorized on the server. Project Pulse learned this on September 6, 2026. Its security rules protected every route under `/api/v1/**`. Spring Boot Actuator's management endpoints live at `/actuator/**`, outside that prefix, so they fell through to the last rule in the chain, `.anyRequest().permitAll()`. With the `env` endpoint exposed and its masking turned off, any anonymous caller could fetch one URL and read the production database and mail credentials in plain text. They were stored in Azure Key Vault and had never been committed to git. Every item on the usual secrets checklist was satisfied, and the secrets leaked anyway, through an endpoint no feature used and no use case mentioned.
-
-Nobody wrote a rule that made actuator public. It was the absence of a rule. The fix, in [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), made it structural: any API route without an explicit rule is now **denied** by default, so a new endpoint fails closed until someone writes its rule, and the actuator endpoints get rules of their own. The final `permitAll()` is still there, because the same jar serves the Vue app's files to every browser, which is a direct consequence of `KD-1`. That is the lesson for your trust boundary: an architecture decision about deployment shaped the security surface, and the boundary has to cover everything the deployable exposes, including what came with the framework. The incident, the exposed values, and the credential rotation are recorded as `TD-1` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and the full case is taught in week 12 with observability.
-
-**Secrets never appear in the architecture document or the repository.** Say where they will live (environment variables, a vault) and who can read them, never what they are.
-
-### 4.11 Crosscutting concepts: what every component does the same way
-
-Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. Security is 8.1, the section above. Section 8.2 holds the rest.
-
-They pass the reversibility test from [section 4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
-
-**With an agent writing the code, they matter more.** Every agent session starts with no memory of the last one, so each behaves like a new teammate. Asked for an endpoint, it picks an error format that looks reasonable, and the next session picks a different one. [Context Engineering](context-engineering.md#3-motivation) opened on the same failure with time: the agent writes `LocalDateTime.now()`, correct Java and wrong for Project Pulse. A crosscutting concept is exactly what an agent cannot work out from the one file in front of it, because the rule lives in every other file.
-
-**Error handling, in Project Pulse.** Every controller returns the same envelope, a `Result` with four fields (`flag`, `code`, `message`, `data`), and no controller builds its own error. Services throw exceptions, and one class turns each kind into that envelope ([`ExceptionHandlerAdvice.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/exception/ExceptionHandlerAdvice.java), abridged):
-
-```java
-@RestControllerAdvice
-public class ExceptionHandlerAdvice {
-
-    @ExceptionHandler(ObjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    Result handleObjectNotFoundException(ObjectNotFoundException ex) {
-        return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
-    }
-
-    // ... one handler per kind of failure ...
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    Result handleOtherException(Exception ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
-    }
-}
-```
-
-The Vue app unwraps every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. Now read the last handler again. It is the fallback for every exception nobody anticipated, and it sends that exception's message to the browser as `data`. A database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too, and this one belongs on the security side of the ledger in section 4.10.
-
-**Time, in Project Pulse.** Every time-dependent class injects one `Clock` bean and never calls the system clock directly. Which clock depends on the profile. In development it is fixed at Sunday, August 20, 2023, 11:30 pm, half an hour before a week ends, which is exactly where deadline bugs live. In staging and production it is the real clock, in the time zone set by `app.timezone`.
-
-**Where the rule lives: three places, one owner.** Project Pulse keeps its conventions in its architecture-of-record, under [Crosscutting Concepts](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#crosscutting-concepts), which calls itself "the normative source" its charters point to. Its [backend charter](https://github.com/Washingtonwei/project-pulse/blob/main/backend/CLAUDE.md) says so ("The binding conventions every package follows are normative in the architecture-of-record's Architectural Conventions") and then carries the one-line rules an agent must follow, the `Clock` rule among them. The code shows each rule done. Do the same:
-
-- **Write them before your agent builds its second component,** not after the first inconsistency. With an agent, the second component arrives the same afternoon.
-- **Name the file that shows the rule done right.** An agent imitates the code it sees more reliably than it follows prose, so an entry in 8.2 points at the class, not only at a sentence.
-- **Put the one-line instruction in your charter, and cite 8.2.** The charter is always in the agent's context; the architecture document is not. Section 8.2 owns the reasoning, the charter carries the rule, and the citation shows when the two drift apart.
-- **Where a tool can check the rule, add the check,** such as a lint rule that rejects `LocalDateTime.now()` with no argument. A convention nothing checks is one you are trusting the agent to remember.
-
-Which concepts first? Error handling and time; one or both is in almost every proving slice. The template's section 8.2 lists the others (validation, API conventions, configuration and secrets, logging, concurrency, auditing, testing) with the moment each usually starts to matter, so you add each one just before it does.
-
 ## 5. The AI-native lens
 
 - **Delegate to AI:** drawing C4 diagrams in mermaid from your use case list and your specification's interfaces; checking that every use case area has a component and every external system appears on the container diagram; drafting the rejected alternative for a decision you have already made, then arguing with it; explaining an unfamiliar pattern in terms of your own system.
 - **Keep human:** the ranking of the architecturally significant requirements and every key decision. They depend on facts about your client that are in no file: who will run this, what they already know, how much they can spend, what they are afraid of.
-- **Context to supply:** the specification's quality attributes and constraints, the numbers especially, and the facts that make scale small; and, once an agent writes code, your crosscutting conventions ([4.11](#411-crosscutting-concepts-what-every-component-does-the-same-way)), cited from your charter. An agent that does not know you have 75 users will design for 75,000, because that is what most architecture writing it learned from is about.
+- **Context to supply:** the specification's quality attributes and constraints, the numbers especially, and the facts that make scale small; and, once an agent writes code, your crosscutting conventions ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)), cited from your charter. An agent that does not know you have 75 users will design for 75,000, because that is what most architecture writing it learned from is about.
 - **How to verify:** for every container, every pattern, and every decision the agent proposes, ask which requirement in your ASR table forces it. If the answer is none, cut it. Then check the other direction: does every ASR drive at least one decision?
 
 **The failure to expect is over-engineering, and it arrives looking like expertise.** Ask an agent for an architecture for a client project and you will often get microservices, a message queue, Kubernetes, a cache, and an API gateway, each described in fluent, correct detail. Every one is a real answer to a problem your client does not have, and each adds something that can fail at 2 a.m. with nobody left to fix it after you graduate. This is the [Napkin](se-and-ai.md#the-napkin-six-prompts)'s "stack" and "bottleneck" prompts, taken slowly: a boring default unless there is a reason, and the reason has to be a requirement you can cite.
@@ -630,7 +630,7 @@ Which concepts first? Error handling and time; one or both is in almost every pr
 
 Every label on the spoon is a real answer to a real problem. Multi-AZ runs copies of a system in separate data centers so that one can burn down without an outage, which a 99.99% availability target needs. Project Pulse's `AVL-uptime` asks for 99%. (Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.)
 
-**The second failure is inconsistency.** Each agent session starts with no memory of the last, so it reinvents every convention nobody wrote down: a new error format here, a direct call to the system clock there. [Section 4.11](#411-crosscutting-concepts-what-every-component-does-the-same-way) is the defense.
+**The second failure is inconsistency.** Each agent session starts with no memory of the last, so it reinvents every convention nobody wrote down: a new error format here, a direct call to the system clock there. [Section 4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way) is the defense.
 
 ## 6. Risks and mitigations
 
@@ -662,9 +662,9 @@ There is no individual assignment for this module. The Project Pulse architectur
 - A diagram has to stand on its own: titled, keyed, every box and arrow described in words. Keep it in mermaid, in the repository, next to the code it describes.
 - Divide the system by domain first, from your use case areas, and layer inside each domain. Name the cross-cutting components, or every area builds its own.
 - Start with one deployable, divided inside by domain. Several deployables need a requirement that forces them, and at your scale there usually is not one.
-- A decision without a rejected alternative is a description. A decision without a trade-off has not been understood.
 - Draw the trust boundary around everything the system exposes, and deny what no rule allows. Project Pulse leaked its production credentials through an endpoint no feature ever used.
 - Write down what every component must do the same way, error handling and time first, before an agent builds the second component. Each session is a new teammate that reinvents whatever is not written.
+- A decision without a rejected alternative is a description. A decision without a trade-off has not been understood.
 - When an agent proposes an architecture, ask of every part which requirement forces it.
 
 ## 9. Key papers and further reading
