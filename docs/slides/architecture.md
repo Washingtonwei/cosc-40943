@@ -591,7 +591,7 @@ Between what you control and what you do not.
 :::
 
 ::: note
-The second question is where real breaches happen. A student may read weekly activity reports, but only their own team's. Project Pulse checks it at the route and scopes the query to the team.
+The second question is where real breaches happen. A student may read weekly activity reports, but only their own team's. Project Pulse checks it at the route and scopes the query to the team. Security is section 8.1; 8.2 holds the other things every component must do the same way, added when two components would otherwise differ. Error handling and time come first: Project Pulse's `Result` envelope, and a `Clock` fixed half an hour before a week ends in development.
 :::
 
 ## September 6, 2026

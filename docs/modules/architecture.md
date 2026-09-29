@@ -575,6 +575,13 @@ Nobody wrote a rule that made actuator public. It was the absence of a rule. The
 
 **Secrets never appear in the architecture document or the repository.** Say where they will live (environment variables, a vault) and who can read them, never what they are.
 
+**Security is one crosscutting concept among several.** Section 8 of the template holds anything every component must do the same way, and 8.2 is where the others go, added the first time two components would otherwise do it differently. Two tend to arrive first in a student project:
+
+- **Error handling.** Two teammates build two endpoints; one returns `{"error": "..."}`, the other a bare 500 page, and the front end has to handle both. Project Pulse settles it once: every controller returns the same `Result` envelope (`flag`, `code`, `message`, `data`), and one global `ExceptionHandlerAdvice` turns every exception into that envelope, so the Vue app unwraps every response, and every failure, the same way.
+- **Time.** Deadlines, reminders, and "submitted late" all depend on what time it is, and code that asks the system clock directly cannot be tested without waiting for Monday. Project Pulse injects one `Clock` bean everywhere and chooses it by profile: in development it is fixed at Sunday, August 20, 2023, 11:30 pm, half an hour before a week ends, which is exactly where deadline bugs live; in staging and production it is the real clock, in the one time zone set by `app.timezone` (UTC unless configured).
+
+Others show up as the system grows: validation, logging, auditing, configuration per environment, and how entities become API responses. Project Pulse's section 8 records each of them in a line or two.
+
 ## 5. The AI-native lens
 
 - **Delegate to AI:** drawing C4 diagrams in mermaid from your use case list and your specification's interfaces; checking that every use case area has a component and every external system appears on the container diagram; drafting the rejected alternative for a decision you have already made, then arguing with it; explaining an unfamiliar pattern in terms of your own system.
