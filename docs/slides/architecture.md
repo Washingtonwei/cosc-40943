@@ -222,7 +222,7 @@ A sequence diagram of code nobody has written describes a guess.
 :::
 
 ::: note
-The reversibility test applied to diagrams, and Twin Peaks in practice. Project Pulse's runtime view traces sign-in: BCrypt check, a two-hour JWT, then an ownership or membership check on every request. Its deployment view: one Azure Web App, one container, a staging slot swapped into production, Flyway migrations at deploy time. Neither could have been written before the code and the pipeline existed.
+The reversibility test applied to diagrams, and Twin Peaks in practice. Project Pulse's versions of the two late views come after the C4 slides.
 :::
 
 ## Drawing it {.center}
@@ -303,6 +303,26 @@ A component diagram with controllers and services is design. It belongs in the w
 
 ::: joke
 A diagram made of cloud-provider icons tells you exactly what was bought and nothing about why.
+:::
+
+## The two views that wait
+
+::: cols
+**Runtime**
+
+Sign-in, a two-hour JWT, then an ownership or membership check on every request
+|||
+**Deployment**
+
+One Azure Web App, one container, a staging slot swapped into production
+:::
+
+::: key
+Real endpoints, real token lifetimes, real slots: facts that exist only once the code and the pipeline do.
+:::
+
+::: note
+Project Pulse's runtime and deployment views, from its architecture-of-record on main; both diagrams are in the module. Neither could have been written before the code and the pipeline existed. One caution: Blob Storage and the LLM service appear on its diagrams with no code calling them yet. A real architecture runs ahead of its code; say which parts are planned, which is what the provisional status in the component table is for.
 :::
 
 ## Monday, in one line {.center}
@@ -591,7 +611,7 @@ Between what you control and what you do not.
 :::
 
 ::: note
-The second question is where real breaches happen. A student may read weekly activity reports, but only their own team's. Project Pulse checks it at the route and scopes the query to the team. Security is section 8.1; 8.2 holds the other things every component must do the same way, added when two components would otherwise differ. Error handling and time come first: Project Pulse's `Result` envelope, and a `Clock` fixed half an hour before a week ends in development.
+The second question is where real breaches happen. A student may read weekly activity reports, but only their own team's. Project Pulse checks it at the route and scopes the query to the team.
 :::
 
 ## September 6, 2026
@@ -621,6 +641,64 @@ Deny by default. A new endpoint fails closed until someone writes its rule.
 
 ::: note
 Pull request 61 on Project Pulse. The final permitAll is still there, because the same jar serves the Vue app to every browser: a consequence of KD-1. A deployment decision shaped the security surface. Draw the boundary around everything the deployable exposes, framework endpoints included.
+:::
+
+## Every session is a new teammate
+
+::: ai
+Session 1: `{"error": "Not found"}`. Session 2: a bare 500. Session 3: `LocalDateTime.now()`.
+:::
+
+::: note
+Section 8 of the template: crosscutting concepts, what every component does the same way. Security is 8.1, what we just did; 8.2 is the rest. Any one convention is cheap on day one and expensive after forty endpoints disagree. With an agent it arrives faster: each session starts with no memory, so it picks whatever looks plausible. Week 5 opened on the Clock version of this; say "you have seen this one."
+:::
+
+## One error shape, everywhere
+
+```java
+@RestControllerAdvice
+public class ExceptionHandlerAdvice {
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    Result handleObjectNotFoundException(ObjectNotFoundException ex) {
+        return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
+    }
+
+    // ... one handler per kind of failure ...
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    Result handleOtherException(Exception ex) {
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR,
+            "A server internal error occurs.", ex.getMessage());
+    }
+}
+```
+
+::: ask
+Read the last handler. What reaches the browser?
+:::
+
+::: note
+Project Pulse, main, abridged. Every controller returns a Result (flag, code, message, data); services throw, and this one class turns each exception into that envelope, so the Vue app handles every failure in one place and a new endpoint gets it for free. The catch: the fallback sends the unanticipated exception's message to the browser as data, and a database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too. Time is the other one: one injected Clock, fixed in development at Sunday Aug 20, 2023, 11:30 pm, half an hour before a week ends.
+:::
+
+## Three places, one owner
+
+::: steps
+- **8.2 owns the reasoning**, written before the agent builds its second component
+- **Point at the file that does it right**: the agent copies code better than it reads prose
+- **The charter carries the one-line rule** and cites 8.2: the charter is always in context
+- **Add a check** where a tool can: a lint rule, an ArchUnit test
+:::
+
+::: key
+A convention nothing checks is one you are trusting the agent to remember.
+:::
+
+::: note
+Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the normative source, and its backend CLAUDE.md says so and carries the Clock rule. Start with error handling and time; the template's 8.2 lists the rest with when each starts to matter.
 :::
 
 ## Ask the agent for an architecture
