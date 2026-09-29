@@ -179,8 +179,10 @@ From the architecture-of-record on main, under Architecture Decisions. Seven in 
 | 6. Runtime View | How do the parts carry out one use case? | Checkpoint 2 |
 | 7. Deployment View | Where does it run, and how does a change get there? | Checkpoint 3 |
 
+**arc42:** what to write · **C4:** how to draw it
+
 ::: note
-Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it, and so does your template. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday.
+Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it, and so does your template. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday. More than half of the twelve sections overlap your requirements documents (stakeholders, constraints, quality attributes, risks, glossary); there the template links to the owner and adds only what the architecture needs. A fact written in two places is soon wrong in one.
 :::
 
 ## Draw what you can know
@@ -209,7 +211,7 @@ The reversibility test applied to diagrams, and Twin Peaks in practice. Project 
 Who has seen an architecture diagram they could not read without its author in the room?
 :::
 
-## Abstractions before notation
+## C4: abstractions before notation
 
 ::: steps
 - **Software system:** the whole thing your team builds
@@ -217,6 +219,8 @@ Who has seen an architecture diagram they could not read without its author in t
 - **Component:** related functionality behind one responsibility
 - **Code:** the classes
 :::
+
+One diagram per level: **Context · Containers · Components · Code**
 
 ::: note
 Simon Brown's C4 model. Agree on the things first, the shapes second. The four levels are zoom levels on a map: zoom out for context, zoom in for detail, and you only draw the zoom levels your conversation needs. Level 1 draws section 3; levels 2 and 3 draw section 5.
@@ -538,6 +542,22 @@ What is missing? Rewrite it in two minutes with your neighbour.
 
 ::: note
 Take two or three. Then show Project Pulse's KD-3: one relational database, not relational plus a graph database for requirement links, because a second store is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL. Trade-off: deep traversals are joins. That tells next year's team what not to propose, and when it would become right.
+:::
+
+## Follow one requirement down
+
+```mermaid
+flowchart LR
+    s1["SEC-authorization"] --> s2["ASR 1"] --> s3["KD-4 +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-1"] --> s6["tests pass"]
+    m1["MNT-feature-locality"] --> m2["ASR 3"] --> m3["KD-7"] --> m4["package<br/>per domain"] --> m5["QS-3"] -.-> m6["no test:<br/>12 violations"]
+```
+
+::: key
+A chain with no test at the end is a decision you are trusting people to remember.
+:::
+
+::: note
+Two of Project Pulse's chains, from its architecture-of-record and traceability matrix. Forward: does every significant requirement reach a proof? Backward: does every part exist because a requirement asked? Security is proved on every build. Maintainability is proved by nothing: KD-7 is recorded, the packages are drawn, and the code breaks the rule 12 times (TD-13), because nothing fails when it drifts. The recorded fix is an ArchUnit test. Checkpoint 1 asks for the first four links; week 8 teaches the whole chain.
 :::
 
 ## The trust boundary

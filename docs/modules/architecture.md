@@ -121,9 +121,11 @@ Two rules for your own table. **Reuse the identifiers your specification already
 
 ### 4.4 Describing it: views, and C4 to draw them
 
-The ASR table says what the architecture has to achieve. The rest of the architecture-of-record shows the shape that achieves it, and no single drawing can show that shape. A house is built from a floor plan, a wiring plan, and a site plan, each drawn for a different trade, and nobody expects one sheet to serve all three. Software is described the same way: one system, several **views**, each answering one question for one reader. Philippe Kruchten made this argument in 1995 with his "4+1" view model, and arc42, the structure your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows, inherits it.
+The ASR table says what the architecture has to achieve. The rest of the architecture-of-record shows the shape that achieves it, and no single drawing can show that shape. A house is built from a floor plan, a wiring plan, and a site plan, each drawn for a different trade, and nobody expects one sheet to serve all three. Software is described the same way: one system, several **views**, each answering one question for one reader. Philippe Kruchten made this argument in 1995 with his "4+1" view model, and arc42 inherits it.
 
-Your template has four views:
+Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows **arc42**, a free template for documenting software architecture by Gernot Starke and Peter Hruschka. It has twelve sections, each answering one question about the system, from its goals and constraints through its views and decisions to its risks and glossary. arc42 says what to write down; it does not say how to draw. That is the job of C4, Simon Brown's notation for architecture diagrams, introduced below. Your template keeps all twelve sections in arc42's order and numbering, so a reader who knows arc42 can find anything in yours, and Checkpoint 1 asks for sections 1 to 5, 8.1, and 9. More than half of those sections cover something your requirements documents already say: the stakeholders, the constraints, the quality attributes, the risks, and the glossary. There the template links to the document that owns it and adds only what the architecture needs, because a fact written in two places is soon wrong in one.
+
+Four of those sections are views:
 
 | Template section | The question it answers | Who needs the answer | Drawn at | Drawn as |
 |---|---|---|---|---|
@@ -196,6 +198,8 @@ Simon Brown's **C4 model** fixes this by agreeing on the *things* before agreein
 - A system is made of **containers**. A container is anything that has to run, or store data, for the system to work: a single-page app in the browser, a backend application, a database, a file store. (Not a Docker container, although it often ends up in one.)
 - A container is made of **components**: groups of related functionality behind a clear responsibility.
 - A component is implemented by **code**.
+
+The name comes from the four diagrams, one per level: Context, Containers, Components, and Code. The first level's abstraction is the software system, but its diagram is called the context diagram, because it shows the system among the people and systems around it.
 
 Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out, you see the system and the world around it; zoomed in, you see what runs where. You do not need all four, and you draw them in whatever order the conversation needs. The levels line up with your template's views: level 1 draws section 3, and levels 2 and 3 draw section 5. C4 also defines a dynamic diagram and a deployment diagram for the other two views; for the runtime view, a mermaid `sequenceDiagram` does the same job, and it is what Project Pulse uses.
 
@@ -511,6 +515,30 @@ The **rejected alternative** is the part that does the work. A decision without 
 The **trade-off** is the part that shows you understood the decision. Every real decision costs something. If you cannot say what yours costs, you have not yet understood it.
 
 **A decision that turns out wrong is not erased.** It is marked superseded, and a new decision is added that says what replaced it and why. The history of why you changed your mind is as valuable as the decision itself.
+
+**Follow one requirement all the way down.** The ASR table points each requirement at its decisions, and each decision points back at its requirements. Lay those links end to end and the architecture can be checked in both directions. Forward: does every significant requirement reach something that proves it holds? Backward: does every part of the structure exist because a requirement asked for it? Here are two of Project Pulse's chains, from its [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) and its [traceability matrix](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md):
+
+```mermaid
+---
+title: Two requirements traced from specification to proof in Project Pulse
+---
+flowchart LR
+    s1["SEC-authorization<br/>a student reaches only<br/>their own team's work"] --> s2["ASR rank 1<br/>confidentiality of<br/>student records"]
+    s2 --> s3["KD-4 plus the<br/>two-layer authorization"]
+    s3 --> s4["security package:<br/>route guards and<br/>team-scoped queries"]
+    s4 --> s5["QS-1<br/>every cross-team<br/>request refused"]
+    s5 --> s6["ActivitySecurityServiceTest<br/>and others: passing"]
+
+    m1["MNT-feature-locality<br/>a new feature edits<br/>no sibling module"] --> m2["ASR rank 3<br/>student contributors<br/>extend the code"]
+    m2 --> m3["KD-7<br/>domain slices,<br/>layered within"]
+    m3 --> m4["one package<br/>per domain"]
+    m4 --> m5["QS-3<br/>a new feature touches<br/>no other package"]
+    m5 -.-> m6["no test: checked by review,<br/>and the code breaks the rule<br/>12 times (TD-13)"]
+```
+
+The dashed arrow is the point of the second chain. Project Pulse's most important quality attribute is proved by tests that run on every build. Its maintainability rule is proved by nothing: the decision is recorded, the structure is drawn, and the code has drifted from both, because nothing fails when it does. The fix Project Pulse records is an architecture test (ArchUnit) that fails the build on a new violation. A chain with no test at the end is a decision you are trusting people to remember.
+
+Your template asks for the first four links at Checkpoint 1. A quality scenario joins them at Checkpoint 2, the tests arrive as you build, and week 8 teaches the whole chain as traceability.
 
 ### 4.9 Security as a quality attribute: the trust boundary
 
