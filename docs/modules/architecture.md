@@ -533,6 +533,10 @@ Nobody wrote a rule that made actuator public. It was the absence of a rule. The
 
 **The failure to expect is over-engineering, and it arrives looking like expertise.** Ask an agent for an architecture for a client project and you will often get microservices, a message queue, Kubernetes, a cache, and an API gateway, each described in fluent, correct detail. Every one is a real answer to a problem your client does not have, and each adds something that can fail at 2 a.m. with nobody left to fix it after you graduate. This is the [Napkin](se-and-ai.md#the-napkin-six-prompts)'s "stack" and "bottleneck" prompts, taken slowly: a boring default unless there is a reason, and the reason has to be a requirement you can cite.
 
+![A man scoops cereal from a small bowl with an enormous spoon labelled microservices, serverless, Multi AZ, and auto scaling; the bowl is labelled "your app with 0 users"](../slides/img/overengineering-giant-spoon.jpg)
+
+Every label on the spoon is a real answer to a real problem. Multi-AZ runs copies of a system in separate data centers so that one can burn down without an outage, which a 99.99% availability target needs. Project Pulse's `AVL-uptime` asks for 99%. (Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.)
+
 ## 6. Risks and mitigations
 
 | Risk (classic and AI-introduced) | Human judgment that catches it | Mitigation |

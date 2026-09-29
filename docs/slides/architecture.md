@@ -597,6 +597,14 @@ For each part: which requirement forces it?
 It proposes the architecture it has read about most, which was built for a company a thousand times your size. This is the Napkin's stack and bottleneck prompts, slowly: a boring default unless a requirement you can cite says otherwise. Then check the other direction: does every requirement in your table drive at least one decision?
 :::
 
+## The right-sized spoon {.center}
+
+![Your app with 0 users](img/overengineering-giant-spoon.jpg){ height="520" }
+
+::: note
+Every label on the spoon is a real answer to a real problem. Multi-AZ runs copies in separate data centers so one can burn down without an outage; that is what 99.99% needs. Project Pulse's `AVL-uptime` asks for 99%. Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.
+:::
+
 ## Friday: Checkpoint 1
 
 ::: steps
