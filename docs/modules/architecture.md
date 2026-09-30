@@ -22,7 +22,7 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** [Requirements as the Contract](spec-driven-requirements.md), where your team wrote the quality attributes and constraints this module turns into decisions, and [Context Engineering](context-engineering.md), which treated the specification as the context an agent works from. The architecture-of-record joins it as the second half of that context.
-- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Security, which enters here, threads on through implementation, static analysis, and CI/CD.
+- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Before the week 8 studio hands an agent its first real work, your section 8.2 names the conventions every component shares ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). Security, which enters here, threads on through implementation, static analysis, and CI/CD.
 - **How it's taught:** two lecture days in week 6. Your team drafts its architecture-of-record in the Oct 2 studio from the [architecture template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md), and revises it all term as use cases are built.
 - **Course outcome it delivers:** [making and defending design and architecture decisions](../syllabus.md#learning-outcomes) (outcome 2), with the alternatives considered and the reasoning behind the choice.
 
@@ -124,7 +124,7 @@ Two rules for your own table. **Reuse the identifiers your specification already
 
 Everything from here to the end of section 4 goes into one document, your team's **architecture-of-record**. See its shape before you fill it in.
 
-Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows **arc42**, a free template for documenting software architecture by Gernot Starke and Peter Hruschka. arc42 fixes what to write: twelve sections, each answering one question about the system, in an order any reader who knows arc42 can find their way around. It does not fix how to draw. That is the job of C4, Simon Brown's notation for architecture diagrams, in [section 4.5](#45-describing-it-views-and-c4-to-draw-them). Your template keeps all twelve sections in arc42's order, numbering, and titles, and Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a worked example of every one.
+Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows **arc42**, a free template for documenting software architecture by Gernot Starke and Peter Hruschka. arc42 fixes what to write: twelve sections, each answering one question about the system, in an order any reader who knows arc42 can find their way around. It does not fix how to draw. That is the job of C4, Simon Brown's notation for architecture diagrams, in [section 4.5](#45-describing-it-views-and-c4-to-draw-them). Your template keeps all twelve sections in arc42's order, numbering, and titles, and adds numbered subsections only where Checkpoint 1 needs a fixed place to look, such as 8.1 for security. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a worked example of every one.
 
 | Section | The question it answers | Where its content comes from |
 |---|---|---|
@@ -536,7 +536,7 @@ Nobody wrote a rule that made actuator public. It was the absence of a rule. The
 
 ### 4.10 Crosscutting concepts: what every component does the same way
 
-Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. Security is 8.1, the section above. Section 8.2 holds the rest.
+Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. arc42 leaves section 8 open, a list of whatever concepts your system needs. Your template fixes its first entry: 8.1 is security, the section above, because Checkpoint 1 asks for the trust boundary. Section 8.2 holds the rest.
 
 They pass the reversibility test from [section 4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
 
@@ -641,6 +641,7 @@ Every label on the spoon is a real answer to a real problem. Multi-AZ runs copie
 | **The map with holes.** A use case area or an external system nobody placed, found when someone starts building it. | Checking the component table against the use case file, row by row | The two checks at the end of template section 5.2, run before every checkpoint. |
 | **Up-front over-design.** Components designed down to classes and endpoints before any code exists. | Asking whether this detail would be expensive to change later | The reversibility test. Detail that fails it goes to the week 7 design-of-record. |
 | **The stale diagram.** The architecture changed; the document did not. | A reviewer asking, during a pull request that adds a container or an external system, whether the architecture document changed too | Keep the diagrams as text in the repository, next to the code, and change them in the same pull request. |
+| **Conventions reinvented every session.** Error formats, time handling, and validation differ between endpoints the agent wrote on different days, because nothing told it the rule. AI-introduced: each session starts with no memory of the last. | A reviewer asking which 8.2 entry this code follows | Write 8.2 before the second component, put a one-line rule in the charter citing it, and add a check wherever a tool can enforce it ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). |
 | **Security left for later.** No `SEC-*` among the ASRs, no trust boundary named, and authorization added one endpoint at a time. | Asking what happens to a request that matches no rule | Deny by default. Put the boundary around everything the deployable exposes, framework endpoints included. |
 
 ## 7. Hands-on (studio)
@@ -658,13 +659,14 @@ There is no individual assignment for this module. The Project Pulse architectur
 - Architecture is the decisions that are expensive to change. Decide those now; leave the rest to be designed against real code.
 - The same features fit many structures. Quality attributes and constraints choose among them, so build the architecture from those, not from the feature list.
 - The architecturally significant requirements are the few where a wrong guess costs a redesign. Reuse their existing identifiers, and include at least one security requirement.
+- The architecture-of-record follows arc42. Where your requirements documents already own a fact (stakeholders, constraints, quality attributes, business risks, glossary), it links instead of copying.
 - An architecture is described in views, each for one reader. Draw context and building blocks from the specification now; draw the runtime and deployment views once there is code and a pipeline to describe.
 - A diagram has to stand on its own: titled, keyed, every box and arrow described in words. Keep it in mermaid, in the repository, next to the code it describes.
 - Divide the system by domain first, from your use case areas, and layer inside each domain. Name the cross-cutting components, or every area builds its own.
 - Start with one deployable, divided inside by domain. Several deployables need a requirement that forces them, and at your scale there usually is not one.
 - Draw the trust boundary around everything the system exposes, and deny what no rule allows. Project Pulse leaked its production credentials through an endpoint no feature ever used.
 - Write down what every component must do the same way, error handling and time first, before an agent builds the second component. Each session is a new teammate that reinvents whatever is not written.
-- A decision without a rejected alternative is a description. A decision without a trade-off has not been understood.
+- A decision without a rejected alternative is a description. A decision without a trade-off has not been understood. Trace each significant requirement through its decision to the test that proves it; a chain with no test at the end is a decision you are trusting people to remember.
 - When an agent proposes an architecture, ask of every part which requirement forces it.
 
 ## 9. Key papers and further reading
@@ -693,6 +695,8 @@ There is no individual assignment for this module. The Project Pulse architectur
 10. Months later, your team reverses `KD-deployment-shape` because one part really does need to scale on its own. What happens to the original entry, and why does it stay in the document?
 11. A teammate wants to fill in the runtime view before Checkpoint 1, with a sequence diagram for every use case, so the agent has a complete picture. What do you tell them, and when does that view get drawn?
 12. Three agent sessions built three endpoints this week. One returns `{"error": "..."}`, one a bare 500 page, and one your team's envelope. What was missing before the first session, where does it go, and what does your charter say about it?
+13. A teammate copies the stakeholder table from vision and scope into section 1.3 of the architecture-of-record "so the document is complete." What goes wrong within a month, and what should 1.3 say instead?
+14. Your ASR table's top row is a `SEC-*` requirement. Trace it through its decision and its part of the structure to the test that proves it holds. Where does your chain stop today, and what does that tell you?
 
 ## Related
 
