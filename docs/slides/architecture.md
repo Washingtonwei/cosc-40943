@@ -351,7 +351,7 @@ Your use case areas.
 | Cross-cutting | `security`, `system`, `course` |
 
 ::: note
-From backend/src/main/java/team/projectpulse on main. Two lessons. Every area has a home, but not necessarily its own: the RAM areas share five packages, and `course`, the root of the org model, belongs to no area. And the cross-cutting components are named, or every area builds its own email sender and permission check.
+From backend/src/main/java/team/projectpulse on main. Each component becomes a top-level package once its first use case is built (not a Vue component, which is a piece of the user interface). Two lessons. Every area has a home, but not necessarily its own: the RAM areas share five packages, and `course`, the root of the org model, belongs to no area. And the cross-cutting components are named, or every area builds its own email sender and permission check.
 :::
 
 ## RAM: the map ahead of the code

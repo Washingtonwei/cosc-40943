@@ -343,7 +343,7 @@ Blob Storage and the LLM service appear on both diagrams, but no code calls eith
 
 Where do the components come from? From the functional side: **your use case areas.** Each area is a coherent part of the business, with its own vocabulary and its own rules, and that is exactly what a component should be. The template's section 5.2 asks for one row per area, plus a row for each cross-cutting component that no single area owns, such as authentication, email, or file storage.
 
-Here is how that looks in Project Pulse, against the packages on the `main` branch:
+In code, each component becomes a top-level package in Java (a module or a folder in other languages), created when the first use case in its area is built, so your component table is also the first draft of your package tree. It is not a Vue component, which is a piece of the user interface. Here is how that looks in Project Pulse, against the packages on the `main` branch:
 
 | Use case area | Package in `backend/src/main/java/team/projectpulse/` |
 |---|---|

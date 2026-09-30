@@ -74,7 +74,7 @@ A deliberate consequence: **the Major Features keep no inline UC IDs.** Each fea
 
 ## The traceability model
 
-**The spine at a glance.** A business objective is *realized by* a feature, which decomposes into use cases and cross-cutting FRs that are built and verified. The objective attaches **once**, at the feature; the use cases and FRs below **inherit** it (so the realization matrices carry no per-UC or per-FR objective column). Four layers hang *off* this spine, each on a single node:
+**The spine at a glance.** A business objective is *realized by* a feature, which decomposes into use cases and cross-cutting FRs that are built and verified. The objective attaches **once**, at the feature; the use cases and FRs below **inherit** it (so the realization matrices carry no per-UC or per-FR objective column). Several layers hang *off* this spine:
 
 ```text
 BO ──served by──▶ Feature ──realized by──▶ Use Case ───▶ design → code → test
@@ -82,7 +82,7 @@ BO ──served by──▶ Feature ──realized by──▶ Use Case ──�
                      │
                      └─ the objective attaches ONCE, here at the feature; UC / FR below inherit it
 
-off-spine overlays (each hangs off one node, a different question than "is it built?"):
+off-spine overlays, each asking a different question than "is it built?":
    Business problem / opportunity ──motivates──▶ BO             (why this objective exists)
    BO ──measured by──▶ Success Metric ──▶ evaluation route   (was it ACHIEVED? post-deployment, not a code test)
    Use Case / FR ──honors──▶ Business Rule                   (what policy bounds it? cited, never restated)
@@ -93,7 +93,7 @@ off-spine overlays (each hangs off one node, a different question than "is it bu
 
 The rest of this section is the full picture behind this sketch; the Mermaid diagram below renders the same graph with every edge labeled.
 
-Principle 5 calls traceability "bidirectional" and points at "a single matrix." This section makes the model *behind* that matrix explicit, because the intuitive picture most people carry (a linear chain `business objective → feature → use case → design → code`) is incomplete in three ways that matter for keeping a fallible spec and generated code honest with each other. The chain is the right **spine**; it just isn't the whole shape.
+Principle 5 calls traceability "bidirectional" and describes a matrix on two axes. This section makes the model *behind* it explicit, because the intuitive picture most people carry (a linear chain `business objective → feature → use case → design → code`) is incomplete in three ways that matter for keeping a fallible spec and generated code honest with each other. The chain is the right **spine**; it just isn't the whole shape.
 
 **1. It is a graph, not a chain.** Every edge is many-to-many: one objective spawns several features, one feature decomposes into use cases across several areas (the many-to-many feature ↔ area relation above is one slice of this), one use case touches several code modules, and one cross-cutting module serves many use cases. So an edge reads "realized by **one or more**," and the structure is a directed acyclic graph, not a line.
 
