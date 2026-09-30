@@ -639,7 +639,7 @@ Read the last handler. What reaches the browser?
 :::
 
 ::: note
-Project Pulse, main, abridged. Every controller returns a Result (flag, code, message, data); services throw, and this one class turns each exception into that envelope, so the Vue app handles every failure in one place and a new endpoint gets it for free. The catch: the fallback sends the unanticipated exception's message to the browser as data, and a database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too. Time is the other one: one injected Clock, fixed in development at Sunday Aug 20, 2023, 11:30 pm, half an hour before a week ends.
+Project Pulse, main, abridged. Every controller returns a Result (flag, code, message, data); services throw, and this one class turns each exception into that envelope, so the Vue app handles every failure in one place and a new endpoint gets it for free. The catch: the fallback sends the unanticipated exception's message to the browser as data, and a database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too. Time is the other one: calendar time comes from one injected Clock, fixed in development at Sunday Aug 20, 2023, 11:30 pm, half an hour before a week ends; elapsed time (token expiry, lock leases) uses the real clock, because a frozen clock would stop it. The rule has to say which time.
 :::
 
 ## Three places, one owner
@@ -656,7 +656,7 @@ A convention nothing checks is one you are trusting the agent to remember.
 :::
 
 ::: note
-Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the normative source, and its backend CLAUDE.md says so and carries the Clock rule. Start with error handling and time; the template's 8.2 lists the rest with when each starts to matter.
+Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the conventions' one normative home, the charters restate each rule as a short reminder that links back, and a rule changes there first. Start with error handling and time; the template's 8.2 lists the rest with when each starts to matter.
 :::
 
 ## Writing a decision down
