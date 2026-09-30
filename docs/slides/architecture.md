@@ -354,14 +354,6 @@ Your use case areas.
 From backend/src/main/java/team/projectpulse on main. Each component becomes a top-level package once its first use case is built (not a Vue component, which is a piece of the user interface). Two lessons. Every area has a home, but not necessarily its own: the RAM areas share five packages, and `course`, the root of the org model, belongs to no area. And the cross-cutting components are named, or every area builds its own email sender and permission check.
 :::
 
-## RAM: the map ahead of the code
-
-![Project Pulse RAM component diagram](img/pulse-c4-ram.svg){ height="520" }
-
-::: note
-Project Pulse's RAM component diagram, the module's C4 redrawn for the projector. Ten components, and five of them have no package yet (validation, review, export, sourcematerial, ai; the diagram does not mark them, so name them): they were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your component table records. Blob Storage and the LLM service exist on the map only because of two planned components. Point at requirement: it is the hub, and most other components are views over it or checks against it. The one security arrow stands for every RAM component.
-:::
-
 ## By layer, or by domain?
 
 ::: cols
@@ -448,7 +440,7 @@ Delete `activity/` from Project Pulse. What breaks?
 :::
 
 ::: note
-Three files: two authorization managers in security, and the data seeder. Exactly the TD-feature-locality list. A feature you can delete by deleting its folder is a feature with a real boundary. Backend only: its Vue views and migrations live elsewhere.
+Three files: two authorization managers in security, which are TD-feature-locality debt, and the data seeder, exempt by design because it loads demo data for every feature. The test finds candidates; you decide which are debt. Backend only: its Vue views and migrations live elsewhere.
 :::
 
 ## Features lean on the foundation

@@ -337,7 +337,7 @@ The SPA and the REST API share one container in production, because the jar serv
 
 The sequence names an endpoint and a token lifetime, and the deployment names a staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
 
-Blob Storage and the LLM service appear on both diagrams, but no code calls either of them yet: the map runs ahead of the code, which [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) takes up.
+Blob Storage and the LLM service appear on both diagrams, but no code calls either of them yet: the map runs ahead of the code.
 
 ### 4.6 Decomposing by domain: from use case areas to components
 
@@ -358,60 +358,6 @@ In code, each component becomes a top-level package in Java (a module or a folde
 | Cross-cutting | `security` (authentication), `system` (email, the response envelope, clocks, scheduling), `course` (the root of the org model, which no use case area owns) |
 
 Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by the time the last area ships.
-
-The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in practice, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it. Here is that diagram:
-
-```mermaid
-C4Component
-    title Component Diagram: RAM components inside the REST API Application
-
-    Container(spa, "SPA", "Vue 3 / TypeScript", "RAM authoring views; calls each component's REST API over JSON/HTTPS")
-
-    Container_Boundary(api, "REST API Application (Spring Boot)") {
-        Component(req, "requirement", "Spring MVC + Spring Data JPA", "Requirement artifacts, artifact links and tracing, key-prefix sequences: the requirements graph")
-        Component(doc, "document", "Spring MVC + Spring Data JPA", "Requirement documents and document sections, templates and provisioning, section locking, autosave")
-        Component(uc, "usecase", "Spring MVC + Spring Data JPA", "Use cases: main steps, extensions, locking")
-        Component(glo, "glossary", "Spring MVC", "Glossary terms and terminology invariants")
-        Component(val, "validation", "Spring MVC", "ReqLint structural and consistency checks")
-        Component(col, "collaboration", "Spring MVC + Spring Data JPA", "Comment threads; real-time presence and broadcast are a deferred layer")
-        Component(rev, "review", "Spring MVC + Spring Data JPA", "Review and submission workflow")
-        Component(exp, "export", "Spring MVC", "Renders documents to PDF, DOCX, and Markdown")
-        Component(src, "sourcematerial", "Spring MVC + Spring Data JPA", "Project source material: upload, storage, server-side text extraction")
-        Component(ai, "ai", "Spring MVC + Spring Data JPA", "AI configuration, AI assistants, LLM proxy")
-        Component_Ext(security, "security", "Shared foundation", "Authenticates every API request")
-        Component_Ext(org, "team · user", "Shared foundation", "Teams that own RAM content; users as authors")
-    }
-
-    ContainerDb(db, "Database", "MySQL 8", "RAM artifacts, links, documents, document sections, comments, AI configuration")
-    ContainerDb(blob, "Blob Storage", "Azure Blob Storage", "Uploaded project source material")
-    System_Ext(llm, "LLM Service", "AI-assisted requirement review")
-
-    Rel(spa, security, "Sends every RAM request through", "JSON/HTTPS")
-    Rel(security, req, "Passes authenticated requests to (and to every other RAM component)")
-    BiRel(doc, req, "Places artifacts in document sections")
-    Rel(uc, req, "Is a requirement artifact in")
-    Rel(glo, req, "Derives glossary terms from")
-    Rel(col, doc, "Anchors comment threads to")
-    Rel(col, req, "Anchors comment threads to")
-    Rel(val, req, "Checks artifacts and links in")
-    Rel(val, glo, "Checks terminology against")
-    Rel(rev, doc, "Locks and submits")
-    Rel(exp, doc, "Renders")
-    Rel(ai, doc, "Reads context from; proposes edits to")
-    Rel(ai, src, "Reads extracted text from")
-    Rel(doc, org, "Scopes documents to a team in")
-    Rel(req, db, "Reads & writes", "JDBC")
-    Rel(doc, db, "Reads & writes", "JDBC")
-    Rel(uc, db, "Reads & writes", "JDBC")
-    Rel(col, db, "Reads & writes", "JDBC")
-    Rel(rev, db, "Reads & writes", "JDBC")
-    Rel(src, db, "Stores references and extracted text", "JDBC")
-    Rel(ai, db, "Reads & writes", "JDBC")
-    Rel(src, blob, "Stores & reads files", "HTTPS")
-    Rel(ai, llm, "Proxies AI requests", "HTTPS")
-```
-
-`requirement` is the hub: the requirements graph lives there, and most other components are views over it or checks against it. `sourcematerial` and `ai` are the only components that reach beyond the database, to Blob Storage and the LLM service, and both are among the five with no code yet.
 
 **Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place. The layers are still there, as separate classes rather than separate packages. (This is the same "vertical" as the proving slice at Checkpoint 2: that slice is one use case built through every layer, and a domain package is where all of one area's slices live.)
 
@@ -481,7 +427,7 @@ Layering is a good idea. Separating presentation from business logic from data a
 
 **Packaging by domain gets you something packaging by layer cannot: package-private visibility.** A Java class without `public` is visible only inside its own package. In a layered tree, `ActivityRepository` has to be public, because `ActivityService` lives in another package. In a domain tree it can drop `public`, and then no other feature can read weekly activity reports behind the service's back, because the compiler refuses. Spring Data still finds a package-private repository. So make package-private the default, and make a class public only when another package needs it. One Java detail: `activity.dto` is a separate package from `activity`, and package-private visibility does not reach into it. That is one more reason to keep a domain package flat until it is too big to scan.
 
-Project Pulse's quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. A quick version you can run on your own backend is the **deletion test**: can you remove a feature by deleting its package? Delete `activity/` from Project Pulse and three files outside it stop compiling: two of `security`'s authorization managers and the data seeder. Those are `TD-feature-locality` entries in its architecture-of-record, each with an open issue, and a planned ArchUnit test will keep new ones out. `ActivityRepository` is still `public`, and the seeder is the only class outside `activity` that uses it, so closing that door takes one keyword and one change to the seeder. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
+Project Pulse's quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. A quick version you can run on your own backend is the **deletion test**: can you remove a feature by deleting its package? Delete `activity/` from Project Pulse and three files outside it stop compiling: two of `security`'s authorization managers and the data seeder. The two managers are debt: Project Pulse records them under `TD-feature-locality`, with the fix tracked as an open item, and a planned ArchUnit test will keep new violations out. The seeder is not: it loads demo data for every feature and is exempt by design. The test finds candidates; a person decides which ones are debt. `ActivityRepository` is still `public`, and the seeder is the only class outside `activity` that uses it, so making it package-private would mean changing how the seeder loads its data. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
 Project Pulse's performance-tracking component diagram shows the rule at work:
 
@@ -515,7 +461,7 @@ C4Component
 
 No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` packages, so the foundation depends on the features, which the rule forbids; `TD-feature-locality` records it, and the fix is to move those managers next to the feature they guard.
 
-**The same argument applies to teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
+**The same argument applies to the dev teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
 
 David Parnas made the deeper version of this argument in 1972: divide a system so that each module hides a decision that is likely to change. A use case area is a good module because the business rules inside it change together, and a change to one area should not ripple into another.
 
