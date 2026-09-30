@@ -365,25 +365,90 @@ Project Pulse's RAM component diagram, the module's C4 redrawn for the projector
 ## By layer, or by domain?
 
 ::: cols
-**By layer**
+**By domain: Project Pulse**
 
-`web/`, `service/`, `repository/`
-
-[spring-framework-petclinic](https://github.com/spring-petclinic/spring-framework-petclinic)
+```text
+activity/
+├── Activity.java
+├── ActivityCategory.java
+├── ActivityController.java
+├── ActivityRepository.java
+├── ActivitySecurityService.java
+├── ActivityService.java
+├── ActivitySpecs.java
+├── ActivityStatus.java
+├── converter/
+└── dto/
+```
 |||
-**By domain**
+**By layer: the same files, rearranged**
 
-`owner/`, `vet/`, `system/`
-
-[spring-petclinic](https://github.com/spring-projects/spring-petclinic)
+```text
+controller/ActivityController.java
+service/ActivityService.java
+service/ActivitySecurityService.java
+repository/ActivityRepository.java
+repository/ActivitySpecs.java
+model/Activity.java
+model/ActivityCategory.java
+model/ActivityStatus.java
+dto/ActivityDto.java
+converter/ActivityDtoToActivityConverter.java
+converter/ActivityToActivityDtoConverter.java
+```
 :::
 
 ::: ask
-The most common change on any project is "change how this one feature works." How many packages does it touch in each?
+The most common change on any project is "change how this one feature works." How many folders do you open in each?
 :::
 
 ::: note
-Three versus one. Layering is good, inside a domain. As the top-level division it spreads every feature across the tree. Project Pulse's activity package holds the whole slice: Activity, ActivityController, ActivityService, ActivityRepository, ActivitySecurityService. KD-vertical-slices records it.
+One versus six. The left is Project Pulse on main. The right is made up: the same weekly activity report files with only the folders moved, no code changed. At Project Pulse's size those layer folders would hold 19 controllers, 30 services, 37 DTOs, and 50 converters. Layering is good, inside a domain; as the top-level division it spreads every feature across the tree. KD-vertical-slices records the choice. Same "vertical" as the proving slice: that slice is one use case through every layer, and this package holds all of an area's slices.
+:::
+
+## Nobody demos maintainability
+
+::: key
+60 to 90% of what software costs is spent changing it after it ships.
+:::
+
+::: note
+Sommerville, ch. 9 (Lientz and Swanson 1980; Erlikh 2000). This is MNT-feature-locality from the attribute slide: a new feature edits no sibling module. The client never sees it, only its price, in how slowly each later feature arrives. Project Pulse ranks it third because next year's students extend the code. Yours: whoever runs it after you graduate, question 11 of the interview guide.
+:::
+
+## Domain first, layers inside
+
+![Layers as the top-level modules, marked wrong, beside full-stack modules each layered inside, marked right](img/fowler-layers-vs-domain.png){ height="420" }
+
+::: note
+Martin Fowler, PresentationDomainDataLayering, 2015 (martinfowler.com). Layers are the right idea at a small scale and the wrong top-level division once any layer gets big: split the top level by domain and layer inside each module.
+:::
+
+## The compiler can hold the line
+
+```java
+package team.projectpulse.activity;
+
+interface ActivityRepository        // no "public"
+        extends JpaRepository<Activity, Integer> { }
+```
+
+::: key
+Package by domain, and the compiler keeps other features out of your repository.
+:::
+
+::: note
+Package-private: no modifier, visible only inside the package. Packaged by layer, the repository must be public, because the service is in another package. Packaged by domain, it need not be, and Spring Data still finds it. Project Pulse's is public today; the only class outside activity that uses it is the seeder. Sub-packages are separate packages, so keep the domain package flat.
+:::
+
+## The deletion test
+
+::: ask
+Delete `activity/` from Project Pulse. What breaks?
+:::
+
+::: note
+Three files: two authorization managers in security, and the data seeder. Exactly the TD-feature-locality list. A feature you can delete by deleting its folder is a feature with a real boundary. Backend only: its Vue views and migrations live elsewhere.
 :::
 
 ## Features lean on the foundation

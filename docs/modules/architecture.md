@@ -413,11 +413,75 @@ C4Component
 
 `requirement` is the hub: the requirements graph lives there, and most other components are views over it or checks against it. `sourcematerial` and `ai` are the only components that reach beyond the database, to Blob Storage and the LLM service, and both are among the five with no code yet.
 
-**Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place.
+**Domain first, layers inside.** Look inside one of those packages. `activity` holds `Activity`, `ActivityController`, `ActivityRepository`, `ActivityService`, `ActivitySecurityService`, and its converters and DTOs: the whole vertical slice for weekly activity reports, from the HTTP endpoint to the database, in one place. The layers are still there, as separate classes rather than separate packages. (This is the same "vertical" as the proving slice at Checkpoint 2: that slice is one use case built through every layer, and a domain package is where all of one area's slices live.)
 
-That is a choice, and the alternative is common enough that you have probably seen it: **layered packaging**, with all controllers in one package, all services in another, and all repositories in a third. The Spring PetClinic sample application exists in both forms, which makes it the cleanest comparison available: [`spring-framework-petclinic`](https://github.com/spring-petclinic/spring-framework-petclinic) is packaged by layer (`web`, `service`, `repository`), while [`spring-petclinic`](https://github.com/spring-projects/spring-petclinic) is packaged by domain (`owner`, `vet`, `system`).
+That is a choice, and seeing both choices on the same code is the quickest way to understand it. On the left is Project Pulse's backend as it is on `main`, packaged **by domain**. On the right are the same files packaged **by layer**: every controller in one folder, every service in another, and so on down. That version is made up for this comparison; only the folders move, and no code changes.
 
-Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-vertical-slices` records. Its quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-feature-locality`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
+<div class="grid" markdown>
+
+```text title="By domain: Project Pulse on main"
+team/projectpulse/
+├── activity/
+│   ├── Activity.java
+│   ├── ActivityCategory.java
+│   ├── ActivityController.java
+│   ├── ActivityRepository.java
+│   ├── ActivitySecurityService.java
+│   ├── ActivityService.java
+│   ├── ActivitySpecs.java
+│   ├── ActivityStatus.java
+│   ├── converter/        2 files
+│   └── dto/              1 file
+├── evaluation/           16 files
+├── rubric/               18 files
+├── course/  section/  team/
+├── student/  instructor/  user/
+├── ram/                  102 files
+└── security/  system/  seed/
+```
+
+```text title="By layer: the same files, rearranged"
+team/projectpulse/
+├── controller/           19 files
+│   ├── ActivityController.java  ◀
+│   └── …
+├── service/              30 files
+│   ├── ActivityService.java  ◀
+│   ├── ActivitySecurityService.java  ◀
+│   └── …
+├── repository/           32 files
+│   ├── ActivityRepository.java  ◀
+│   ├── ActivitySpecs.java  ◀
+│   └── …
+├── model/
+│   ├── Activity.java  ◀
+│   ├── ActivityCategory.java  ◀
+│   ├── ActivityStatus.java  ◀
+│   └── …
+├── dto/                  37 files
+│   ├── ActivityDto.java  ◀
+│   └── …
+└── converter/            50 files
+    ├── ActivityDtoToActivityConverter.java  ◀
+    ├── ActivityToActivityDtoConverter.java  ◀
+    └── …
+```
+
+</div>
+
+Follow weekly activity reports (◀). By domain, the feature is one folder. By layer, it is six, and each of those six also holds the pieces of every other feature.
+
+This is the quality attribute from [4.2](#42-quality-attributes-choose-the-architecture) that no client will ask about: `MNT-feature-locality`, "adding or modifying one feature shall require no edits to unrelated feature modules." A demo looks the same either way. The difference arrives after launch, when the software is changed rather than written, and that is where most of its cost goes: between 60 and 90 percent over a system's life, by the historical data Sommerville collects. The client never sees maintainability, only its price, in how slowly and expensively each new feature arrives. Project Pulse ranks it third among its architecturally significant requirements because next year's students extend the code; for your project, it is whoever runs the system after you graduate. Package layout is the first place that attribute is won or lost.
+
+Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across six packages, and the most common change on any project, "change how this one feature works," sends you through most of them. As the application grows, each layer gets large enough on its own that you need to divide it again anyway: at Project Pulse's size, `converter/` alone would hold 50 files. Martin Fowler's advice is to divide by domain at the top and layer inside each domain, which is what Project Pulse's `KD-vertical-slices` records.
+
+![Two sketches. Left, marked wrong: three wide boxes stacked, one per layer. Right, marked right: three tall boxes side by side, each holding all three layers.](../assets/fowler-layers-vs-domain.png)
+
+*Martin Fowler, [PresentationDomainDataLayering](https://martinfowler.com/bliki/PresentationDomainDataLayering.html), 2015.*
+
+**Packaging by domain gets you something packaging by layer cannot: package-private visibility.** A Java class without `public` is visible only inside its own package. In a layered tree, `ActivityRepository` has to be public, because `ActivityService` lives in another package. In a domain tree it can drop `public`, and then no other feature can read weekly activity reports behind the service's back, because the compiler refuses. Spring Data still finds a package-private repository. So make package-private the default, and make a class public only when another package needs it. One Java detail: `activity.dto` is a separate package from `activity`, and package-private visibility does not reach into it. That is one more reason to keep a domain package flat until it is too big to scan.
+
+Project Pulse's quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. A quick version you can run on your own backend is the **deletion test**: can you remove a feature by deleting its package? Delete `activity/` from Project Pulse and three files outside it stop compiling: two of `security`'s authorization managers and the data seeder. Those are `TD-feature-locality` entries in its architecture-of-record, each with an open issue, and a planned ArchUnit test will keep new ones out. `ActivityRepository` is still `public`, and the seeder is the only class outside `activity` that uses it, so closing that door takes one keyword and one change to the seeder. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
 Project Pulse's performance-tracking component diagram shows the rule at work:
 
@@ -676,12 +740,15 @@ There is no individual assignment for this module. The Project Pulse architectur
 - Grady Booch, "On Design," blog essay, 2006, quoted in Frank Buschmann, Kevlin Henney, and Douglas C. Schmidt, *Pattern-Oriented Software Architecture*, Vol. 5 (Wiley, 2007), p. 214. The cost-of-change definition in [4.1](#41-what-architecture-is-and-what-it-is-not).
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
+- Martin Fowler, [*PresentationDomainDataLayering*](https://martinfowler.com/bliki/PresentationDomainDataLayering.html) (2015). Domain modules at the top, each layered inside: the figure in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
 - Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
 - Michael Nygard, [*Documenting Architecture Decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the origin of the architecture decision record.
 - Philippe Kruchten, "The 4+1 View Model of Architecture," *IEEE Software* 12(6), 1995, pp. 42–50. The origin of describing one architecture through several views, which arc42 inherits.
 - Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. The Twin Peaks model in three pages.
+- [*Package by feature, not layer*](http://www.javapractices.com/topic/TopicAction.do?Id=205), javapractices.com (no author or date given). The package-private argument in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), readable in five minutes.
 - David Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM* 15(12), 1972. Still the best argument for dividing a system by what is likely to change.
 - Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) and [software architecture primer](https://github.com/Washingtonwei/project-pulse/blob/main/docs/guides/software-architecture-primer.md), the worked example throughout.
+- Ian Sommerville, *Software Engineering*, 10th ed. (Pearson, 2016), ch. 9, "Software evolution." The 60 to 90 percent evolution-cost figure in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), with its sources.
 - [The Method](../method.md), Principle 2, for how the architecture-of-record fits the spec-driven, agent-assisted method.
 
 ## 10. Self-check
