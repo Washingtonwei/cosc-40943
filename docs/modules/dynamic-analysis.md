@@ -96,7 +96,7 @@ Most fuzzing campaigns find only crashes, and they find only crashes because "it
 
 `assertEquals(5, add(2,3))` is an oracle for one input. `assert amount >= 0` is an oracle for **every** execution of that line: every unit test, every fuzzed input, and, where they are enabled, every production request.
 
-Put a postcondition on the aggregation from section 3:
+Put a postcondition on the aggregation from the [Motivation](#3-motivation):
 
 ```java
 List<PeerEvaluation> evaluations =
@@ -118,7 +118,7 @@ assert averageTotalScore >= inputs.getMin() && averageTotalScore <= inputs.getMa
 
 The postcondition does not know the right answer, and that is precisely why it is strong. It holds for every rubric, every team, and every week, and it fails on the whole family of aggregation bugs (dividing by the wrong count, dropping a rating, counting one evaluator twice) without anyone working out an expected value by hand. Oracles that state a **property** survive; oracles that state an **answer** cover one row of a table.
 
-It also fires on Project Pulse today. Over an empty list, `DoubleSummaryStatistics` reports a minimum of positive infinity and a maximum of negative infinity, so the assertion trips on exactly the case section 3 described: `0.0` is not within the range of no values, because an average over nothing is not a number and `.orElse(0.0)` invented one.
+It also fires on Project Pulse today. Over an empty list, `DoubleSummaryStatistics` reports a minimum of positive infinity and a maximum of negative infinity, so the assertion trips on exactly the case the [Motivation](#3-motivation) described: `0.0` is not within the range of no values, because an average over nothing is not a number and `.orElse(0.0)` invented one.
 
 Then notice what the assertion does **not** do. It does not fix the defect. It tells you the postcondition is false, and the repair is to the design (return something that can say "no evaluations", rather than a number that cannot), not to the assertion. That is the normal outcome: an assertion surfaces a design flaw, and the temptation to weaken it until it passes is the mistake to name out loud.
 

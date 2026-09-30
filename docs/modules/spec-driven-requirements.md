@@ -481,17 +481,17 @@ Open the [specification template](https://github.com/tcu-cosc-40943/course-templ
 | 8 | External interfaces | Here |
 | 9 | Quality attributes | Here |
 
-The obvious move is to paste the use cases into section 5 so the specification is complete on its own, and it is the wrong move. The moment a requirement exists in two places, one of them is wrong and nobody knows which. In practice it is the one you happen to be reading. The specification **links rather than repeats**: every fact has exactly one owner, and the specification is the hub that makes the set navigable from any direction. This is the rule your repository already runs on, and it is what the identifiers are for, since a link you can follow needs a name at the other end.
+The obvious move is to paste the use cases into section 5 of the specification so it is complete on its own, and it is the wrong move. The moment a requirement exists in two places, one of them is wrong and nobody knows which. In practice it is the one you happen to be reading. The specification **links rather than repeats**: every fact has exactly one owner, and the specification is the hub that makes the set navigable from any direction. This is the rule your repository already runs on, and it is what the identifiers are for, since a link you can follow needs a name at the other end.
 
 The rest of this part walks the template in order, one kind of requirement per section, each with a Project Pulse example.
 
-### 4.20 Constraints (section 2.4)
+### 4.20 Constraints (specification section 2.4)
 
 A **constraint** restricts the design and implementation choices available to you. Project Pulse's `CO-vue-spring-stack` (the client in Vue.js, the backend in Java on Spring Boot) and `CO-ferpa` (comply with FERPA when storing and transmitting student educational records) are not features and not preferences. They remove options you would otherwise have had. Constraints arrive from technologies that must be used or avoided, the operating environment, required conventions and standards, backward compatibility, regulation, hardware limits, and interfaces to systems that already exist. [Requirement Types §7](../requirement-types.md#7-constraints) lists the sources in full.
 
 The constraint most often left unasked is the one this course cares about most: **who maintains this after you graduate, and what do they already know how to run.** A client whose technical staff is one part-time student worker cannot inherit a Kubernetes cluster, however correct it is. That is a constraint on your architecture, and it stays invisible until somebody asks the question.
 
-### 4.21 Assumptions, dependencies, and risks (section 2.5)
+### 4.21 Assumptions, dependencies, and risks (specification section 2.5)
 
 An **assumption** is something you believe is true and have not checked. A **dependency** is something outside your control that you rely on. Writing them down does not make them true. It makes them visible, so that when one fails, somebody already knows what breaks.
 
@@ -501,9 +501,9 @@ A dependency worth writing down usually earns a requirement for the day it fails
 
 **Risks** live in vision and scope, as `RI-<slug>`, and each one ends in one of two places: a requirement that mitigates it, or an explicit acceptance with a reason. `RI-scalability` (high use in large capstone programs may stress the infrastructure) is mitigated by `SCA-cohort-load`, which fixes the load at about 70 students and up to 100 concurrent editors near a deadline. `RI-cross-browser` is marked *Accepted*, with the reason, because nothing in the software guards against it. A risk that ends in neither place is a risk nobody decided about.
 
-### 4.22 Functional requirements (section 5)
+### 4.22 Functional requirements (specification section 5)
 
-Section 5.1 is a link to your use case file. Section 5.2 is for the functional requirements that belong to no use case: things that are always true, things that apply across every interaction, things triggered by a clock rather than by an actor. None of them is a user's goal, and forcing them into use case shape produces bad use cases with imaginary actors.
+Specification section 5.1 is a link to your use case file. Specification section 5.2 is for the functional requirements that belong to no use case: things that are always true, things that apply across every interaction, things triggered by a clock rather than by an actor. None of them is a user's goal, and forcing them into use case shape produces bad use cases with imaginary actors.
 
 They are written in **EARS** shape: five sentence templates that are hard to misread. [Requirement Types §4](../requirement-types.md#ears-a-template-that-is-hard-to-misread) carries all five with examples. Ubiquitous requirements are always active. Event-driven ones open with *When*. State-driven ones open with *While*. Optional ones open with *Where*. Unwanted behavior opens with *If*, and that fifth shape is the one teams skip, which is why so many specifications describe a system in which nothing ever goes wrong.
 
@@ -511,7 +511,7 @@ Project Pulse's `FR-NOT-weekly-reminder` is event driven, and it is the email yo
 
 EARS earns its awkwardness for the reason §4.18 gave. Prose is ambiguous in ways nobody notices until something has been built wrong, and the reader who will not notice, and will not ask, is the one writing your code. Converting prose into EARS is worth delegating. Deciding which shape a requirement belongs in is a decision about what you meant, and that is yours.
 
-### 4.23 Business rules (section 6)
+### 4.23 Business rules (specification section 6)
 
 Jackie called the product owner of the chemical tracking system because it would not let her request phosgene. The system said she had not taken the hazardous-materials refresher class in over a year. The software was not malfunctioning. Contoso requires an annual refresher, on the basis of OSHA regulations, and the system enforces the policy. The rule existed on paper before the software did, and it would outlive the software being switched off.
 
@@ -531,21 +531,21 @@ Rules go in `business-rules.md`, and **every rule carries a source**: who says s
 
     Two checks, and they fail in opposite directions. **Every rule is enforced by something**, or it is a policy your software quietly ignores, which is worth knowing now rather than when a user hits it. **Every requirement that cites a rule cites one that exists**, which is the check that catches a draft citing `BR-late-penalty` because a late penalty is the kind of thing a course usually has.
 
-### 4.24 Data requirements (section 7)
+### 4.24 Data requirements (specification section 7)
 
 **Data requirements** are the subject matter: entities, their fields, allowed values, defaults, formats, and the reports built from them. In Project Pulse a requirement document's status is one of `DRAFT`, `SUBMITTED`, `RETURNED`, or `ACCEPTED`; a submitted document is either returned for revision or accepted, and an accepted one is read-only. The allowed values and the legal transitions between them are data requirements, and getting them wrong builds a workflow your client does not have.
 
 Data is also where invented precision is hardest to catch, because a plausible field list reads exactly like a real one. A ZIP code has five digits, an optional hyphen, and four more defaulting to 0000, and anyone can check that. A status enumeration has whatever values your client's process actually has, which is not the set that appears most often in the agent's training data.
 
-### 4.25 External interface requirements (section 8)
+### 4.25 External interface requirements (specification section 8)
 
 In September 1999 NASA lost the Mars Climate Orbiter as it arrived at Mars. Ground software built by one team reported thruster impulse in pound-force seconds; the navigation software built by another expected newton-seconds, as the interface specification required. Every trajectory correction was off by a factor of about 4.45, the spacecraft flew too low into the atmosphere, and a $327.6 million mission was gone. Each side worked. The failure was in the space between them.
 
-Section 8 specifies that space: the user interface, hardware, other software, and communications. Project Pulse's `SI-llm-proxy-only` says the browser never calls the LLM service directly, only through the server's AI proxy, which is what keeps the service's credentials off every student's machine. `SI-import-allowlist` says what a file upload accepts: PDF and PowerPoint, up to a configurable limit of 25 MB by default, and nothing else. Both are the kind of sentence two teams building two halves need to agree on before either starts.
+Specification section 8 specifies that space: the user interface, hardware, other software, and communications. Project Pulse's `SI-llm-proxy-only` says the browser never calls the LLM service directly, only through the server's AI proxy, which is what keeps the service's credentials off every student's machine. `SI-import-allowlist` says what a file upload accepts: PDF and PowerPoint, up to a configurable limit of 25 MB by default, and nothing else. Both are the kind of sentence two teams building two halves need to agree on before either starts.
 
 Project Pulse's hardware interfaces section says "No hardware interfaces have been identified." That is the same move as `SAF-not-applicable` in §4.26: an empty section with a sentence in it is information, and an empty section without one is a question.
 
-### 4.26 Quality attributes (section 9)
+### 4.26 Quality attributes (specification section 9)
 
 Clarice was teaching in a new training room and going hoarse shouting over the heating system. It was not broken. It circulated the specified air volume, held temperature to within half a degree from 60 to 85 degrees, and had every profile-programming capability that had been asked for. Nobody had said anything about noise, so the maintenance supervisor bought the cheapest unit that met the stated requirements, and by the time anyone noticed, replacing it was expensive.
 

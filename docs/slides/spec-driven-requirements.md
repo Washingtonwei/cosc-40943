@@ -558,7 +558,7 @@ Walk the room, all three TAs too. Watch for teams that paste the brief and nothi
 
 The primer is the half nobody thinks to ask for. A team that walks in already knowing what their client's acronyms mean asks better questions for the whole hour.
 
-If a team finishes early, send them to section 11: who runs this after we graduate, and what do they already know how to run. Almost nobody asks it and it constrains the whole stack.
+If a team finishes early, send them to section 11 of the interview guide: who runs this after we graduate, and what do they already know how to run. Almost nobody asks it and it constrains the whole stack.
 :::
 
 ## Thirty questions. Forty-five minutes.

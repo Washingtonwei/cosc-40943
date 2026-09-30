@@ -822,7 +822,7 @@ The functions the system must provide, its characteristics, and the constraints 
 :::
 
 ::: note
-This is the formal introduction. Behavior and quality, both: "how the system behaves" is what use cases and functional requirements say; "how well" is section 9.
+This is the formal introduction. Behavior and quality, both: "how the system behaves" is what use cases and functional requirements say; "how well" is section 9 of the specification.
 
 It is the document the rest of today is about. From here on, "the specification" means this file. Week 3 gave them vision and scope and the glossary; Monday gave them use cases; the SRS is the document that holds the set together and adds what none of those say.
 
@@ -867,7 +867,7 @@ A fact in two documents means one of them is wrong, and it is the one you are re
 :::
 
 ::: note
-Open the template on screen next to this if you can. The tempting move is to paste the use cases into section 5 so the document is complete on its own. The right move is a link. Sections 3 and 4 link to the glossary and to vision and scope the same way; risks live in vision and scope.
+Open the template on screen next to this if you can. The tempting move is to paste the use cases into specification section 5 so the document is complete on its own. The right move is a link. Specification sections 3 and 4 link to the glossary and to vision and scope the same way; risks live in vision and scope.
 
 This table is the map for the rest of the hour: we walk it top to bottom.
 :::
@@ -947,7 +947,7 @@ A risk ends in a requirement that mitigates it, or in an acceptance with a reaso
 ::: note
 Risks live in vision and scope, as `RI-<slug>`. Project Pulse's `RI-cross-browser` is marked Accepted, with its reason, because nothing in the software guards against it. A risk that ends in neither place is a risk nobody decided about.
 
-Hold on to `SCA-cohort-load`. It comes back in section 9 as the load a performance number is measured under.
+Hold on to `SCA-cohort-load`. It comes back in specification section 9 as the load a performance number is measured under.
 :::
 
 ## Not everything is a use case (5.2)
@@ -961,7 +961,7 @@ No student asked for it. It is still a requirement.
 :::
 
 ::: note
-That is the email they get every Monday and Tuesday. Section 5.1 links to the use case file; 5.2 holds what belongs to no use case: things that are always true, things across every interaction, things triggered by a clock rather than an actor.
+That is the email they get every Monday and Tuesday. Specification section 5.1 links to the use case file; 5.2 holds what belongs to no use case: things that are always true, things across every interaction, things triggered by a clock rather than an actor.
 
 Forcing them into use case shape produces bad use cases with imaginary actors, and everyone has seen the "Actor: System" use case that results.
 :::
@@ -1080,7 +1080,7 @@ Each side worked. The failure was in the space between them.
 :::
 
 ::: note
-Source: NASA's Mishap Investigation Board Phase I report, November 1999. The interface was specified; one side did not follow it, and nothing checked. Section 8 is where that space gets written down.
+Source: NASA's Mishap Investigation Board Phase I report, November 1999. The interface was specified; one side did not follow it, and nothing checked. Specification section 8 is where that space gets written down.
 :::
 
 ## External interfaces (8)
@@ -1100,7 +1100,7 @@ Hardware interfaces: "No hardware interfaces have been identified." That sentenc
 :::
 
 ::: note
-Section 8 covers the user interface, hardware, other software, and communications. The proxy rule is what keeps the service's credentials off every student's machine. Both are the kind of sentence two people building two halves need to agree on before either starts.
+Specification section 8 covers the user interface, hardware, other software, and communications. The proxy rule is what keeps the service's credentials off every student's machine. Both are the kind of sentence two people building two halves need to agree on before either starts.
 
 An empty section with a sentence in it is information. An empty section without one is a question.
 :::
@@ -1118,7 +1118,7 @@ Every requirement met. Room unusable.
 ::: note
 Nobody lied and nobody was lazy. Sam did exactly what he was asked. And the unit cannot be replaced now, because it was cheap for a reason.
 
-Quality attributes are how well the system does what it does. This is where a system that passes every functional test still fails the people using it, which makes section 9 the section you cannot treat as a formality.
+Quality attributes are how well the system does what it does. This is where a system that passes every functional test still fails the people using it, which makes specification section 9 the one you cannot treat as a formality.
 :::
 
 ## An adjective is not a requirement (9)
@@ -1140,7 +1140,7 @@ A number **and** a way to measure it.
 ::: note
 Same wish. The left one cannot be tested, cannot be designed against, and cannot be argued about, because there is nothing there to argue with. And the load it holds under is the one the risk named, twenty minutes ago.
 
-Fast, easy, reliable, secure, user-friendly: each is the start of a conversation. A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. Their section 9 entries are graded on both halves.
+Fast, easy, reliable, secure, user-friendly: each is the start of a conversation. A threshold nobody can measure is a threshold nobody checks, and you discover that in the week you planned to demonstrate it. Their specification section 9 entries are graded on both halves.
 :::
 
 ## Where did this number come from?

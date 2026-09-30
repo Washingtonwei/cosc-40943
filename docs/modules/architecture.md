@@ -23,7 +23,7 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** [Requirements as the Contract](spec-driven-requirements.md), where your team wrote the quality attributes and constraints this module turns into decisions, and [Context Engineering](context-engineering.md), which treated the specification as the context an agent works from. The architecture-of-record joins it as the second half of that context.
-- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Before the week 8 studio hands an agent its first build work, your section 8.2 names the conventions every component shares ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). Security, which enters here, threads on through implementation, static analysis, and CI/CD.
+- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Before the week 8 studio hands an agent its first build work, your architecture-of-record doc's section 8 (Crosscutting Concepts) names the conventions every component shares ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). Security, which enters here, threads on through implementation, static analysis, and CI/CD.
 - **How it's taught:** two lecture days in week 6. Your team drafts its architecture-of-record in the week 6 studio from the [architecture template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md), and revises it all term as use cases are built.
 - **Course outcome it delivers:** [making and defending design and architecture decisions](../syllabus.md#learning-outcomes) (outcome 2), with the alternatives considered and the reasoning behind the choice.
 
@@ -72,7 +72,7 @@ This is the **reversibility test**, and it is the architecture version of a rule
 
 ### 4.2 Quality attributes choose the architecture
 
-Recall the two kinds of requirement from week 4. **Functional requirements** say what the system does; your use cases carry them. **Quality attributes** say how well; [section 9 of your specification](spec-driven-requirements.md#426-quality-attributes-section-9) carries them, each with a number and a way to measure it.
+Recall the two kinds of requirement from week 4. **Functional requirements** say what the system does; your use cases carry them. **Quality attributes** say how well; [section 9 of your specification](spec-driven-requirements.md#426-quality-attributes-specification-section-9) carries them, each with a number and a way to measure it.
 
 Here are the attributes that most often shape an architecture, each with the question it asks, Project Pulse's answer from its [specification](https://github.com/Washingtonwei/project-pulse/blob/main/docs/requirements/software-requirements-specification.md), and the structure that answer pushes toward. The last column is a map of the rest of this module.
 
@@ -84,7 +84,7 @@ Here are the attributes that most often shape an architecture, each with the que
 | **Performance** | How fast, at what percentile, under what load? | `PER-report-load`: the instructor dashboard and report views in 500 ms at the 95th percentile. | At this load, one application and one database, with calls between modules made in-process. Every network hop added spends part of the 500 ms. |
 | **Scalability** | How much load, and how fast does it grow? | `SCA-cohort-load`: about 75 users, with up to 100 people editing at once near a deadline. | One deployable is enough ([4.7](#47-one-deployable-or-several)). Uploaded files are the only store that grows, so they go to object storage, not the database (`CO-blob-source-material`). |
 | **Robustness** | What happens when something fails? | `ROB-edit-loss-bound`: a crash loses at most 10 seconds of edits. `AVL-llm-degradation`: when the language model is down, everything else keeps working. | The browser saves to the server at least every 10 seconds. The language model sits behind one server-side proxy, so its failure is contained in one place. |
-| **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. This is a constraint, `CO-no-ops-team`, not a section 9 quality attribute, and it pushes the structure as hard as any of them. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-modular-monolith`, [4.7](#47-one-deployable-or-several)) |
+| **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. This is a constraint, `CO-no-ops-team`, not a quality attribute in your specification's section 9, and it pushes the structure as hard as any of them. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-modular-monolith`, [4.7](#47-one-deployable-or-several)) |
 
 Read the availability row twice. The adjective "available" says nothing about structure; the number decides it. At 99%, the simplest deployment passes. At 99.99%, it fails, and the architecture changes.
 
@@ -101,7 +101,7 @@ Not every quality attribute shapes the architecture. Usability is the clearest c
 
 An ASR is a specific requirement, not an attribute category. One attribute can produce several ASRs, or none: Project Pulse's availability requirements feed two of its seven ASRs (ranks 2 and 7), and its usability requirements feed none.
 
-To find them, rank each candidate on two axes, as the SEI's utility tree does:
+To find them, rank each candidate on two axes, as the Software Engineering Institute's utility tree does:
 
 - **Importance to the client.** What happens if you miss it? A privacy breach is high; a page that loads in 1.5 seconds instead of 1 is low.
 - **Difficulty to achieve.** Does the obvious design meet it, or does it force something unusual? Handling 75 users is low difficulty; handling 75,000 concurrent is high.
@@ -115,7 +115,7 @@ The significant few are the ones high on both, plus any hard constraint (a manda
 | 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium | `KD-ram-module`, `KD-no-codegen`, `KD-vertical-slices` |
 | 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium | `KD-section-locking`, plus autosave |
 
-The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [section 4.11](#411-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
+The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [4.11](#411-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
 
 (The remaining three, single self-hosted authentication, responsive graph queries at cohort scale, and graceful degradation when the language model is unavailable, rank lower. The full table is in Project Pulse's architecture-of-record, under Architecture Decisions.)
 
@@ -123,9 +123,9 @@ Two rules for your own table. **Reuse the identifiers your specification already
 
 ### 4.4 The architecture-of-record: an arc42 document
 
-Everything from here to the end of section 4 goes into one document, your team's **architecture-of-record**. See its shape before you fill it in.
+Everything from here to the end of the core concepts goes into one document, your team's **architecture-of-record**. See its shape before you fill it in.
 
-Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows **arc42**, a free template for documenting software architecture by Gernot Starke and Peter Hruschka. arc42 fixes what to write: twelve sections, each answering one question about the system, in an order any reader who knows arc42 can find their way around. It does not fix how to draw. That is the job of C4, Simon Brown's notation for architecture diagrams, in [section 4.5](#45-describing-it-views-and-c4-to-draw-them). Your template keeps all twelve sections in arc42's order, numbering, and titles, and adds numbered subsections only where Checkpoint 1 needs a fixed place to look, such as 8.1 for security. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a worked example of every one.
+Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) follows **arc42**, a free template for documenting software architecture by Gernot Starke and Peter Hruschka. arc42 fixes what to write: twelve sections, each answering one question about the system, in an order any reader who knows arc42 can find their way around. It does not fix how to draw. That is the job of C4, Simon Brown's notation for architecture diagrams, in [4.5](#45-describing-it-views-and-c4-to-draw-them). Your template keeps all twelve sections in arc42's order, numbering, and titles, and adds numbered subsections only where Checkpoint 1 needs a fixed place to look, such as 8.1 for security. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a worked example of every one.
 
 | Section | The question it answers | Where its content comes from |
 |---|---|---|
@@ -144,7 +144,7 @@ Your [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/des
 
 Read the last column. Five of the twelve sections (1, 2, 10, 11, and 12) overlap your requirements documents, which already own the stakeholders, the constraints, the quality attributes, the business risks, and the glossary. The architecture-of-record cites them and adds only what the architecture needs, because a fact written in two places is soon wrong in one. What is left is the architecture itself: the ranked quality goals, the diagrams, the components, the decisions, and the trust boundary.
 
-**The order is by topic, not by when you write it.** Sections 6 and 7 describe code and a pipeline that do not exist yet, so they wait ([section 4.5](#45-describing-it-views-and-c4-to-draw-them) explains why). Each section of the template says when it is due, and [section 7](#7-hands-on-studio) below says what Friday covers.
+**The order is by topic, not by when you write it.** Template sections 6 and 7 describe code and a pipeline that do not exist yet, so they wait ([4.5](#45-describing-it-views-and-c4-to-draw-them) explains why). Each section of the template says when it is due, and [Hands-on](#7-hands-on-studio), below, says what Friday covers.
 
 ### 4.5 Describing it: views, and C4 to draw them
 
@@ -159,7 +159,7 @@ Four of arc42's twelve sections are views:
 | 6. Runtime View | How do the parts cooperate to carry out one use case? | Whoever builds or debugs that use case | Checkpoint 2 | A sequence diagram |
 | 7. Deployment View | Where does each part run, and how does a change get there? | Whoever runs the system | Checkpoint 3 | Where each container runs, as a diagram or a short list |
 
-Read the "Drawn at" column. The first two views describe what the system is and what it is made of. Those are the decisions you are making now, and your specification is enough to draw them. The other two describe things that do not exist yet. A sequence diagram of code nobody has written describes a guess, and so does a deployment view before there is a pipeline to deploy with. So the runtime view waits for the proving slice at Checkpoint 2, and the deployment view waits for the pipeline at Checkpoint 3. This is the reversibility test of section 4.1 applied to diagrams, and the Twin Peaks spiral in practice: each view is drawn once a pass down the peaks has made it knowable.
+Read the "Drawn at" column. The first two views describe what the system is and what it is made of. Those are the decisions you are making now, and your specification is enough to draw them. The other two describe things that do not exist yet. A sequence diagram of code nobody has written describes a guess, and so does a deployment view before there is a pipeline to deploy with. So the runtime view waits for the proving slice at Checkpoint 2, and the deployment view waits for the pipeline at Checkpoint 3. This is the reversibility test of [4.1](#41-what-architecture-is-and-what-it-is-not) applied to diagrams, and the Twin Peaks spiral in practice: each view is drawn once a pass down the peaks has made it knowable.
 
 **Drawing a view a stranger can read.** Most architecture diagrams fail the same way. Someone draws boxes and arrows on a whiteboard, the team nods, someone photographs it, and six months later a new member finds the photo and cannot tell what any box is, what any arrow means, or whether any of it is still true. The diagram only ever worked with its author standing next to it.
 
@@ -172,7 +172,7 @@ Simon Brown's **C4 model** fixes this by agreeing on the *things* before agreein
 
 The name comes from the four diagrams, one per level: Context, Containers, Components, and Code. The first level's abstraction is the software system, but its diagram is called the context diagram, because it shows the system among the people and systems around it.
 
-Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out, you see the system and the world around it; zoomed in, you see what runs where. You do not need all four, and you draw them in whatever order the conversation needs. The levels line up with your template's views: level 1 draws section 3, and levels 2 and 3 draw section 5. C4 also defines a dynamic diagram and a deployment diagram for the other two views; for the runtime view, a mermaid `sequenceDiagram` does the same job, and it is what Project Pulse uses.
+Each level has a diagram, and each diagram is a zoom level on a map. Zoomed out, you see the system and the world around it; zoomed in, you see what runs where. You do not need all four, and you draw them in whatever order the conversation needs. The levels line up with your template's views: level 1 draws template section 3, and levels 2 and 3 draw section 5. C4 also defines a dynamic diagram and a deployment diagram for the other two views; for the runtime view, a mermaid `sequenceDiagram` does the same job, and it is what Project Pulse uses.
 
 **Level 1, the system context diagram,** shows your system as one box, the people who use it, and every external system it depends on. It answers "what is this, who uses it, and what does it talk to?" for anyone, including your client, and it is section 3 of your template. From Project Pulse:
 
@@ -198,7 +198,7 @@ C4Context
     UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
 
-**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page, and it goes in section 5.1. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside:
+**Level 2, the container diagram,** opens the system box and shows what runs and what stores data, with the technology of each and how they talk to each other. It is the overall shape of the architecture and the main technology choices on one page, and it goes in template section 5.1. Project Pulse's has four containers: the Vue single-page app, the Spring Boot REST API application, the relational database, and Azure Blob Storage for uploaded files, with Gmail and the language model service outside:
 
 ```mermaid
 C4Container
@@ -231,7 +231,7 @@ C4Container
 
 Every arrow carries a protocol (HTTPS, JDBC, SMTP), which is arc42's technical context. The SPA and the REST API are two containers although they ship in one jar, because a container is something that runs: the SPA runs in the browser, the API on the server, and the "Delivers" arrow shows the API handing the SPA to the browser. The Gmail and LLM boxes are the same two external systems as on the context diagram, now attached to the one container that talks to them. Blob Storage is a separate container because uploaded files grow and the database should not (`CO-blob-source-material`), and that is the kind of reason every container on your own diagram needs.
 
-**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (template section 5.2, and section 4.6 below). A table is what your template asks for, because it can be checked row by row against your use cases.
+**Level 3, the component view,** shows the components inside one container. In the architecture-of-record you give it as a **table**, not a diagram: one row per use case area, the component that owns it, its one-sentence responsibility, and what it depends on (template section 5.2, and [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) below). A table is what your template asks for, because it can be checked row by row against your use cases.
 
 Project Pulse's architecture-of-record draws this level as three C4 component diagrams: the shared foundation, performance tracking, and the RAM module. Here is the shared foundation inside the REST API application:
 
@@ -272,7 +272,7 @@ C4Component
     Rel(notify, gmail, "Sends email", "SMTP")
 ```
 
-This diagram shows two things a table cannot. First, **every way into the container**: API requests from the SPA, the static files that deliver the SPA, the actuator management endpoints, and the reminder schedule, which fires on a clock with no request at all. Together they are the container's attack surface, and the September 2026 credential leak in [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) came through one of them. Second, **which way the dependencies run**: requests reach the org model, rubrics, and users only through `security`, and `notifications` is reached by `user` for invitation and reset emails. A component diagram that opens a box to show its controllers and services is design, and it belongs in the design-of-record for that area in week 7.
+This diagram shows two things a table cannot. First, **every way into the container**: API requests from the SPA, the static files that deliver the SPA, the actuator management endpoints, and the reminder schedule, which fires on a clock with no request at all. Together they are the container's attack surface, and the September 2026 credential leak in [4.9](#49-security-as-a-quality-attribute-the-trust-boundary) came through one of them. Second, **which way the dependencies run**: requests reach the org model, rubrics, and users only through `security`, and `notifications` is reached by `user` for invitation and reset emails. A component diagram that opens a box to show its controllers and services is design, and it belongs in the design-of-record for that area in week 7.
 
 **Level 4, code,** is a class diagram. Almost nobody should draw one by hand; your IDE and your agent can produce it from the code whenever it is needed, and a hand-drawn one is out of date the day after it is committed.
 
@@ -307,7 +307,7 @@ sequenceDiagram
     API-->>SPA: Result { data }
 ```
 
-Every participant is a container from the container diagram, and the second-to-last step is the authorization check that [section 4.9](#49-security-as-a-quality-attribute-the-trust-boundary) returns to: a valid token is not enough, the request must also concern something the caller owns or belongs to.
+Every participant is a container from the container diagram, and the second-to-last step is the authorization check that [4.9](#49-security-as-a-quality-attribute-the-trust-boundary) returns to: a valid token is not enough, the request must also concern something the caller owns or belongs to.
 
 Its **deployment view** shows where each container runs:
 
@@ -337,7 +337,7 @@ The SPA and the REST API share one container in production, because the jar serv
 
 The sequence names an endpoint and a token lifetime, and the deployment names a staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
 
-Blob Storage and the LLM service appear on both diagrams, but no code calls either of them yet: the map runs ahead of the code, which [section 4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) takes up.
+Blob Storage and the LLM service appear on both diagrams, but no code calls either of them yet: the map runs ahead of the code, which [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) takes up.
 
 ### 4.6 Decomposing by domain: from use case areas to components
 
@@ -476,7 +476,7 @@ Here is what those look like at the scale where they pay off. On November 11, 20
 
 It also goes the other way at scale. In 2023 Amazon's Prime Video team [described moving](https://web.archive.org/web/20240805183535/https://www.primevideotech.com/video-streaming/scaling-up-the-prime-video-audio-video-monitoring-service-and-reducing-costs-by-90) an audio and video monitoring service from a distributed design, separate serverless components coordinated over the network, into a single process, and reported that infrastructure costs fell by over 90%. The distributed design was not wrong in principle; it was wrong for that workload, and nobody had checked.
 
-**The middle option is the one to aim for: a modular monolith.** One deployable, but divided inside by domain, with each module owning its own slice of the code (section 4.6) and talking to the others through their service interfaces rather than reaching into their tables. You get the simple operations of a monolith and most of the maintainability of services, and if one module ever does need to scale separately, the boundary is already drawn. This is what Project Pulse is.
+**The middle option is the one to aim for: a modular monolith.** One deployable, but divided inside by domain, with each module owning its own slice of the code ([4.6](#46-decomposing-by-domain-from-use-case-areas-to-components)) and talking to the others through their service interfaces rather than reaching into their tables. You get the simple operations of a monolith and most of the maintainability of services, and if one module ever does need to scale separately, the boundary is already drawn. This is what Project Pulse is.
 
 **For your project,** the question is not "which is better?" It is "which requirement would force several deployables?" Write that requirement down. If your specification has no such requirement, if nothing in it needs one part to scale, deploy, or fail independently of the rest, you have your answer and your rejected alternative. Your client's system will serve tens or hundreds of users, and after your team hands it off, someone will have to run it.
 
@@ -484,7 +484,7 @@ It also goes the other way at scale. In 2023 Amazon's Prime Video team [describe
 
 An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns work at different levels, solve different problems, and combine freely: one system is usually several at once. Three show up in every project in this course.
 
-**Layered** (presentation, domain logic, data access) is inside every component you build, as section 4.6 described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
+**Layered** (presentation, domain logic, data access) is inside every component you build, as [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
 
 ![Layered: ActivityController calls ActivityService, which calls ActivityRepository, which talks to the database; a controller never skips to the repository](../slides/img/pattern-layered.svg)
 
@@ -492,7 +492,7 @@ An **architectural pattern** is a reusable solution to a problem that keeps occu
 
 ![Model-view-controller in a Vue component and in Spring: event handlers update state that re-renders the template; a Spring controller returns the model as a JSON view](../slides/img/pattern-mvc.svg)
 
-**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.9 is about what the authorization filter does with a request that none of its rules matches.
+**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. What the authorization filter does with a request that none of its rules matches is the subject of [4.9](#49-security-as-a-quality-attribute-the-trust-boundary).
 
 ![Pipes and filters: an HTTP request passes CORS, authentication, and authorization filters before the controller, and each can reject it; a machine learning pipeline has the same shape](../slides/img/pattern-pipes-and-filters.svg)
 
@@ -537,9 +537,9 @@ Nobody wrote a rule that made actuator public. It was the absence of a rule. The
 
 ### 4.10 Crosscutting concepts: what every component does the same way
 
-Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. arc42 leaves section 8 open, a list of whatever concepts your system needs. Your template fixes its first entry: 8.1 is security, the section above, because Checkpoint 1 asks for the trust boundary. Section 8.2 holds the rest.
+Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. arc42 leaves section 8 open, a list of whatever concepts your system needs. Your template fixes its first entry: 8.1 is security, the subject of [4.9](#49-security-as-a-quality-attribute-the-trust-boundary), because Checkpoint 1 asks for the trust boundary. Section 8.2 holds the rest.
 
-They pass the reversibility test from [section 4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
+They pass the reversibility test from [4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
 
 **With an agent writing the code, they matter more.** Every agent session starts with no memory of the last one, so each behaves like a new teammate. Asked for an endpoint, it picks an error format that looks reasonable, and the next session picks a different one. [Context Engineering](context-engineering.md#3-motivation) opened on the same failure with time: the agent writes `LocalDateTime.now()`, correct Java and wrong for Project Pulse. A crosscutting concept is exactly what an agent cannot work out from the one file in front of it, because the rule lives in every other file.
 
@@ -565,7 +565,7 @@ public class ExceptionHandlerAdvice {
 }
 ```
 
-The Vue app unwraps every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. Now read the last handler again. It is the fallback for every exception nobody anticipated, and it sends that exception's message to the browser as `data`. A database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too, and this one belongs on the security side of the ledger in section 4.9.
+The Vue app unwraps every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. Now read the last handler again. It is the fallback for every exception nobody anticipated, and it sends that exception's message to the browser as `data`. A database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too, and this one belongs on the security side of the ledger in [4.9](#49-security-as-a-quality-attribute-the-trust-boundary).
 
 **Time, in Project Pulse.** There are two kinds of time, and they read different clocks. **Calendar time** (active weeks, deadlines, reminders, audit timestamps) comes from one injected `Clock` bean, never from `LocalDateTime.now()`. Which clock depends on the profile: in development it is fixed at Sunday, August 20, 2023, 11:30 pm, half an hour before a week ends, which is exactly where deadline bugs live; in staging and production it is the real clock, in the time zone set by `app.timezone`. **Elapsed time** (when a login token expires, when an edit lock lapses) uses the real clock, `Instant.now()`, because a frozen clock would stop it: in development a token would never age and a lock would never lapse. A rule that said only "always use the injected clock" was not precise enough. The rule has to say which time.
 
@@ -672,11 +672,11 @@ There is no individual assignment for this module. The Project Pulse architectur
 
 ## 9. Key papers and further reading
 
-- Len Bass, Paul Clements, and Rick Kazman, *Software Architecture in Practice*, 4th ed. (Addison-Wesley, 2021). The standard text: quality attributes, quality scenarios, tactics, and the utility tree behind section 4.3.
-- Grady Booch, "On Design," blog essay, 2006, quoted in Frank Buschmann, Kevlin Henney, and Douglas C. Schmidt, *Pattern-Oriented Software Architecture*, Vol. 5 (Wiley, 2007), p. 214. The cost-of-change definition in section 4.1.
+- Len Bass, Paul Clements, and Rick Kazman, *Software Architecture in Practice*, 4th ed. (Addison-Wesley, 2021). The standard text: quality attributes, quality scenarios, tactics, and the utility tree behind [4.3](#43-architecturally-significant-requirements).
+- Grady Booch, "On Design," blog essay, 2006, quoted in Frank Buschmann, Kevlin Henney, and Douglas C. Schmidt, *Pattern-Oriented Software Architecture*, Vol. 5 (Wiley, 2007), p. 214. The cost-of-change definition in [4.1](#41-what-architecture-is-and-what-it-is-not).
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
-- Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in section 4.6.
+- Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
 - Michael Nygard, [*Documenting Architecture Decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the origin of the architecture decision record.
 - Philippe Kruchten, "The 4+1 View Model of Architecture," *IEEE Software* 12(6), 1995, pp. 42–50. The origin of describing one architecture through several views, which arc42 inherits.
 - Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. The Twin Peaks model in three pages.

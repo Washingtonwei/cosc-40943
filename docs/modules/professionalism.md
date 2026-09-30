@@ -243,7 +243,7 @@ In round two, Sam privately picks a reason (two jobs since August, stuck and emb
 ## 7. Further reading
 
 - Douglas Stone, Bruce Patton, and Sheila Heen, *Difficult Conversations: How to Discuss What Matters Most* (Penguin, 1999). The source of the observation-versus-judgment distinction this module runs on.
-- Kim Scott, *Radical Candor* (St. Martin's, 2017). Care personally, challenge directly. The failure mode it names, "ruinous empathy," is the week-4 silence in section 3.
+- Kim Scott, *Radical Candor* (St. Martin's, 2017). Care personally, challenge directly. The failure mode it names, "ruinous empathy," is the week-4 silence in the [Motivation](#3-motivation).
 - Bruce W. Tuckman, "Developmental Sequence in Small Groups," *Psychological Bulletin* 63(6), 1965. Forming, storming, norming, performing. Worth knowing that the storming phase is normal and not a sign your team is broken.
 - Adapted for TCU senior design from Carnegie Mellon materials on difficult conversations and feedback.
 
@@ -260,5 +260,5 @@ In round two, Sam privately picks a reason (two jobs since August, stuck and emb
 
 - [Professionalism handbook](../professionalism.md): the values, expectations, accountability process, and FAQ. The reference version of what this module teaches.
 - [Team Contract](../team-contract.md): clause 7 is this module, in your team's own words.
-- [The AI-Augmented Team](ai-augmented-team.md): why the evidence in section 4.3 exists at all.
+- [The AI-Augmented Team](ai-augmented-team.md): why the evidence in this module's [4.3](#43-observe-evidence-not-impressions) exists at all.
 - [Senior Design Project](../project.md#conflict): how conflict is handled in the course.

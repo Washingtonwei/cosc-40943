@@ -119,7 +119,7 @@ Nuseibeh, 2001. Requirements and architecture are built together, not in sequenc
 | Operability | one instructor, no operations team | one container, a staging slot |
 
 ::: note
-Read it row by row: the left column is what students wrote in section 9 in week 4, the right column is the rest of this deck. Stop on availability: 99% of a term is about a day of downtime, and one instance passes. Ask what 99.99% would do (about 16 minutes a term; now you need redundancy). The number decides, not the adjective. Usability is the contrast: it is met screen by screen, so it rarely changes the structure.
+Read it row by row: the left column is what students wrote in section 9 of their specification in week 4, the right column is the rest of this deck. Stop on availability: 99% of a term is about a day of downtime, and one instance passes. Ask what 99.99% would do (about 16 minutes a term; now you need redundancy). The number decides, not the adjective. Usability is the contrast: it is met screen by screen, so it rarely changes the structure.
 :::
 
 ## Quality attributes decide it
@@ -150,7 +150,7 @@ A privacy breach: high. 1.5 seconds instead of 1: low.
 :::
 
 ::: note
-The SEI calls this a utility tree. High on both, plus any hard constraint (a mandated platform, a regulation, a system you must integrate with), is the list.
+The Software Engineering Institute calls this a utility tree. High on both, plus any hard constraint (a mandated platform, a regulation, a system you must integrate with), is the list.
 :::
 
 ## Project Pulse's top four
@@ -202,7 +202,7 @@ arc42, Gernot Starke and Peter Hruschka: a free template, twelve sections, each 
 **arc42:** what to write · **C4:** how to draw it
 
 ::: note
-Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it. Sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday.
+Bridge from the ASR table: that says what the architecture must achieve; the rest of the document shows the shape that achieves it. A house has a floor plan, a wiring plan, and a site plan, one per trade. Kruchten's 4+1, 1995; arc42 inherits it. Template sections 8 and 9 are not views; they cut across all four. Security is Wednesday, the decisions are Wednesday.
 :::
 
 ## Draw what you can know
@@ -243,10 +243,10 @@ Who has seen an architecture diagram they could not read without its author in t
 One diagram per level: **Context · Containers · Components · Code**
 
 ::: note
-Simon Brown's C4 model. Agree on the things first, the shapes second. The four levels are zoom levels on a map: zoom out for context, zoom in for detail, and you only draw the zoom levels your conversation needs. Level 1 draws section 3; levels 2 and 3 draw section 5.
+Simon Brown's C4 model. Agree on the things first, the shapes second. The four levels are zoom levels on a map: zoom out for context, zoom in for detail, and you only draw the zoom levels your conversation needs. Level 1 draws template section 3; levels 2 and 3 draw section 5.
 :::
 
-## Level 1: context (section 3)
+## Level 1: context (template section 3)
 
 ![Project Pulse system context diagram](img/pulse-c4-context.svg){ height="520" }
 
@@ -254,7 +254,7 @@ Simon Brown's C4 model. Agree on the things first, the shapes second. The four l
 Project Pulse's context diagram, from its architecture-of-record on main. Say this once, here: this slide, the next two, and the RAM and performance-tracking slides on Wednesday are the module's mermaid C4 diagrams redrawn as SVG for the projector, with every box, description, arrow, and label kept, because mermaid's own C4 layout is unreadable projected. In your project you write mermaid; it diffs in git and your agent can read it. The system is one box. Two kinds of person, two external systems, and every arrow says what it does. This is the diagram your client can read. The LLM service is planned: no code calls it yet, but it is on the map so nobody discovers it late.
 :::
 
-## Level 2: containers (section 5.1)
+## Level 2: containers (template section 5.1)
 
 ![Project Pulse container diagram](img/pulse-c4-containers.svg){ height="430" }
 
@@ -277,7 +277,7 @@ Zoom into one container, the REST API application: its shared foundation. Point 
 ## Level 3 and 4
 
 ::: cols
-**Components: a table, section 5.2**
+**Components: a table, template section 5.2**
 
 One row per use case area. Responsibility, dependencies, status.
 |||

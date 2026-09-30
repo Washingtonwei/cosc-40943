@@ -178,7 +178,7 @@ If you find yourself writing a paragraph that belongs in the specification, stop
 
 Some context is genuinely absent from a codebase, and no amount of reading recovers it. Four questions recur, each with a real answer from Project Pulse's charter files.
 
-**How do I run it, and what is true about this environment?** The `Clock` rule from section 3. Also the dev credentials, the three services and their start order, and the fact that the development profile recreates the schema on every restart while production uses Flyway migrations.
+**How do I run it, and what is true about this environment?** The `Clock` rule from the [Motivation](#3-motivation). Also the dev credentials, the three services and their start order, and the fact that the development profile recreates the schema on every restart while production uses Flyway migrations.
 
 **What must I not do?** Negative constraints are invisible in code, because code records what was built, never what was ruled out. The backend charter says it outright:
 
@@ -263,7 +263,7 @@ One thing the loop eventually produces: when you have assembled the same shape o
 | Risk (classic and AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Charter rot.** The charter states a rule the project stopped following, and the agent applies it confidently for months. The AI-introduced half is scale: one stale line now shapes every use case rather than one developer's afternoon. | Noticing that the rule and the code disagree, which nobody is looking for because both look authoritative | Audit the charter against the code on a schedule, not on suspicion. Where the code genuinely disagrees, say so in the charter rather than quietly leaving both, as Project Pulse's naming note does. |
-| **Context theater.** A long charter that reads well, cost a day, and earns nothing, because no line in it corresponds to a defect anyone had. It also crowds the budget that section 4.1 described. | Asking of each line, which mistake does this prevent? | A rule earns its place by naming the failure it stops. Write thin, grow on defects. |
+| **Context theater.** A long charter that reads well, cost a day, and earns nothing, because no line in it corresponds to a defect anyone had. It also crowds the budget that [4.1](#41-more-text-is-not-better-context) described. | Asking of each line, which mistake does this prevent? | A rule earns its place by naming the failure it stops. Write thin, grow on defects. |
 | **The issue becomes the design.** Over-specification, disguised as diligence, so review has nothing left to examine. | Noticing that you already know what the code will say | Apply the pinning litmus per line: would guessing this wrong violate a requirement? |
 
 ## 7. Hands-on (studio and individual assignment)
@@ -295,7 +295,7 @@ One thing the loop eventually produces: when you have assembled the same shape o
 - [Project Pulse's charter files](https://github.com/Washingtonwei/project-pulse/blob/main/CLAUDE.md), the worked example throughout: the root file, and `backend/CLAUDE.md`, `frontend/CLAUDE.md`, and `docs/CLAUDE.md` beside the code they govern.
 - [How Claude Code works: the context window](https://code.claude.com/docs/en/how-claude-code-works#the-context-window), the reference for `/context`, `/compact`, and automatic compaction on the course's baseline agent, and [Claude Code's memory files](https://code.claude.com/docs/en/memory), for how it reads `CLAUDE.md` and `AGENTS.md`.
 - For the free fallback: [Managing context in GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/context-management), including when it compacts without being asked, and [GitHub Copilot CLI custom instructions](https://docs.github.com/en/copilot), for which filenames it reads.
-- *Moffatt v. Air Canada*, [2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html), British Columbia Civil Resolution Tribunal, February 2024. The bereavement-fare chatbot decision in section 3, and worth reading in full: it is short, and the reasoning about who owns an agent's words is the whole argument.
+- *Moffatt v. Air Canada*, [2024 BCCRT 149](https://www.canlii.org/en/bc/bccrt/doc/2024/2024bccrt149/2024bccrt149.html), British Columbia Civil Resolution Tribunal, February 2024. The bereavement-fare chatbot decision in the [Motivation](#3-motivation), and worth reading in full: it is short, and the reasoning about who owns an agent's words is the whole argument.
 - [Requirement Types](../requirement-types.md), for the nine kinds of requirement a build-context reaches through its use case, and which container each lives in.
 
 ## 10. Self-check
