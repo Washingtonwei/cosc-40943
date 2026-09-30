@@ -456,7 +456,7 @@ Three files: two authorization managers in security, which are TD-feature-locali
 ![Project Pulse performance-tracking component diagram](img/pulse-c4-performance.svg){ height="520" }
 
 ::: note
-Project Pulse's performance-tracking component diagram, the module's C4 redrawn for the projector; the shared foundation is in grey. This is the rule KD-vertical-slices records, drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Project Pulse's QS-add-bounded-context makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-feature-locality records it, and the fix is to move those managers next to the feature they guard.
+Project Pulse's performance-tracking component diagram, the module's C4 redrawn for the projector; the shared foundation is in grey. This is the rule KD-vertical-slices records, drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Project Pulse's QS-add-bounded-context makes that checkable, and its own code does not fully meet it yet: the two red security arrows are the catch, because three of security's authorization managers import the activity and evaluation security services, so the foundation depends on the features. TD-feature-locality records it, and the fix is to move those managers next to the feature they guard.
 :::
 
 ## Divide the team the same way

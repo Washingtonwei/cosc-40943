@@ -429,35 +429,11 @@ Layering is a good idea. Separating presentation from business logic from data a
 
 Project Pulse's quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. A quick version you can run on your own backend is the **deletion test**: can you remove a feature by deleting its package? Delete `activity/` from Project Pulse and three files outside it stop compiling: two of `security`'s authorization managers and the data seeder. The seeder loads demo data for every feature and is exempt by design; the managers are debt, shown in the diagram below. The test finds candidates; a person decides which ones are debt. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
-```mermaid
-C4Component
-    title Component Diagram: performance-tracking components inside the REST API Application
+![Component diagram of Project Pulse's performance-tracking area inside the REST API application: the SPA calls security, which passes authorized requests to activity and evaluation (these two arrows in red, because the foundation depends on the features); activity reads the org model; evaluation reads the org model, scores against rubric, and sends email through notifications; both read and write the MySQL database. No arrow runs between activity and evaluation](../slides/img/pulse-c4-performance.svg)
 
-    Container(spa, "SPA", "Vue 3 / TypeScript", "Course management UI: WARs, peer evaluations, dashboards")
+*Redrawn from the mermaid C4 in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md).*
 
-    Container_Boundary(api, "REST API Application (Spring Boot)") {
-        Component(activity, "activity", "Spring MVC + Spring Data JPA", "Weekly activity reports")
-        Component(evaluation, "evaluation", "Spring MVC + Spring Data JPA", "Peer evaluations and their scoring")
-        Component_Ext(security, "security", "Shared foundation", "Authenticates and authorizes every API request")
-        Component_Ext(org, "course · section · team · student", "Shared foundation", "The org/enrollment model")
-        Component_Ext(rubric, "rubric", "Shared foundation", "Rubrics and criteria")
-        Component_Ext(notify, "notifications", "Shared foundation", "Email; weekly WAR and peer evaluation reminders")
-    }
-
-    ContainerDb(db, "Database", "MySQL 8", "WARs, peer evaluations")
-
-    Rel(spa, security, "Submits and reviews WARs and peer evaluations", "JSON/HTTPS")
-    Rel(security, activity, "Checks WAR ownership and team membership in; passes authorized requests to")
-    Rel(security, evaluation, "Checks evaluation ownership in; passes authorized requests to")
-    Rel(evaluation, rubric, "Scores peer evaluations against criteria from")
-    Rel(activity, org, "Reads team members and instructors from")
-    Rel(evaluation, org, "Reads course sections and students from")
-    Rel(evaluation, notify, "Sends confirmation email via")
-    Rel(activity, db, "Reads & writes", "JDBC")
-    Rel(evaluation, db, "Reads & writes", "JDBC")
-```
-
-No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` security services, so the foundation depends on the features, which the rule forbids. Project Pulse records this under `TD-feature-locality`: the fix, moving those managers next to the feature they guard, is tracked as an open item, and a planned ArchUnit test will keep new violations out.
+No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two red arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` security services, so the foundation depends on the features, which the rule forbids. Project Pulse records this under `TD-feature-locality`: the fix, moving those managers next to the feature they guard, is tracked as an open item, and a planned ArchUnit test will keep new violations out.
 
 **The same argument applies to the dev teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
 

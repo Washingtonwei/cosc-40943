@@ -1,9 +1,10 @@
 """Draw Project Pulse's C4 diagrams as slide figures for MODULE-architecture's deck.
 
 The source of truth is the mermaid C4 in Project Pulse's architecture-of-record, which the module
-carries unchanged. Mermaid's C4 layout is unreadable when projected, so the deck shows these
-redrawings instead: same elements, same descriptions, same relationships and labels, in the style
-of the Team A and Team B figures. Students write mermaid; these SVGs are for presentation only.
+carries for the other views. Mermaid's C4 layout is unreadable at this size, so the deck shows these
+redrawings instead, and the module shows the performance-tracking one too: same elements, same
+descriptions, same relationships and labels, in the style of the Team A and Team B figures. Arrows
+that break MNT-feature-locality (TD-feature-locality) are drawn in red. Students write mermaid.
 
 The SVGs this writes are committed; edit this script and rerun it from website/ rather than
 hand-editing the output:
@@ -20,6 +21,7 @@ from architecture_teams import (BG, SURF, SURF2, RULE, INK, DIM, FAINT, ACC, SAN
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[2] / "docs" / "slides" / "img"
 BODY = "#C9CED8"
 EXT = "#6B7890"
+ALARM = "#FF4D4D"
 
 
 def head(w, h, title, desc):
@@ -28,6 +30,7 @@ def head(w, h, title, desc):
 <desc id="d">{desc}</desc>
 <defs>
   <marker id="req" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{ACC}"/></marker>
+  <marker id="bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{ALARM}"/></marker>
   <filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.45"/></filter>
   <linearGradient id="zone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{ACC}" stop-opacity="0.10"/><stop offset="1" stop-color="{ACC}" stop-opacity="0.03"/></linearGradient>
   <linearGradient id="cyl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#26324A"/><stop offset="0.5" stop-color="#34425F"/><stop offset="1" stop-color="#26324A"/></linearGradient>
@@ -125,11 +128,15 @@ def boundary(x, y, w, h, name, kind, at="top", nx=None):
     return s
 
 
-def rel(points, label, tech=None, lx=None, ly=None, both=False, anchor="middle", width=1.8):
-    """A labelled relationship along a polyline; the label sits on a background so crossings stay legible."""
+def rel(points, label, tech=None, lx=None, ly=None, both=False, anchor="middle", width=1.8, bad=False):
+    """A labelled relationship along a polyline; the label sits on a background so crossings stay legible.
+    bad=True draws a dependency that breaks MNT-feature-locality, in red."""
     d = "M" + " L".join(f"{x},{y}" for x, y in points)
-    start = ' marker-start="url(#req)"' if both else ""
-    s = f'<path d="{d}" fill="none" stroke="{ACC}" stroke-width="{width}" stroke-linejoin="round" marker-end="url(#req)"{start}/>'
+    color, mk = (ALARM, "bad") if bad else (ACC, "req")
+    if bad:
+        width = 2.6
+    start = f' marker-start="url(#{mk})"' if both else ""
+    s = f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{width}" stroke-linejoin="round" marker-end="url(#{mk})"{start}/>'
     if lx is None:
         (x1, y1), (x2, y2) = points[len(points) // 2 - 1], points[len(points) // 2]
         lx, ly = (x1 + x2) / 2, (y1 + y2) / 2
@@ -142,8 +149,8 @@ def rel(points, label, tech=None, lx=None, ly=None, both=False, anchor="middle",
     s += f'<rect x="{bx}" y="{ly - hh/2}" width="{wmax}" height="{hh}" rx="6" fill="{BG}" fill-opacity="0.92"/>'
     for k, ln in enumerate(lines):
         is_tech = tech and k == len(lines) - 1
-        s += txt(lx, ly - hh / 2 + 15 + k * 15, ln, FAINT if is_tech else DIM, 11 if is_tech else 12, anchor,
-                 "500", italic=bool(is_tech))
+        s += txt(lx, ly - hh / 2 + 15 + k * 15, ln, FAINT if is_tech else (ALARM if bad else DIM),
+                 11 if is_tech else 12, anchor, "500", italic=bool(is_tech))
     return s
 
 
@@ -162,6 +169,8 @@ def legend(w, y, items):
             s += f'<rect x="{x}" y="{y-11}" width="34" height="22" rx="5" fill="url(#zone)" stroke="{ACC}" stroke-dasharray="5 4"/>'
         elif kind == "rel":
             s += f'<line x1="{x}" y1="{y}" x2="{x+34}" y2="{y}" stroke="{ACC}" stroke-width="2" marker-end="url(#req)"/>'
+        elif kind == "bad":
+            s += f'<line x1="{x}" y1="{y}" x2="{x+34}" y2="{y}" stroke="{ALARM}" stroke-width="2.6" marker-end="url(#bad)"/>'
         s += txt(x + 44, y + 4, text, DIM, 13, "start")
         x += 44 + len(text) * 6.7 + 30
     return s
@@ -343,25 +352,27 @@ def performance():
     s += boundary(30, 190, 1000, 520, "REST API Application (Spring Boot)", "Container", at="top")
     sec = Box(430, 225, 330, 120)
     act = Box(80, 420, 260, 110)
-    eva = Box(470, 420, 280, 110)
-    rub = Box(820, 225, 190, 120)
-    noti = Box(820, 420, 190, 130)
+    eva = Box(470, 420, 250, 110)
+    rub = Box(850, 225, 160, 120)
+    noti = Box(850, 420, 160, 130)
     org = Box(260, 575, 330, 100)
     db = Box(1080, 380, 200, 150)
     s += rel([spa.at("bottom", 0.5), sec.at("top", 0.5)], "Submits and reviews WARs\nand peer evaluations", "JSON/HTTPS",
              lx=spa.x + spa.w / 2 + 12, ly=192, anchor="start")
     s += rel([sec.at("left", 0.5), (act.x + act.w / 2, sec.y + sec.h / 2), act.at("top", 0.5)],
-             "Checks WAR ownership and\nteam membership in; passes\nauthorized requests to", lx=act.x + act.w / 2 + 10, ly=360, anchor="start")
+             "Checks WAR ownership and\nteam membership in; passes\nauthorized requests to", lx=act.x + act.w / 2 + 10, ly=360, anchor="start",
+             bad=True)
     s += rel([sec.at("bottom", 0.5), eva.at("top", (sec.x + sec.w / 2 - eva.x) / eva.w)],
-             "Checks evaluation ownership\nin; passes authorized\nrequests to", lx=sec.x + sec.w / 2 + 10, ly=383, anchor="start")
-    s += rel([eva.at("right", 0.2), (790, eva.y + eva.h * 0.2), (790, rub.y + rub.h * 0.7), rub.at("left", 0.7)],
-             "Scores peer\nevaluations against\ncriteria from", lx=915, ly=383)
-    s += rel([eva.at("right", 0.75), noti.at("left", (eva.y + eva.h * 0.75 - noti.y) / noti.h)], "Sends\nconfirmation\nemail via",
-             lx=785, ly=eva.y + eva.h + 45)
-    s += rel([act.at("bottom", 0.7), (act.x + act.w * 0.7, org.y + org.h / 2), org.at("left", 0.5)],
-             "Reads team members\nand instructors from", lx=act.x + act.w * 0.7 - 8, ly=562, anchor="end")
-    s += rel([eva.at("bottom", 0.3), (eva.x + eva.w * 0.3, org.y + org.h / 2), org.at("right", 0.5)],
-             "Reads course sections\nand students from", lx=eva.x + eva.w * 0.3 + 8, ly=560, anchor="start")
+             "Checks evaluation ownership\nin; passes authorized\nrequests to", lx=sec.x + sec.w / 2 + 10, ly=383, anchor="start",
+             bad=True)
+    s += rel([eva.at("right", 0.2), (785, eva.y + eva.h * 0.2), (785, rub.y + rub.h * 0.7), rub.at("left", 0.7)],
+             "Scores peer evaluations\nagainst criteria from", lx=797, ly=383, anchor="start")
+    s += rel([eva.at("right", 0.75), noti.at("left", (eva.y + eva.h * 0.75 - noti.y) / noti.h)],
+             "Sends confirmation\nemail via", lx=785, ly=eva.y + eva.h * 0.75 - 26)
+    s += rel([act.at("bottom", 0.85), (act.x + act.w * 0.85, org.y)],
+             "Reads team members\nand instructors from", lx=act.x + act.w * 0.85 - 10, ly=553, anchor="end")
+    s += rel([eva.at("bottom", 0.3), (eva.x + eva.w * 0.3, org.y)],
+             "Reads course sections\nand students from", lx=eva.x + eva.w * 0.3 + 10, ly=553, anchor="start")
     s += rel([act.at("left", 0.5), (55, act.y + act.h / 2), (55, 690), (1180, 690), db.at("bottom", 0.5)],
              "Reads & writes", "JDBC", lx=700, ly=690)
     s += rel([eva.at("bottom", 0.85), (eva.x + eva.w * 0.85, 650), (1150, 650), db.at("bottom", 0.35)],
@@ -376,7 +387,8 @@ def performance():
     s += element(org, "course · section · team · student", "Component: Shared foundation", "The org/enrollment model", ext=True)
     s += database(db, "Database", "Container: MySQL 8", "WARs, peer evaluations")
     s += legend(W, 766, [("el", "container or component"), ("ext", "shared foundation"), ("db", "data store"),
-                         ("zone", "container boundary"), ("rel", "relationship")])
+                         ("zone", "container boundary"), ("rel", "relationship"),
+                         ("bad", "foundation depends on a feature")])
     return s + "</svg>\n"
 
 
