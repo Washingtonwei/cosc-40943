@@ -157,10 +157,10 @@ The SEI calls this a utility tree. High on both, plus any hard constraint (a man
 
 | Rank | Requirement | Handles | Drives |
 |---|---|---|---|
-| 1 | Student records stay confidential (FERPA) | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | `KD-2`, `KD-4` |
-| 2 | One instructor, no operations team | `AVL-uptime`, `CO-no-ops-team` | `KD-1`, `KD-3` |
-| 3 | Next year's students can extend it | `MNT-feature-locality`, `MNT-service-layer` | `KD-2`, `KD-5`, `KD-7` |
-| 4 | No lost work under concurrent editing | `ROB-no-overwrite` | `KD-6` |
+| 1 | Student records stay confidential (FERPA) | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | `KD-ram-module`, `KD-self-issued-jwt` |
+| 2 | One instructor, no operations team | `AVL-uptime`, `CO-no-ops-team` | `KD-modular-monolith`, `KD-relational-graph` |
+| 3 | Next year's students can extend it | `MNT-feature-locality`, `MNT-service-layer` | `KD-ram-module`, `KD-no-codegen`, `KD-vertical-slices` |
+| 4 | No lost work under concurrent editing | `ROB-no-overwrite` | `KD-section-locking` |
 
 ::: key
 Reuse the identifiers you already have. Include at least one `SEC-*`.
@@ -383,7 +383,7 @@ The most common change on any project is "change how this one feature works." Ho
 :::
 
 ::: note
-Three versus one. Layering is good, inside a domain. As the top-level division it spreads every feature across the tree. Project Pulse's activity package holds the whole slice: Activity, ActivityController, ActivityService, ActivityRepository, ActivitySecurityService. KD-7 records it.
+Three versus one. Layering is good, inside a domain. As the top-level division it spreads every feature across the tree. Project Pulse's activity package holds the whole slice: Activity, ActivityController, ActivityService, ActivityRepository, ActivitySecurityService. KD-vertical-slices records it.
 :::
 
 ## Features lean on the foundation
@@ -391,7 +391,7 @@ Three versus one. Layering is good, inside a domain. As the top-level division i
 ![Project Pulse performance-tracking component diagram](img/pulse-c4-performance.svg){ height="520" }
 
 ::: note
-Project Pulse's performance-tracking component diagram, the module's C4 redrawn for the projector; the shared foundation is in grey. This is KD-7's rule drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Project Pulse's QS-3 makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-13 records it, and the fix is to move those managers next to the feature they guard.
+Project Pulse's performance-tracking component diagram, the module's C4 redrawn for the projector; the shared foundation is in grey. This is the rule KD-vertical-slices records, drawn out: a feature depends on the shared foundation, never on a sibling feature. activity and evaluation have no arrow between them, so either can change without touching the other. Project Pulse's QS-add-bounded-context makes that checkable, and its own code does not fully meet it yet: the two security arrows here are the catch, because three of security's authorization managers import the activity and evaluation packages, so the foundation depends on the features. TD-feature-locality records it, and the fix is to move those managers next to the feature they guard.
 :::
 
 ## Divide the team the same way
@@ -467,7 +467,7 @@ A modular monolith: one deployable, divided inside by domain.
 :::
 
 ::: note
-Simple operations of a monolith, most of the maintainability of services, and the boundary already drawn if one module ever needs to scale alone. This is Project Pulse, KD-1 plus KD-7.
+Simple operations of a monolith, most of the maintainability of services, and the boundary already drawn if one module ever needs to scale alone. This is Project Pulse, KD-modular-monolith plus KD-vertical-slices.
 :::
 
 ## The question for your project {.center}
@@ -594,11 +594,11 @@ Project Pulse, a real incident, found and fixed the same evening, credentials ro
 It was the **absence** of a rule.
 
 ::: key
-Deny by default. A new endpoint fails closed until someone writes its rule.
+Deny by default. A new API endpoint fails closed until someone writes its rule.
 :::
 
 ::: note
-Pull request 61 on Project Pulse. The final permitAll is still there, because the same jar serves the Vue app to every browser: a consequence of KD-1. A deployment decision shaped the security surface. Draw the boundary around everything the deployable exposes, framework endpoints included.
+Pull request 61 on Project Pulse. The final permitAll is still there, because the same jar serves the Vue app to every browser: a consequence of KD-modular-monolith. So deny by default covers only the API: a new path outside it still falls through to permitAll, as actuator did, and needs its own rule. A deployment decision shaped the security surface. Draw the boundary around everything the deployable exposes, framework endpoints included.
 :::
 
 ## Every session is a new teammate
@@ -682,15 +682,15 @@ What is missing? Rewrite it in two minutes with your neighbour.
 :::
 
 ::: note
-Take two or three. Then show Project Pulse's KD-3: one relational database, not relational plus a graph database for requirement links, because a second store is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL. Trade-off: deep traversals are joins. That tells next year's team what not to propose, and when it would become right.
+Take two or three. Then show Project Pulse's KD-relational-graph: one relational database, not relational plus a graph database for requirement links, because a second store is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL. Trade-off: deep traversals are joins. That tells next year's team what not to propose, and when it would become right.
 :::
 
 ## Follow one requirement down
 
 ```mermaid
 flowchart LR
-    s1["SEC-authorization"] --> s2["ASR 1"] --> s3["KD-4 +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-1"] --> s6["tests pass"]
-    m1["MNT-feature-locality"] --> m2["ASR 3"] --> m3["KD-7"] --> m4["package<br/>per domain"] --> m5["QS-3"] -.-> m6["no test:<br/>12 violations"]
+    s1["SEC-authorization"] --> s2["ASR-student-record-<br/>confidentiality"] --> s3["KD-self-issued-jwt +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-cross-team-<br/>denial"] --> s6["tests pass"]
+    m1["MNT-feature-locality"] --> m2["ASR-maintainability-<br/>learnability"] --> m3["KD-vertical-<br/>slices"] --> m4["package<br/>per domain"] --> m5["QS-add-bounded-<br/>context"] -.-> m6["no test:<br/>12 violations"]
 ```
 
 ::: key
@@ -698,7 +698,7 @@ A chain with no test at the end is a decision you are trusting people to remembe
 :::
 
 ::: note
-Two of Project Pulse's chains, from its architecture-of-record and traceability matrix. Forward: does every significant requirement reach a proof? Backward: does every part exist because a requirement asked? Security is proved on every build. Maintainability is proved by nothing: KD-7 is recorded, the packages are drawn, and the code breaks the rule 12 times (TD-13), because nothing fails when it drifts. The recorded fix is an ArchUnit test. Checkpoint 1 asks for the first four links; week 8 teaches the whole chain.
+Two of Project Pulse's chains, from its architecture-of-record and traceability matrix. Forward: does every significant requirement reach a proof? Backward: does every part exist because a requirement asked? Security is proved on every build. Maintainability is proved by nothing: KD-vertical-slices is recorded, the packages are drawn, and the code breaks the rule 12 times (TD-feature-locality), because nothing fails when it drifts. The recorded fix is an ArchUnit test. Checkpoint 1 asks for the first four links; week 8 teaches the whole chain.
 :::
 
 ## Ask the agent for an architecture
@@ -733,7 +733,7 @@ Every label on the spoon is a real answer to a real problem. Multi-AZ runs copie
 :::
 
 ::: note
-Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 of your specification has a number, and read Project Pulse's quality goals and KD-1, KD-3, KD-7. The six-point checklist is on the Studio page; point at it, do not read it out.
+Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 of your specification has a number, and read Project Pulse's quality goals and KD-modular-monolith, KD-relational-graph, KD-vertical-slices. The six-point checklist is on the Studio page; point at it, do not read it out.
 :::
 
 ## Draft in this order

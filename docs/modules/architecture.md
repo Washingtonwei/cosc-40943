@@ -83,7 +83,7 @@ Here are the attributes that most often shape an architecture, each with the que
 | **Performance** | How fast, at what percentile, under what load? | `PER-report-load`: the instructor dashboard and report views in 500 ms at the 95th percentile. | At this load, one application and one database, with calls between modules made in-process. Every network hop added spends part of the 500 ms. |
 | **Scalability** | How much load, and how fast does it grow? | `SCA-cohort-load`: about 75 users, with up to 100 people editing at once near a deadline. | One deployable is enough ([4.7](#47-one-deployable-or-several)). Uploaded files are the only store that grows, so they go to object storage, not the database (`CO-blob-source-material`). |
 | **Robustness** | What happens when something fails? | `ROB-edit-loss-bound`: a crash loses at most 10 seconds of edits. `AVL-llm-degradation`: when the language model is down, everything else keeps working. | The browser saves to the server at least every 10 seconds. The language model sits behind one server-side proxy, so its failure is contained in one place. |
-| **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. This is a constraint, `CO-no-ops-team`, not a section 9 quality attribute, and it pushes the structure as hard as any of them. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-1`, [4.7](#47-one-deployable-or-several)) |
+| **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. This is a constraint, `CO-no-ops-team`, not a section 9 quality attribute, and it pushes the structure as hard as any of them. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-modular-monolith`, [4.7](#47-one-deployable-or-several)) |
 
 Read the availability row twice. The adjective "available" says nothing about structure; the number decides it. At 99%, the simplest deployment passes. At 99.99%, it fails, and the architecture changes.
 
@@ -109,10 +109,10 @@ The significant few are the ones high on both, plus any hard constraint (a manda
 
 | Rank | Requirement | Specification handles | Importance × difficulty | Drives |
 |---|---|---|---|---|
-| 1 | Confidentiality of student records, which are regulated under FERPA | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | High × High | `KD-2`, `KD-4`, and the two-layer ownership and membership authorization |
-| 2 | Low operational burden: one instructor, no operations team | `AVL-uptime`, `CO-no-ops-team` | High × Medium | `KD-1` (single deployable), `KD-3` (one relational database) |
-| 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium | `KD-2`, `KD-5`, `KD-7` (domain slices, layered within) |
-| 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium | `KD-6` (section-level locking), plus autosave |
+| 1 | Confidentiality of student records, which are regulated under FERPA | `SEC-authorization`, `SEC-ferpa`, `CO-ferpa` | High × High | `KD-ram-module`, `KD-self-issued-jwt`, and the two-layer ownership and membership authorization |
+| 2 | Low operational burden: one instructor, no operations team | `AVL-uptime`, `CO-no-ops-team` | High × Medium | `KD-modular-monolith`, `KD-relational-graph` |
+| 3 | Maintainability: student contributors extend the code every year | `MNT-feature-locality`, `MNT-service-layer` | High × Medium | `KD-ram-module`, `KD-no-codegen`, `KD-vertical-slices` |
+| 4 | No lost authored work under concurrent editing | `ROB-no-overwrite`, `ROB-edit-loss-bound` | High × Medium | `KD-section-locking`, plus autosave |
 
 The **Drives** column is the bridge to the rest of the architecture: each ASR names the key decisions it forced, and each decision in [section 4.11](#411-writing-a-decision-down) names the ASRs that forced it. Row 4 teaches something too. `ROB-no-overwrite` is written for real-time collaborative editing, which Project Pulse's specification defers past the MVP. So the MVP meets it with the simpler mechanism: one person edits a section at a time. A significant requirement does not call for the most elaborate way to meet it.
 
@@ -332,7 +332,7 @@ flowchart LR
     staging -. swap .-> slot
 ```
 
-The SPA and the REST API share one container in production, because the jar serves the Vue app (`KD-1`). Releases go to the staging slot and are swapped into production, and the text beside the diagram adds that schema changes ship as Flyway migrations at deploy time. It is a plain `flowchart`, not C4 syntax, which is the substitute allowed above.
+The SPA and the REST API share one container in production, because the jar serves the Vue app (`KD-modular-monolith`). Releases go to the staging slot and are swapped into production, and the text beside the diagram adds that schema changes ship as Flyway migrations at deploy time. It is a plain `flowchart`, not C4 syntax, which is the substitute allowed above.
 
 The sequence names a real endpoint and a real token lifetime, and the deployment names a real staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
 
@@ -349,7 +349,7 @@ Here is how that looks in Project Pulse, against the packages on the `main` bran
 | `WAR` weekly activity reports | `activity` |
 | `EVA` peer evaluations | `evaluation` |
 | `RUB` rubrics | `rubric` |
-| `SEC` course sections | `section` |
+| `SEC` course sections (not the `SEC-*` security requirements, which share the prefix) | `section` |
 | `TEA` teams | `team` |
 | `STU` students, `INS` instructors | `student`, `instructor` |
 | `ACC` accounts | `user` |
@@ -416,7 +416,7 @@ C4Component
 
 That is a choice, and the alternative is common enough that you have probably seen it: **layered packaging**, with all controllers in one package, all services in another, and all repositories in a third. The Spring PetClinic sample application exists in both forms, which makes it the cleanest comparison available: [`spring-framework-petclinic`](https://github.com/spring-petclinic/spring-framework-petclinic) is packaged by layer (`web`, `service`, `repository`), while [`spring-petclinic`](https://github.com/spring-projects/spring-petclinic) is packaged by domain (`owner`, `vet`, `system`).
 
-Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-7` records. Its quality scenario `QS-3` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-13`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
+Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-vertical-slices` records. Its quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-feature-locality`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
 Project Pulse's performance-tracking component diagram shows the rule at work:
 
@@ -448,7 +448,7 @@ C4Component
     Rel(evaluation, db, "Reads & writes", "JDBC")
 ```
 
-No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` packages, so the foundation depends on the features, which the rule forbids; `TD-13` records it, and the fix is to move those managers next to the feature they guard.
+No arrow runs between `activity` and `evaluation`, so either can change without touching the other; every arrow they send points into the shared foundation, drawn in grey. The two arrows from `security` are the catch. Three of its authorization managers import the `activity` and `evaluation` packages, so the foundation depends on the features, which the rule forbids; `TD-feature-locality` records it, and the fix is to move those managers next to the feature they guard.
 
 **The same argument applies to teams.** Divide a system by layer and the team divides by layer too: a front-end person, a back-end person, a database person. Melvin Conway observed in 1968 that systems end up mirroring the communication structure of the organizations that build them, and it works in both directions. This is why your [project](../project.md) makes every member full stack and assigns work by use case: a defect where two layers meet belongs to nobody when the layers belong to different people.
 
@@ -458,7 +458,7 @@ David Parnas made the deeper version of this argument in 1972: divide a system s
 
 This is the one decision every team must make, and the one the [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md) requires as `KD-deployment-shape` at Checkpoint 1.
 
-**A monolith** is one codebase, one build, and one deployable unit. Project Pulse builds its Vue single-page app into the Spring Boot jar, ships one Docker image, and runs it on one Azure Web App. Its `KD-1` records why: an instructor-scale deployment with no operations team, where "delivery speed and operational simplicity matter more than scaling parts independently." The rejected alternative, separate services or a separately hosted front end, takes one sentence to dismiss: the network and operations complexity is unjustified at this scale. The trade-off is stated as plainly: the application scales only as a whole.
+**A monolith** is one codebase, one build, and one deployable unit. Project Pulse builds its Vue single-page app into the Spring Boot jar, ships one Docker image, and runs it on one Azure Web App. Its `KD-modular-monolith` records why: an instructor-scale deployment with no operations team, where "delivery speed and operational simplicity matter more than scaling parts independently." The rejected alternative, separate services or a separately hosted front end, takes one sentence to dismiss: the network and operations complexity is unjustified at this scale. The trade-off is stated as plainly: the application scales only as a whole.
 
 **Microservices** divide the system into separately deployed services, each organized around one business capability, each owning its own data, communicating over the network. They buy real things:
 
@@ -467,13 +467,13 @@ This is the one decision every team must make, and the one the [template](https:
 - **Independent teams.** Each team owns a service end to end, in whatever language suits it.
 - **Failure isolation.** If recommendations crash, checkout still works.
 
-Here is what those look like at the scale where they pay off. On November 11, 2019, Alibaba's Tmall ran its annual Singles' Day sale and reported a peak of **544,000 orders per second**. At that load, the checkout path and the product-browsing path have completely different traffic shapes, and scaling them together would waste enormous amounts of hardware. Hundreds of engineering teams need to ship without coordinating every release. That is the problem microservices solve.
+Here is what those look like at the scale where they pay off. On November 11, 2019, Alibaba's Tmall ran its annual Singles' Day sale and reported a peak of [**544,000 orders per second**](https://www.thestar.com.my/tech/tech-news/2019/11/21/how-alibaba-powered-billions-of-transactions-on-singles-day-with-zero-downtime). At that load, the checkout path and the product-browsing path have completely different traffic shapes, and scaling them together would waste enormous amounts of hardware. Hundreds of engineering teams need to ship without coordinating every release. That is the problem microservices solve.
 
 **Now count what they cost.** Every call between services is a network call that can be slow, fail, or partly succeed, so you need timeouts, retries, circuit breakers, and a plan for each. A transaction that spanned three tables now spans three services, and it is no longer a transaction. A bug report now needs tracing across services to locate. Every service needs its own pipeline, monitoring, and on-call. None of this is free, and all of it is work that does not deliver a single use case.
 
 **Monolith first.** Martin Fowler's observation, from watching many projects, is that almost every successful microservice system started as a monolith that grew too big and was split, and almost every system built as microservices from the start ended up in serious trouble. The reason is that you cannot draw good service boundaries until you understand the domain, and you understand the domain by building it. A monolith lets you move a boundary by moving a package. Microservices make you move it by migrating data between databases.
 
-It also goes the other way at scale. In 2023 Amazon's Prime Video team described moving an audio and video monitoring service from a distributed design, separate serverless components coordinated over the network, into a single process, and reported that infrastructure costs fell by over 90%. The distributed design was not wrong in principle; it was wrong for that workload, and nobody had checked.
+It also goes the other way at scale. In 2023 Amazon's Prime Video team [described moving](https://web.archive.org/web/20240805183535/https://www.primevideotech.com/video-streaming/scaling-up-the-prime-video-audio-video-monitoring-service-and-reducing-costs-by-90) an audio and video monitoring service from a distributed design, separate serverless components coordinated over the network, into a single process, and reported that infrastructure costs fell by over 90%. The distributed design was not wrong in principle; it was wrong for that workload, and nobody had checked.
 
 **The middle option is the one to aim for: a modular monolith.** One deployable, but divided inside by domain, with each module owning its own slice of the code (section 4.6) and talking to the others through their service interfaces rather than reaching into their tables. You get the simple operations of a monolith and most of the maintainability of services, and if one module ever does need to scale separately, the boundary is already drawn. This is what Project Pulse is.
 
@@ -491,7 +491,7 @@ An **architectural pattern** is a reusable solution to a problem that keeps occu
 
 ![Model-view-controller in a Vue component and in Spring: event handlers update state that re-renders the template; a Spring controller returns the model as a JSON view](../slides/img/pattern-mvc.svg)
 
-**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.9 is about what happens when a request reaches the end of that chain without matching any rule.
+**Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. Section 4.9 is about what the authorization filter does with a request that none of its rules matches.
 
 ![Pipes and filters: an HTTP request passes CORS, authentication, and authorization filters before the controller, and each can reject it; a machine learning pipeline has the same shape](../slides/img/pattern-pipes-and-filters.svg)
 
@@ -530,7 +530,7 @@ Section 8.1 of the template names the trust boundary and then asks three questio
 
 **The trust boundary is the REST API application, and it covers every path that application answers, not only `/api/v1`.** The Vue app runs in the user's browser, outside the boundary, so every request is authenticated and authorized on the server. Project Pulse learned this on September 6, 2026. Its security rules protected every route under `/api/v1/**`. Spring Boot Actuator's management endpoints live at `/actuator/**`, outside that prefix, so they fell through to the last rule in the chain, `.anyRequest().permitAll()`. With the `env` endpoint exposed and its masking turned off, any anonymous caller could fetch one URL and read the production database and mail credentials in plain text. They were stored in Azure Key Vault and had never been committed to git. Every item on the usual secrets checklist was satisfied, and the secrets leaked anyway, through an endpoint no feature used and no use case mentioned.
 
-Nobody wrote a rule that made actuator public. It was the absence of a rule. The fix, in [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), made it structural: any API route without an explicit rule is now **denied** by default, so a new endpoint fails closed until someone writes its rule, and the actuator endpoints get rules of their own. The final `permitAll()` is still there, because the same jar serves the Vue app's files to every browser, which is a direct consequence of `KD-1`. That is the lesson for your trust boundary: an architecture decision about deployment shaped the security surface, and the boundary has to cover everything the deployable exposes, including what came with the framework. The incident, the exposed values, and the credential rotation are recorded as `TD-1` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and the full case is taught in week 12 with observability.
+Nobody wrote a rule that made actuator public. It was the absence of a rule. The fix, in [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), made it structural: any route under the API base URL without an explicit rule is now **denied** by default, so a new API endpoint fails closed until someone writes its rule, and the actuator endpoints get rules of their own. The final `permitAll()` is still there, because the same jar serves the Vue app's files to every browser, which is a direct consequence of `KD-modular-monolith`. So deny by default covers only the API. A new path outside it, from a library or a framework feature someone switches on, still falls through to `permitAll()` exactly as actuator did, and needs a rule of its own. That is the lesson for your trust boundary: an architecture decision about deployment shaped the security surface, and the boundary has to cover everything the deployable exposes, including what came with the framework. The incident, the exposed values, and the credential rotation are recorded as `TD-actuator-exposure` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and the full case is taught in week 12 with observability.
 
 **Secrets never appear in the architecture document or the repository.** Say where they will live (environment variables, a vault) and who can read them, never what they are.
 
@@ -587,7 +587,7 @@ A decision that lives only in the heads of the people who made it will be re-arg
 - **Rejected:** what you did not choose, and why not.
 - **Trade-off:** what this choice costs, stated plainly.
 
-The **rejected alternative** is the part that does the work. A decision without one is a description: "we use a relational database" tells a reader nothing they could not learn from the code. "We use one relational database, not a relational one plus a graph database for the requirement links, because a second datastore is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL" tells them what not to propose next year, and under what conditions it would become the right proposal after all. That example is Project Pulse's `KD-3`.
+The **rejected alternative** is the part that does the work. A decision without one is a description: "we use a relational database" tells a reader nothing they could not learn from the code. "We use one relational database, not a relational one plus a graph database for the requirement links, because a second datastore is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL" tells them what not to propose next year, and under what conditions it would become the right proposal after all. That example is Project Pulse's `KD-relational-graph`.
 
 The **trade-off** is the part that shows you understood the decision. Every real decision costs something. If you cannot say what yours costs, you have not yet understood it.
 
@@ -600,17 +600,17 @@ The **trade-off** is the part that shows you understood the decision. Every real
 title: Two requirements traced from specification to proof in Project Pulse
 ---
 flowchart LR
-    s1["SEC-authorization<br/>a student reaches only<br/>their own team's work"] --> s2["ASR rank 1<br/>confidentiality of<br/>student records"]
-    s2 --> s3["KD-4 plus the<br/>two-layer authorization"]
+    s1["SEC-authorization<br/>a student reaches only<br/>their own team's work"] --> s2["ASR-student-record-<br/>confidentiality"]
+    s2 --> s3["KD-self-issued-jwt<br/>plus the two-layer<br/>authorization"]
     s3 --> s4["security package:<br/>route guards and<br/>team-scoped queries"]
-    s4 --> s5["QS-1<br/>every cross-team<br/>request refused"]
+    s4 --> s5["QS-cross-team-denial<br/>every cross-team<br/>request refused"]
     s5 --> s6["ActivitySecurityServiceTest<br/>and others: passing"]
 
-    m1["MNT-feature-locality<br/>a new feature edits<br/>no sibling module"] --> m2["ASR rank 3<br/>student contributors<br/>extend the code"]
-    m2 --> m3["KD-7<br/>domain slices,<br/>layered within"]
+    m1["MNT-feature-locality<br/>a new feature edits<br/>no sibling module"] --> m2["ASR-maintainability-<br/>learnability"]
+    m2 --> m3["KD-vertical-slices<br/>domain slices,<br/>layered within"]
     m3 --> m4["one package<br/>per domain"]
-    m4 --> m5["QS-3<br/>a new feature touches<br/>no other package"]
-    m5 -.-> m6["no test: checked by review,<br/>and the code breaks the rule<br/>12 times (TD-13)"]
+    m4 --> m5["QS-add-bounded-context<br/>a new feature touches<br/>no other package"]
+    m5 -.-> m6["no test: checked by review,<br/>and the code breaks the rule<br/>12 times (TD-feature-locality)"]
 ```
 
 The dashed arrow is the point of the second chain. Project Pulse's most important quality attribute is proved by tests that run on every build. Its maintainability rule is proved by nothing: the decision is recorded, the structure is drawn, and the code has drifted from both, because nothing fails when it does. The fix Project Pulse records is an architecture test (ArchUnit) that fails the build on a new violation. A chain with no test at the end is a decision you are trusting people to remember.
@@ -630,13 +630,13 @@ Your template asks for the first four links at Checkpoint 1. A quality scenario 
 
 Every label on the spoon is a real answer to a real problem. Multi-AZ runs copies of a system in separate data centers so that one can burn down without an outage, which a 99.99% availability target needs. Project Pulse's `AVL-uptime` asks for 99%. (Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.)
 
-**The second failure is inconsistency.** Each agent session starts with no memory of the last, so it reinvents every convention nobody wrote down: a new error format here, a direct call to the system clock there. [Section 4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way) is the defense.
+**The second failure is inconsistency:** every convention nobody wrote down gets reinvented by the next session ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)).
 
 ## 6. Risks and mitigations
 
 | Risk (classic and AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
-| **Over-engineering.** A distributed design, or infrastructure, that no requirement asks for. The AI-introduced half is speed: an agent produces a complete, confident, well-diagrammed distributed design in a minute, and it looks like more work than yours did. | Asking which requirement forces each part, and noticing when none does | Every container and every decision cites an ASR. A part with no citation is cut or becomes an explicit future option in section 11. |
+| **Over-engineering.** A distributed design, or infrastructure, that no requirement asks for. The AI-introduced half is speed: an agent produces a complete, confident, well-diagrammed distributed design in a minute, and it looks like more work than yours did. | Asking which requirement forces each part, and noticing when none does | Every container and every decision cites an ASR. A part with no citation is cut, or named in a decision's **Rejected** line with the requirement that would bring it back. |
 | **Architecture by feature list.** Components invented from nouns in the use cases, and the quality attributes never consulted. | Noticing that the ASR table is empty, or that no decision cites it | Write the ASR table first. Every decision names its driver. |
 | **The map with holes.** A use case area or an external system nobody placed, found when someone starts building it. | Checking the component table against the use case file, row by row | The two checks at the end of template section 5.2, run before every checkpoint. |
 | **Up-front over-design.** Components designed down to classes and endpoints before any code exists. | Asking whether this detail would be expensive to change later | The reversibility test. Detail that fails it goes to the week 7 design-of-record. |
@@ -652,7 +652,7 @@ Every label on the spoon is a real answer to a real problem. Multi-AZ runs copie
 - **In studio:** fill template sections 1 through 5, section 8.1, and section 9, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
 - **Deliverable and assessment:** the document, merged to `main` by 11:59 pm Friday. Your TA checks it over the weekend against the six-point checklist on the studio page and replies by Sunday evening with one issue in your repository. The check reads whether every use case area and every external system has a home, whether each decision cites the requirement that forced it and names what it rejected, and whether the security section answers its three questions. It does not reward length: a short document that names everything is the goal.
 
-There is no individual assignment for this module. The Project Pulse architecture-of-record is your worked example: read its Quality Goals, its ASR table, and `KD-1`, `KD-3`, and `KD-7` before you write your own.
+There is no individual assignment for this module. The Project Pulse architecture-of-record is your worked example: read its Quality Goals, its ASR table, and `KD-modular-monolith`, `KD-relational-graph`, and `KD-vertical-slices` before you write your own.
 
 ## 8. Summary / key takeaways
 
@@ -674,6 +674,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 - Len Bass, Paul Clements, and Rick Kazman, *Software Architecture in Practice*, 4th ed. (Addison-Wesley, 2021). The standard text: quality attributes, quality scenarios, tactics, and the utility tree behind section 4.3.
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
+- Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in section 4.6.
 - Michael Nygard, [*Documenting Architecture Decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the origin of the architecture decision record.
 - Philippe Kruchten, "The 4+1 View Model of Architecture," *IEEE Software* 12(6), 1995, pp. 42–50. The origin of describing one architecture through several views, which arc42 inherits.
 - Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. The Twin Peaks model in three pages.
@@ -690,7 +691,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 5. Your context diagram shows the system, three kinds of user, and nothing else. What question should your team ask the client before Checkpoint 1, and why is the answer an architecture question?
 6. A teammate packages the backend as `controllers`, `services`, and `repositories`. Describe the most common change on your project, and say how many packages it touches under that layout and under a domain layout.
 7. Your component table has a row for every use case area and none for email, although four use cases send email. What will happen by the time the last area is built?
-8. Project Pulse's security rules covered every route under `/api/v1/**`, and the production credentials leaked anyway. Explain how, and say which line of the fix makes the same mistake impossible for a new endpoint.
+8. Project Pulse's security rules covered every route under `/api/v1/**`, and the production credentials leaked anyway. Explain how, and say which line of the fix makes the same mistake impossible for a new API endpoint. Which new paths does that line not cover, and what must happen when one appears?
 9. A key decision in your document reads: "We use PostgreSQL." Say what is missing, and rewrite it.
 10. Months later, your team reverses `KD-deployment-shape` because one part really does need to scale on its own. What happens to the original entry, and why does it stay in the document?
 11. A teammate wants to fill in the runtime view before Checkpoint 1, with a sequence diagram for every use case, so the agent has a complete picture. What do you tell them, and when does that view get drawn?

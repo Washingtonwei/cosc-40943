@@ -186,7 +186,7 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 
 - Section 9 of your specification has a number in every quality attribute. The architecture's requirements table is built from them.
 - Your use case areas are settled enough to list. Every area gets a row in the architecture.
-- Read Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md): its Quality Goals, its architecturally significant requirements, and `KD-1`, `KD-3`, and `KD-7`.
+- Read Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md): its Quality Goals, its architecturally significant requirements, and `KD-modular-monolith`, `KD-relational-graph`, and `KD-vertical-slices`.
 
 | When | What your team does |
 |---|---|
