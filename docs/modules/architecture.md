@@ -11,19 +11,20 @@ By the end of this module, a student can:
 1. Define architecture as the set of decisions that are expensive to change, and use the reversibility test to sort a decision into "decide now" or "defer to the design of one use case area."
 2. Explain why the same features can be delivered by many structures, and why quality attributes and constraints, not functionality, choose among them.
 3. Identify a project's architecturally significant requirements, rank them by importance and difficulty, and cite them by their existing specification identifiers.
-4. Name the four views an architecture-of-record describes, the question each answers, and why two of them wait for code; draw C4 context and container diagrams in mermaid that stand on their own: titled, keyed, and readable with the colors removed.
-5. Decompose a system by domain, mapping use case areas to components, and explain why layering belongs inside a domain module rather than above it.
-6. Choose between one deployable and several for a given set of requirements, name the requirement that would force the other choice, and resist a distributed design no requirement asks for.
-7. Name a system's trust boundary and explain how a system can leak data that no feature ever touched.
-8. Name the crosscutting concepts every component must share, write the first ones before an agent builds a second component, and keep each rule's reasoning in the architecture-of-record with a one-line instruction in the charter.
-9. Record a key decision with its driving requirement, context, rejected alternative, and trade-off.
-10. Judge an agent's proposed architecture by asking which requirement forces each part of it.
+4. Name the four views an arc42 architecture-of-record describes, the question each answers, and why two of them wait for code.
+5. Draw C4 context and container diagrams in mermaid that stand on their own: titled, keyed, and readable with the colors removed.
+6. Decompose a system by domain, mapping use case areas to components, and explain why layering belongs inside a domain module rather than above it.
+7. Choose between one deployable and several for a given set of requirements, name the requirement that would force the other choice, and resist a distributed design no requirement asks for.
+8. Name a system's trust boundary and explain how a system can leak data that no feature ever touched.
+9. Name the crosscutting concepts every component must share, write the first ones before an agent builds a second component, and keep each rule's reasoning in the architecture-of-record with a one-line instruction in the charter.
+10. Record a key decision with its driving requirement, context, rejected alternative, and trade-off.
+11. Judge an agent's proposed architecture by asking which requirement forces each part of it.
 
 ## 2. Where it fits
 
 - **Prerequisites:** [Requirements as the Contract](spec-driven-requirements.md), where your team wrote the quality attributes and constraints this module turns into decisions, and [Context Engineering](context-engineering.md), which treated the specification as the context an agent works from. The architecture-of-record joins it as the second half of that context.
-- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Before the week 8 studio hands an agent its first real work, your section 8.2 names the conventions every component shares ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). Security, which enters here, threads on through implementation, static analysis, and CI/CD.
-- **How it's taught:** two lecture days in week 6. Your team drafts its architecture-of-record in the Oct 2 studio from the [architecture template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md), and revises it all term as use cases are built.
+- **Leads into:** the design-of-record in week 7, which takes one use case area from this map and designs it against real code, and the proving slice at [Checkpoint 2](../project.md#checkpoints), which shows whether the map was right. Before the week 8 studio hands an agent its first build work, your section 8.2 names the conventions every component shares ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)). Security, which enters here, threads on through implementation, static analysis, and CI/CD.
+- **How it's taught:** two lecture days in week 6. Your team drafts its architecture-of-record in the week 6 studio from the [architecture template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/architectural-design.md), and revises it all term as use cases are built.
 - **Course outcome it delivers:** [making and defending design and architecture decisions](../syllabus.md#learning-outcomes) (outcome 2), with the alternatives considered and the reasoning behind the choice.
 
 ## 3. Motivation
@@ -96,7 +97,7 @@ This is the argument of Bass, Clements, and Kazman's *Software Architecture in P
 
 ### 4.3 Architecturally significant requirements
 
-Not every quality attribute shapes the architecture. Usability is the clearest case. `USE-wcag-aa` and `USE-keyboard-operable` are real requirements, and they matter to every user, but they are met screen by screen, in the design of each view; getting one wrong early costs a redesign of a page, not of the system. The same holds for single requirements: "Error messages shall name the field that failed validation" is met by one line in one component. The **architecturally significant requirements** (ASRs) are the few where a wrong guess costs a redesign rather than a bug fix. They are almost always quality attributes and constraints.
+Not every quality attribute shapes the architecture. Usability is the clearest case. `USE-wcag-aa` and `USE-keyboard-operable` matter to every user, but they are met screen by screen, in the design of each view; getting one wrong early costs a redesign of a page, not of the system. The same holds for single requirements: "Error messages shall name the field that failed validation" is met by one line in one component. The **architecturally significant requirements** (ASRs) are the few where a wrong guess costs a redesign rather than a bug fix. They are almost always quality attributes and constraints.
 
 An ASR is a specific requirement, not an attribute category. One attribute can produce several ASRs, or none: Project Pulse's availability requirements feed two of its seven ASRs (ranks 2 and 7), and its usability requirements feed none.
 
@@ -334,9 +335,9 @@ flowchart LR
 
 The SPA and the REST API share one container in production, because the jar serves the Vue app (`KD-modular-monolith`). Releases go to the staging slot and are swapped into production, and the text beside the diagram adds that schema changes ship as Flyway migrations at deploy time. It is a plain `flowchart`, not C4 syntax, which is the substitute allowed above.
 
-The sequence names a real endpoint and a real token lifetime, and the deployment names a real staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
+The sequence names an endpoint and a token lifetime, and the deployment names a staging slot: facts that exist only once the code and the pipeline do. At Checkpoint 1 your team knows none of those things yet, and that is fine.
 
-One caution, and it is a lesson in its own right. Blob Storage and the LLM service appear on Project Pulse's container and deployment diagrams, but no code calls either of them yet; they are planned, drawn so the map is complete. A real project's architecture runs ahead of its code. The honest move is to say which parts are planned, which is what the `provisional` status in your template's component table is for.
+Blob Storage and the LLM service appear on both diagrams, but no code calls either of them yet: the map runs ahead of the code, which [section 4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) takes up.
 
 ### 4.6 Decomposing by domain: from use case areas to components
 
@@ -353,12 +354,12 @@ Here is how that looks in Project Pulse, against the packages on the `main` bran
 | `TEA` teams | `team` |
 | `STU` students, `INS` instructors | `student`, `instructor` |
 | `ACC` accounts | `user` |
-| Ten RAM areas (documents, artifacts, links, glossary, collaboration, and more) | five packages under `ram/`: `document`, `requirement`, `usecase`, `glossary`, `collaboration` |
-| Cross-cutting | `security` (authentication), `system` (email, the response envelope, clocks, scheduling) |
+| The RAM areas (documents, artifacts, links, glossary, collaboration, AI, and more) | five packages under `ram/`: `document`, `requirement`, `usecase`, `glossary`, `collaboration` |
+| Cross-cutting | `security` (authentication), `system` (email, the response envelope, clocks, scheduling), `course` (the root of the org model, which no use case area owns) |
 
 Two lessons are in that table. First, the mapping is mostly one area to one package, and where it is not, several related areas share one component. That is fine. The rule is that **every area has a home**, not that each has its own. Second, the cross-cutting components are named explicitly. If they are not, each area builds its own email sender and its own permission check, and you have six of each by the time the last area ships.
 
-The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in a real project, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it. Here is that diagram:
+The table shows the code. Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md) is a step ahead of it: its RAM component diagram names ten components, and five of them, `validation`, `review`, `export`, `sourcematerial`, and `ai`, have no package yet. They were drawn from use case areas so the map is complete, and they stay provisional until someone builds them. That is breadth-complete, depth-shallow in practice, and it is what the Status column in your template's component table records: every row starts `provisional` and becomes `proven` once a use case has been built through it. Here is that diagram:
 
 ```mermaid
 C4Component
@@ -416,7 +417,7 @@ C4Component
 
 That is a choice, and the alternative is common enough that you have probably seen it: **layered packaging**, with all controllers in one package, all services in another, and all repositories in a third. The Spring PetClinic sample application exists in both forms, which makes it the cleanest comparison available: [`spring-framework-petclinic`](https://github.com/spring-petclinic/spring-framework-petclinic) is packaged by layer (`web`, `service`, `repository`), while [`spring-petclinic`](https://github.com/spring-projects/spring-petclinic) is packaged by domain (`owner`, `vet`, `system`).
 
-Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any real project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-vertical-slices` records. Its quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-feature-locality`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
+Layering is a good idea. Separating presentation from business logic from data access lets you think about one concern at a time, test the logic without a database, and replace one layer without rewriting the others. The mistake is making it the **top-level** division. In a layered package tree, one feature is spread across three packages, and the most common change on any project, "change how this one feature works," touches all three. As the application grows, each layer gets large enough on its own that you need to divide it again anyway, and the natural way to divide it is by domain. So divide by domain first and layer inside each domain, which is what Project Pulse's `KD-vertical-slices` records. Its quality scenario `QS-add-bounded-context` makes the rule checkable: a new feature package is added with zero changes to other feature packages, no feature reads a sibling's repositories, and no two features depend on each other in a cycle. Project Pulse's own code does not meet that yet. Its architecture-of-record lists every remaining violation as `TD-feature-locality`, each with an open issue to fix it, and a planned ArchUnit test will keep new ones out. A rule written down precisely enough can be checked, and checking it is how you find out the code has drifted from the map.
 
 Project Pulse's performance-tracking component diagram shows the rule at work:
 
@@ -460,7 +461,7 @@ This is the one decision every team must make, and the one the [template](https:
 
 **A monolith** is one codebase, one build, and one deployable unit. Project Pulse builds its Vue single-page app into the Spring Boot jar, ships one Docker image, and runs it on one Azure Web App. Its `KD-modular-monolith` records why: an instructor-scale deployment with no operations team, where "delivery speed and operational simplicity matter more than scaling parts independently." The rejected alternative, separate services or a separately hosted front end, takes one sentence to dismiss: the network and operations complexity is unjustified at this scale. The trade-off is stated as plainly: the application scales only as a whole.
 
-**Microservices** divide the system into separately deployed services, each organized around one business capability, each owning its own data, communicating over the network. They buy real things:
+**Microservices** divide the system into separately deployed services, each organized around one business capability, each owning its own data, communicating over the network. They buy four things:
 
 - **Independent scaling.** Scale only the service under load, not the whole system.
 - **Independent deployment.** Ship one service without redeploying the others.
@@ -589,7 +590,7 @@ A decision that lives only in the heads of the people who made it will be re-arg
 
 The **rejected alternative** is the part that does the work. A decision without one is a description: "we use a relational database" tells a reader nothing they could not learn from the code. "We use one relational database, not a relational one plus a graph database for the requirement links, because a second datastore is a second thing to back up, migrate, and secure, and a team's graph is small enough for SQL" tells them what not to propose next year, and under what conditions it would become the right proposal after all. That example is Project Pulse's `KD-relational-graph`.
 
-The **trade-off** is the part that shows you understood the decision. Every real decision costs something. If you cannot say what yours costs, you have not yet understood it.
+The **trade-off** is the part that shows you understood the decision. Every decision costs something. If you cannot say what yours costs, you have not yet understood it.
 
 **A decision that turns out wrong is not erased.** It is marked superseded, and a new decision is added that says what replaced it and why. The history of why you changed your mind is as valuable as the decision itself.
 
@@ -628,7 +629,7 @@ Your template asks for the first four links at Checkpoint 1. A quality scenario 
 
 ![A man scoops cereal from a small bowl with an enormous spoon labelled microservices, serverless, Multi AZ, and auto scaling; the bowl is labelled "your app with 0 users"](../slides/img/overengineering-giant-spoon.jpg)
 
-Every label on the spoon is a real answer to a real problem. Multi-AZ runs copies of a system in separate data centers so that one can burn down without an outage, which a 99.99% availability target needs. Project Pulse's `AVL-uptime` asks for 99%. (Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.)
+Every label on the spoon answers a problem someone has. Multi-AZ runs copies of a system in separate data centers so that one can burn down without an outage, which a 99.99% availability target needs. Project Pulse's `AVL-uptime` asks for 99%. (Meme made with imgflip, shared by Vishakha Sadhwani on LinkedIn, April 2026; the photo's original source is unknown.)
 
 **The second failure is inconsistency:** every convention nobody wrote down gets reinvented by the next session ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)).
 
@@ -646,7 +647,7 @@ Every label on the spoon is a real answer to a real problem. Multi-AZ runs copie
 
 ## 7. Hands-on (studio)
 
-**Studio (team, own project), Fri Oct 2**
+**Studio (team, own project, week 6)**
 
 - **Goal:** draft your team's architecture-of-record, breadth-complete and depth-shallow, from your specification. This is the second half of [Checkpoint 1](../project.md#checkpoints); your TA reviews the first half, the specification, with you during the same hour.
 - **In studio:** fill template sections 1 through 5, section 8.1, and section 9, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
@@ -672,6 +673,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 ## 9. Key papers and further reading
 
 - Len Bass, Paul Clements, and Rick Kazman, *Software Architecture in Practice*, 4th ed. (Addison-Wesley, 2021). The standard text: quality attributes, quality scenarios, tactics, and the utility tree behind section 4.3.
+- Grady Booch, "On Design," blog essay, 2006, quoted in Frank Buschmann, Kevlin Henney, and Douglas C. Schmidt, *Pattern-Oriented Software Architecture*, Vol. 5 (Wiley, 2007), p. 214. The cost-of-change definition in section 4.1.
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
 - Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in section 4.6.
@@ -698,6 +700,7 @@ There is no individual assignment for this module. The Project Pulse architectur
 12. Three agent sessions built three endpoints this week. One returns `{"error": "..."}`, one a bare 500 page, and one your team's envelope. What was missing before the first session, where does it go, and what does your charter say about it?
 13. A teammate copies the stakeholder table from vision and scope into section 1.3 of the architecture-of-record "so the document is complete." What goes wrong within a month, and what should 1.3 say instead?
 14. Your ASR table's top row is a `SEC-*` requirement. Trace it through its decision and its part of the structure to the test that proves it holds. Where does your chain stop today, and what does that tell you?
+15. An agent's design for your project includes a message queue between the web app and the database. Say what requirement would justify it, where in your specification you would look for one, and what you write in the decision if you find none.
 
 ## Related
 

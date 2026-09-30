@@ -347,11 +347,11 @@ Your use case areas.
 |---|---|
 | `WAR`, `EVA`, `RUB` | `activity`, `evaluation`, `rubric` |
 | `SEC`, `TEA`, `STU`, `INS` | `section`, `team`, `student`, `instructor` |
-| Ten RAM areas | five packages under `ram/` |
-| Cross-cutting | `security`, `system` |
+| The RAM areas | five packages under `ram/` |
+| Cross-cutting | `security`, `system`, `course` |
 
 ::: note
-From backend/src/main/java/team/projectpulse on main. Two lessons. Every area has a home, but not necessarily its own: ten RAM areas share five packages. And the cross-cutting components are named, or every area builds its own email sender and permission check.
+From backend/src/main/java/team/projectpulse on main. Two lessons. Every area has a home, but not necessarily its own: the RAM areas share five packages, and `course`, the root of the org model, belongs to no area. And the cross-cutting components are named, or every area builds its own email sender and permission check.
 :::
 
 ## RAM: the map ahead of the code
