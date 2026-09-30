@@ -395,7 +395,7 @@ The most common change on any project is "change how this one feature works." Ho
 :::
 
 ::: note
-One versus six. The left is Project Pulse on main. The right is made up: the same weekly activity report files with only the folders moved, no code changed. At Project Pulse's size those layer folders would hold 19 controllers, 30 services, 37 DTOs, and 50 converters. Layering is good, inside a domain; as the top-level division it spreads every feature across the tree. KD-vertical-slices records the choice. Same "vertical" as the proving slice: that slice is one use case through every layer, and this package holds all of an area's slices.
+One versus six. The left is Project Pulse on main. The right is made up: the same weekly activity report files with only the folders moved, no code changed. At Project Pulse's size those layer folders would hold 19 controllers, 30 services, 37 data transfer objects (DTOs), and 50 converters. Layering is good, inside a domain; as the top-level division it spreads every feature across the tree. KD-vertical-slices records the choice. Same "vertical" as the proving slice: that slice is one use case through every layer, and this package holds all of an area's slices.
 :::
 
 ## Nobody demos maintainability
@@ -414,6 +414,14 @@ Sommerville, ch. 9 (Lientz and Swanson 1980; Erlikh 2000). This is MNT-feature-l
 
 ::: note
 Martin Fowler, PresentationDomainDataLayering, 2015 (martinfowler.com). Layers are the right idea at a small scale and the wrong top-level division once any layer gets big: split the top level by domain and layer inside each module.
+:::
+
+## One slice of the cake
+
+![Project Pulse's backend as a layer cake: web, business logic, and data access layers run across every package on one shared database, and the activity package is a slice pulled out, holding ActivityController with its converters and DTOs, ActivityService and ActivitySecurityService, ActivityRepository and the Activity entity](img/layer-cake-slice.svg){ height="460" }
+
+::: note
+Project Pulse on main. The layers run across every package; each package is a slice cut straight down through them. Everything a weekly activity report needs, from the endpoint to the repository, sits in the activity column. A change to how reports work stays in that one slice.
 :::
 
 ## The compiler can hold the line
