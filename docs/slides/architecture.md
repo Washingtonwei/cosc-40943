@@ -843,6 +843,7 @@ Take two or three. Then show Project Pulse's KD-relational-graph: one relational
 flowchart LR
     s1["SEC-authorization"] --> s2["ASR-student-record-<br/>confidentiality"] --> s3["KD-self-issued-jwt +<br/>two-layer auth"] --> s4["route guards,<br/>scoped queries"] --> s5["QS-cross-team-<br/>denial"] --> s6["tests pass"]
     m1["MNT-feature-locality"] --> m2["ASR-maintainability-<br/>learnability"] --> m3["KD-vertical-<br/>slices"] --> m4["package<br/>per domain"] --> m5["QS-add-bounded-<br/>context"] -.-> m6["no test:<br/>12 violations"]
+    style m6 stroke-dasharray: 5 5
 ```
 
 ::: key

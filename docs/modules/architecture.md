@@ -625,9 +625,10 @@ flowchart LR
     m3 --> m4["one package<br/>per domain"]
     m4 --> m5["QS-add-bounded-context<br/>a new feature touches<br/>no other package"]
     m5 -.-> m6["no test: checked by review,<br/>and the code breaks the rule<br/>12 times (TD-feature-locality)"]
+    style m6 stroke-dasharray: 5 5
 ```
 
-The dashed arrow is the point of the second chain. Project Pulse's most important quality attribute is proved by tests that run on every build. Its maintainability rule is proved by nothing: the decision is recorded, the structure is drawn, and the code has drifted from both, because nothing fails when it does. The fix Project Pulse records is an architecture test (ArchUnit) that fails the build on a new violation. A chain with no test at the end is a decision you are trusting people to remember.
+Compare where the two chains end. The security chain ends in tests that run on every build. The maintainability chain ends in a dashed arrow: no test, only review, and the code breaks its rule 12 times, because nothing fails when it does. The fix Project Pulse records is an architecture test (ArchUnit) that fails the build on a new violation. A chain with no test at the end is a decision you are trusting people to remember.
 
 Your template asks for the first four links at Checkpoint 1. A quality scenario joins them at Checkpoint 2, the tests arrive as you build, and week 8 teaches the whole chain as traceability.
 
