@@ -527,12 +527,10 @@ Why: you cannot draw good service boundaries until you understand the domain, an
 
 ## The one to aim for
 
-::: key
-A modular monolith: one deployable, divided inside by domain.
-:::
+![Three deployment shapes side by side. Monolith: one deployable with no boundaries inside and one database; to move a boundary, untangle the code first. Modular monolith, marked as the one to aim for and as Project Pulse: one deployable divided into domain packages (activity, team, evaluation) that call each other in-process, one database; to move a boundary, move a package. Microservices: separate deployables with a database each, calling each other over the network; to move a boundary, migrate data between databases, and each service needs its own pipeline, monitoring, and on-call](img/deployment-shapes.svg){ height="480" }
 
 ::: note
-Simple operations of a monolith, most of the maintainability of services, and the boundary already drawn if one module ever needs to scale alone. This is Project Pulse, KD-modular-monolith plus KD-vertical-slices.
+A modular monolith: one deployable, divided inside by domain. Team A was the right-hand shape, Team B the middle one. Read the bottom strip: what it costs to move a boundary, and what it costs to run. Simple operations of a monolith, most of the maintainability of services, and the boundary already drawn if one module ever needs to scale alone. This is Project Pulse, KD-modular-monolith plus KD-vertical-slices.
 :::
 
 ## The question for your project {.center}

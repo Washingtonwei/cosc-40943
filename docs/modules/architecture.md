@@ -460,6 +460,10 @@ It also goes the other way at scale. In 2023 Amazon's Prime Video team [describe
 
 **The middle option is the one to aim for: a modular monolith.** One deployable, but divided inside by domain, with each module owning its own slice of the code ([4.6](#46-decomposing-by-domain-from-use-case-areas-to-components)) and talking to the others through their service interfaces rather than reaching into their tables. You get the simple operations of a monolith and most of the maintainability of services, and if one module ever does need to scale separately, the boundary is already drawn. This is what Project Pulse is.
 
+![Three deployment shapes side by side. Monolith: one deployable with no boundaries inside and one database; to move a boundary, untangle the code first. Modular monolith, marked as the one to aim for and as Project Pulse: one deployable divided into domain packages (activity, team, evaluation) that call each other in-process, one database; to move a boundary, move a package. Microservices: separate deployables with a database each, calling each other over the network; to move a boundary, migrate data between databases, and each service needs its own pipeline, monitoring, and on-call](../slides/img/deployment-shapes.svg)
+
+Team A from the [Motivation](#3-motivation) is the shape on the right; Team B is the one in the middle.
+
 **For your project,** the question is not "which is better?" It is "which requirement would force several deployables?" Write that requirement down. If your specification has no such requirement, if nothing in it needs one part to scale, deploy, or fail independently of the rest, you have your answer and your rejected alternative. Your client's system will serve tens or hundreds of users, and after your team hands it off, someone will have to run it.
 
 ### 4.8 A catalog of patterns, and which ones you will meet
