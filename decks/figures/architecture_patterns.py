@@ -1,4 +1,5 @@
-"""Draw the eight architectural-pattern figures for MODULE-architecture, 4.8.
+"""Draw the eight architectural-pattern figures for MODULE-architecture, 4.8. The six catalog figures
+(broker through API gateway) show a hypothetical Project Pulse at scale and are tagged so.
 
 Informal figures, not technical diagrams: they are the exception to the mermaid rule, and the
 module says so in section 4.4. The SVGs this writes are committed; edit this script and rerun
@@ -125,7 +126,7 @@ def layered():
     s += pill(78, 204, "HTTP request", ACC)
     X = [178, 400, 622]
     L = [("Presentation", "Controller", "ActivityController", "receives the request"),
-         ("Domain logic", "Service", "ActivityService", "applies the business rules"),
+         ("Domain logic", "Service", "ActivityService", "runs the business logic"),
          ("Data access", "Repository", "ActivityRepository", "talks to the database")]
     for x, (layer, t, code, sub) in zip(X, L):
         s += text(x + 95, 112, layer.upper(), ACC, 13, weight="800")
@@ -188,28 +189,29 @@ def pipes():
 
 
 def broker():
-    s = head("Broker", "illustrative",
-             "Broker pattern",
-             "Clients ask the broker for a service by name. The broker looks up a live instance in its registry and "
-             "forwards the request; a failed instance is dropped and a new one registered, and the clients never change.")
-    C = ["Web app", "Mobile app", "Nightly job"]
+    s = head("Broker", "hypothetical: Project Pulse at scale",
+             "Broker pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today. The evaluation service, the activity service, and the reminder job ask the broker "
+             "for the team service by name. The broker looks up a running copy in its registry and forwards the request; a "
+             "failed copy is dropped and a new one registered, and the callers never change.")
+    C = ["Evaluation service", "Activity service", "Reminder job"]
     for i, c in enumerate(C):
-        s += card(34, 84 + i * 92, 150, 70, c)
+        s += card(34, 84 + i * 92, 150, 70, c, size=15)
         s += line(188, 119 + i * 92, 346, 211 - 20 + i * 20)
-    s += text(266, 104, "“send this to grading”", DIM, 14, italic=True)
+    s += text(266, 104, "“send to team-service”", DIM, 14, italic=True)
     s += card(350, 96, 250, 236, "Broker", None, top=True)
     s += f'<rect x="370" y="190" width="210" height="120" rx="8" fill="{SURF2}" stroke="{RULE}"/>'
     s += text(475, 212, "REGISTRY", ACC, 12.5, weight="800")
-    rows = [("grading", "10.0.1.8", OK), ("grading", "10.0.1.7", ALARM), ("email", "10.0.2.3", OK)]
+    rows = [("team-service", "10.0.1.8", OK), ("team-service", "10.0.1.7", ALARM), ("email-service", "10.0.2.3", OK)]
     for i, (n, a, c) in enumerate(rows):
         yy = 240 + i * 26
         s += text(386, yy, n, INK, 14, "start", mono=True)
         s += text(566, yy, a, c, 14, "end", mono=True)
-    s += text(475, 164, "finds a live instance", DIM, 14, italic=True)
-    s += card(700, 70, 250, 72, "grading #1", "10.0.1.7 · down", accent=ALARM, faded=True)
+    s += text(475, 164, "finds a running copy", DIM, 14, italic=True)
+    s += card(700, 70, 250, 72, "team service, copy 1", "10.0.1.7 · down", accent=ALARM, faded=True)
     s += xmark(950, 80)
-    s += card(700, 170, 250, 72, "grading #2", "10.0.1.8 · replaced #1", accent=OK)
-    s += card(700, 270, 250, 72, "email #1", "10.0.2.3")
+    s += card(700, 170, 250, 72, "team service, copy 2", "10.0.1.8 · replaced copy 1", accent=OK)
+    s += card(700, 270, 250, 72, "email service, copy 1", "10.0.2.3")
     s += line(604, 206, 696, 206, "ok")
     s += text(650, 196, "forwards", OK, 13.5, weight="600")
     s += caption("Clients know the broker, never the addresses.")
@@ -217,19 +219,20 @@ def broker():
 
 
 def pubsub():
-    s = head("Publish-subscribe", "illustrative Project Pulse extension",
-             "Publish-subscribe pattern",
-             "The evaluation service publishes an EvaluationSubmitted event to a channel. Email, grade, and audit subscribers "
+    s = head("Publish-subscribe", "hypothetical: Project Pulse at scale",
+             "Publish-subscribe pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today, where evaluation calls the email service directly. The evaluation service "
+             "publishes a PeerEvaluationSubmitted event to a channel. Email, grade, and audit subscribers "
              "each receive it independently; a new analytics subscriber can be added later without changing the publisher.")
     s += card(30, 150, 200, 110, "Evaluation service", "the publisher", size=16)
     s += line(234, 205, 300, 205, "amber")
-    s += pill(390, 176, "EvaluationSubmitted", AMBER)
+    s += pill(390, 176, "PeerEvaluationSubmitted", AMBER, size=12.5)
     s += text(390, 238, "the event, fired once", DIM, 14, italic=True)
     s += f'<rect x="496" y="70" width="36" height="300" rx="10" fill="{SURF2}" stroke="{AMBER}" stroke-width="1.6"/>'
     s += line(480, 205, 492, 205, "amber")
     s += (f'<text x="514" y="220" text-anchor="middle" fill="{AMBER}" font-size="14" font-weight="800" '
           f'transform="rotate(-90 514 220)" letter-spacing="2">CHANNEL</text>')
-    subs = [("Email notifier", "tells the student", False), ("Grade calculator", "updates the average", False),
+    subs = [("Email notifier", "confirms to the student", False), ("Grade calculator", "updates the average", False),
             ("Audit log", "records who did what", False), ("Analytics", "added next year", True)]
     for i, (t, sub, new) in enumerate(subs):
         y = 66 + i * 78
@@ -242,13 +245,14 @@ def pubsub():
 
 
 def queue():
-    s = head("Message queue", "illustrative",
-             "Message queue pattern",
-             "A user asks for a term report. The web app puts a job on the queue and answers 202 Accepted at once. "
-             "Workers take jobs off the queue at their own pace and email the result later.")
-    s += card(28, 140, 150, 96, "Instructor", "“term report”")
+    s = head("Message queue", "hypothetical: Project Pulse at scale",
+             "Message queue pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today; exporting a bundle is specified but not built. A student asks for an export bundle. "
+             "The API puts a job on the queue and answers 202 Accepted at once. Workers take jobs off the queue at their "
+             "own pace and email the file when it is ready.")
+    s += card(28, 140, 150, 96, "Student", "“export bundle”")
     s += line(182, 188, 238, 188)
-    s += card(242, 140, 160, 96, "Web app", "enqueues a job")
+    s += card(242, 140, 160, 96, "API", "enqueues a job")
     s += path("M290,236 C290,280 140,280 140,240", "ok")
     s += pill(215, 290, "202 Accepted, in 50 ms", OK)
     s += line(406, 188, 452, 188, "amber")
@@ -262,17 +266,17 @@ def queue():
     s += card(756, 106, 190, 76, "Worker 1", "takes the next job")
     s += card(756, 204, 190, 76, "Worker 2", "at its own pace")
     s += path("M851,280 C851,392 40,392 40,240", "dim", "6 5")
-    s += text(560, 366, "report emailed when done", DIM, 14, italic=True)
+    s += text(560, 350, "bundle emailed when ready", DIM, 14, italic=True)
     s += caption("Sender and receiver no longer have to be busy at the same moment.")
     return s + "</svg>\n"
 
 
 def replica():
-    s = head("Source-replica", "illustrative",
-             "Source-replica pattern",
-             "The application sends every write to the source database and spreads reads across two replicas, which "
+    s = head("Source-replica", "hypothetical: Project Pulse at scale",
+             "Source-replica pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today, which has one MySQL server. In grading week, Project Pulse sends every write to the source database and spreads reads across two replicas, which "
              "copy the source's changes. If the source fails, a replica is promoted.")
-    s += card(30, 150, 180, 110, "Application", None)
+    s += card(30, 150, 180, 110, "Project Pulse", "grading week")
     s += cylinder(330, 145, 170, 120, "Source", 17, "every write")
     s += cylinder(640, 62, 160, 104, "Replica 1", 16, "reads")
     s += cylinder(640, 250, 160, 104, "Replica 2", 16, "reads")
@@ -280,7 +284,7 @@ def replica():
     s += pill(268, 186, "writes · 5%", ACC, size=12.5)
     s += path("M120,150 C120,70 400,60 634,100", "ok")
     s += path("M120,260 C120,350 400,350 634,306", "ok")
-    s += pill(330, 72, "reads · 95%", OK)
+    s += pill(330, 72, "dashboard reads · 95%", OK)
     s += path("M504,190 C560,180 590,130 634,122", "amber", "6 5")
     s += path("M504,220 C560,230 590,280 634,288", "amber", "6 5")
     s += text(566, 212, "copies", AMBER, 14, "middle", "700")
@@ -290,30 +294,31 @@ def replica():
 
 
 def mainworker():
-    s = head("Main-worker", "illustrative",
-             "Main-worker pattern",
-             "A main process splits a job of 1,000 test suites into four chunks, sends one to each identical worker, "
-             "and merges the four results into one report.")
-    s += card(28, 150, 160, 100, "The job", "1,000 test suites")
+    s = head("Main-worker", "hypothetical: Project Pulse at scale",
+             "Main-worker pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today, where one scheduler loops over every course section. A main process splits "
+             "Monday's reminders for 6,000 course sections into four chunks, sends one to each identical worker, and "
+             "collects the four counts.")
+    s += card(28, 150, 160, 100, "Monday 9:00", "6,000 sections")
     s += line(192, 200, 236, 200)
-    s += card(240, 130, 160, 140, "Main", "splits, then\nmerges")
+    s += card(240, 130, 160, 140, "Main", "splits, then\ncollects")
     for i in range(4):
         y = 64 + i * 78
         s += line(404, 200, 516, y + 30, "acc", w=1.8)
         s += f'<rect x="440" y="{y+10}" width="0" height="0"/>'
-        s += card(520, y, 190, 60, f"Worker {i+1}", f"suites {i*250+1}–{(i+1)*250}", size=15)
+        s += card(520, y, 190, 60, f"Worker {i+1}", f"sections {i*1500+1:,}–{(i+1)*1500:,}", size=15)
         s += path(f"M714,{y+30} C780,{y+30} 790,200 846,200", "ok", w=1.8)
-    s += card(850, 150, 126, 100, "Report", "merged")
-    s += caption("Split one big job into identical pieces, run them in parallel, combine.")
+    s += card(850, 150, 126, 100, "Counts", "150,000 sent")
+    s += caption("Split one big job into identical pieces, run them in parallel, combine. Exactly one main runs.")
     return s + "</svg>\n"
 
 
 def gateway():
-    s = head("API gateway", "Team A had one",
-             "API gateway pattern",
-             "Browser, mobile, and partner clients all call one gateway, which authenticates, rate-limits, logs, and routes "
+    s = head("API gateway", "hypothetical: Project Pulse at scale",
+             "API gateway pattern in a hypothetical Project Pulse at scale",
+             "Not in Project Pulse today. The browser, the mobile app, and university learning management systems all call one gateway, which authenticates, rate-limits, logs, and routes "
              "each request to one of several services.")
-    C = ["Browser", "Mobile app", "Partner script"]
+    C = ["Browser", "Mobile app", "University LMS"]
     for i, c in enumerate(C):
         s += card(30, 84 + i * 96, 160, 72, c)
         s += line(194, 120 + i * 96, 316, 214 - 24 + i * 24)

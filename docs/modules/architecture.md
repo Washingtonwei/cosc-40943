@@ -468,9 +468,9 @@ Team A from the [Motivation](#3-motivation) is the shape on the right; Team B is
 
 ### 4.8 A catalog of patterns, and which ones you will meet
 
-You have already met two architectural patterns: **layered**, inside every domain package in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), and **microservices**, the right-hand shape in [4.7](#47-one-deployable-or-several). An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns combine, so one system is usually several at once: Project Pulse is a modular monolith with layers inside each package. There are many more. Two are in almost any web application, Project Pulse included, starting with the one you already know.
+You have already met two architectural patterns: **layered**, inside every domain package in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), and **microservices**, the right-hand shape in [4.7](#47-one-deployable-or-several) (the shape Project Pulse will need on the day it becomes every capstone course's go-to tool, which we expect any semester now). An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns combine, so one system is usually several at once: Project Pulse is a modular monolith with layers inside each package. There are many more. Two are in almost any web application, Project Pulse included, starting with the one you already know.
 
-**Layered** (presentation, domain logic, data access) is inside every component you build, as [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
+**Layered** (presentation, domain logic, data access) is inside every component you build, as [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) described. A request enters at the controller, the service applies the business logic, the repository talks to the database, and each layer knows only the one below it.
 
 ![Layered: ActivityController calls ActivityService, which calls ActivityRepository, which talks to the database; a controller never skips to the repository](../slides/img/pattern-layered.svg)
 
@@ -478,17 +478,17 @@ Each layer has one job, and most layering bugs are code in the wrong layer.
 
 | Layer | Its job | Belongs here | Does not belong here |
 |---|---|---|---|
-| **Controller** | Translate between HTTP and the application | Routes; reading the request and checking its shape; converting between request and response objects and domain objects | Business rules, transactions, database access |
-| **Service** | Carry out a use case | Business rules; deciding which data the caller may see; the transaction; errors in domain terms, such as "not found" or "not allowed" | Anything HTTP: request objects, status codes |
-| **Repository** | Load and store data | Queries | Business rules |
+| **Controller** | Translate between HTTP and the application | Routes; reading the request and checking its shape; converting between request and response objects and domain objects | Business logic, transactions, database access |
+| **Service** | Carry out a use case | Business logic; deciding which data the caller may see; the transaction; errors in domain terms, such as "not found" or "not allowed" | Anything HTTP: request objects, status codes |
+| **Repository** | Load and store data | Queries | Business logic |
 
 The common mistakes, each of which an agent makes too unless your context says otherwise:
 
-- **The fat controller.** A rule written in the controller is skipped by every other way in: a second endpoint, a scheduled job, a test that calls the service directly. In Project Pulse, the rule that a student must be on a team before submitting a weekly activity report lives in the service, so no endpoint can skip it.
-- **The skipped layer.** A controller calls the repository directly because the service would only pass the call through. The next rule needs a home, and that home is the service.
+- **The fat controller.** Business logic written in the controller is skipped by every other way in: a second endpoint, a scheduled job, a test that calls the service directly. In Project Pulse, the rule that a student must be on a team before submitting a weekly activity report lives in the service, so no endpoint can skip it.
+- **The skipped layer.** A controller calls the repository directly because the service would only pass the call through. The next piece of business logic needs a home, and that home is the service.
 - **The database row on the wire.** Returning the stored object straight to the client exposes every field it has and ties the API to the table design. Return a response object (a DTO) that carries only what the client needs.
 - **HTTP in the service.** A service that reads a request or returns a status code can be called only from a controller, and every test of it needs a fake request.
-- **Rules hidden in queries.** A query that quietly filters to "the current user's team" puts an access rule where no reviewer looks for one.
+- **Business logic hidden in queries.** A query that quietly filters to "the current user's team" puts an access rule where no reviewer looks for one.
 
 **Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. What the authorization filter does with a request that none of its rules matches is the subject of [4.9](#49-security-as-a-quality-attribute-the-trust-boundary).
 
@@ -496,30 +496,42 @@ The common mistakes, each of which an agent makes too unless your context says o
 
 The rest of the catalog you should recognize by name and by the problem it solves, so you can tell when an agent reaches for one without a reason:
 
-| Pattern | The problem it solves | You need it when |
-|---|---|---|
-| **Broker** | Clients should not need to know where services are or which instance answers | Many services, located and replaced dynamically |
-| **Publish-subscribe** (event-driven) | Producers and consumers of events should not know about each other; work can happen later | Work that can be done asynchronously, traffic spikes to absorb, many independent consumers of one event |
-| **Message queue** (the usual implementation of the two above) | Decouple the sender from the receiver in time, and order and throttle the work | A job that takes longer than a user will wait, or bursts the database cannot absorb |
-| **Source-replica** | One database cannot serve all the reads, or must survive a failure | Read load far above write load, or an availability target one server cannot meet |
-| **Main-worker** | A large job can be split into identical independent pieces | Batch computation that can be parallelized |
-| **API gateway** | Many services behind one entry point, with cross-cutting concerns in one place | You have already chosen microservices |
+| Pattern | The problem it solves | You need it when | Popular implementations |
+|---|---|---|---|
+| **Broker** | Clients should not need to know where services are or which instance answers | Many services, located and replaced dynamically | Kubernetes Services, HashiCorp Consul, Netflix Eureka (through Spring Cloud) |
+| **Publish-subscribe** (event-driven) | Producers and consumers of events should not know about each other; work can happen later | Work that can be done asynchronously, traffic spikes to absorb, many independent consumers of one event | Apache Kafka, Azure Service Bus topics, Spring's `ApplicationEventPublisher` (inside one application) |
+| **Message queue** (the usual implementation of the two above) | Decouple the sender from the receiver in time, and order and throttle the work | A job that takes longer than a user will wait, or bursts the database cannot absorb | RabbitMQ, Amazon SQS, Azure Service Bus queues |
+| **Source-replica** | One database cannot serve all the reads, or must survive a failure | Read load far above write load, or an availability target one server cannot meet | MySQL replication, Azure Database for MySQL read replicas |
+| **Main-worker** | A large job can be split into identical independent pieces | Batch computation that can be parallelized | Apache Spark (a driver and its executors), Jenkins (a controller and its agents) |
+| **API gateway** | Many services behind one entry point, with cross-cutting concerns in one place | You have already chosen microservices | Spring Cloud Gateway, Kong, Azure API Management |
 
-Here is what each one looks like:
+To see each one at work, suppose that day has come. Project Pulse runs capstone courses at 500 universities: 150,000 students, a reminder to every one of them at 9:00 a.m. on Monday, and a last week of the semester in which every instructor grades at once. It has split into services and gained a mobile app. **None of what follows exists in Project Pulse's code today**; each example says what the real code does instead.
 
-![Broker: clients ask the broker for a service by name, and it forwards to a live instance from its registry](../slides/img/pattern-broker.svg)
+![Broker, in a hypothetical Project Pulse at scale: evaluation asks the broker for the team service by name, and the broker forwards the call to a running copy of it from its registry](../slides/img/pattern-broker.svg)
 
-![Publish-subscribe: the evaluation service publishes one event, and email, grade, audit, and a later analytics subscriber each receive it](../slides/img/pattern-publish-subscribe.svg)
+**Broker.** Split into services, Project Pulse runs several copies of each, started and stopped as load changes, so no service can keep a list of addresses. When `evaluation` needs a student's team, it asks the broker for the team service by name, and the broker forwards the call to a copy of it that is running. Today that is an ordinary method call inside one application.
 
-![Message queue: the web app enqueues a report job and answers 202 at once; workers take jobs at their own pace and email the result](../slides/img/pattern-message-queue.svg)
+![Publish-subscribe, in a hypothetical Project Pulse at scale: evaluation publishes peer evaluation submitted, and email, grades, audit, and a later analytics subscriber each receive it](../slides/img/pattern-publish-subscribe.svg)
 
-![Source-replica: every write goes to the source, reads spread across replicas that copy it, and a replica is promoted if the source fails](../slides/img/pattern-source-replica.svg)
+**Publish-subscribe.** Today, when a student submits a peer evaluation, `evaluation` calls the email service directly to send the confirmation. At scale, more parts want to know: grades are recalculated, the submission is audited, and next year an analytics service wants it too. Instead of calling each one, `evaluation` publishes one event, "peer evaluation submitted," and each interested service subscribes. Adding analytics changes no line in `evaluation`.
 
-![Main-worker: a main process splits 1,000 test suites across four identical workers and merges their results](../slides/img/pattern-main-worker.svg)
+![Message queue, in a hypothetical Project Pulse at scale: the API enqueues an export-bundle job and answers 202 at once; workers take jobs at their own pace and email the file](../slides/img/pattern-message-queue.svg)
 
-![API gateway: browser, mobile, and partner clients call one gateway that authenticates, rate-limits, logs, and routes to the services](../slides/img/pattern-api-gateway.svg)
+**Message queue.** Exporting all of a team's documents as one bundle (`UC-EXP-export-bundle`, specified but not yet built) can take a minute, and in the last week thousands of teams ask at once. The API puts each request on a queue and answers immediately ("accepted; we will email you the file"). Workers take jobs at the pace the server can sustain, so a burst becomes a longer line instead of an outage.
 
-Read the table's right-hand column as a set of requirements. If your specification contains none of them, your system uses none of these patterns, and that is a correct architecture, not an unambitious one.
+![Source-replica, in a hypothetical Project Pulse at scale: every write goes to the source database, dashboard reads spread across replicas that copy it, and a replica is promoted if the source fails](../slides/img/pattern-source-replica.svg)
+
+**Source-replica.** In grading week, instructors open dashboards and search weekly activity reports far more often than students write them. Every write still goes to one source database, which copies each change to read-only replicas, and the dashboards read from the replicas. If the source fails, a replica is promoted to take its place. Today Project Pulse has one MySQL server.
+
+![Main-worker, in a hypothetical Project Pulse at scale: one main process splits Monday's reminders by course section across identical workers and collects their counts](../slides/img/pattern-main-worker.svg)
+
+**Main-worker.** Today `WeeklyReminderScheduler` walks through every eligible course section in a single loop on a single server, and Project Pulse's architecture-of-record already warns (`TD-duplicate-scheduler`) that a second server would send every reminder twice. At 150,000 students, one main process splits Monday's course sections among identical workers, each sends its share, and the main collects the counts. Because exactly one main runs, the duplicates go away too.
+
+![API gateway, in a hypothetical Project Pulse at scale: the browser, the mobile app, and learning management systems call one gateway that authenticates, rate-limits, logs, and routes to the services](../slides/img/pattern-api-gateway.svg)
+
+**API gateway.** The browser, the mobile app, and each university's learning management system all call Project Pulse. Rather than every service checking tokens, limiting request rates, and logging on its own, every call enters through one gateway that does those things once and routes the call to the right service. As the table says, you need one only after choosing microservices.
+
+Read the table's right-hand column as a set of requirements. If your specification contains none of them, your system uses none of these patterns, and that is a correct architecture, not an unambitious one. Project Pulse today meets none of them, which is why it uses none of them.
 
 ### 4.9 Security as a quality attribute: the trust boundary
 

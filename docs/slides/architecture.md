@@ -552,6 +552,10 @@ If nothing in the specification needs one part to scale, deploy, or fail indepen
 - **Six to recognize**, so you can tell when an agent reaches for one without a reason
 :::
 
+::: joke
+Microservices: the shape Project Pulse will need on the day it becomes every capstone course's go-to tool. We expect that any semester now.
+:::
+
 ## Layered
 
 ![Layered](img/pattern-layered.svg){ height="450" }
@@ -564,9 +568,9 @@ This is the activity package from the "area by area" slide, opened up. The red a
 
 | Layer | Its job | Never here |
 |---|---|---|
-| **Controller** | Translate HTTP to the application | Business rules |
-| **Service** | Carry out a use case: the rules, the transaction | HTTP |
-| **Repository** | Load and store data | Business rules |
+| **Controller** | Translate HTTP to the application | Business logic |
+| **Service** | Carry out a use case: the business logic, the transaction | HTTP |
+| **Repository** | Load and store data | Business logic |
 
 ::: note
 Most layering bugs are code in the wrong layer. In Project Pulse, the rule that a student must be on a team before submitting a weekly activity report lives in the service, so no endpoint can skip it.
@@ -575,15 +579,15 @@ Most layering bugs are code in the wrong layer. In Project Pulse, the rule that 
 ## Where layering goes wrong
 
 ::: steps
-- **Fat controller:** a rule every other way in skips
+- **Fat controller:** business logic every other way in skips
 - **Skipped layer:** controller calls the repository directly
 - **Database row on the wire:** return a DTO instead
 - **HTTP in the service:** callable only from a controller
-- **Rules hidden in queries:** access rules where no reviewer looks
+- **Logic hidden in queries:** access rules where no reviewer looks
 :::
 
 ::: note
-An agent makes every one of these unless your context says otherwise. The skipped layer is the tempting one: the service only passes the call through today, but the next rule needs a home.
+An agent makes every one of these unless your context says otherwise. The skipped layer is the tempting one: the service only passes the call through today, but the next piece of business logic needs a home.
 :::
 
 ## Pipes and filters
@@ -594,11 +598,31 @@ An agent makes every one of these unless your context says otherwise. The skippe
 Spring Security is a filter chain. Plant the amber question, "no rule matched?", and leave it: the trust boundary slides answer it.
 :::
 
+## Suppose Project Pulse takes off
+
+::: key
+500 universities. 150,000 students. Every reminder at 9:00 a.m. Monday.
+:::
+
+::: warn
+None of the next six slides exists in Project Pulse's code today.
+:::
+
+::: note
+One scenario for all six catalog patterns: Project Pulse has split into services and gained a mobile app, and the last week of the semester is when every instructor grades at once. Each slide's note says what the real code does instead.
+:::
+
 ## Broker
 
 ![Broker](img/pattern-broker.svg){ height="420" }
 
 **You need it when:** Many services, located and replaced dynamically.
+
+**In practice:** Kubernetes Services, Consul, Eureka.
+
+::: note
+Copies of each service start and stop with load, so evaluation asks the broker for the team service by name. Today: an ordinary method call inside one application.
+:::
 
 ## Publish-subscribe
 
@@ -606,11 +630,23 @@ Spring Security is a filter chain. Plant the amber question, "no rule matched?",
 
 **You need it when:** Work that can wait, spikes to absorb, many independent consumers of one event.
 
+**In practice:** Kafka, Azure Service Bus topics, Spring events.
+
+::: note
+Today evaluation calls the email service directly for the confirmation. At scale it publishes one event, and grades, audit, and next year's analytics subscribe. Adding analytics changes no line in evaluation.
+:::
+
 ## Message queue
 
 ![Message queue](img/pattern-message-queue.svg){ height="420" }
 
 **You need it when:** A job longer than a user will wait, or bursts the database cannot absorb.
+
+**In practice:** RabbitMQ, Amazon SQS, Azure Service Bus queues.
+
+::: note
+UC-EXP-export-bundle is specified, not built. A bundle can take a minute and thousands of teams ask in the last week, so the API queues the job, answers at once, and emails the file. A burst becomes a longer line instead of an outage.
+:::
 
 ## Source-replica
 
@@ -618,17 +654,35 @@ Spring Security is a filter chain. Plant the amber question, "no rule matched?",
 
 **You need it when:** Reads far above writes, or an availability target one server cannot meet.
 
+**In practice:** MySQL replication, Azure MySQL read replicas.
+
+::: note
+Grading week: dashboards and searches far outnumber writes. Writes go to the source, reads to the replicas, and a replica is promoted if the source fails. Today: one MySQL server.
+:::
+
 ## Main-worker
 
 ![Main-worker](img/pattern-main-worker.svg){ height="420" }
 
 **You need it when:** Batch computation that can be parallelized.
 
+**In practice:** Apache Spark, Jenkins agents.
+
+::: note
+Today WeeklyReminderScheduler loops over every course section on one server, and TD-duplicate-scheduler warns that a second server would send every reminder twice. One main splitting the work among workers fixes both.
+:::
+
 ## API gateway
 
 ![API gateway](img/pattern-api-gateway.svg){ height="420" }
 
 **You need it when:** You have already chosen microservices.
+
+**In practice:** Spring Cloud Gateway, Kong, Azure API Management.
+
+::: note
+Browser, mobile app, and each university's learning management system enter through one door that authenticates, rate-limits, logs, and routes. Team A, from the start of Monday, had one.
+:::
 
 ## Read that line as a requirement {.center}
 
@@ -637,7 +691,7 @@ If your specification contains none of those needs, your system uses none of tho
 :::
 
 ::: note
-Six slides, one "you need it when" each. Read the six as requirements, then ask the room whether any of them are in their specification. For almost every team the answer is no.
+Six slides, one "you need it when" each. Read the six as requirements, then ask the room whether any of them are in their specification. For almost every team the answer is no. Project Pulse today meets none of them, which is why it uses none of them.
 :::
 
 ## The trust boundary
