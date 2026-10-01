@@ -1,4 +1,4 @@
-"""Draw the nine architectural-pattern figures for MODULE-architecture, section 4.7.
+"""Draw the eight architectural-pattern figures for MODULE-architecture, 4.8.
 
 Informal figures, not technical diagrams: they are the exception to the mermaid rule, and the
 module says so in section 4.4. The SVGs this writes are committed; edit this script and rerun
@@ -140,38 +140,6 @@ def layered():
     s += xmark(495, 305)
     s += text(495, 348, "a controller never skips to the repository", ALARM, 14.5, weight="700")
     s += caption("Each layer knows only the one below it.")
-    return s + "</svg>\n"
-
-
-def mvc():
-    s = head("Model-view-controller", "the same idea on both sides",
-             "Model-view-controller in the browser and on the server",
-             "In a Vue component, a user event reaches a handler (controller), which updates reactive state (model), "
-             "which re-renders the template (view). On the server, a Spring controller receives the request, the service and "
-             "entity are the model, and the JSON response is the view.")
-    s += zone(24, 58, 456, 312, "In the browser: a Vue component")
-    s += card(152, 102, 200, 76, "Model", "reactive state")
-    s += card(44, 262, 190, 84, "View", "the template")
-    s += card(270, 262, 190, 84, "Controller", "event handlers")
-    s += line(234, 304, 266, 304, "acc")
-    s += text(250, 292, "", DIM)
-    s += text(250, 372 - 8, "", DIM)
-    s += path("M365,262 C365,210 330,190 318,182", "acc")
-    s += text(378, 214, "updates", DIM, 13.5, "start")
-    s += path("M186,182 C170,200 139,215 139,258", "ok")
-    s += text(126, 214, "re-renders", OK, 13.5, "end", "600")
-    s += text(250, 360, "user clicks", DIM, 13.5)
-    s += zone(520, 58, 456, 312, "On the server: Spring")
-    s += card(540, 170, 128, 104, "Controller", "@RestController")
-    s += card(684, 170, 128, 104, "Model", "service +\nentity")
-    s += card(828, 170, 128, 104, "View", "JSON\nresponse")
-    s += line(668, 222, 680, 222)
-    s += line(812, 222, 824, 222)
-    s += path("M460,318 C500,318 510,236 536,236", "acc")
-    s += text(498, 300, "HTTP", DIM, 13, "start")
-    s += path("M892,170 C892,120 700,110 356,132", "ok", "6 5")
-    s += text(700, 152, "JSON updates the model", OK, 13.5, weight="600")
-    s += caption("Keep what the user sees apart from the data and the rules: the screen changes most often.")
     return s + "</svg>\n"
 
 
@@ -364,7 +332,7 @@ def gateway():
     return s + "</svg>\n"
 
 
-FIGS = {"layered": layered, "mvc": mvc, "pipes-and-filters": pipes, "broker": broker, "publish-subscribe": pubsub,
+FIGS = {"layered": layered, "pipes-and-filters": pipes, "broker": broker, "publish-subscribe": pubsub,
         "message-queue": queue, "source-replica": replica, "main-worker": mainworker, "api-gateway": gateway}
 OUT.mkdir(parents=True, exist_ok=True)
 for k, f in FIGS.items():

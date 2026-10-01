@@ -468,15 +468,27 @@ Team A from the [Motivation](#3-motivation) is the shape on the right; Team B is
 
 ### 4.8 A catalog of patterns, and which ones you will meet
 
-You have already met two architectural patterns: **layered**, inside every domain package in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), and **microservices**, the right-hand shape in [4.7](#47-one-deployable-or-several). They have names because the problems they solve keep coming back, and they are not the only ones. An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns work at different levels, solve different problems, and combine freely: one system is usually several at once, as Project Pulse is a modular monolith layered inside. Three show up in every project in this course.
+You have already met two architectural patterns: **layered**, inside every domain package in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), and **microservices**, the right-hand shape in [4.7](#47-one-deployable-or-several). An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns combine, so one system is usually several at once: Project Pulse is a modular monolith with layers inside each package. There are many more. Two are in almost any web application, Project Pulse included, starting with the one you already know.
 
 **Layered** (presentation, domain logic, data access) is inside every component you build, as [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
 
 ![Layered: ActivityController calls ActivityService, which calls ActivityRepository, which talks to the database; a controller never skips to the repository](../slides/img/pattern-layered.svg)
 
-**Model-view-controller** is how the user interface is organized, on both sides. In Spring, a controller receives the request and returns data for a view; in Vue, a component's template is the view over reactive state. The problem it solves: the user interface changes more often than anything else in an application, so keep it separate from the data and rules it displays.
+Each layer has one job, and most layering bugs are code in the wrong layer.
 
-![Model-view-controller in a Vue component and in Spring: event handlers update state that re-renders the template; a Spring controller returns the model as a JSON view](../slides/img/pattern-mvc.svg)
+| Layer | Its job | Belongs here | Does not belong here |
+|---|---|---|---|
+| **Controller** | Translate between HTTP and the application | Routes; reading the request and checking its shape; converting between request and response objects and domain objects | Business rules, transactions, database access |
+| **Service** | Carry out a use case | Business rules; deciding which data the caller may see; the transaction; errors in domain terms, such as "not found" or "not allowed" | Anything HTTP: request objects, status codes |
+| **Repository** | Load and store data | Queries | Business rules |
+
+The common mistakes, each of which an agent makes too unless your context says otherwise:
+
+- **The fat controller.** A rule written in the controller is skipped by every other way in: a second endpoint, a scheduled job, a test that calls the service directly. In Project Pulse, the rule that a student must be on a team before submitting a weekly activity report lives in the service, so no endpoint can skip it.
+- **The skipped layer.** A controller calls the repository directly because the service would only pass the call through. The next rule needs a home, and that home is the service.
+- **The database row on the wire.** Returning the stored object straight to the client exposes every field it has and ties the API to the table design. Return a response object (a DTO) that carries only what the client needs.
+- **HTTP in the service.** A service that reads a request or returns a status code can be called only from a controller, and every test of it needs a fake request.
+- **Rules hidden in queries.** A query that quietly filters to "the current user's team" puts an access rule where no reviewer looks for one.
 
 **Pipes and filters** passes data through a chain of independent processing steps, each taking input and producing output for the next. Machine learning pipelines are the familiar example. The one you will use daily is less obvious: **Spring Security is a filter chain.** Every HTTP request passes through an ordered series of filters (CORS, authentication, authorization, and more) before it reaches your controller, and each filter can pass it on or reject it. What the authorization filter does with a request that none of its rules matches is the subject of [4.9](#49-security-as-a-quality-attribute-the-trust-boundary).
 

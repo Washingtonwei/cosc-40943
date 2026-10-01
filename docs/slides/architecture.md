@@ -548,7 +548,7 @@ If nothing in the specification needs one part to scale, deploy, or fail indepen
 ::: steps
 - You have met two already: **layered** and **microservices**
 - A **pattern**: a reusable solution to a problem that keeps occurring
-- **Three you will use:** layered, model-view-controller, pipes and filters
+- **Two you will use:** layered, pipes and filters
 - **Six to recognize**, so you can tell when an agent reaches for one without a reason
 :::
 
@@ -560,12 +560,30 @@ If nothing in the specification needs one part to scale, deploy, or fail indepen
 This is the activity package from the "area by area" slide, opened up. The red arc is the rule: each layer knows only the one below it.
 :::
 
-## Model-view-controller
+## Three layers, three jobs
 
-![Model-view-controller](img/pattern-mvc.svg){ height="450" }
+| Layer | Its job | Never here |
+|---|---|---|
+| **Controller** | Translate HTTP to the application | Business rules |
+| **Service** | Carry out a use case: the rules, the transaction | HTTP |
+| **Repository** | Load and store data | Business rules |
 
 ::: note
-Same idea on both sides of the wire. The problem it solves: the screen changes more often than anything else, so keep it apart from the data and the rules.
+Most layering bugs are code in the wrong layer. In Project Pulse, the rule that a student must be on a team before submitting a weekly activity report lives in the service, so no endpoint can skip it.
+:::
+
+## Where layering goes wrong
+
+::: steps
+- **Fat controller:** a rule every other way in skips
+- **Skipped layer:** controller calls the repository directly
+- **Database row on the wire:** return a DTO instead
+- **HTTP in the service:** callable only from a controller
+- **Rules hidden in queries:** access rules where no reviewer looks
+:::
+
+::: note
+An agent makes every one of these unless your context says otherwise. The skipped layer is the tempting one: the service only passes the call through today, but the next rule needs a home.
 :::
 
 ## Pipes and filters
