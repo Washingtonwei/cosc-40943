@@ -633,7 +633,7 @@ Your template asks for the first four links at Checkpoint 1. A quality scenario 
 
 ## 5. The AI-native lens
 
-- **Delegate to AI:** drawing C4 diagrams in mermaid from your use case list and your specification's interfaces; checking that every use case area has a component and every external system appears on the container diagram; drafting the rejected alternative for a decision you have already made, then arguing with it; explaining an unfamiliar pattern in terms of your own system.
+- **Delegate to AI:** drawing C4 diagrams in mermaid from your use case list and your specification's interfaces; checking that every use case area has a component and every external system appears on the container diagram; drafting the rejected alternative for a decision you have already made, then arguing with it; explaining an unfamiliar pattern in terms of your own system; drafting 8.2 entries from the code you already have, which it does well, except that it writes up accidents as rules too (Project Pulse's verb-first page names would come back as a convention), so a person decides which patterns are the rule.
 - **Keep human:** the ranking of the architecturally significant requirements and every key decision. They depend on facts about your client that are in no file: who will run this, what they already know, how much they can spend, what they are afraid of.
 - **Context to supply:** the specification's quality attributes and constraints, the numbers especially, and the facts that make scale small; and, once an agent writes code, your crosscutting conventions ([4.10](#410-crosscutting-concepts-what-every-component-does-the-same-way)), cited from your charter. An agent that does not know you have 75 users will design for 75,000, because that is what most architecture writing it learned from is about.
 - **How to verify:** for every container, every pattern, and every decision the agent proposes, ask which requirement in your ASR table forces it. If the answer is none, cut it. Then check the other direction: does every ASR drive at least one decision?
@@ -678,8 +678,9 @@ There is no individual assignment for this module. The Project Pulse architectur
 - A diagram has to stand on its own: titled, keyed, every box and arrow described in words. Keep it in mermaid, in the repository, next to the code it describes.
 - Divide the system by domain first, from your use case areas, and layer inside each domain. Name the cross-cutting components, or every area builds its own.
 - Start with one deployable, divided inside by domain. Several deployables need a requirement that forces them, and at your scale there usually is not one.
+- Layered and pipes and filters are in almost any web application. The rest of the catalog answers problems of scale; use one only when a requirement you can cite calls for it.
 - Draw the trust boundary around everything the system exposes, and deny what no rule allows. Project Pulse leaked its production credentials through an endpoint no feature ever used.
-- Write down what every component must do the same way, error handling and time first, before an agent builds the second component. Each session is a new teammate that reinvents whatever is not written.
+- Write down what every component must do the same way, API shape, error handling, and time first, before an agent builds the second component. That detail is too fine for the specification and invisible in any one file, so section 8 of the architecture-of-record is its home. Each session is a new teammate that reinvents whatever is not written.
 - A decision without a rejected alternative is a description. A decision without a trade-off has not been understood. Trace each significant requirement through its decision to the test that proves it; a chain with no test at the end is a decision you are trusting people to remember.
 - When an agent proposes an architecture, ask of every part which requirement forces it.
 
@@ -689,7 +690,8 @@ There is no individual assignment for this module. The Project Pulse architectur
 - Grady Booch, "On Design," blog essay, 2006, quoted in Frank Buschmann, Kevlin Henney, and Douglas C. Schmidt, *Pattern-Oriented Software Architecture*, Vol. 5 (Wiley, 2007), p. 214. The cost-of-change definition in [4.1](#41-what-architecture-is-and-what-it-is-not).
 - [arc42](https://arc42.org), the template your architecture-of-record follows, with examples for every section; and [the C4 model](https://c4model.com), Simon Brown's own explanation of the four levels and the notation rules.
 - Martin Fowler, [*MonolithFirst*](https://martinfowler.com/bliki/MonolithFirst.html) (2015), and James Lewis and Martin Fowler, [*Microservices*](https://martinfowler.com/articles/microservices.html) (2014), which defined the term and is candid about its costs.
-- Martin Fowler, [*PresentationDomainDataLayering*](https://martinfowler.com/bliki/PresentationDomainDataLayering.html) (2015). Domain modules at the top, each layered inside: the figure in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
+- Martin Fowler, [*PresentationDomainDataLayering*](https://martinfowler.com/bliki/PresentationDomainDataLayering.html) (2015). Domain modules at the top, each layered inside, as cited in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
+- Frank Buschmann, Regine Meunier, Hans Rohnert, Peter Sommerlad, and Michael Stal, *Pattern-Oriented Software Architecture*, Vol. 1, *A System of Patterns* (Wiley, 1996). The classic catalog of architectural patterns, the source of Layers, Pipes and Filters, and Broker in [4.8](#48-a-catalog-of-patterns-and-which-ones-you-will-meet).
 - Melvin Conway, ["How Do Committees Invent?"](https://www.melconway.com/Home/Committees_Paper.html), *Datamation* 14(4), 1968, pp. 28–31. The origin of Conway's law in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components).
 - Michael Nygard, [*Documenting Architecture Decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (2011), the origin of the architecture decision record.
 - Philippe Kruchten, "The 4+1 View Model of Architecture," *IEEE Software* 12(6), 1995, pp. 42–50. The origin of describing one architecture through several views, which arc42 inherits.
@@ -717,6 +719,8 @@ There is no individual assignment for this module. The Project Pulse architectur
 13. A teammate copies the stakeholder table from vision and scope into section 1.3 of the architecture-of-record "so the document is complete." What goes wrong within a month, and what should 1.3 say instead?
 14. Your ASR table's top row is a `SEC-*` requirement. Trace it through its decision and its part of the structure to the test that proves it holds. Where does your chain stop today, and what does that tell you?
 15. An agent's design for your project includes a message queue between the web app and the database. Say what requirement would justify it, where in your specification you would look for one, and what you write in the decision if you find none.
+16. An agent put the check that a student must be on a team before submitting a weekly activity report into the controller. What breaks, and in which layer should the check live?
+17. To help with debugging, your agent logs every request body. Which 8.2 question did your team never answer, and what is the first line to write?
 
 ## Related
 
