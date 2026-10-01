@@ -535,58 +535,61 @@ Read the table's right-hand column as a set of requirements. If your specificati
 
 ### 4.9 Security as a quality attribute: the trust boundary
 
-Security is not a feature you add. It is a property of the whole system's shape, and it begins with one line you write down: the **trust boundary**, between what you control and what you do not. Every request that crosses it, from a browser, from another system, from the internet at large, must be authenticated, authorized, and treated as possibly hostile. Every piece of sensitive data that crosses it outward is a disclosure you must be able to justify.
+Security is not a feature you add. It is a property of the system's shape, and it starts with one line you write down: the **trust boundary** between what you control and what you do not. Every request that crosses it inward must be authenticated, authorized, and treated as possibly hostile; every piece of sensitive data that crosses it outward must be justified.
 
-Section 8.1 of the template names the trust boundary and then asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second question has a part people miss. Roles are not enough. A student is allowed to read weekly activity reports, but only their own team's. Project Pulse enforces that twice, once at the route with an authorization manager that checks team membership, and again in the query itself, scoped to the caller's team. The route check alone is not enough if a request can name another team's object ID.
+Template section 8.1 names the boundary and asks three questions at Checkpoint 1: **how does a user prove who they are, what may each role see and do, and where does sensitive data live?** The second has a part people miss: roles are not enough. A student may read weekly activity reports, but only their own team's. Project Pulse checks that twice: at the route, with an authorization manager that checks team membership, and again in the query, scoped to the caller's team, so a request naming another team's ID gets nothing.
 
-**The trust boundary is the REST API application, and it covers every path that application answers, not only `/api/v1`.** The Vue app runs in the user's browser, outside the boundary, so every request is authenticated and authorized on the server. Project Pulse learned this on September 6, 2026. Its security rules protected every route under `/api/v1/**`. Spring Boot Actuator's management endpoints live at `/actuator/**`, outside that prefix, so they fell through to the last rule in the chain, `.anyRequest().permitAll()`. With the `env` endpoint exposed and its masking turned off, any anonymous caller could fetch one URL and read the production database and mail credentials in plain text. They were stored in Azure Key Vault and had never been committed to git. Every item on the usual secrets checklist was satisfied, and the secrets leaked anyway, through an endpoint no feature used and no use case mentioned.
+**The boundary is the REST API application, and it covers every path that application answers, not only `/api/v1`.** The Vue app runs in the browser, outside it. Project Pulse learned this on September 6, 2026. Its rules protected `/api/v1/**`, and everything else fell through to a final `.anyRequest().permitAll()`. Spring Boot Actuator's endpoints live at `/actuator/**`, so one anonymous request to `env`, with masking turned off, returned the production database and mail credentials in plain text. They were in Azure Key Vault and had never been committed to git, and they leaked anyway, through an endpoint no feature used and no use case mentioned. Nobody wrote a rule that made actuator public; it was the absence of one.
 
-Nobody wrote a rule that made actuator public. It was the absence of a rule. The fix, in [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), made it structural: any route under the API base URL without an explicit rule is now **denied** by default, so a new API endpoint fails closed until someone writes its rule, and the actuator endpoints get rules of their own. The final `permitAll()` is still there, because the same jar serves the Vue app's files to every browser, which is a direct consequence of `KD-modular-monolith`. So deny by default covers only the API. A new path outside it, from a library or a framework feature someone switches on, still falls through to `permitAll()` exactly as actuator did, and needs a rule of its own. That is the lesson for your trust boundary: an architecture decision about deployment shaped the security surface, and the boundary has to cover everything the deployable exposes, including what came with the framework. The incident, the exposed values, and the credential rotation are recorded as `TD-actuator-exposure` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and the full case is taught in week 12 with observability.
+The fix, [pull request #61](https://github.com/Washingtonwei/project-pulse/pull/61), denies by default under the API base URL, so a new endpoint fails closed until someone writes its rule. The final `permitAll()` stays, because the same jar serves the Vue app's files (`KD-modular-monolith`). Any new path outside the API, such as a framework feature someone switches on, still needs a rule of its own. A deployment decision shaped the security surface. The incident is `TD-actuator-exposure` in Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md), and week 12 teaches the full case.
 
-**Secrets never appear in the architecture document or the repository.** Say where they will live (environment variables, a vault) and who can read them, never what they are.
+**Secrets never appear in the architecture document or the repository.** Say where they live (environment variables, a vault) and who can read them, never what they are.
 
 ### 4.10 Crosscutting concepts: what every component does the same way
 
-Some decisions belong to no single component because they belong to all of them: what a failure looks like to the caller, what time it is, where input is checked, what gets logged. arc42 calls these **crosscutting concepts**, and they are section 8 of your template. arc42 leaves section 8 open, a list of whatever concepts your system needs. Your template fixes its first entry: 8.1 is security, the subject of [4.9](#49-security-as-a-quality-attribute-the-trust-boundary), because Checkpoint 1 asks for the trust boundary. Section 8.2 holds the rest.
+Your specification says what the system does. The code shows one place doing it. Between them sits a layer of small decisions that no requirement mentions: what every URL looks like, what a failure returns, which clock decides a deadline, which libraries the team does not use. arc42 calls these **crosscutting concepts**, and they are section 8 of your template: 8.1 is security ([4.9](#49-security-as-a-quality-attribute-the-trust-boundary)), and 8.2 holds the rest. They are detailed, and that is the point. This is the one document where detail of this kind has a home.
 
-They pass the reversibility test from [4.1](#41-what-architecture-is-and-what-it-is-not) in an unusual way. Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
+Any one convention is cheap to choose on the first day. It becomes expensive after forty endpoints have each chosen differently, because changing it then means touching all forty, and the front end that learned to cope with every variant.
 
-**With an agent writing the code, they matter more.** Every agent session starts with no memory of the last one, so each behaves like a new teammate. Asked for an endpoint, it picks an error format that looks reasonable, and the next session picks a different one. [Context Engineering](context-engineering.md#3-motivation) opened on the same failure with time: the agent writes `LocalDateTime.now()`, correct Java and wrong for Project Pulse. A crosscutting concept is exactly what an agent cannot work out from the one file in front of it, because the rule lives in every other file.
+**With an agent writing the code, they matter more.** Every agent session starts with no memory of the last one, so each behaves like a new teammate. Asked for an endpoint, it picks an error format that looks reasonable, and the next session picks a different one. [Context Engineering](context-engineering.md#3-motivation) opened on the same failure with time. A crosscutting concept is exactly what an agent cannot work out from the file in front of it, because the rule lives in every other file.
 
-**Error handling, in Project Pulse.** Every controller returns the same envelope, a `Result` with four fields (`flag`, `code`, `message`, `data`), and no controller builds its own error. Services throw exceptions, and one class turns each kind into that envelope ([`ExceptionHandlerAdvice.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/exception/ExceptionHandlerAdvice.java), abridged):
+**Project Pulse's, in one table.** Every row is a rule an agent would otherwise guess, taken from its [Crosscutting Concepts](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#crosscutting-concepts) and its charters:
 
-```java
-@RestControllerAdvice
-public class ExceptionHandlerAdvice {
+| Concept | The rule | Shown in |
+|---|---|---|
+| API shape | Every endpoint is under `/api/v1` and named for its resource (`/activities/{activityId}`). Search is `POST /<resource>/search`, with the criteria in the body, plus paging | `ActivityController` |
+| Response envelope | Every response is a `Result` with four fields, `flag`, `code`, `message`, and `data`; never a bare object | `system/Result` |
+| Status codes | One list: 200, 400, 401, 403, 404, 409 (conflict), 423 (locked), 500 | `system/StatusCode` |
+| Error handling | Services throw; one handler turns every exception into the envelope; no controller builds an error. A missing record is `ObjectNotFoundException`, which becomes a 404 | `ExceptionHandlerAdvice` |
+| Validation | Request bodies are DTOs checked with `@Valid` at the controller; business logic is checked in the service | `ActivityDto` |
+| Caller identity | Who is calling, and their course section and team, come from one helper, never from the security framework directly | `UserUtils` |
+| Time | Calendar time from the injected `Clock`; elapsed time from the real clock (below) | `DevClockConfig` |
+| Transactions and schema | A transaction is one service method. Every schema change is a new Flyway migration, `V<n>__description.sql` | `db/migration/` |
+| Code conventions | No Lombok and no MapStruct; constructor injection; `ActivityDto` and `ActivityToActivityDtoConverter`; Vue's Composition API only; pages named entity-first (`ActivityAddForm.vue`) | the backend and frontend charters |
+| Client contract | Every browser call goes through one shared HTTP client, which attaches the token, unwraps the envelope, and handles 401, 403, and 404 in one place | `frontend/src/utils/request.ts` |
+| Logging | Not settled (below) | none |
 
-    @ExceptionHandler(ObjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    Result handleObjectNotFoundException(ObjectNotFoundException ex) {
-        return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
-    }
+**The envelope, as the caller sees it.** A success and a failure from the same endpoint:
 
-    // ... one handler per kind of failure ...
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    Result handleOtherException(Exception ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
-    }
-}
+```json
+{ "flag": true,  "code": 200, "message": "Find activity successfully", "data": { "activityId": 7, "activity": "Draft the use cases" } }
+{ "flag": false, "code": 404, "message": "Could not find activity with Id 999 :(", "data": null }
 ```
 
-The Vue app unwraps every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. Now read the last handler again. It is the fallback for every exception nobody anticipated, and it sends that exception's message to the browser as `data`. A database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too, and this one belongs on the security side of the ledger in [4.9](#49-security-as-a-quality-attribute-the-trust-boundary).
+The Vue app reads every response, and every failure, in one place, and a new endpoint gets all of this just by throwing. A convention spreads its flaws just as efficiently: the handler of last resort sends an unexpected exception's own message to the browser, and a database error's message can name tables and columns. That makes it a [4.9](#49-security-as-a-quality-attribute-the-trust-boundary) problem in every endpoint at once.
 
-**Time, in Project Pulse.** There are two kinds of time, and they read different clocks. **Calendar time** (active weeks, deadlines, reminders, audit timestamps) comes from one injected `Clock` bean, never from `LocalDateTime.now()`. Which clock depends on the profile: in development it is fixed at Sunday, August 20, 2023, 11:30 pm, half an hour before a week ends, which is exactly where deadline bugs live; in staging and production it is the real clock, in the time zone set by `app.timezone`. **Elapsed time** (when a login token expires, when an edit lock lapses) uses the real clock, `Instant.now()`, because a frozen clock would stop it: in development a token would never age and a lock would never lapse. A rule that said only "always use the injected clock" was not precise enough. The rule has to say which time.
+**Time: a rule that had to be precise.** There are two kinds of time, and they read different clocks. **Calendar time** (active weeks, deadlines, reminders, audit timestamps) comes from one injected `Clock`, never `LocalDateTime.now()`. In development that clock is fixed at Sunday, August 20, 2023, 11:30 p.m., half an hour before a week ends, which is exactly where deadline bugs live; in staging and production it is the real clock in the configured time zone. **Elapsed time** (a login token's expiry, an edit lock's lease) uses the real clock, because a frozen clock would stop it: in development a token would never age and a lock would never lapse. "Always use the injected clock" was not precise enough. The rule has to say which time.
+
+**Logging: the rule nobody wrote.** Project Pulse has no logging convention: Spring Boot's defaults, five log statements in the whole backend, and nothing that says what must never be logged. So every agent session decides for itself, and no two decide alike. Template 8.2 asks the question this leaves open: *what is logged, at what level, and what must never be?* For a system that holds student records, the first line to write is the last part: never a password, a token, or the text of a peer evaluation.
 
 **Where the rule lives: three places, one owner.** Project Pulse keeps its conventions in its architecture-of-record, under [Crosscutting Concepts](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#crosscutting-concepts), which calls itself their "one normative home": the charters "restate each rule only as a short working reminder and link back here; when a rule changes, change it here first, then its reminder." Its [backend charter](https://github.com/Washingtonwei/project-pulse/blob/main/backend/CLAUDE.md) says so ("The binding conventions every package follows are normative in the architecture-of-record's Architectural Conventions") and then carries the one-line rules an agent must follow, the `Clock` rule among them. The code shows each rule done. Do the same:
 
 - **Write them before your agent builds its second component,** not after the first inconsistency. With an agent, the second component arrives the same afternoon.
-- **Name the file that shows the rule done right.** An agent imitates the code it sees more reliably than it follows prose, so an entry in 8.2 points at the class, not only at a sentence.
+- **Name the file that shows the rule done right.** An agent imitates the code it sees more reliably than it follows prose. Project Pulse's frontend charter admits that some existing pages still use verb-first names (`AddActivityForm.vue`). An agent shown those will copy them, so the charter names the right pattern and calls out the files that break it.
 - **Put the one-line instruction in your charter, and cite 8.2.** The charter is always in the agent's context; the architecture document is not. Section 8.2 owns the reasoning, the charter carries the rule, and the citation shows when the two drift apart.
-- **Where a tool can check the rule, add the check,** such as a lint rule that rejects `LocalDateTime.now()` with no argument. A convention nothing checks is one you are trusting the agent to remember.
+- **Where a tool can apply or check the rule, let it,** such as a lint rule that rejects `LocalDateTime.now()` with no argument. Formatting is the extreme case: a formatter applies it, so it never needs a line in 8.2.
 
-Which concepts first? Error handling and time; one or both is in almost every proving slice. The template's section 8.2 lists the others (validation, API conventions, configuration and secrets, logging, concurrency, auditing, testing) with the moment each usually starts to matter, so you add each one just before it does.
+Which concepts first? API shape, error handling, and time; at least one is in almost every proving slice. Template 8.2 lists the others with the moment each usually starts to matter, so you add each one just before it does.
 
 ### 4.11 Writing a decision down
 

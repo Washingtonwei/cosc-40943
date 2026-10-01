@@ -747,35 +747,51 @@ Session 1: `{"error": "Not found"}`. Session 2: a bare 500. Session 3: `LocalDat
 Section 8 of the template: crosscutting concepts, what every component does the same way. Security is 8.1, what we just did; 8.2 is the rest. Any one convention is cheap on day one and expensive after forty endpoints disagree. With an agent it arrives faster: each session starts with no memory, so it picks whatever looks plausible. Week 5 opened on the Clock version of this; say "you have seen this one."
 :::
 
+## Project Pulse's rules, in one table
+
+| Concept | The rule |
+|---|---|
+| API shape | `/api/v1/<resource>`; search is `POST /<resource>/search` |
+| Envelope | Every response is a `Result`: flag, code, message, data |
+| Errors | Services throw; one handler answers for all of them |
+| Caller | Who is calling comes from `UserUtils`, nowhere else |
+| Time | Calendar time from the injected `Clock` |
+| Schema | Every change is a new Flyway migration |
+| Code | No Lombok, no MapStruct; constructor injection |
+| Client | Every browser call goes through one shared HTTP client |
+
+::: note
+From Project Pulse's Crosscutting Concepts and its charters; the module's table adds the file that shows each rule. Every row is something an agent would guess differently in each session. Point at one: search is POST /search with the criteria in the body, which nobody would infer from REST conventions alone. The requirements never mention any of this, and that is why it needs a home of its own: section 8 of the architecture document.
+:::
+
 ## One error shape, everywhere
 
-```java
-@RestControllerAdvice
-public class ExceptionHandlerAdvice {
-
-    @ExceptionHandler(ObjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    Result handleObjectNotFoundException(ObjectNotFoundException ex) {
-        return new Result(false, StatusCode.NOT_FOUND, ex.getMessage());
-    }
-
-    // ... one handler per kind of failure ...
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    Result handleOtherException(Exception ex) {
-        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR,
-            "A server internal error occurs.", ex.getMessage());
-    }
-}
+```json
+{ "flag": true,  "code": 200, "message": "Find activity successfully", "data": { "activityId": 7 } }
+{ "flag": false, "code": 404, "message": "Could not find activity with Id 999 :(", "data": null }
+{ "flag": false, "code": 500, "message": "A server internal error occurs.", "data": "<the exception's own message>" }
 ```
 
 ::: ask
-Read the last handler. What reaches the browser?
+Read the last one. What could be in `data`?
 :::
 
 ::: note
-Project Pulse, main, abridged. Every controller returns a Result (flag, code, message, data); services throw, and this one class turns each exception into that envelope, so the Vue app handles every failure in one place and a new endpoint gets it for free. The catch: the fallback sends the unanticipated exception's message to the browser as data, and a database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too. Time is the other one: calendar time comes from one injected Clock, fixed in development at Sunday Aug 20, 2023, 11:30 pm, half an hour before a week ends; elapsed time (token expiry, lock leases) uses the real clock, because a frozen clock would stop it. The rule has to say which time.
+Project Pulse, main. Services throw, and one class, ExceptionHandlerAdvice, turns each exception into this envelope, so the Vue app handles every failure in one place and a new endpoint gets it for free. The catch: the fallback sends an unanticipated exception's message to the browser, and a database error's message can name tables and columns. A crosscutting concept spreads its flaws everywhere too. Time is the other worked example: calendar time comes from one injected Clock, fixed in development at Sunday Aug 20, 2023, 11:30 pm, half an hour before a week ends; elapsed time (token expiry, lock leases) uses the real clock, because a frozen clock would stop it. The rule has to say which time.
+:::
+
+## Logging: the rule nobody wrote
+
+::: key
+What is logged, at what level, and what must never be?
+:::
+
+::: warn
+Project Pulse: Spring Boot defaults, five log statements, no answer.
+:::
+
+::: note
+So every agent session decides for itself, and no two decide alike. For a system holding student records, write the last part first: never a password, a token, or the text of a peer evaluation.
 :::
 
 ## Three places, one owner
@@ -784,7 +800,7 @@ Project Pulse, main, abridged. Every controller returns a Result (flag, code, me
 - **8.2 owns the reasoning**, written before the agent builds its second component
 - **Point at the file that does it right**: the agent copies code better than it reads prose
 - **The charter carries the one-line rule** and cites 8.2: the charter is always in context
-- **Add a check** where a tool can: a lint rule, an ArchUnit test
+- **Let a tool apply or check it** where one can: a formatter, a lint rule, an ArchUnit test
 :::
 
 ::: key
@@ -792,7 +808,7 @@ A convention nothing checks is one you are trusting the agent to remember.
 :::
 
 ::: note
-Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the conventions' one normative home, the charters restate each rule as a short reminder that links back, and a rule changes there first. Start with error handling and time; the template's 8.2 lists the rest with when each starts to matter.
+Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the conventions' one normative home, the charters restate each rule as a short reminder that links back, and a rule changes there first. Start with API shape, error handling, and time; template 8.2 lists the rest, now including code conventions, with when each starts to matter. Formatting never needs a line there: a formatter owns it.
 :::
 
 ## Writing a decision down
