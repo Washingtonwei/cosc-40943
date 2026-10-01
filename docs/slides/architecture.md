@@ -546,6 +546,7 @@ If nothing in the specification needs one part to scale, deploy, or fail indepen
 ## Patterns you will meet
 
 ::: steps
+- You have met two already: **layered** and **microservices**
 - A **pattern**: a reusable solution to a problem that keeps occurring
 - **Three you will use:** layered, model-view-controller, pipes and filters
 - **Six to recognize**, so you can tell when an agent reaches for one without a reason

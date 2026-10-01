@@ -468,7 +468,7 @@ Team A from the [Motivation](#3-motivation) is the shape on the right; Team B is
 
 ### 4.8 A catalog of patterns, and which ones you will meet
 
-An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns work at different levels, solve different problems, and combine freely: one system is usually several at once. Three show up in every project in this course.
+You have already met two architectural patterns: **layered**, inside every domain package in [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components), and **microservices**, the right-hand shape in [4.7](#47-one-deployable-or-several). They have names because the problems they solve keep coming back, and they are not the only ones. An **architectural pattern** is a reusable solution to a problem that keeps occurring in a given context. Patterns work at different levels, solve different problems, and combine freely: one system is usually several at once, as Project Pulse is a modular monolith layered inside. Three show up in every project in this course.
 
 **Layered** (presentation, domain logic, data access) is inside every component you build, as [4.6](#46-decomposing-by-domain-from-use-case-areas-to-components) described. A request enters at the controller, the service applies the business rules, the repository talks to the database, and each layer knows only the one below it.
 
