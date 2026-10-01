@@ -589,7 +589,7 @@ The Vue app reads every response, and every failure, in one place, and a new end
 - **Put the one-line instruction in your charter, and cite 8.2.** The charter is always in the agent's context; the architecture document is not. Section 8.2 owns the reasoning, the charter carries the rule, and the citation shows when the two drift apart.
 - **Where a tool can apply or check the rule, let it,** such as a lint rule that rejects `LocalDateTime.now()` with no argument. Formatting is the extreme case: a formatter applies it, so it never needs a line in 8.2.
 
-Which concepts first? API shape, error handling, and time; at least one is in almost every proving slice. Template 8.2 lists the others with the moment each usually starts to matter, so you add each one just before it does.
+Which concepts? All of those in template 8.2, drafted at Checkpoint 1 while each is still cheap to choose; the table's last column says when a missing one would start to hurt. If you must order them, API shape, error handling, and time come first: at least one is in almost every proving slice.
 
 ### 4.11 Writing a decision down
 
@@ -664,8 +664,8 @@ Every label on the spoon answers a problem someone has. Multi-AZ runs copies of 
 **Studio (team, own project, week 6)**
 
 - **Goal:** draft your team's architecture-of-record, breadth-complete and depth-shallow, from your specification. This is the second half of [Checkpoint 1](../project.md#checkpoints); your TA reviews the first half, the specification, with you during the same hour.
-- **In studio:** fill template sections 1 through 5, section 8.1, and section 9, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
-- **Deliverable and assessment:** the document, merged to `main` by 11:59 pm Friday. Your TA checks it over the weekend against the six-point checklist on the studio page and replies by Sunday evening with one issue in your repository. The check reads whether every use case area and every external system has a home, whether each decision cites the requirement that forced it and names what it rejected, and whether the security section answers its three questions. It does not reward length: a short document that names everything is the goal.
+- **In studio:** fill template sections 1 through 5, section 8 (8.1 and 8.2), and section 9, starting from the ranked ASR table, because every other section cites it. Use your agent to draw the diagrams; keep the ranking and the decision for the team. The preparation, the order to draft in, and the timing are on the [studio page](../studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
+- **Deliverable and assessment:** the document, merged to `main` by 11:59 pm Friday. Your TA checks it over the weekend against the seven-point checklist on the studio page and replies by Sunday evening with one issue in your repository. The check reads whether every use case area and every external system has a home, whether each decision cites the requirement that forced it and names what it rejected, whether the security section answers its three questions, and whether 8.2 gives a rule and a reason for every concept. It does not reward length: a short document that names everything is the goal.
 
 There is no individual assignment for this module. The Project Pulse architecture-of-record is your worked example: read its Quality Goals, its ASR table, and `KD-modular-monolith`, `KD-relational-graph`, and `KD-vertical-slices` before you write your own.
 

@@ -808,7 +808,7 @@ A convention nothing checks is one you are trusting the agent to remember.
 :::
 
 ::: note
-Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the conventions' one normative home, the charters restate each rule as a short reminder that links back, and a rule changes there first. Start with API shape, error handling, and time; template 8.2 lists the rest, now including code conventions, with when each starts to matter. Formatting never needs a line there: a formatter owns it.
+Project Pulse does exactly this: its architecture-of-record's Crosscutting Concepts calls itself the conventions' one normative home, the charters restate each rule as a short reminder that links back, and a rule changes there first. Teams draft all of template 8.2 for Friday, code conventions included; if they must order it, API shape, error handling, and time first. Formatting never needs a line there: a formatter owns it.
 :::
 
 ## Writing a decision down
@@ -886,7 +886,7 @@ Every label on the spoon is a real answer to a real problem. Multi-AZ runs copie
 :::
 
 ::: note
-Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 of your specification has a number, and read Project Pulse's quality goals and KD-modular-monolith, KD-relational-graph, KD-vertical-slices. The six-point checklist is on the Studio page; point at it, do not read it out.
+Assignment 2 is due before class the same morning. Before Friday: copy the template into docs/design, make sure every quality attribute in section 9 of your specification has a number, and read Project Pulse's quality goals and KD-modular-monolith, KD-relational-graph, KD-vertical-slices. The seven-point checklist is on the Studio page; point at it, do not read it out.
 :::
 
 ## Draft in this order
@@ -897,6 +897,7 @@ Assignment 2 is due before class the same morning. Before Friday: copy the templ
 - Container diagram
 - Component table, and its two checks
 - Security, 8.1: name the boundary, answer the three questions
+- Crosscutting, 8.2: a rule and a reason for every concept
 - `KD-deployment-shape`, last
 :::
 

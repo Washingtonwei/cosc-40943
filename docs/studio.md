@@ -195,7 +195,7 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 
 **The specification review.** Your TA reads your specification with you against what Checkpoint 1 names: glossary, vision and scope, use cases, business rules, and the draft specification. It starts from the riskiest use case reviewed on Sep 25 and whether its revision landed.
 
-**The order to draft in.** The template marks what is due now: sections 1 through 5, section 8.1, and section 9. Start with the ranked table of architecturally significant requirements (section 9.1), because every other section cites it. Then the context diagram, the container diagram, and the component table, running the two checks at its end, then section 8.1, which names the trust boundary in writing. Write `KD-deployment-shape` last, with the requirement that would have forced the other answer. Your agent draws the diagrams; the ranking and the decision stay with the team.
+**The order to draft in.** The template marks what is due now: sections 1 through 5, section 8 (both 8.1 and 8.2), and section 9. Start with the ranked table of architecturally significant requirements (section 9.1), because every other section cites it. Then the context diagram, the container diagram, and the component table, running the two checks at its end, then section 8.1, which names the trust boundary in writing. Then section 8.2: one short subsection for every concept in its table, each a rule in one sentence and the reason for it. The file that shows each rule done right comes later, once there is code; do not invent one. 8.2 is the part most teams finish after the hour, before the deadline. Write `KD-deployment-shape` last, with the requirement that would have forced the other answer. Your agent draws the diagrams; the ranking and the decision stay with the team.
 
 **What you produce:** `docs/design/architectural-design.md`, merged to `main` by **11:59 pm Friday**. Whatever is on `main` then is what your TA reads.
 
@@ -206,7 +206,8 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 3. The requirements table (section 9.1) reuses your specification's identifiers and includes at least one `SEC-*`.
 4. `KD-deployment-shape` cites the requirement that drives it and names a rejected alternative.
 5. Section 8.1 names the trust boundary and answers all three questions: how users authenticate, what each role may see beyond its role, and where sensitive data lives.
-6. Nothing is designed below responsibility: no endpoints, no classes, no columns.
+6. Nothing is designed below responsibility: no endpoints, no classes, no columns. (A convention in 8.2 that every endpoint follows, such as a URL prefix or an error format, is a rule, not a design, and passes.)
+7. Section 8.2 has a subsection for every concept in its table, each with a one-sentence rule and the reason for it.
 
 Fix what the issue raises by pull request, and close the issue from it. Week 7's design-of-record builds on this map from Monday.
 
@@ -214,7 +215,7 @@ Fix what the issue raises by pull request, and close the issue from it. Week 7's
 
 **Objective:** each pair on your team writes one use case up as a build-context, an issue that cites the use case instead of copying it, runs the questions test on it, and sorts the gaps it exposes before building. The reading is [Context Engineering](modules/context-engineering.md), sections 4.5 and 4.7, and your individual practice run was [assignment 2](assignments/spec-a-feature.md).
 
-**Before you arrive:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Section 8.2 of your architecture-of-record names at least **error handling** and **time**, and your charter carries a one-line rule for each that cites it ([why](modules/architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
+**Before you arrive:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Your charter carries a one-line rule, citing section 8.2 of your architecture-of-record, for at least **error handling** and **time** ([why](modules/architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
 
 | When | What your team does |
 |---|---|
