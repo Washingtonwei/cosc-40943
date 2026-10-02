@@ -3,15 +3,13 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 5: Friday is for finishing your specification"
+!!! important "Week 6: Friday is Checkpoint 1"
 
-    **Studio this Friday, Sep 25, is a requirements hour, not the build-context.** Your TA checks your week 4 work on GitHub before class and reviews your riskiest use case with you in the room; the rest of the hour goes to what [Checkpoint 1](project.md#checkpoints) reviews on Oct 2. Pick your riskiest use case before you walk in, and run the [self-check](studio.md#week-5-sep-25-finish-the-specification-for-checkpoint-1) tonight. Teams that copied `requirements/` back in week 3 will not have `traceability.md` yet; the copy command is on the Studio page.
+    **Studio this Friday, Oct 2, is [Checkpoint 1](project.md#checkpoints).** Your TA reviews your specification with you in the room while your team drafts its architecture-of-record, merged to `main` by **11:59 pm**. Your TA checks it over the weekend and replies with one issue in your repository by 8 pm Sunday. Section 8.2, crosscutting concepts, is due Friday too. Before you walk in: every quality attribute in section 9 of your specification has a number, your use case areas are settled, and the template is in `docs/design/`. Your TA checks the first two on GitHub before class. Everything is on the [Studio page](studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
 
-    **Your team's first build-context moves to the week 8 studio**, just before you build. [Assignment 2](assignments/spec-a-feature.md) is your individual practice run.
+    **[Assignment 2, Spec a feature](assignments/spec-a-feature.md), is due at the start of class Friday.**
 
-    **Monday and Wednesday are context engineering:** the specification you spent two weeks writing is the context your agent needs, and the question the rest of the course keeps asking is how you know when you have supplied enough. The reading is [Context Engineering](modules/context-engineering.md).
-
-    **[Assignment 2, Spec a feature](assignments/spec-a-feature.md), is released, and is due Friday, Oct 2** rather than Sep 25. Project Pulse emails you a reminder whether or not you already submitted; you specify the feature that fixes that, then find out what an agent assumes when you hand it your own use case. Fork the repository early, the two GitHub settings go wrong the same way they did last time.
+    **Monday and Wednesday are software architecture:** the few decisions that are expensive to reverse, drawn so that a teammate or an agent can build inside them. The reading is [Software Architecture, Just Enough](modules/architecture.md).
 
 ## What this course is
 

@@ -185,13 +185,16 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
     The first line updates the copy you cloned in week 3. If you never cloned it, run `git clone https://github.com/tcu-cosc-40943/course-templates.git` beside your team repository first.
 
 - Section 9 of your specification has a number in every quality attribute. The architecture's requirements table is built from them.
-- Your use case areas are settled enough to list. Every area gets a row in the architecture.
+- Your use case areas are settled: listed at the top of the Use Case List in `use-cases.md`, with every use case in one. Every area gets a row in the architecture.
+
+    Your TA checks these two on GitHub before class. A team that fails either fixes it first, in the room, before starting the architecture.
 - Read Project Pulse's [architecture-of-record](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md): its Quality Goals, its architecturally significant requirements, and `KD-modular-monolith`, `KD-relational-graph`, and `KD-vertical-slices`.
 
 | When | What your team does |
 |---|---|
-| 0-5 | The frame, from the front: what the weekend check reads, and the order to fill the template in. |
-| 5-50 | **Draft the architecture-of-record**, one owner per section, one branch and one pull request each. Your TA sits with each of its teams for about eight minutes to review the specification. |
+| 0-3 | Your TA tells you what the pre-class check found. |
+| 3-8 | The frame, from the front: what the weekend check reads, and the order to fill the template in. |
+| 8-50 | **Draft the architecture-of-record**, one owner per section, one branch and one pull request each. Your TA sits with each of its teams for about eight minutes to review the specification. |
 
 **The specification review.** Your TA reads your specification with you against what Checkpoint 1 names: glossary, vision and scope, use cases, business rules, and the draft specification. It starts from the riskiest use case reviewed on Sep 25 and whether its revision landed.
 
