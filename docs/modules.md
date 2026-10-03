@@ -26,5 +26,8 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Software Architecture, Just Enough**](modules/architecture.md) · [slides](slides/architecture.html)
 : Decide, before the code exists, the few things that will be expensive to change, and let the quality attributes your client cares about choose them rather than the feature list. Architecturally significant requirements, C4 context and container diagrams, dividing a system by domain, one deployable or several, writing a decision down, and the trust boundary.
 
+[**Design-of-Record**](modules/design-of-record.md) · [slides](slides/design-of-record.html)
+: Design one use case area before anyone builds it, at the depth where an agent no longer has to guess anything that matters, and get it approved by a teammate who did not write it. The challenge loop, sequence and state diagrams, the API contract, decisions and design patterns, the test list before the code, the questions test, and choosing a proving slice by risk.
+
 [**Requirements Traceability**](modules/traceability.md)
 : Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Still being written.

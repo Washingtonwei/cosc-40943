@@ -58,7 +58,7 @@ Anything the agent must build against, or that a consistency check must resolve,
 | Business rules | Cross-cutting policies and constraints, cited by use cases, never restated in them. |
 | Software requirements specification | Non-use-case functional requirements, the domain model, quality attributes, constraints, operating environment. |
 | Architecture-of-record | The breadth-complete, depth-shallow map: every component and integration named and placed, internals deferred. |
-| Design-of-record | At least one use-case area taken through the design gate: component design, sequence diagrams, API contracts, schema deltas, and the alternatives you rejected. |
+| Design-of-record | At least one use-case area taken through the design gate: component design, sequence diagrams, API contracts, schema deltas, the alternatives you rejected, and the test list, approved by pull request. |
 | Traceability matrix | Specification to design to code to test, kept current, checked in both directions. |
 | Source code | On GitHub. |
 | MVP demo | Working software the client can actually test. |
