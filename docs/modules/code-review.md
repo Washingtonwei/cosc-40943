@@ -1,0 +1,120 @@
+# Code Review
+
+> **Purpose (one line):** _to be written when authored._
+
+
+!!! note "This module is still being written"
+    The course is being revamped this term, so modules go up as they are written rather than all at once. What is here is usable; the rest is coming. Lectures and studio do not depend on the missing parts.
+
+## Drafting notes (raw: distribute into template sections, then delete before `stable`)
+
+### Placement (`DECISION-code-review-week-8`)
+
+Design review is already taught: [Design-of-Record](design-of-record.md) 4.13 owns the design gate's review questions and names the rubber stamp. This module owns review of **code**, which starts when the first implementation pull requests open in week 8 (the proving slice). Taught on a week 8 lecture day beside `MODULE-implementation`, best right after the agent builds something live so the room reviews what it just produced. First practiced in assignment 3 (self-review, below), then one review act in every later studio. Point back to 4.13 rather than reteaching it; the two share the rubber stamp and the "review against the contract" stance. Examined on the final, not the midterm.
+
+The schedule's "Threaded through every week" list already says every studio reviews AI output. Through week 7 that is not yet true; this module is what makes it true.
+
+### The spine: two questions every review answers
+
+1. **Does this change do what the contract says?** The contract is the use case (every extension, not just the main flow), its business rules, and the design-of-record's API table and test list. A reviewer reading only the diff cannot answer this, because **a diff shows what was added and never what was left out.** A missing extension is invisible in the diff and visible in the test list.
+2. **How deep must I read this part, given where it lands?** Depth is set by blast radius and reversibility, not spread evenly over every line. The reviewer writes that decision down (see "Risk-scaled depth" below), so a skim is a defensible choice rather than a hidden one.
+
+### Research findings to teach (all checked 2026-10-04)
+
+| Finding | Source | What a student does with it |
+|---|---|---|
+| Formal inspection (planning, preparation, meeting, rework, follow-up) finds defects but is too slow and synchronous for most teams; modern review is its lightweight, tool-based descendant. | Fagan 1976; history as told in Sadowski et al. 2018 | Know where the practice came from and why pull-request review replaced the meeting. |
+| Finding defects is the top **expected** benefit, but reviews turn up fewer defects than developers expect; knowledge transfer, team awareness, and alternative solutions are major outcomes. Understanding the change is the reviewer's main difficulty. | Bacchelli and Bird 2013 | Review your teammates' code even where a bot reviews it too, because on a five-person team review is how anyone learns the parts they did not write. |
+| About 75% of the defects reviews find are evolvability defects (readability, structure, maintainability), not functional ones. | Mäntylä and Lassenius 2009 | Hand style and structure to linters (week 10), then aim human attention deliberately at behavior and the contract, or human review finds little. |
+| Low review coverage and low review participation are linked to up to two and five additional post-release defects per component, respectively. | McIntosh, Kamei, Adams, and Hassan 2014 (Qt, VTK, ITK) | The rubber stamp has a measured cost; a review counts only if the reviewer actually took part. |
+| At Google: median change of 24 lines, median of one reviewer, median latency for the whole review under 4 hours; reviewers ask fewer questions as they learn the codebase, which the authors read as review's educational payoff. | Sadowski, Söderberg, Church, Sipko, and Bacchelli 2018 | Keep pull requests small. Review the same day. |
+| Review effectiveness drops past roughly 200 to 400 lines per session, above about 500 lines per hour, and after 60 to 90 minutes. | SmartBear's Cisco study (Cohen 2006). **Vendor study, not peer reviewed; label it as industry data.** | An agent's 1,500-line pull request cannot be reviewed in one sitting. Ask for it split before reviewing it. |
+| Participants with an AI assistant wrote less secure code than those without and were **more** likely to believe it was secure (47 participants, five security tasks). | Perry, Srivastava, Kumar, and Boneh, CCS 2023 | The author's confidence is not evidence, and an agent's self-rated confidence even less. |
+| Automation bias and complacency: people over-rely on automated aids, and experts are affected as well as novices. | Parasuraman and Manzey 2010 | A green check from a review bot is the moment to stay alert, not the moment to approve. |
+| LLM evaluators recognize their own outputs and rate them higher. | Panickssery, Bowman, and Feng, NeurIPS 2024. **Studied on summarization, not code; use as supporting evidence only.** | Review agent output with a fresh session that never saw the author's conversation. |
+
+### Practices to teach (established practice, not research)
+
+- **The approval standard.** Google's engineering practices: approve once the change definitely improves the overall health of the code, even if it is not perfect. Prefix optional polish with "Nit:" so the author knows it does not block.
+- **Label every comment.** Conventional Comments (`issue`, `suggestion`, `question`, `nitpick`, `praise`, each blocking or non-blocking). This connects to 4.13's line that a useful comment is a specific question with a specific answer.
+- **The author's half.** Small pull request; self-review before requesting review; a description that says what changed, which use case and design it implements, and how it was verified, shorter than the diff; the design-of-record updated in the same pull request if the code departed from it (4.13's stale-design row).
+- **A checklist.** CMU 17-313's code-review lecture pairs review with risk and argues for checklists (Gawande's surgical checklist). Our checklist is short: the two spine questions, the triage line, the test-list check. Instructor source: `notes/cmu-17-313-notes.md`, "09-code-review-risk".
+
+### Risk-scaled depth: trunk and leaf
+
+Taken from a practitioner video (see the source note below) and kept because it answers the problem students face from week 8: the agent writes more code than they can read line by line. A rule that says "read everything" will be quietly ignored. A triage rule they can defend is better.
+
+- **Trunk:** code many paths depend on, that changes behavior existing users rely on, or that is hard to roll back. Read every line.
+- **Leaf:** new code reached only through the new feature, covered by its own tests. Read the tests' assertions and skim the rest.
+- **The reviewer writes the triage into the review:** "Trunk: X, read in full. Leaf: Y, checked tests against test-list rows 3 to 7, skimmed the rest." This makes the depth decision visible and gradeable, and it is what stops "risk-based" from becoming a license to skim. A novice cannot triage a codebase they do not know, so the triage is a skill to be practiced, not assumed.
+
+**Worked example on Project Pulse** (checked at `main` `b70eb2b`, 2026-10-03; re-check before `stable`). The week 8 `/implement` run on `docs/design/not.md` will add two routes, `GET /sections/{sectionId}/submission-status` and `POST /sections/{sectionId}/reminders`. Most of that pull request is leaf: a new controller method, a new service method, the dialog. The trunk part is **two lines in `security/SecurityConfiguration.java`**:
+
+- That file holds one authorization rule per route, about 380 lines, and its API rules end with `.requestMatchers(this.baseUrl + "/**").denyAll()`. The code comment says why: a new endpoint "fails closed, loudly" until someone writes its rule. Spring Security applies the first matching rule, so where the new line sits relative to that catch-all, and to broader matchers above it, decides who can reach the route.
+- The design's API table fixes the rule: `AuthorizationManagers.anyOf(sectionInstructorAuthorizationManager, sectionOwnershipAuthorizationManager)`, added before the `denyAll()` catch-all.
+- **The failure to look for:** the agent's new integration test gets a 403, and the quickest way to make it pass is a looser rule. `.authenticated()` in place of `.access(...)` is a one-word change that lets any logged-in student trigger an email to an entire course section. The proof the reviewer checks is the design's test row "UC-NOT authorization": an instructor not assigned to the section and a student both get 403 on both routes, and the owning course admin gets 200.
+- For scale: `system/Result.java` is imported by 19 files and `system/UserUtils.java` is referenced in 28. A change to either is trunk however small the diff.
+
+The same file shows trunk reasoning written down: the comment on the actuator rules explains why they sit outside the API catch-all and would otherwise fall through to `.anyRequest().permitAll()` (tracked as `TD-actuator-exposure`).
+
+### What counts as proof
+
+Rank the evidence an author or agent attaches, strongest first:
+
+1. Tests mapped to rows of the design-of-record's test list, with assertions that check the contract (the oracle, from `MODULE-testing`).
+2. Authorization and integration tests for every trunk change.
+3. Runtime evidence for UI and scheduled work: a screenshot, a log line.
+4. The pull request description.
+5. The agent's self-rated confidence. Not evidence (Perry et al.; uncalibrated).
+
+A test that only echoes a mock's return value is not proof. `MODULE-testing`'s `ActivityServiceTest.testSaveActivity` example is the one to cite; do not reteach it here.
+
+### AI-native lens seeds
+
+- **Delegate:** the first pass to a review agent running in a fresh context (for example Claude Code's `/code-review`, or a new session given only the diff, the use case, and the design); style and formatting to linters.
+- **Keep human:** the triage, the check against the use case and test list, every trunk line, and the decision to approve.
+- **Context to supply the review agent:** the use case, its business rules, and the design-of-record. Never the author's conversation.
+- **How to verify the review agent:** spot-check one of its findings and one thing it passed. If its review never mentions the test list, it reviewed the diff, not the change.
+
+### Risks seeds
+
+| Risk | Human judgment that catches it | Mitigation |
+|---|---|---|
+| The rubber stamp: approval without reading. AI amplifies it with long, plausible pull requests. | A reviewer who writes the triage line and checks the test list | Triage line required in every review; TAs sample review comments |
+| Reviewing the diff instead of the change: the missing extension is not in the diff. | Reading the test list beside the diff | Pull request description links the use case and design; review comments cite test-list rows |
+| The author agent reviews itself and agrees with itself. | Noticing the review shares the author's context | Fresh-context review session; a teammate who did not write it approves |
+| An oversized agent pull request. | Refusing to review past about 400 lines in one sitting | Split by use case step or layer before review |
+
+### Hands-on seeds
+
+- **Studio:** pairs review each other's implementation pull requests from the proving slice. Every review carries the triage line, one comment per test-list row it checked, and labeled comments. The TA reads two reviews per team.
+- **Individual assignment: a part of assignment 3, "Add a use case" (due Fri Oct 16), not a new assignment.** Before submitting, the student reviews the agent's pull request and writes the review into it: the trunk-and-leaf triage line, each row of the use case's test list marked covered or not, and at least one labeled comment on something they changed or rejected. Graded on whether the triage is right and the test-list check is honest, not on how many comments there are.
+- **In-class exercise (week 8 lecture): a seeded pull request** with one trunk defect (a loosened security rule), one missing extension, one tautological test, and several nits. The room finds what matters and declines to block on the nits. Build and check the seeded pull request before the lecture.
+
+### Self-check seeds
+
+1. A diff adds a controller, a service method, a Vue dialog, and one line to `SecurityConfiguration`. Which part do you read in full, and why?
+2. Your teammate approved a 1,200-line agent pull request in six minutes. Name two research findings that say what that review is worth.
+3. Why is a missing use case extension easier to find from the test list than from the diff?
+4. The review bot passed the change. What do you still check yourself?
+
+### Source note: a practitioner video, filtered
+
+"How I Review AI Code" (a senior staff engineer at Meta), YouTube, <https://www.youtube.com/watch?v=b2QkhmQ0sT0>. One practitioner's opinion, not evidence. If assigned, it is an optional watch with the prompt: what is missing from his idea of proof?
+
+- **Kept:** review depth scaled by blast radius (trunk and leaf); a fresh-context adversarial review agent (the same principle as the design gate's questions test); style nits handed to linters (consistent with Mäntylä and Lassenius); pull request descriptions shorter than the diff; merge-ready is not launch-ready (weeks 12 and 13); his closing point that knowing the codebase is what makes triage possible.
+- **Dropped:** the agent's self-reported confidence as proof; "AI already reviews better than most humans" (asserted, not shown); canary releases and A/B tests (student projects lack the traffic; a boolean feature flag is worth one sentence); proof that the code runs, with checking against the spec left to the end.
+- **Missing from it, supplied above:** checking against the spec; review's knowledge-transfer role.
+
+### Further reading (to verify links before `stable`)
+
+- Michael E. Fagan, "Design and Code Inspections to Reduce Errors in Program Development," *IBM Systems Journal* 15(3), 1976.
+- Alberto Bacchelli and Christian Bird, "Expectations, Outcomes, and Challenges of Modern Code Review," ICSE 2013.
+- Mika V. Mäntylä and Casper Lassenius, "What Types of Defects Are Really Discovered in Code Reviews?" *IEEE TSE* 35(3), 2009.
+- Shane McIntosh, Yasutaka Kamei, Bram Adams, and Ahmed E. Hassan, "The Impact of Code Review Coverage and Code Review Participation on Software Quality," MSR 2014.
+- Caitlin Sadowski, Emma Söderberg, Luke Church, Michal Sipko, and Alberto Bacchelli, "Modern Code Review: A Case Study at Google," ICSE-SEIP 2018.
+- Neil Perry, Megha Srivastava, Deepak Kumar, and Dan Boneh, "Do Users Write More Insecure Code with AI Assistants?" CCS 2023.
+- Raja Parasuraman and Dietrich H. Manzey, "Complacency and Bias in Human Use of Automation," *Human Factors* 52(3), 2010.
+- Arjun Panickssery, Samuel R. Bowman, and Shi Feng, "LLM Evaluators Recognize and Favor Their Own Generations," NeurIPS 2024.
+- Google, "The Standard of Code Review," in *Google Engineering Practices*, <https://google.github.io/eng-practices/review/reviewer/standard.html>.
+- Conventional Comments, <https://conventionalcomments.org>.
