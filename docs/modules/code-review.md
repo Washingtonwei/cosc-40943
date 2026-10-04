@@ -132,6 +132,15 @@ Adapted, not copied, from the practitioner video's template and proof list (sour
 - **Dropped:** the agent's self-reported confidence as proof; "AI already reviews better than most humans" (asserted, not shown); canary releases and A/B tests (student projects lack the traffic; a boolean feature flag is worth one sentence); proof that the code runs, with checking against the spec left to the end.
 - **Missing from it, supplied above:** checking against the spec; review's knowledge-transfer role.
 
+### Source note: Willison's agentic engineering patterns, filtered
+
+Simon Willison, *Agentic Engineering Patterns*, a living guide begun 2026-02-23 with no per-chapter dates (read 2026-10-04). One practitioner, writing mostly as a solo open-source developer. Assign two chapters as reading for week 8; neither replaces anything above.
+
+- **"Anti-patterns: things to avoid."** The rule is "Don't file pull requests with code you haven't reviewed yourself": an unreviewed agent pull request hands the author's work to the reviewer. His list for a good pull request (it works and you are confident it does, small, context and links, show your work with test notes or screenshots) is the author's half above, from a different source. Quote one line on a slide: "Agents write convincing looking pull request descriptions. You need to review these too!" It argues for the **Verified** and **Not verified** lines.
+- **"Writing code is cheap now."** Writing code got cheap; good code did not. His nine properties of good code (works, verified, solves the actual problem, handles errors, simple, regression-tested, documented, changeable, meets its quality attributes) are a candidate reviewer checklist; map them to the two spine questions rather than adding a third list.
+- **Dropped:** "fire off a prompt anyway" when a feature seems not worth building. It assumes free tokens; students work on their own subscriptions under `ai.md`'s credit budgeting. Say so when assigning the chapter.
+- **Missing from it:** the spec. His review checks that code works, not that it is the right code against the use case and test list.
+
 ### Further reading (to verify links before `stable`)
 
 - Michael E. Fagan, "Design and Code Inspections to Reduce Errors in Program Development," *IBM Systems Journal* 15(3), 1976.
@@ -149,5 +158,6 @@ Adapted, not copied, from the practitioner video's template and proof list (sour
 - GitHub Docs, "Helping others review your changes," <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/helping-others-review-your-changes>.
 - Microsoft, "Pull Requests," in the *Code-With Engineering Playbook*, <https://microsoft.github.io/code-with-engineering-playbook/code-reviews/pull-requests/>.
 - AWS CDK pull request template, <https://github.com/aws/aws-cdk/blob/main/.github/PULL_REQUEST_TEMPLATE.md>; Alibaba Nacos pull request template, <https://github.com/alibaba/nacos/blob/develop/.github/PULL_REQUEST_TEMPLATE.md>.
+- Simon Willison, "Anti-patterns: things to avoid" and "Writing code is cheap now," in *Agentic Engineering Patterns*, <https://simonwillison.net/guides/agentic-engineering-patterns/anti-patterns/> and <https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/>, read 2026-10-04.
 - Shirin Pirouzkhah, Pavlína Wurzel Gonçalves, and Alberto Bacchelli, "The Value of Effective Pull Request Description," 2026, <https://arxiv.org/abs/2602.14611>.
 - Mohammed Latif Siddiq, Xinye Zhao, Vinicius Carvalho Lopes, Beatrice Casey, and Joanna C. S. Santos, "Security in the Age of AI Teammates: An Empirical Study of Agentic Pull Requests on GitHub," 2026, <https://arxiv.org/abs/2601.00477>.

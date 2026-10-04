@@ -77,3 +77,15 @@ Two changes from the repository version, both worth a slide: `catchThrowable` se
 **Two slide notes.** `doNothing()` on a void method of a mock is redundant, because doing nothing is already the default. AssertJ's `BDDAssertions.then` and BDDMockito's `then` collide when both are statically imported; use AssertJ's `assertThat` with BDDMockito's `then`.
 
 **Hand-off.** `MODULE-testing` (week 9) takes the happy-path twin of this test, `testSaveActivity`, as its oracle example, and assumes students already write given/when/then from a use case.
+
+### Two agent habits: first run the tests, then red/green
+
+Source: Simon Willison, *Agentic Engineering Patterns* (living guide, read 2026-10-04), two chapters assigned as week 8 reading.
+
+- **"First run the tests."** Open every agent session by having it run the existing suite (`./mvnw test` in `backend/`). It tells the agent a suite exists and how to run it, shows the project's size, and sets testing as the default for the session. His line for the slide: "If the code has never been executed it's pure luck if it actually works when deployed to production." Teams put the command in their agent charter. Demo it at the start of the live `/implement` run on `not.md`.
+- **"Red/green TDD."** Tell the agent to write the test first and **confirm it fails** before implementing. A test that passes before the change proves nothing about the change. The extension 1a test above is the shape to write first.
+- **What the guide does not say, and the course must:** if the agent writes both the test and the code, it can pass its own exam. The expected result in Then comes from the use case's `POST-n` or extension outcome, never from what the agent's code happens to return. That is the oracle question week 9 owns; week 8 only plants it.
+
+### Further reading (to verify links before `stable`)
+
+- Simon Willison, "First run the tests" and "Red/green TDD," in *Agentic Engineering Patterns*, <https://simonwillison.net/guides/agentic-engineering-patterns/first-run-the-tests/> and <https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/>, read 2026-10-04.
