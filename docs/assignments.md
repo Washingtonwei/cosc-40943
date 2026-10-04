@@ -27,7 +27,7 @@ Each is due about three weeks after the last, on the Friday of the week its topi
 
 | Exam | When | Scope |
 |---|---|---|
-| **Midterm** | Mon Oct 19, in class | Weeks 1-8: what AI changes and the delegation boundary, the AI-augmented team and GitHub workflow, spec-driven requirements, context engineering, architecture and architecturally significant requirements, design-of-record, AI-assisted implementation, traceability. |
+| **Midterm** | Mon Oct 19, in class | Weeks 1-8, with week 8 limited to traceability. What to study, week by week, is in the [Midterm Study Guide](midterm.md). |
 | **Final** | Mon Dec 14, 8:00 - 10:30 AM | Cumulative, weighted toward weeks 9-14: testing, static analysis, CI/CD, observability and debugging, maintainability and technical debt, ethics. The self-study open-source module is **not** examined. |
 
 Exams assess whether *you* can reason about software engineering, which is the one thing the agent cannot do on your behalf in the room. Expect questions that give you an artifact and ask you to judge it: is this requirement testable, is this the right architectural decision and what did it cost, does this trace hold up, what would you have reviewed here.
