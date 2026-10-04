@@ -57,17 +57,43 @@ Taken from a practitioner video (see the source note below) and kept because it 
 
 The same file shows trunk reasoning written down: the comment on the actuator rules explains why they sit outside the API catch-all and would otherwise fall through to `.anyRequest().permitAll()` (tracked as `TD-actuator-exposure`).
 
-### What counts as proof
+### The author's half: proof in the pull request
 
-Rank the evidence an author or agent attaches, strongest first:
+The reviewer can read less code when the author brings proof, so the author's job is to bring it. Four kinds, strongest first:
 
-1. Tests mapped to rows of the design-of-record's test list, with assertions that check the contract (the oracle, from `MODULE-testing`).
-2. Authorization and integration tests for every trunk change.
-3. Runtime evidence for UI and scheduled work: a screenshot, a log line.
-4. The pull request description.
-5. The agent's self-rated confidence. Not evidence (Perry et al.; uncalibrated).
+1. **Tests**, mapped to rows of the design-of-record's test list, with assertions that check the contract (the oracle, from `MODULE-testing`). A row with no test is a gap the author names, not one the reviewer has to find.
+2. **Existing behavior**: tests showing what users already rely on still works. Required for every trunk change.
+3. **Runtime**: the feature used end to end, and what the author saw.
+4. **Visual**: a screenshot or short video of what the user will see, for UI changes.
+
+Then a statement of **what was verified and what was not**: what the author checked personally, what they took on trust from the agent or a tool, and what nobody checked. This is not a confidence score. "High confidence" is not evidence (Perry et al.), but "I did not test the email failure path" tells the reviewer where to look, and a reviewer can check it. It only works if grading rewards an honest "not verified" and never penalizes it; say so to the TAs.
 
 A test that only echoes a mock's return value is not proof. `MODULE-testing`'s `ActivityServiceTest.testSaveActivity` example is the one to cite; do not reteach it here.
+
+### Writing the description: what the standards agree on (checked 2026-10-04)
+
+| Source | What a description must carry |
+|---|---|
+| Google, "Writing good CL descriptions" | An imperative first line that stands alone in history; a body with **what** and **why**, why this approach, shortcomings, and links; enough context to survive dead links. Review the description before sending. |
+| Linux kernel, "Submitting patches" | The **problem**, its user-visible **impact**, then the solution; imperative mood; stands alone. One logical change per patch: "If your description starts to get long, that's a sign that you probably need to split up your patch." Quantify trade-offs. |
+| GitHub Docs, "Helping others review your changes" | Small, focused pull requests; purpose, overview, and links; **the type of feedback you need** and which files to read first; review, build, and test your own pull request first. |
+| Microsoft, Code-With Engineering Playbook | One goal per pull request; does not break the build; includes tests; Conventional Commits for titles; no fixed template. |
+| AWS CDK's template | Issue, reason, description of changes (with alternatives rejected and design decisions), new permissions, **how you validated**. |
+| Alibaba | No public company-wide standard found. Its open-source projects (Nacos) use *purpose of the change*, *brief changelog*, *verifying this change*, with an issue required first. |
+
+**Research.** Pirouzkhah, Wurzel Gonçalves, and Bacchelli (2026) derived eight recommended elements from industry guidelines and tested them on 80,000 pull requests across 156 projects. Only 13.7% explained their tests. An explanation of the code changes was associated with a 12 to 20% higher merge likelihood, and stating the type of feedback needed with 64 to 72% higher likelihood plus more reviewer comments (correlation, not cause). Surveyed developers rated purpose, reason, and issue link as the elements that matter on nearly every pull request. For agent-authored pull requests, Siddiq et al. (2026) found rejection more strongly associated with complexity and **verbosity** than with security topics: the practitioner video's complaint, measured.
+
+**The convergence:** why, what changed (summarized, not narrated), how it was verified, and where the reviewer should focus. The length rule comes from the sources too: one logical change, and a description that will not fit on one screen means the pull request should be split.
+
+**The template** is [`.github/pull_request_template.md`](https://github.com/tcu-cosc-40943/course-templates/blob/main/.github/pull_request_template.md) in the course templates repository, copied into each team repository in week 8. One template for code, specification, and design pull requests: an imperative title, `Closes #`, `Traces to:` (use case, business rule, or design), then **Why**, **What changed**, **How it was verified** (with visible **Verified:** and **Not verified:** lines), and **Reviewer focus**. Design choices worth teaching:
+
+- **The examples live in HTML comments**, which do not appear in the posted description. That is how one template covers code (tests mapped to the test list, existing behavior, runtime, screenshot), specification (the source and what else was updated to stay consistent), and design (the questions test, [Design-of-Record](design-of-record.md) 4.13) while the posted description stays four short sections.
+- **Why stays, even with `Closes #`.** Google and the kernel both require the description to stand alone, because it outlives links and is read for years. One or two sentences.
+- **Short answers, not checkboxes.** "☑ A fresh reviewer reviewed the diff" costs one click and proves nothing. The agent review goes under How it was verified as what it found and what the author did about each.
+- **Reviewer focus** is the author's half of the trunk-and-leaf triage and the "type of feedback needed" element the research found most predictive. The reviewer still makes their own call.
+- **AI verbosity is fixed with context, not willpower.** Each team's `CLAUDE.md` gets: "Pull request descriptions follow `.github/pull_request_template.md`. At most three lines per section. Never restate the diff." The agent reads the template from the repository, so the rule applies where the long descriptions are written.
+
+Adapted, not copied, from the practitioner video's template and proof list (source note below): kept the proof kinds and "what stayed unchanged"; added the trace line and the test-list mapping; turned his checkboxes into answers; dropped the self-rated confidence.
 
 ### AI-native lens seeds
 
@@ -102,7 +128,7 @@ A test that only echoes a mock's return value is not proof. `MODULE-testing`'s `
 
 "How I Review AI Code" (a senior staff engineer at Meta), YouTube, <https://www.youtube.com/watch?v=b2QkhmQ0sT0>. One practitioner's opinion, not evidence. If assigned, it is an optional watch with the prompt: what is missing from his idea of proof?
 
-- **Kept:** review depth scaled by blast radius (trunk and leaf); a fresh-context adversarial review agent (the same principle as the design gate's questions test); style nits handed to linters (consistent with Mäntylä and Lassenius); pull request descriptions shorter than the diff; merge-ready is not launch-ready (weeks 12 and 13); his closing point that knowing the codebase is what makes triage possible.
+- **Kept:** review depth scaled by blast radius (trunk and leaf); a fresh-context adversarial review agent (the same principle as the design gate's questions test); style nits handed to linters (consistent with Mäntylä and Lassenius); the author attaching proof (tests, runtime, visual) and a pull request template, adapted as described above; pull request descriptions shorter than the diff; merge-ready is not launch-ready (weeks 12 and 13); his closing point that knowing the codebase is what makes triage possible.
 - **Dropped:** the agent's self-reported confidence as proof; "AI already reviews better than most humans" (asserted, not shown); canary releases and A/B tests (student projects lack the traffic; a boolean feature flag is worth one sentence); proof that the code runs, with checking against the spec left to the end.
 - **Missing from it, supplied above:** checking against the spec; review's knowledge-transfer role.
 
@@ -118,3 +144,10 @@ A test that only echoes a mock's return value is not proof. `MODULE-testing`'s `
 - Arjun Panickssery, Samuel R. Bowman, and Shi Feng, "LLM Evaluators Recognize and Favor Their Own Generations," NeurIPS 2024.
 - Google, "The Standard of Code Review," in *Google Engineering Practices*, <https://google.github.io/eng-practices/review/reviewer/standard.html>.
 - Conventional Comments, <https://conventionalcomments.org>.
+- Google, "Writing good CL descriptions," in *Google Engineering Practices*, <https://google.github.io/eng-practices/review/developer/cl-descriptions.html>.
+- The Linux kernel, "Submitting patches: the essential guide to getting your code into the kernel," <https://docs.kernel.org/process/submitting-patches.html>.
+- GitHub Docs, "Helping others review your changes," <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/getting-started/helping-others-review-your-changes>.
+- Microsoft, "Pull Requests," in the *Code-With Engineering Playbook*, <https://microsoft.github.io/code-with-engineering-playbook/code-reviews/pull-requests/>.
+- AWS CDK pull request template, <https://github.com/aws/aws-cdk/blob/main/.github/PULL_REQUEST_TEMPLATE.md>; Alibaba Nacos pull request template, <https://github.com/alibaba/nacos/blob/develop/.github/PULL_REQUEST_TEMPLATE.md>.
+- Shirin Pirouzkhah, Pavlína Wurzel Gonçalves, and Alberto Bacchelli, "The Value of Effective Pull Request Description," 2026, <https://arxiv.org/abs/2602.14611>.
+- Mohammed Latif Siddiq, Xinye Zhao, Vinicius Carvalho Lopes, Beatrice Casey, and Joanna C. S. Santos, "Security in the Age of AI Teammates: An Empirical Study of Agentic Pull Requests on GitHub," 2026, <https://arxiv.org/abs/2601.00477>.
