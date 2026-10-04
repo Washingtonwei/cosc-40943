@@ -569,6 +569,40 @@ Context your specification lacks. Fix the specification too.
 A gap the agent filled with something plausible your client never said is the most dangerous line in the draft.
 :::
 
+## When the agent asks
+
+::: cols
+**Yours, or already in the spec**
+
+Check the use case and its rules. Then answer.
+|||
+**The client's**
+
+Do not pick. Fix the use case, or `OPEN-ISSUES.md`.
+:::
+
+::: note
+In plan mode the agent stops and asks. In Claude Code that is the AskUserQuestion tool: a few questions, two to four options each, plus a free-text Other. Copilot CLI's plan mode asks the same way.
+
+The example: not.md's first draft let only a section's assigned instructors send reminders. Offered as an option, a student would accept it, and it is wrong: BR-section-scoped-access already admits the course admin who owns the course. Check the specification before you click.
+
+The right column is week 3's rule again: you cannot answer for the client. Say it, and tell them to use the same move before their next client meeting: let the agent interview you on what you know, and every "ask the client" goes on the agenda.
+:::
+
+## The options are its guesses {.center}
+
+::: key
+Read every option. **Other** is always there.
+:::
+
+::: ai
+Your answers stay in the terminal. The questions test still goes in the pull request.
+:::
+
+::: note
+Four tidy options anchor you exactly as a finished draft does. If none is right, type what is.
+:::
+
 ## The design gate
 
 ::: steps

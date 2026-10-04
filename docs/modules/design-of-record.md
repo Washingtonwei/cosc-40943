@@ -352,6 +352,13 @@ The order in which you produce the design matters as much as what is in it:
 
 The reason is anchoring, the same reason the [Napkin](se-and-ai.md#the-napkin-six-prompts) has you answer before the agent does. Read a fluent, complete design first, and your own judgment shrinks to proofreading it. Sketch first, and the comparison shows you two things: where your understanding was thin, and where the agent filled a gap with something plausible that your client never said.
 
+**When the agent asks, during step 2.** Drafting in plan mode, the agent will stop and ask (in Claude Code through AskUserQuestion, set up in [Context Engineering](context-engineering.md#47-when-is-it-enough)). Before you pick an option, decide whose question it is:
+
+- **Yours, or already settled in the specification:** which existing class to extend, which crosscutting rule applies, who may call the route. Check the use case and its business rules first, then answer.
+- **The client's:** what the business wants in a case nobody specified. Do not pick an option. Fix the use case or log it in `OPEN-ISSUES.md`, and let the design cite the result. This is the challenge loop ([4.3](#43-firm-the-problem-first-the-challenge-loop)) arriving as a multiple-choice question, and the same rule as the first client meeting: you cannot answer for the client ([Requirements as the Contract, 4.3](spec-driven-requirements.md#43-the-first-client-meeting)).
+
+`not.md` shows why the first check matters. Its first draft let only a section's assigned instructors send reminders. Offered that as an option, a student would have accepted it, and it is wrong: `BR-section-scoped-access` already admits the course admin who owns the course (4.11). The options anchor you exactly as a finished draft does, so read all of them. And your answers stay in the terminal, so they do not replace the questions test: the written list in the pull request is the evidence.
+
 ### 4.13 The design gate
 
 A design is approved by **merging a pull request**, not by the drafter agreeing with their own agent:
@@ -426,6 +433,7 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 - Write the test list before the code: it is the definition of done the reviewer approves.
 - When the design finds the architecture wrong, change the architecture in the same pull request.
 - Run the questions test in a fresh session. The design is ready when nothing on the list could break a requirement.
+- When the agent asks, check the specification first, and never pick an option for the client.
 - Sketch before the agent drafts. Approve by pull request, reviewed by someone who did not write it.
 - The proving slice tests the architecture with the riskiest use case, built all the way through.
 
@@ -456,8 +464,9 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 10. Your design needs a component the architecture-of-record does not have. What do you change, and in which pull request?
 11. You run the questions test, and the agent lists five guesses. Three could break a requirement. What happens to each of the five before the pull request opens?
 12. Why should a fresh session run the questions test, rather than the session that drafted the design?
-13. Your teammate approved your design in four minutes with "LGTM." Name two questions from [4.13](#413-the-design-gate) that review should have answered.
-14. Your team proposes the login page as its proving slice because it is quick to build. What is wrong with that choice, and how do you choose instead?
+13. Drafting your design in plan mode, the agent asks whether a student who has left the team still owes peer evaluations, with three options. Whose question is it, what do you check first, and what do you do?
+14. Your teammate approved your design in four minutes with "LGTM." Name two questions from [4.13](#413-the-design-gate) that review should have answered.
+15. Your team proposes the login page as its proving slice because it is quick to build. What is wrong with that choice, and how do you choose instead?
 
 ## Related
 

@@ -561,6 +561,26 @@ The primer is the half nobody thinks to ask for. A team that walks in already kn
 If a team finishes early, send them to section 11 of the interview guide: who runs this after we graduate, and what do they already know how to run. Almost nobody asks it and it constrains the whole stack.
 :::
 
+## Let it interview you
+
+::: steps
+- "Interview me about this brief. When I say *ask the client*, add it to the guide."
+- Answer what the brief already tells you.
+- Everything else: **Other**, then "ask the client".
+:::
+
+::: key
+You cannot answer for the client.
+:::
+
+::: note
+Claude Code asks through its AskUserQuestion tool: the session pauses on a few questions, two to four options each, plus a free-text Other. Copilot CLI's plan mode asks the same way.
+
+The questions they can answer from the brief are the ones they no longer spend client minutes on. The ones they cannot answer are the script.
+
+The trap: asked which of four business objectives matters most, a student picks the likeliest. That is not the client's objective; it is an invented one with the student's name on it. Module 4.3 has the prompt.
+:::
+
 ## Thirty questions. Forty-five minutes.
 
 ::: key
