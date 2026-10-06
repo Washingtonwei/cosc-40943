@@ -102,6 +102,28 @@ Adapted, not copied, from the practitioner video's template and proof list (sour
 - **Context to supply the review agent:** the use case, its business rules, and the design-of-record. Never the author's conversation.
 - **How to verify the review agent:** spot-check one of its findings and one thing it passed. If its review never mentions the test list, it reviewed the diff, not the change.
 
+### Agent review: what Claude Code offers (checked 2026-10-05 against code.claude.com)
+
+Three products share the "Claude reviews my pull request" idea. Teach the first, show the second on one slide, skip the third.
+
+| | Local `/code-review` | Code Review (managed) | GitHub Actions `@claude` |
+|---|---|---|---|
+| Trigger | The student types `/code-review`, optionally with a target (`/code-review 42`, a branch, a path) | Automatic on a pull request, or a top-level comment `@claude review` (`always` subscribes the pull request to a review on every push) | A comment mentioning `@claude`, or a workflow on `pull_request` |
+| What runs | A background subagent with its own context. Effort `low` and `medium` report only high-confidence findings; `high` to `max` widen coverage and admit less certain ones; `ultra` sends it to a deeper multi-agent cloud review | Several agents in parallel, each hunting one class of defect, then a verification step that checks each candidate against the code before it is posted | Claude Code on a GitHub runner, usually the same code-review plugin |
+| Output | Findings in the terminal; `--comment` posts them inline on the pull request; `--fix` applies them | Inline comments marked 🔴 Important, 🟡 Nit, 🟣 Pre-existing, and a check run that always ends neutral, so it never approves or blocks | Comments on the pull request |
+| Reads | `CLAUDE.md`, not `REVIEW.md` | `CLAUDE.md` (violations become nits) and `REVIEW.md` (review-only rules: what counts as Important, nit caps, skip paths, checks for every pull request) | `CLAUDE.md` |
+| Cost and access | Any Claude Code plan, so every student has it | Team and Enterprise only, research preview, about $15 to 25 per review billed on top of the plan | Any plan, but a repository secret (one person's subscription token or an API key) and GitHub Actions minutes |
+
+**Why the local command for students:** it is the only one all 77 already have. The managed product at 13 teams and several pull requests each is hundreds of dollars on a plan the students are not on; the Actions route ties a team's reviews to one student's subscription token.
+
+**Fresh context, confirmed.** `/code-review` runs as a skill with `context: fork`, which the skills documentation says "doesn't see your conversation history" and is not a fork of the conversation. So it can be run from the session that wrote the code without inheriting the author's reasoning. It still reads what the author left in the repository, including an agent-written pull request description; the reviewer agent sees the author's claims there, just as a human reviewer does.
+
+**What to teach about it: the default reviews the diff, not the change.** The managed reviewer's documentation says it "focuses on correctness... not formatting preferences or missing test coverage." That is spine question 1 turned around: a missing extension is invisible in the diff, so an agent given only the diff will not find it. The fix is context, the week 5 lesson applied to review: give the review the use case and the test list (point it at them in the target text, or put the rule in `CLAUDE.md`; on the managed product, in `REVIEW.md`). Project Pulse's version of a `REVIEW.md` rule: "every new route under the API base URL has an authorization rule above the `denyAll()` catch-all, and the design's authorization test row has a test."
+
+**The neutral check run is a design worth naming.** Anthropic's own reviewer is built so it cannot approve a pull request. The human approves. This is the automation-bias finding (Parasuraman and Manzey) turned into product design.
+
+**Pace of change.** The documentation records behavior changes by version (`/review` merged into `/code-review` at v2.1.223; `@claude review` stopped subscribing to every push in July 2026). Teach the pattern (a fresh-context reviewer, given the contract, whose findings a human triages) with Claude Code as the instance; keep exact commands on the [Agent Setup](../agent-setup.md) page, not in the module text, and re-check them before each offering.
+
 ### Risks seeds
 
 | Risk | Human judgment that catches it | Mitigation |
@@ -116,6 +138,8 @@ Adapted, not copied, from the practitioner video's template and proof list (sour
 - **Studio:** pairs review each other's implementation pull requests from the proving slice. Every review carries the triage line, one comment per test-list row it checked, and labeled comments. The TA reads two reviews per team.
 - **Individual assignment: a part of assignment 3, "Add a use case" (due Fri Oct 16), not a new assignment.** Before submitting, the student reviews the agent's pull request and writes the review into it: the trunk-and-leaf triage line, each row of the use case's test list marked covered or not, and at least one labeled comment on something they changed or rejected. Graded on whether the triage is right and the test-list check is honest, not on how many comments there are.
 - **In-class exercise (week 8 lecture): a seeded pull request** with one trunk defect (a loosened security rule), one missing extension, one tautological test, and several nits. The room finds what matters and declines to block on the nits. Build and check the seeded pull request before the lecture.
+- **Live demo after the room's review: the agent on the same seeded pull request, twice.** First `/code-review <PR#>` with nothing else; then again with the use case and test list named in the target text. Put both finding lists beside the room's. Expected (not yet observed): the first run catches the loosened rule and misses the extension; the second finds the extension. Rehearse both runs before class and keep screenshots, because the output varies between runs and a live miss of the wrong kind would teach the wrong thing.
+- **Assignment 3 self-review gains one step:** run `/code-review` on the pull request and record, under How it was verified, each finding and what was done about it (fixed, rejected with a reason). The student's own triage line and test-list check stay theirs; the agent's findings are input to them.
 
 ### Self-check seeds
 
@@ -159,5 +183,6 @@ Simon Willison, *Agentic Engineering Patterns*, a living guide begun 2026-02-23 
 - Microsoft, "Pull Requests," in the *Code-With Engineering Playbook*, <https://microsoft.github.io/code-with-engineering-playbook/code-reviews/pull-requests/>.
 - AWS CDK pull request template, <https://github.com/aws/aws-cdk/blob/main/.github/PULL_REQUEST_TEMPLATE.md>; Alibaba Nacos pull request template, <https://github.com/alibaba/nacos/blob/develop/.github/PULL_REQUEST_TEMPLATE.md>.
 - Simon Willison, "Anti-patterns: things to avoid" and "Writing code is cheap now," in *Agentic Engineering Patterns*, <https://simonwillison.net/guides/agentic-engineering-patterns/anti-patterns/> and <https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/>, read 2026-10-04.
+- Anthropic, "Code Review" (including "Review a diff locally"), "Claude Code GitHub Actions," and "Skills" (running skills in a subagent), in the Claude Code documentation, <https://code.claude.com/docs/en/code-review>, <https://code.claude.com/docs/en/github-actions>, <https://code.claude.com/docs/en/skills>, read 2026-10-05.
 - Shirin Pirouzkhah, Pavlína Wurzel Gonçalves, and Alberto Bacchelli, "The Value of Effective Pull Request Description," 2026, <https://arxiv.org/abs/2602.14611>.
 - Mohammed Latif Siddiq, Xinye Zhao, Vinicius Carvalho Lopes, Beatrice Casey, and Joanna C. S. Santos, "Security in the Age of AI Teammates: An Empirical Study of Agentic Pull Requests on GitHub," 2026, <https://arxiv.org/abs/2601.00477>.
