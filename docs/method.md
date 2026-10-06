@@ -42,14 +42,14 @@ The methodology is realized as a layered set of documents. The shape (as realize
   - `software-requirements-specification.md`: non-use-case functional requirements (`FR-*`), domain model, quality attributes, constraints, operating environment.
 - **Design (`design/`)**, the *how*, generated from the spec, in **two levels**:
   - **Level 1: architecture-of-record.** The breadth-complete, depth-shallow map: a single arc42/C4 architecture-of-record for the whole product (`docs/design/architectural-design.md`), holding the platform context/container views and conventions every module inherits, plus each module's component view. Component boundaries for not-yet-designed areas are explicitly **provisional**.
-  - **Level 2: design-of-record, one per use-case area.** Component/class design, sequence diagrams, API contracts, schema deltas. Cites the use cases/FRs it realizes; never restates them. Lean: diagrams + non-obvious decisions + pointers to real files.
+  - **Level 2: design-of-record, one per use-case area,** revised in place. It cites the use cases and FRs it realizes and never restates them. Three sections are never dropped: the **API contract** (one row per endpoint or scheduled job: caller, request, success, and the error for each extension), the **key decisions**, each with the alternative it rejected, and the **test list** (one row per flow, covering every extension). Everything else follows one rule: pin what a wrong guess would break (a requirement, a business rule, a quality attribute, or the contract between two parts of the team), and leave the rest for the agent to derive.
 - **Traceability (`traceability.md`)**, the spec→code map on two axes (see [The traceability model](#the-traceability-model)): a *functional* matrix (one row per use case, carrying FR IDs, design doc, frontend/backend modules, tests, status) and a *non-functional* matrix (one row per quality attribute → quality scenario → verifying test).
 
 A companion **product/guides** split keeps shipped default content and build-guidance distinct from the spec itself, and an **OPEN-ISSUES** backlog (`OI-n`) tracks gaps still needed to make the spec implementation-ready.
 
 ### Documentation standards
 
-The artifacts above follow **recognized industry templates** rather than bespoke structures. The choice is deliberate, because the method targets teaching and publication: a known template is what students should learn, and it lowers the cost of peer review (reviewers recognize the structure instead of decoding a custom one).
+The artifacts above follow **recognized industry templates** rather than bespoke structures. The choice is deliberate, because a known template is what a newcomer should learn, and it lowers the cost of review (reviewers recognize the structure instead of decoding a custom one).
 
 - **Requirements** follow **Wiegers & Beatty** (*Software Requirements*, 3rd ed.): the SRS, use-case, vision-and-scope, and glossary shapes.
 - The **architecture-of-record** follows **arc42** (Starke & Hruschka), using **C4** (Brown) for the context and building-block views.
@@ -174,13 +174,16 @@ Before fanning out, pick one **proving** use case and take it all the way throug
 
 With the architecture validated, realize the remaining use cases one at a time:
 
-1. **`/design <UC>`**: turn the use case into an approved Level-2 design-of-record (diagrams + decisions). A separately-reviewed stage that **stops before code**, and itself split into two beats, mirroring the RFC problem-then-solution rhythm. `/design` first runs the **challenge loop** against the use case (surfacing ambiguity, contradictions, and assumptions that break against the code, and looping fixes back into the spec) to firm the *problem*, reaching the `🔬 Problem-validated` state. It then designs and submits the *solution* for approval (`📐 Designed`). Trivial use cases pass through both in one motion. If the area contradicts the provisional Level-1 map, the design revises Level 1 (module architecture) and records it; platform-level changes are confirmed separately.
+1. **`/design <UC>`**: turn the use case into an approved Level-2 design-of-record. A separately-reviewed stage that **stops before code**, and itself split into two beats, mirroring the RFC problem-then-solution rhythm. `/design` first runs the **challenge loop** against the use case (surfacing ambiguity, contradictions, and assumptions that break against the code, and looping fixes back into the spec) to firm the *problem*, reaching the `🔬 Problem-validated` state. It then designs the *solution* and has the developer accept its shape (`📐 Designed`). Trivial use cases pass through both in one motion. If the area contradicts the provisional Level-1 map, the design revises Level 1 (module architecture) and records it; platform-level changes are confirmed separately. Approval is a merged pull request, reviewed and merged by a human. Its description carries the **questions test**: a fresh agent session, reading only the use case, its business rules, the architecture-of-record's Crosscutting Concepts, and the design, lists every point it would have to guess. Each guess is either fixed in the design or kept with a one-line reason. No implementation branch opens until the design merges.
 2. **`/implement <UC>`**: build from that approved design (plan → code → tests), extending the existing packages rather than forking the architecture.
-3. **Record**: update traceability; loop any spec/architecture fixes the work surfaced back into the docs.
+3. **Review** the implementation pull request against the contract: the use case with every extension, its business rules, and the design-of-record's API contract and test list. A diff shows what was added, never what was left out, so check each test-list row as covered or not. Set depth by risk and write the triage into the review: read the trunk (code many paths depend on, code that changes behavior existing users rely on, or code that is hard to roll back) line by line, and check the leaf (new code reached only through the new feature) through its tests.
+4. **Record**: update traceability; loop any spec/architecture fixes the work surfaced back into the docs.
 
 ### Phase D: Continuous co-evolution
 
 During design or implementation, the team can always return to adjust **both** the requirements and the architecture. The challenge loop (Principle 4) plus traceability (Principle 5) make this the normal case, not an exception: the spec, the architecture, and the code are kept in agreement as a standing invariant.
+
+**What a change reopens.** Phase A's exit criterion is the test. A change that stays inside a named use-case area and adds no architecturally significant requirement is a spec edit: amend the use case or rule, then revise that area's design-of-record through the gate. A change that adds something Phase A must name (a use-case area, a component, an external integration, a cross-cutting subsystem), or that adds or re-ranks an architecturally significant requirement, reopens the architecture-of-record first and places the new element there; a module-level change can ride in the area's design pull request (Phase C step 1), and a platform-level one is confirmed on its own. If it overturns a key decision, record a superseding `KD-*` with the requirement that forced it before any area designs against it. A scope change starts one level higher, in vision and scope, so its new use cases trace up to a feature.
 
 ## The human–agent division of labor
 
@@ -190,6 +193,7 @@ During design or implementation, the team can always return to adjust **both** t
 | High-level architectural decisions (platform-wide) | Human (agent proposes, human confirms) |
 | Turning an approved use case into a design-of-record | Agent, behind a design-review approval gate |
 | Implementing an approved design into code + tests | Agent |
+| Reviewing the implementation pull request against the contract | Human |
 | Module-level architecture revision when an area contradicts the map | Agent, surfaced in the design review and recorded |
 | Cross-document consistency checks | Agent (tooling) |
 | Judgment calls, ambiguity resolution, "is this a good idea?" | Human, prompted by the agent's challenge loop |
@@ -204,5 +208,6 @@ The methodology is tool-agnostic, but Project Pulse instantiates it with **[Clau
 - **`/design`**: Phase C step 1 (use case → design-of-record; may revise the module architecture).
 - **`/implement`**: Phase C step 2 (design → code + tests). It reads Crosscutting Concepts in full before coding and checks the diff against it before running tests, so conventions hold across sessions even where nearby code has drifted from them.
 - **`/spec-build`**: mechanically verifies and resyncs cross-document consistency (anchors, ID resolution, UC↔traceability coupling, terminology).
+- **`/sync-check`** audits spec-to-code conformance.
 
 The running case study is the **RAM (Requirements Authoring & Management) module**, itself a tool for *authoring* requirements, developed spec-first inside the larger Project Pulse platform.
