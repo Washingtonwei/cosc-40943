@@ -44,7 +44,7 @@ Many spec-driven tutorials stop here: write the requirements, hand them to the a
 :::
 
 ::: note
-All five come from the Key decisions of Project Pulse's docs/design/not.md, each with the alternative it rejected. The scheduler question is not idle: the shared foundation may not depend on the activity and evaluation features.
+All five come from the Key decisions of Project Pulse's docs/design/not.md, the design for the notifications (NOT) area, each with the alternative it rejected. The scheduler question is not idle: the shared foundation may not depend on the activity and evaluation features.
 :::
 
 ## ...and the shape of the code
@@ -333,7 +333,7 @@ sequenceDiagram
 ```
 
 ::: note
-Simplified. The full version in not.md includes the browser, the route guard, and extension 6a inside the loop. Point at the labels: every arrow has a step.
+Simplified. The full version in not.md includes the browser, the route guard, and extension 6a inside the loop. Point at the labels: every arrow has a step. No WeeklyReminderScheduler here: this is the on-demand use case. The scheduled reminder, FR-NOT-weekly-reminder, has its own diagram in not.md, and it calls the same SubmissionStatusService and ReminderService, so both paths share one definition of who owes.
 :::
 
 ## When to draw a state diagram
@@ -418,48 +418,6 @@ Decide what the agent would otherwise guess: the classes, the sequences, the con
 Wednesday opens here. From not.md. Same form as the architecture's key decisions in week 6, with a smaller reach: a design decision is local to this area. A decision that affects the whole system is a KD entry in the architecture-of-record. No rival considered means it probably was not a decision.
 :::
 
-## Design patterns
-
-::: steps
-- **Name:** a word the whole team shares
-- **Problem:** when it applies
-- **Solution:** the arrangement of classes
-- **Consequences:** what it costs
-:::
-
-::: note
-Gamma, Helm, Johnson, Vlissides, 1994, the Gang of Four. The name is most of the value: "use an Observer" says in three words what would take a paragraph.
-:::
-
-## Observer, already in Project Pulse
-
-```mermaid
-classDiagram
-    class JPA {
-        <<subject>>
-    }
-    class AuditingEntityListener {
-        <<observer>>
-    }
-    class Activity
-    JPA --> AuditingEntityListener : notifies on every save
-    AuditingEntityListener --> Activity : stamps createdAt, updatedAt
-```
-
-::: note
-Intent: when one object changes, its dependents are notified without the changing object knowing who they are. Activity and PeerEvaluation declare @EntityListeners(AuditingEntityListener.class). The entity never knows the listener exists. Nobody on Project Pulse wrote this pattern by hand; the framework did.
-:::
-
-## Problem to pattern
-
-| When you need to | Pattern | In Project Pulse |
-|---|---|---|
-| Tell others something changed | Observer | JPA auditing |
-| One simple front for many classes | Facade | Each service |
-| Swap an algorithm | Strategy | The injected Clock |
-| Query from optional criteria | Specification | ActivitySpecs |
-| Convert between interfaces | Adapter | The Converter beans |
-
 ## A pattern no requirement needs
 
 ::: warn
@@ -471,7 +429,7 @@ When all you have is the Gang of Four, everything looks like an AbstractSingleto
 :::
 
 ::: note
-Agents reach for patterns readily, because pattern-heavy code is everywhere in what they learned from. "It is more flexible" is not an answer unless something in the specification needs the flexibility.
+Students know the patterns from their design patterns course; the design-of-record question is only whether this area needs one. Agents reach for patterns readily, because pattern-heavy code is everywhere in what they learned from. "It is more flexible" is not an answer unless something in the specification needs the flexibility.
 :::
 
 ## The data model change

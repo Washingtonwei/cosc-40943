@@ -27,7 +27,7 @@ By the end of this module, a student can:
 
 ## 3. Motivation
 
-**A use case is not enough to build from.** Many spec-driven tutorials stop at the requirements: write the specification, hand it to the agent, take the code. In assignment 2 you specified a reminder that emails only the students who have not submitted their weekly activity report or peer evaluation. Your use case says what the system does. It does not say how, and between the two sit decisions like these, each taken from the design we later wrote for it:
+**A use case is not enough to build from.** Many spec-driven tutorials stop at the requirements: write the specification, hand it to the agent, take the code. In [assignment 2](../assignments/spec-a-feature.md) you specified a reminder that emails only the students who have not submitted their weekly activity report or peer evaluation. Your use case (Project Pulse's version is [`UC-NOT-remind-non-submitters`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/requirements/use-cases.md#uc-not-remind-non-submitters-the-instructor-reminds-the-students-who-have-not-submitted), where `NOT` is the area code for notifications) says what the system does. It does not say how, and between the two sit decisions like these, each taken from the design we later wrote for it:
 
 - Where "has not submitted" is computed: in one service that the reminder and both report pages share, or separately in each feature.
 - Which part of the code owns the scheduler, given that the shared foundation may not depend on the activity and evaluation features.
@@ -37,7 +37,7 @@ By the end of this module, a student can:
 
 Beyond those choices sits the shape of the code, which the use case also leaves open: which classes exist and which are reused (a new `SubmissionStatusService` beside the existing `EmailService`), which calls which and in what order, the exact endpoints and their errors (`POST /api/v1/sections/{sectionId}/reminders` takes only `{ item }` and returns `400` for an inactive week), and the tests that say the feature is done ("students who reported are not emailed"). The design pins these as a class diagram, sequence diagrams, an API contract, and a test list.
 
-Hand an agent only the use case and it makes every one of these decisions silently, then returns a pull request spanning a controller, services, the scheduler, a dialog, and their tests. Ask it twice, in two fresh sessions, and it may decide them differently: two runs, two designs, neither of which you chose. You can review that line by line, but you are reviewing decisions you did not know were made, after they were built. Written as a design, the same decisions take a few pages, name what was rejected and why (see [`not.md`'s Key decisions](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#key-decisions)), and can be argued over before any code exists. Code review then checks the code against decisions already approved, instead of discovering them.
+Hand an agent only the use case and it makes every one of these decisions silently, then returns a pull request spanning a controller, services, the scheduler, a dialog, and their tests. Ask it twice, in two fresh sessions, and it may decide them differently: two runs, two designs, neither of which you chose. You can review that line by line, but you are reviewing decisions you did not know were made, after they were built. Written as a design, the same decisions take a few pages, name what was rejected and why (see the Key decisions in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#key-decisions), the design for the `NOT` area; each design file is named after its area's code), and can be argued over before any code exists. Code review then checks the code against decisions already approved, instead of discovering them.
 
 A design also keeps the why. Months later, when someone asks why the scheduler moved out of `system` or why the request carries no week, the code cannot say; the design can. Project Pulse's [traceability matrix](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md) links the reminder's use case to its section of `not.md`, and from week 8 ([Traceability](traceability.md)) on to the code and tests that realize it. Skip the design and the chain from requirement to code has a hole in the middle, which the next agent session fills with a guess.
 
@@ -201,7 +201,7 @@ sequenceDiagram
     RC-->>SPA: 200, sent and failed (step 7)
 ```
 
-Draw one per use case for the main scenario, plus one for any extension that does more than return an error.
+Draw one per use case for the main scenario, plus one for any extension that does more than return an error. A scheduled job gets a diagram too. `not.md` draws the weekly reminder ([`FR-NOT-weekly-reminder`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#fr-not-weekly-reminder-the-scheduled-reminder)) as its own sequence: the clock calls `WeeklyReminderScheduler`, which calls the same `SubmissionStatusService` and `ReminderService` as the on-demand reminder, so both paths share one definition of who owes.
 
 **A state diagram** shows how one object changes in response to events. Most objects do not need one; draw it only where the lifecycle is where the bugs live. A Project Pulse peer evaluation is a good example, partly because its states are easy to get wrong: `PeerEvaluation` has no status field at all. Its state is decided by the clock (`BR-evaluation-editable-until-close`):
 
@@ -250,46 +250,13 @@ From `not.md`:
 
 If you cannot name a rejected alternative, it probably was not a decision; leave it out.
 
-**Design patterns** are named, reusable answers to design problems that keep recurring. The catalog that named them is Gamma, Helm, Johnson, and Vlissides's *Design Patterns* (1994), the "Gang of Four." Each pattern has four parts: a **name**, the **problem** it addresses, the **solution**, and its **consequences**, the trade-offs. The name is most of the value: "use an Observer" says in three words what would otherwise take a paragraph.
-
-**Observer** is the classic. Intent: when one object changes state, every object that depends on it is notified automatically, without the changing object knowing who they are. Project Pulse uses it without anyone writing it by hand: `Activity` and `PeerEvaluation` declare `@EntityListeners(AuditingEntityListener.class)`, and JPA notifies that listener on every save so it can stamp `createdAt` and `updatedAt`. The entity does not know the listener exists.
-
-```mermaid
----
-title: Observer, as JPA auditing uses it in Project Pulse
----
-classDiagram
-    class Activity {
-        createdAt
-        updatedAt
-    }
-    class EntityLifecycle {
-        <<subject: JPA>>
-        notifies listeners on persist and update
-    }
-    class AuditingEntityListener {
-        <<observer>>
-        stamps the timestamps
-    }
-    EntityLifecycle --> AuditingEntityListener : notifies
-    AuditingEntityListener --> Activity : updates
-```
-
-Recognizing a problem as one a pattern solves is the skill:
-
-| When you need to | Pattern | In Project Pulse |
-|---|---|---|
-| Tell several objects that another one changed | Observer | JPA auditing listeners |
-| Give a cluster of classes one simple interface | Facade | Each `*Service` in front of its repositories |
-| Swap an algorithm without changing its callers | Strategy | The injected `Clock`: fixed in `dev`, the system clock in `prod` |
-| Build a query from optional criteria | Specification | `ActivitySpecs` in `ActivityService.findByCriteria` |
-| Convert between two interfaces | Adapter | The `Converter<S,T>` beans between entities and DTOs |
+**Design patterns** you know from your design patterns course. In a design-of-record, name one only where it solves a problem this area has; the name then says in a word what would otherwise take a paragraph.
 
 **A pattern no requirement needs is gold-plating.** Agents reach for patterns readily, because pattern-heavy code is everywhere in what they learned from. Ask what problem it solves in this area. "It is more flexible" is not an answer unless something in your specification needs the flexibility.
 
 ### 4.7 The data model change
 
-Show only what this area **adds**: new tables or entities, new columns, the migration that creates them, as an ER diagram if there is more than one new table. The domain model is owned by your specification; link it rather than redraw it.
+Show only what this area **adds**: new tables or entities, new columns, and the migration that creates them, following your architecture's crosscutting concepts: a new file in Flyway or a similar migration tool, never an edit to an old one (Project Pulse names its files `V<n>__description.sql`; see [Software Architecture, 4.10](architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Use an ER diagram if there is more than one new table. The domain model is owned by your specification; link it rather than redraw it.
 
 The reminder adds nothing, and the design says so with the reason: a reminder leaves no record, so there is no table. Rejected: a reminder log showing "last reminded at", which would add a table, a migration, and seed data to guard against a double send that the confirmation step already guards. "No change" with a reason is a decision a reviewer can check. A blank section is not.
 
@@ -435,7 +402,6 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 - Sourcegraph, [*Requests for Comments (RFCs)*](https://github.com/sourcegraph/handbook/blob/main/content/company-info-and-process/communication/rfcs/index.md), company handbook; and Gergely Orosz, [*Scaling Engineering Teams via RFCs: Writing Things Down*](https://blog.pragmaticengineer.com/scaling-engineering-teams-via-writing-things-down-rfcs/), The Pragmatic Engineer. How industry runs the design gate.
 - Ian Sommerville, *Software Engineering*, 10th ed. (Pearson, 2016), ch. 7, "Design and implementation." Object identification, sequence and state models, and design patterns, worked on a wilderness weather station.
 - Martin Fowler, *UML Distilled*, 3rd ed. (Addison-Wesley, 2003), ch. 4, "Sequence Diagrams." The notation in a dozen pages, with advice on when not to use it.
-- Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software* (Addison-Wesley, 1994). The catalog; read Observer, Facade, Strategy, and Adapter first.
 - David Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM* 15(12), 1972. Information hiding, the idea under every API contract.
 - Joshua Bloch, "How to Design a Good API and Why it Matters," talk at OOPSLA 2006 (companion volume, pp. 506–507). Short, practical rules from the designer of the Java collections.
 - Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. Twin Peaks, behind [4.9](#49-when-the-design-changes-the-architecture).
