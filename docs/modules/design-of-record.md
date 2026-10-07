@@ -9,15 +9,14 @@
 By the end of this module, a student can:
 
 1. Explain what a design-of-record is, where it sits between the use case and the code, and why it is written per use case area, before the code.
-2. Decide how much to write by asking, of each detail, whether a wrong guess would break a requirement.
-3. Run the challenge loop on a use case before designing it, and send each finding to the document that owns it.
-4. Identify the classes an area needs from its use case and draw its class diagram, marking what is new and what is reused.
-5. Read and draw a UML sequence diagram in mermaid, label every interaction with the use case step it implements, and decide when an object needs a state diagram.
-6. Write an API contract complete enough that the front end and the back end can be built in separate sessions.
-7. Record a design decision with what it rejected and why, and recognize when a known design pattern fits a problem and when it is gold-plating.
-8. Write the test list for every flow of a use case before the code exists.
-9. Run the questions test on a design and act on each item, then take the design through a pull request reviewed by a teammate who did not write it.
-10. Choose a proving slice by architectural risk and say what it has to prove.
+2. Run the challenge loop on a use case before designing it, and send each finding to the document that owns it.
+3. Identify the classes an area needs from its use case and draw its class diagram, marking what is new and what is reused.
+4. Read and draw a UML sequence diagram in mermaid, label every interaction with the use case step it implements, and decide when an object needs a state diagram.
+5. Write an API contract complete enough that the front end and the back end can be built in separate sessions.
+6. Record a design decision with what it rejected and why, and recognize when a known design pattern fits a problem and when it is gold-plating.
+7. Write the test list for every flow of a use case before the code exists.
+8. Run the questions test on a design and act on each item, then take the design through a pull request reviewed by a teammate who did not write it.
+9. Choose a proving slice by architectural risk and say what it has to prove.
 
 ## 2. Where it fits
 
@@ -75,36 +74,16 @@ Four properties make it a design-of-record rather than any design document:
 - **One per area, revised in place.** An area gains use cases over the term. The overview, the class diagram, and the data model are edited when it does; sequence diagrams, contract rows, and test rows are appended per use case. It never becomes a stack of per-use-case sections.
 - **It stays true.** If building the code forces a change (a different class boundary, an extra table), the design is updated in the same pull request. A design that describes code that no longer exists misleads the next agent that reads it.
 
-The idea is old. Industry calls it an RFC (request for comments) or design doc: a written proposal, reviewed and approved before it is built, at places from the Internet Engineering Task Force to Sourcegraph and Oxide. Two things differ here. The draft is usually the agent's, made after your own sketch ([4.12](#412-sketch-first-then-the-agent-then-compare)), and the review is yours, which makes the review the skill. And it is a living document of the design as built, while the frozen, dated decisions live separately as the architecture's `KD-*` entries.
+The idea is old. Industry calls it an RFC (request for comments) or design doc: a written proposal, reviewed and approved before it is built, at places from the Internet Engineering Task Force to Sourcegraph and Oxide. Two things differ here. The draft is usually the agent's, made after your own sketch ([4.11](#411-sketch-first-then-the-agent-then-compare)), and the review is yours, which makes the review the skill. And it is a living document of the design as built, while the frozen, dated decisions live separately as the architecture's `KD-*` entries.
 
 !!! trace "Trace: use case to design-of-record"
     The design-of-record's header names every `UC-*` and `FR-*` it realizes, and the traceability matrix's Design column points each use case at its area's design file. From week 8 the chain continues to code and tests.
 
-### 4.2 How much to write
+### 4.2 Firm the problem first: the challenge loop
 
-The question students ask first is the right one: how detailed? Project Pulse's [method](../method.md) answers it with Principle 8, *specify requirements, derive implementation*, applied to design:
+Before designing the solution, check that the problem is sound. Read the use case against the documents it depends on (the business rules, the glossary, the rest of the specification, and the architecture-of-record) and against any code that already exists. Look for steps that are ambiguous, rules that disagree, and assumptions the architecture or the code contradicts. In your proving slice there is no code yet, so the loop is a reading across documents, and its findings are mostly questions for the client. The method calls this the **challenge loop**, and the agent is instructed to run it rather than comply silently. Doing it first is the RFC rhythm: review the problem, then review the solution.
 
-> **If a wrong guess would break a requirement, a business rule, a quality attribute, or the contract between two parts of your team, pin it in the design. Otherwise, let the agent derive it while it builds.**
-
-Applied to the reminder:
-
-| Detail | Wrong guess breaks something? | So |
-|---|---|---|
-| What counts as "has not submitted" a peer evaluation | Yes: the instructor reminds the wrong students | Pinned, and promoted to a business rule (4.3) |
-| Which week a WAR reminder is about | Yes: students are told to report the wrong week | Pinned: the previous week |
-| Whether the reminder request carries the week | Yes: a client could ask for a closed week | Pinned: the server computes it |
-| Whether sending waits for the mail server | Yes: the instructor would not learn who was missed | Pinned, with the rejected alternative |
-| The Java name of the method that finds who owes | No | Named in the class diagram as a suggestion; the agent may rename it |
-| The JSON field names in the response | Only if two sessions guess differently | The contract names the fields, not their types |
-| Column types, indexes, getters | No | Derived |
-
-**Greenfield changes the answer.** Project Pulse's [design guide](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/README.md) says to keep a design lean: link to the code rather than describe it. That assumes there is code to link to. For your proving slice there is none, so whatever the design leaves out, the agent invents. The guide already names the three sections that are never dropped for that reason (the API contract, the key decisions with their rejected alternatives, and the test list), and a greenfield design leans on them hardest. In an empty repository the components section also lists the files the agent should create, at the paths your architecture's conventions give them, since there is nothing yet to link to.
-
-### 4.3 Firm the problem first: the challenge loop
-
-Before designing the solution, check that the problem is sound. Read the use case against the code and the other documents, and look for steps that are ambiguous, assumptions the code contradicts, and requirements that disagree. The method calls this the **challenge loop**, and the agent is instructed to run it rather than comply silently. Doing it first is the RFC rhythm: review the problem, then review the solution.
-
-Our first draft of the reminder use case looked complete. Reading Project Pulse's code found six things it did not settle:
+Our first draft of the reminder use case looked complete. Project Pulse already had code, so our loop could also read the use case against it, and five of the six things it did not settle came from there:
 
 | Finding | Where the fix went |
 |---|---|
@@ -113,13 +92,13 @@ Our first draft of the reminder use case looked complete. Reading Project Pulse'
 | Students on no team and deactivated accounts were emailed, though neither can submit | `BR-submission-owed` |
 | Nothing said which week the WAR reminder covers | The client's ruling (the previous week), written into the use case |
 | A peer evaluation is saved one teammate at a time, so a half-finished set is real | `BR-submission-owed`: owed until every active teammate, self included, is rated |
-| The scheduler lives in `system`, part of the shared foundation, which may not depend on `activity` or `evaluation` (`MNT-feature-locality`) | The design, and a change to the architecture (4.10) |
+| The scheduler lives in `system`, part of the shared foundation, which may not depend on `activity` or `evaluation` (`MNT-feature-locality`) | The design, and a change to the architecture (4.9) |
 
 The first row shows what happens when a question is never answered once, in writing. Project Pulse decided "has not submitted" in two places. The instructor's WAR page (`SectionsActivities.vue`) counts a student with no activity that week as missing, but it fetches only the first 200 activities and the first 100 students, so with 77 students filing several activities each, students who did submit show up as missing. The peer evaluation report (`EvaluationService.generateWeeklyPeerEvaluationReportForSection`) counts a student as done after rating anyone, but the back end saves one rating at a time, so a student who rated one of five teammates counts as done. The truncation is a plain bug; "anyone" is a term nobody defined. An ambiguity nobody resolves gets resolved twice, differently, by whoever builds next. A reminder built from the use case alone would have been a third answer.
 
 Read the second column. **Most fixes went to the specification, not the design.** A finding about what the system must do is a requirements defect, and the design that discovered it is the wrong place to record it. Only the last one, how the code is arranged, belongs in the design. Project Pulse's traceability matrix marks a use case 🔬 *Problem-validated* once this loop has run and its fixes are merged, and 📐 *Designed* once the solution design is approved.
 
-### 4.4 Finding the classes
+### 4.3 Finding the classes
 
 There is no formula for identifying classes; it takes skill, domain knowledge, and more than one pass. Sommerville names three approaches, and they work best together:
 
@@ -172,7 +151,7 @@ classDiagram
 
 **Mark every class new or reused.** "Reused" is the most valuable word in the diagram: it tells the agent to extend what exists instead of writing a parallel copy, which is the mistake that produced the two definitions in the first place. Show classes, their important operations, and their dependencies. Fields and getters belong to the code.
 
-### 4.5 Sequence diagrams, and when to draw a state diagram
+### 4.4 Sequence diagrams, and when to draw a state diagram
 
 A **sequence diagram** shows the objects that take part in one scenario and the messages between them, in time order. It is the core of a design-of-record, because it shows the one thing no single file can: how the parts cooperate.
 
@@ -240,7 +219,7 @@ stateDiagram-v2
 
 An agent that does not see this diagram tends to add a `submitted` flag and a "finalize" button, because most evaluation systems it has read have one. Here the close of the window is the lock.
 
-### 4.6 The API contract
+### 4.5 The API contract
 
 Components are designed in parallel only if the places where they meet are fixed first. That was true before agents (a team splits work across people) and it matters more now: your front end and back end may be built by different agent sessions that never see each other's code. The contract is the only document both read.
 
@@ -261,7 +240,7 @@ Three things to notice:
 
 Field types and exact JSON are left to the agent, unless another system depends on the format.
 
-### 4.7 Design decisions, and design patterns
+### 4.6 Design decisions, and design patterns
 
 A design-of-record records only the decisions a reader could not recover from the code. Each one says what was chosen, **what was rejected, and why**, exactly like the architecture's key decisions in week 6. The difference is reach: a design decision is local to this area. A decision that affects the whole system is an architecture decision and goes in the architecture-of-record as a `KD-*` entry.
 
@@ -308,13 +287,13 @@ Recognizing a problem as one a pattern solves is the skill:
 
 **A pattern no requirement needs is gold-plating.** Agents reach for patterns readily, because pattern-heavy code is everywhere in what they learned from. Ask what problem it solves in this area. "It is more flexible" is not an answer unless something in your specification needs the flexibility.
 
-### 4.8 The data model change
+### 4.7 The data model change
 
 Show only what this area **adds**: new tables or entities, new columns, the migration that creates them, as an ER diagram if there is more than one new table. The domain model is owned by your specification; link it rather than redraw it.
 
 The reminder adds nothing, and the design says so with the reason: a reminder leaves no record, so there is no table. Rejected: a reminder log showing "last reminded at", which would add a table, a migration, and seed data to guard against a double send that the confirmation step already guards. "No change" with a reason is a decision a reviewer can check. A blank section is not.
 
-### 4.9 The test list, before the code
+### 4.8 The test list, before the code
 
 The design ends with one row per flow: the main scenario and every extension of every use case it realizes, each with its level and what it asserts. No code.
 
@@ -327,7 +306,7 @@ The design ends with one row per flow: the main scenario and every extension of 
 
 This list is the **definition of done** the reviewer approves. Writing it now does two things. A missing extension shows up as a missing row, before anyone codes around it. And the agent, which will write tests later, is told which tests count. An agent asked to "add tests" afterward tests what it built, which by then is not evidence of anything. `not.md` has eighteen rows. Testing gets its own module in week 9.
 
-### 4.10 When the design changes the architecture
+### 4.9 When the design changes the architecture
 
 Week 6's map was drawn before any area was designed, and Twin Peaks predicts what happens next: designing an area against real code finds where the map was wrong. The reminder did. Its scheduler lived in `system`, part of the shared foundation, and deciding who owes a report needs `activity` and `evaluation`, which the foundation may not depend on.
 
@@ -335,7 +314,7 @@ The design moved the reminders into a new feature slice, `notification`, and **c
 
 The rule: the template's "Changes to the architecture-of-record" section lists each change, and the change itself is made, not proposed for later. A design that silently disagrees with the architecture leaves two maps, and the agent follows whichever one it reads last.
 
-### 4.11 Is it enough? The questions test, one level down
+### 4.10 Is it enough? The questions test, one level down
 
 Week 5 asked how you know the context is sufficient, and answered with the [questions test](context-engineering.md#47-when-is-it-enough): make the agent state its assumptions before it writes code. The design-of-record is where that test pays most, because it is the last chance to fix a gap on paper.
 
@@ -354,32 +333,32 @@ Week 5 asked how you know the context is sufficient, and answered with the [ques
 | 7 guesses worth pinning | May a course admin who owns the course, but is not assigned to the section, send reminders? The design admitted only assigned instructors, though `BR-section-scoped-access` lets the admin in | Fixed: both routes admit either, with a test. Another fix went to the specification: a student does not owe an evaluation of a deactivated teammate |
 | 9 guesses that break nothing | The email's wording and layout; the JSON shape of the list | Kept, each with one line on why |
 
-Two lessons are in that table. The design was carefully written and still contradicted itself: the person who wrote it reads what they meant, and a fresh reader reads what is on the page. And one fix went to the specification, not the design, which is the challenge loop ([4.3](#43-firm-the-problem-first-the-challenge-loop)) happening again one level down.
+Two lessons are in that table. The design was carefully written and still contradicted itself: the person who wrote it reads what they meant, and a fresh reader reads what is on the page. And one fix went to the specification, not the design, which is the challenge loop ([4.2](#42-firm-the-problem-first-the-challenge-loop)) happening again one level down.
 
-### 4.12 Sketch first, then the agent, then compare
+### 4.11 Sketch first, then the agent, then compare
 
 The order in which you produce the design matters as much as what is in it:
 
 1. **Sketch it yourselves.** Before opening the agent, draw the main scenario's sequence diagram and write the contract rows by hand, from the use case and your architecture. Twenty minutes.
 2. **Have the agent draft it**, in plan mode, from the template, the use case, its business rules, your crosscutting concepts, and the relevant code.
 3. **Compare the two.** Where they differ, decide which is right and why. What the agent found that you missed goes in. What you knew that it could not is context your specification lacks, so fix the specification too.
-4. **Run the questions test** (4.11), then open the pull request.
+4. **Run the questions test** (4.10), then open the pull request.
 
 The reason is anchoring, the same reason the [Napkin](se-and-ai.md#the-napkin-six-prompts) has you answer before the agent does. Read a fluent, complete design first, and your own judgment shrinks to proofreading it. Sketch first, and the comparison shows you two things: where your understanding was thin, and where the agent filled a gap with something plausible that your client never said.
 
 **When the agent asks, during step 2.** Drafting in plan mode, the agent will stop and ask (in Claude Code through AskUserQuestion, set up in [Context Engineering](context-engineering.md#47-when-is-it-enough)). Before you pick an option, decide whose question it is:
 
 - **Yours, or already settled in the specification:** which existing class to extend, which crosscutting rule applies, who may call the route. Check the use case and its business rules first, then answer.
-- **The client's:** what the business wants in a case nobody specified. Do not pick an option. Fix the use case or log it in `OPEN-ISSUES.md`, and let the design cite the result. This is the challenge loop ([4.3](#43-firm-the-problem-first-the-challenge-loop)) arriving as a multiple-choice question, and the same rule as the first client meeting: you cannot answer for the client ([Requirements as the Contract, 4.3](spec-driven-requirements.md#43-the-first-client-meeting)).
+- **The client's:** what the business wants in a case nobody specified. Do not pick an option. Fix the use case or log it in `OPEN-ISSUES.md`, and let the design cite the result. This is the challenge loop ([4.2](#42-firm-the-problem-first-the-challenge-loop)) arriving as a multiple-choice question, and the same rule as the first client meeting: you cannot answer for the client ([Requirements as the Contract, 4.3](spec-driven-requirements.md#43-the-first-client-meeting)).
 
-`not.md` shows why the first check matters. Its first draft let only a section's assigned instructors send reminders. Offered that as an option, a student would have accepted it, and it is wrong: `BR-section-scoped-access` already admits the course admin who owns the course (4.11). The options anchor you exactly as a finished draft does, so read all of them. And your answers stay in the terminal, so they do not replace the questions test: the written list in the pull request is the evidence.
+`not.md` shows why the first check matters. Its first draft let only a section's assigned instructors send reminders. Offered that as an option, a student would have accepted it, and it is wrong: `BR-section-scoped-access` already admits the course admin who owns the course (4.10). The options anchor you exactly as a finished draft does, so read all of them. And your answers stay in the terminal, so they do not replace the questions test: the written list in the pull request is the evidence.
 
-### 4.13 The design gate
+### 4.12 The design gate
 
 A design is approved by **merging a pull request**, not by the drafter agreeing with their own agent:
 
-- The pull request carries the design, any specification fixes the challenge loop produced, and any change to the architecture (4.10).
-- Its description carries the questions-test list (4.11).
+- The pull request carries the design, any specification fixes the challenge loop produced, and any change to the architecture (4.9).
+- Its description carries the questions-test list (4.10).
 - **A teammate who did not write it reviews and approves it.** Nobody starts an implementation branch from this design until it is merged.
 
 Project Pulse's worked example went through exactly this gate, as [pull request #89](https://github.com/Washingtonwei/project-pulse/pull/89): the specification commit, the design commit, three more commits answering the questions test, and the list in the description.
@@ -395,7 +374,7 @@ Project Pulse's worked example went through exactly this gate, as [pull request 
 
 A useful review comment is one of those questions with a specific answer. "Looks good" is not a review.
 
-### 4.14 The proving slice
+### 4.13 The proving slice
 
 Before your team builds every use case, build one, all the way through: its design-of-record, the code from the user interface to the database, and its tests. This is Phase B of the [method](../method.md), and its job is to **test the architecture**, not to deliver a feature. Boundaries that looked clean on the week 6 diagram meet real code, and the architecture is corrected while corrections are cheap. An architecture proven by a working slice beats one proven by inspection.
 
@@ -408,7 +387,7 @@ This week your team writes the slice's design-of-record. Week 8's studio turns i
 ## 5. The AI-native lens
 
 - **Delegate to AI:** drafting the design from your sketch, the use case, and the code, in plan mode; finding the existing classes and files an area should extend; filling contract rows' request and response fields; proposing a test row for each extension; drafting the rejected alternative for a decision you have already made; checking that every identifier the design cites exists in the document that owns it; running the questions test.
-- **Keep human:** which details fall on which side of the wrong-guess line; every key decision; whether a challenge-loop finding is a requirements question for the client; and the approval, which belongs to a teammate who did not draft it.
+- **Keep human:** every key decision; whether a challenge-loop finding is a requirements question for the client; and the approval, which belongs to a teammate who did not draft it.
 - **Context to supply:** the use case and its business rules, your architecture's crosscutting concepts, the relevant existing code, and the fact that the agent should challenge the use case before designing it. Without the last one an agent designs exactly what it was given, including its contradictions.
 - **How to verify:** read the sequence labels against the use case steps; build the test list against the extension list; run the questions test in a fresh session; and check that nothing in the design disagrees with the architecture.
 
@@ -419,10 +398,10 @@ This week your team writes the slice's design-of-record. Week 8's studio turns i
 | Risk (classic and AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Gold-plating and scope creep.** Features, patterns, and fields no requirement asks for. AI-amplified: the agent adds them fluently, at no effort, and a long design looks thorough. | Asking, of every message and every class, which use case step or requirement needs it | Label every sequence message with its step; a pattern must name the problem it solves here |
-| **The rubber stamp.** A teammate approves a long, polished design without reading it. AI-amplified: the drafts are long and polished by default. | A reviewer who works through the review questions in 4.13 | The questions-test list in the pull request, and review comments that answer specific questions |
-| **The lean trap.** A greenfield design that links to code that does not exist, so the agent invents the contract. | Asking whether the front end and back end could be built in separate sessions from the design alone | Never drop the contract, the decisions, or the test list ([4.2](#42-how-much-to-write)) |
+| **The rubber stamp.** A teammate approves a long, polished design without reading it. AI-amplified: the drafts are long and polished by default. | A reviewer who works through the review questions in 4.12 | The questions-test list in the pull request, and review comments that answer specific questions |
+| **The lean trap.** A greenfield design that links to code that does not exist, so the agent invents the contract. | Asking whether the front end and back end could be built in separate sessions from the design alone | Never drop the contract, the decisions, or the test list |
 | **Analysis paralysis.** Every area designed in detail now, before the proving slice has tested the architecture. | Asking which area the next week of building needs | One area at a time, in fan-out order; the proving slice's first |
-| **Cart before the horse.** Designing a solution to a problem the specification has not settled. | Running the challenge loop before the design | Fix the specification first, then design ([4.3](#43-firm-the-problem-first-the-challenge-loop)) |
+| **Cart before the horse.** Designing a solution to a problem the specification has not settled. | Running the challenge loop before the design | Fix the specification first, then design ([4.2](#42-firm-the-problem-first-the-challenge-loop)) |
 | **The stale design.** The code changed during building and the design did not. | A reviewer asking, on the implementation pull request, whether the design still describes the code | Update the design in the same pull request as the code that changed it |
 
 ## 7. Hands-on (out of class, over fall break)
@@ -440,7 +419,6 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 ## 8. Summary / key takeaways
 
 - The design-of-record is the last document before the code. What it leaves open, the agent decides, silently and possibly differently on each run. It also keeps the why the code cannot.
-- Pin what a wrong guess would break; let the agent derive the rest. In an empty repository, that means the contract, the decisions, and the tests are never dropped.
 - Firm the problem before designing the solution. Most of what the challenge loop finds belongs in the specification, not the design.
 - Mark every class new or reused, and label every sequence message with the use case step it implements.
 - The API contract is how two sessions that never see each other's code build parts that fit. Every extension has a response.
@@ -460,28 +438,26 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 - Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software* (Addison-Wesley, 1994). The catalog; read Observer, Facade, Strategy, and Adapter first.
 - David Parnas, "On the Criteria to Be Used in Decomposing Systems into Modules," *Communications of the ACM* 15(12), 1972. Information hiding, the idea under every API contract.
 - Joshua Bloch, "How to Design a Good API and Why it Matters," talk at OOPSLA 2006 (companion volume, pp. 506–507). Short, practical rules from the designer of the Java collections.
-- Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. Twin Peaks, behind [4.10](#410-when-the-design-changes-the-architecture).
+- Bashar Nuseibeh, "Weaving Together Requirements and Architectures," *IEEE Computer* 34(3), 2001, pp. 115–117. Twin Peaks, behind [4.9](#49-when-the-design-changes-the-architecture).
 - Project Pulse's [`docs/design/not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md) and its [design guide](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/README.md), the worked example and the rules it follows.
 - [The Method](../method.md), Principle 8 and Phases B and C, for where the design-of-record and the proving slice sit in the whole method.
 
 ## 10. Self-check
 
 1. Your teammate says the use case is finished, so the agent can build from it. Name three decisions the use case leaves open, and say what you would be reviewing if the agent made them.
-2. A teammate's design for your proving slice says "see the code" under Components, and your repository has no code for that area yet. What goes wrong, and what should the section say?
-3. For each of these details, decide whether it belongs in the design or is left to the agent, and say why: the HTTP status for an extension; the name of a private helper method; whether a deadline is checked in the browser or on the server; a column's length.
-4. While designing, you find that two use cases define "active student" differently. Where does the fix go, and why not in the design?
-5. Use the three class-identification approaches on one of your own use cases. Which class did only the scenario approach find?
-6. A sequence diagram has an arrow labelled "send analytics event" that no use case step mentions. What are the two things it might be, and what do you do about each?
-7. Your use case has four extensions; your contract has responses for two. What will the agent do about the other two?
-8. Why does the reminder's `POST` request not carry a week? Name the business rule and the security principle it protects.
-9. A design decision reads "We use a service class for this." What is missing? Rewrite it with a rejected alternative.
-10. An agent proposes a Strategy pattern with three implementations for sending reminders, though your system only sends email. What do you ask, and what is the likely outcome?
-11. Your design needs a component the architecture-of-record does not have. What do you change, and in which pull request?
-12. You run the questions test, and the agent lists five guesses. Three could break a requirement. What happens to each of the five before the pull request opens?
-13. Why should a fresh session run the questions test, rather than the session that drafted the design?
-14. Drafting your design in plan mode, the agent asks whether a student who has left the team still owes peer evaluations, with three options. Whose question is it, what do you check first, and what do you do?
-15. Your teammate approved your design in four minutes with "LGTM." Name two questions from [4.13](#413-the-design-gate) that review should have answered.
-16. Your team proposes the login page as its proving slice because it is quick to build. What is wrong with that choice, and how do you choose instead?
+2. While designing, you find that two use cases define "active student" differently. Where does the fix go, and why not in the design?
+3. Use the three class-identification approaches on one of your own use cases. Which class did only the scenario approach find?
+4. A sequence diagram has an arrow labelled "send analytics event" that no use case step mentions. What are the two things it might be, and what do you do about each?
+5. Your use case has four extensions; your contract has responses for two. What will the agent do about the other two?
+6. Why does the reminder's `POST` request not carry a week? Name the business rule and the security principle it protects.
+7. A design decision reads "We use a service class for this." What is missing? Rewrite it with a rejected alternative.
+8. An agent proposes a Strategy pattern with three implementations for sending reminders, though your system only sends email. What do you ask, and what is the likely outcome?
+9. Your design needs a component the architecture-of-record does not have. What do you change, and in which pull request?
+10. You run the questions test, and the agent lists five guesses. Three could break a requirement. What happens to each of the five before the pull request opens?
+11. Why should a fresh session run the questions test, rather than the session that drafted the design?
+12. Drafting your design in plan mode, the agent asks whether a student who has left the team still owes peer evaluations, with three options. Whose question is it, what do you check first, and what do you do?
+13. Your teammate approved your design in four minutes with "LGTM." Name two questions from [4.12](#412-the-design-gate) that review should have answered.
+14. Your team proposes the login page as its proving slice because it is quick to build. What is wrong with that choice, and how do you choose instead?
 
 ## Related
 

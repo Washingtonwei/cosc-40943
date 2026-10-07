@@ -146,41 +146,6 @@ Usually drafted by the agent, after your sketch. Reviewed by you. The review is 
 The design's header names every use case it realizes. The traceability matrix's Design column points back.
 :::
 
-## How much to write?
-
-::: key
-If a wrong guess would break a requirement, pin it. Otherwise, let the agent derive it.
-:::
-
-::: note
-Principle 8 of the method, applied to design. A requirement here includes a business rule, a quality attribute, and the contract between two parts of your own team.
-:::
-
-## Pin or derive?
-
-| Detail | Wrong guess breaks something? |
-|---|---|
-| What "not submitted" means for a peer evaluation | Yes: wrong students reminded |
-| Which week a WAR reminder is about | Yes: wrong week reported |
-| Whether the request carries the week | Yes: a closed week reopened |
-| The method's Java name | No |
-| Column types and getters | No |
-
-::: note
-Do the first three as a room before revealing the right column if you have time. The JSON field names are the interesting middle case: harmless unless two sessions guess differently, which is why the contract names them.
-:::
-
-## Greenfield changes the answer
-
-::: warn
-"Keep it lean, link to the code" assumes the code exists. In your proving slice it does not.
-:::
-
-::: steps
-- List the files the agent should create, at the paths your conventions give them.
-- Never drop the contract, the decisions, or the tests.
-:::
-
 ## Firm the problem first {.center}
 
 ::: key
@@ -188,7 +153,7 @@ Before designing the solution, check the problem is sound.
 :::
 
 ::: note
-The challenge loop. Read the use case against the code and the other documents. Look for ambiguous steps, assumptions the code contradicts, requirements that disagree. The agent is told to do this rather than comply. Doing it first is the RFC rhythm: review the problem, then review the solution.
+The challenge loop. Read the use case against the business rules, the glossary, the specification, and the architecture, plus any code that exists. In your proving slice there is none, so the loop reads across documents and most findings become questions for the client. Look for ambiguous steps, rules that disagree, assumptions the architecture contradicts. The agent is told to do this rather than comply. Doing it first is the RFC rhythm: review the problem, then review the solution.
 :::
 
 ## Six things the use case did not settle
@@ -203,7 +168,7 @@ The challenge loop. Read the use case against the code and the other documents. 
 | Foundation calls a feature | The design |
 
 ::: note
-All six came from reading Project Pulse's code. The wrong week: the scheduler checks whether the current week is active, but both items are about the previous week, so the last active week's evaluation was never reminded and the first active week reminded one that could not be submitted yet.
+Five of the six came from reading Project Pulse's code; your proving slice has none to read. The wrong week: the scheduler checks whether the current week is active, but both items are about the previous week, so the last active week's evaluation was never reminded and the first active week reminded one that could not be submitted yet.
 :::
 
 ## Row one: two definitions
@@ -440,7 +405,7 @@ Answer: the server always reminds for the week currently due. A week from the cl
 ## Monday, in one line {.center}
 
 ::: key
-Pin what a wrong guess would break: in classes, in sequences, in the contract.
+Decide what the agent would otherwise guess: the classes, the sequences, the contract.
 :::
 
 ## Decisions name what they rejected
