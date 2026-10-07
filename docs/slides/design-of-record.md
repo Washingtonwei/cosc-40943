@@ -90,12 +90,6 @@ Months later someone asks why the scheduler moved out of system, or why the requ
 Bring it back to the reminder. Moving the scheduler out of system, or deciding the request carries no week, is an eraser in not.md: a line changed in a pull request a teammate reviews. After the agent has built it, the same change touches a controller, services, the scheduler, a dialog, and their tests. Wright knew the sledgehammer: Fallingwater's cantilevers sagged for decades and were reinforced in 2002.
 :::
 
-## The last document before the code {.center}
-
-::: key
-What the design leaves open, the agent decides. Silently.
-:::
-
 ## Where we are
 
 ![The documents so far, and where the design-of-record sits](img/document-map.svg){ height="520" }
@@ -114,7 +108,7 @@ Walk it left to right. Weeks 3 and 4 wrote the requirements: vision and scope, t
 | Written | Before any code | Before this area's code |
 
 ::: note
-Week 6 drew the map and stopped at responsibilities. This week goes one level down, inside one area, against real code. Project Pulse's worked example is docs/design/not.md, the design for the reminder.
+Week 6 drew the map and stopped at responsibilities. This week goes one level down, inside one area, against whatever code exists. Project Pulse's worked example is docs/design/not.md, the design for the reminder.
 :::
 
 ## Code review before there is code
@@ -146,17 +140,11 @@ Usually drafted by the agent, after your sketch. Reviewed by you. The review is 
 The design's header names every use case it realizes. The traceability matrix's Design column points back.
 :::
 
-## Firm the problem first {.center}
+## Firm the problem first
 
 ::: key
-Before designing the solution, check the problem is sound.
+Six things the reminder's use case did not settle.
 :::
-
-::: note
-The challenge loop. Read the use case against the business rules, the glossary, the specification, and the architecture, plus any code that exists. In your proving slice there is none, so the loop reads across documents and most findings become questions for the client. Look for ambiguous steps, rules that disagree, assumptions the architecture contradicts. The agent is told to do this rather than comply. Doing it first is the RFC rhythm: review the problem, then review the solution.
-:::
-
-## Six things the use case did not settle
 
 | Finding | The fix went to |
 |---|---|
@@ -168,6 +156,8 @@ The challenge loop. Read the use case against the business rules, the glossary, 
 | Foundation calls a feature | The design |
 
 ::: note
+The challenge loop. Read the use case against the business rules, the glossary, the specification, and the architecture, plus any code that exists. In your proving slice there is none, so the loop reads across documents and most findings become questions for the client. Look for ambiguous steps, rules that disagree, assumptions the architecture contradicts. The agent is told to do this rather than comply. Doing it first is the RFC rhythm: review the problem, then review the solution.
+
 Five of the six came from reading Project Pulse's code; your proving slice has none to read. The wrong week: the scheduler checks whether the current week is active, but both items are about the previous week, so the last active week's evaluation was never reminded and the first active week reminded one that could not be submitted yet.
 :::
 
@@ -235,7 +225,7 @@ Sommerville: there is no formula, it takes skill, domain knowledge, and more tha
 There are two hard things in computer science: cache invalidation and naming things. Project Pulse had two names for one fact, which is both.
 :::
 
-## The class diagram
+## The class diagram: new or reused?
 
 ```mermaid
 classDiagram
@@ -271,17 +261,7 @@ classDiagram
 ```
 
 ::: note
-Simplified from not.md; the full one carries the key operations. Classes, important operations, dependencies. Fields and getters belong to the code.
-:::
-
-## Reused is the most valuable word {.center}
-
-::: key
-It tells the agent to extend what exists instead of writing a parallel copy.
-:::
-
-::: note
-A parallel copy is exactly how Project Pulse ended up with two definitions of "has not submitted".
+Simplified from not.md; the full one carries the key operations. Classes, important operations, dependencies. Fields and getters belong to the code. "Reused" is the most valuable word in the diagram: it tells the agent to extend what exists instead of writing a parallel copy, which is exactly how Project Pulse ended up with two definitions of "has not submitted".
 :::
 
 ## Reading a sequence diagram
@@ -294,18 +274,12 @@ A parallel copy is exactly how Project Pulse ended up with two definitions of "h
 | opt | Happens only if its condition holds |
 | loop | Repetition |
 
-::: note
-Participants across the top, a lifeline down from each, time runs down the page. An activation bar shows when an object is busy. This is the core of a design-of-record, because it shows the one thing no single file can: how the parts cooperate.
-:::
-
-## The rule this course adds {.center}
-
 ::: key
-Label every message with the use case step it implements.
+The rule this course adds: label every message with the use case step it implements.
 :::
 
 ::: note
-Then a reviewer can check every step is realized, and an arrow with no step is either a missing requirement or scope nobody asked for.
+Participants across the top, a lifeline down from each, time runs down the page. An activation bar shows when an object is busy. This is the core of a design-of-record, because it shows the one thing no single file can: how the parts cooperate. With step labels, a reviewer can check every step is realized, and an arrow with no step is either a missing requirement or scope nobody asked for.
 :::
 
 ## The reminder, step by step
@@ -377,7 +351,7 @@ The contract. This was true before agents, when a team split work across people.
 | | |
 |---|---|
 | Endpoint | POST /sections/{sectionId}/reminders |
-| Who may | The section's instructor, or the course admin |
+| Who may | The course section's instructor, or the course admin |
 | Request | the item only |
 | Success | 200: number sent, who failed |
 | Errors | 403 anyone else; 400 week inactive (4a) |
@@ -399,13 +373,7 @@ Why does the request not carry the week?
 :::
 
 ::: note
-Answer: the server always reminds for the week currently due. A week from the client could ask students to submit a peer evaluation whose window has closed (BR-evaluation-submission-window), and a scope-setting value in a caller-controlled body is a security smell. One omission closes both.
-:::
-
-## Monday, in one line {.center}
-
-::: key
-Decide what the agent would otherwise guess: the classes, the sequences, the contract.
+Answer: the server always computes the week due. A week from the client could nudge students toward a peer evaluation whose window has closed (BR-evaluation-submission-window), and a value that sets an action's scope should never come from the caller. One omission closes both.
 :::
 
 ## Decisions name what they rejected
@@ -415,7 +383,7 @@ Decide what the agent would otherwise guess: the classes, the sequences, the con
 > Rejected: the report calling the new service, which makes a cycle.
 
 ::: note
-Wednesday opens here. From not.md. Same form as the architecture's key decisions in week 6, with a smaller reach: a design decision is local to this area. A decision that affects the whole system is a KD entry in the architecture-of-record. No rival considered means it probably was not a decision.
+From not.md. Same form as the architecture's key decisions in week 6, with a smaller reach: a design decision is local to this area. A decision that affects the whole system is a KD entry in the architecture-of-record. No rival considered means it probably was not a decision.
 :::
 
 ## A pattern no requirement needs
@@ -458,7 +426,7 @@ Rejected: a reminder log. A table, a migration, and seed data, to guard a double
 | Last active week | Its reminder still goes out |
 
 ::: note
-Eighteen rows in not.md, one per flow, each with a level. This is the definition of done the reviewer approves. A missing extension shows up as a missing row. An agent asked to add tests afterward tests what it built, which by then proves nothing.
+Eighteen rows in not.md, one per flow, each with a level. This is the definition of done the reviewer approves. A missing extension shows up as a missing row. An agent asked to add tests afterward tests what it built, which by then proves nothing. If they know TDD: this is its first step, the test list, approved before anyone codes. In week 8 the agent works through it red/green.
 :::
 
 ## When the design finds the map wrong
@@ -470,28 +438,12 @@ Eighteen rows in not.md, one per flow, each with a level. This is the definition
 - So: a new **notification** feature slice.
 :::
 
-::: note
-MNT-feature-locality. Rejected: leaving it in system and recording technical debt. Rejected: splitting reminders between activity and evaluation, which sends a student who owes both two emails. This is Twin Peaks from week 6, happening for real.
-:::
-
-## Change the map in the same pull request {.center}
-
 ::: key
-A design that silently disagrees with the architecture leaves two maps. The agent follows whichever it reads last.
+Change the architecture in the same pull request. Two maps, and the agent follows whichever it reads last.
 :::
 
 ::: note
-not.md's pull request also edits the architecture-of-record: a new component on the performance-tracking view, new owners in the subsystems tables. The template's "Changes to the architecture-of-record" section lists each one.
-:::
-
-## Is it enough? {.center}
-
-::: ask
-Week 5: how do you know you supplied enough context?
-:::
-
-::: note
-The questions test: make the agent state its assumptions before it writes code. The design-of-record is where it pays most, because it is the last chance to fix a gap on paper.
+MNT-feature-locality. Rejected: leaving it in system and recording technical debt. Rejected: splitting reminders between activity and evaluation, which sends a student who owes both two emails. This is Twin Peaks from week 6, happening for real. not.md's pull request also edits the architecture-of-record: a new component on the performance-tracking view, new owners in the subsystems tables. The template's "Changes to the architecture-of-record" section lists each one.
 :::
 
 ## The questions test, one level down
@@ -503,18 +455,12 @@ The questions test: make the agent state its assumptions before it writes code. 
 - Each guess: fix the design, or say why a wrong guess breaks nothing.
 :::
 
-::: note
-Fresh, so it carries nothing from the session that drafted the design. The prompt is in the template and in Project Pulse's pull request description. If there is time, run it live on not.md now.
-:::
-
-## Ready when {.center}
-
 ::: key
-Nothing on the list could break a requirement.
+Ready when nothing on the list could break a requirement.
 :::
 
 ::: note
-The list, with an answer to each item, goes in the pull request description. That turns "we think it is complete" into evidence a reviewer can read. The next slide is what it found on not.md.
+Open with week 5's question: how do you know you supplied enough context? The questions test answers it, and the design-of-record is where it pays most, the last chance to fix a gap on paper. Fresh, so it carries nothing from the session that drafted the design. The prompt is in the template and in Project Pulse's pull request description. The list, with an answer to each item, goes in the pull request description: evidence a reviewer can read. If there is time, run it live on not.md now.
 :::
 
 ## What it found on not.md
@@ -542,24 +488,12 @@ Pull request 89 on Project Pulse. Contradiction 1: the sequence diagram returned
 - **Questions test**, then the pull request.
 :::
 
-::: note
-The reason is anchoring, the same reason the Napkin has you answer before the agent. Read a fluent, complete design first and your judgment shrinks to proofreading.
-:::
-
-## What the comparison shows
-
-::: cols
-**It found, you missed**
-
-Goes into the design.
-|||
-**You knew, it could not**
-
-Context your specification lacks. Fix the specification too.
-:::
-
 ::: ai
-A gap the agent filled with something plausible your client never said is the most dangerous line in the draft.
+It found what you missed: it goes in. You knew what it could not: fix the specification too.
+:::
+
+::: note
+The reason is anchoring, the same reason the Napkin has you answer before the agent. Read a fluent, complete design first and your judgment shrinks to proofreading. The most dangerous line in a draft is a gap the agent filled with something plausible your client never said.
 :::
 
 ## When the agent asks
@@ -574,26 +508,16 @@ Check the use case and its rules. Then answer.
 Do not pick. Fix the use case, or `OPEN-ISSUES.md`.
 :::
 
+::: ai
+The options are its guesses. Read every one; **Other** is always there.
+:::
+
 ::: note
 In plan mode the agent stops and asks. In Claude Code that is the AskUserQuestion tool: a few questions, two to four options each, plus a free-text Other. Copilot CLI's plan mode asks the same way.
 
-The example: not.md's first draft let only a section's assigned instructors send reminders. Offered as an option, a student would accept it, and it is wrong: BR-section-scoped-access already admits the course admin who owns the course. Check the specification before you click.
+The example: not.md's first draft let only a course section's assigned instructors send reminders. Offered as an option, a student would accept it, and it is wrong: BR-section-scoped-access already admits the course admin who owns the course. Check the specification before you click. Four tidy options anchor you exactly as a finished draft does, and your answers stay in the terminal: the questions test still goes in the pull request.
 
 The right column is week 3's rule again: you cannot answer for the client. Say it, and tell them to use the same move before their next client meeting: let the agent interview you on what you know, and every "ask the client" goes on the agenda.
-:::
-
-## The options are its guesses {.center}
-
-::: key
-Read every option. **Other** is always there.
-:::
-
-::: ai
-Your answers stay in the terminal. The questions test still goes in the pull request.
-:::
-
-::: note
-Four tidy options anchor you exactly as a finished draft does. If none is right, type what is.
 :::
 
 ## The design gate
@@ -643,11 +567,11 @@ Two minutes with a neighbour, then two or three read aloud. A good answer: eithe
 ## The proving slice
 
 ::: key
-Build one use case all the way through before building the rest. Its job is to test the architecture.
+Build one use case all the way through, from the screen to the database, before building the rest. Its job is to test the architecture.
 :::
 
 ::: note
-Phase B of the method. Boundaries that looked clean on the week 6 diagram meet real code, and the architecture is corrected while that is cheap. An architecture proven by a working slice beats one proven by inspection.
+Phase B of the method. Boundaries that looked clean on the week 6 diagram meet real code, and the architecture is corrected while that is cheap. An architecture proven by a working slice beats one proven by inspection. Every later use case copies its shape. Each layer's conventions (the error format, the time handling, the authorization pattern from section 8 of your architecture) get exercised in real code at least once.
 :::
 
 ## Pick it by risk
@@ -670,25 +594,6 @@ The first 90 percent of the code takes the first 90 percent of the time. The rem
 Tom Cargill, quoted by Jon Bentley. Your team already chose the slice: the riskiest use case your TA reviewed with you in week 5's studio.
 :::
 
-## Vertical {.center}
-
-::: key
-From the screen to the database, once. Every later use case copies its shape.
-:::
-
-::: note
-Each layer's conventions (the error format, the time handling, the authorization pattern from section 8 of your architecture) get exercised in real code at least once.
-:::
-
-## Where it goes
-
-::: steps
-- **This week:** its design-of-record, merged.
-- **Week 8 studio:** it becomes your agent's build-context.
-- **Weeks 8 and 9:** the agent builds it.
-- **Checkpoint 2:** it runs. Not described. Runs.
-:::
-
 ## Before the week 8 studio
 
 ::: steps
@@ -696,6 +601,12 @@ Each layer's conventions (the error format, the time handling, the authorization
 - Sketch, agent draft, compare, questions test.
 - Pull request, approved by a teammate who did not write it.
 - Merged by the date on the schedule.
+:::
+
+::: steps
+- **Week 8 studio:** it becomes your agent's build-context.
+- **Weeks 8 and 9:** the agent builds it.
+- **Checkpoint 2:** it runs. Not described. Runs.
 :::
 
 ::: note

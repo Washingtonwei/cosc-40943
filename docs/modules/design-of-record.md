@@ -22,7 +22,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md), whose map this module takes one level down, inside one use case area; [Context Engineering](context-engineering.md), whose questions test this module applies to a design; and [Requirements as the Contract](spec-driven-requirements.md), whose use cases a design cites and never restates.
 - **Leads into:** the week 8 studio, where your design becomes a build-context and your agent starts building, and [Checkpoint 2](../project.md#checkpoints), where the proving slice must run. [Traceability](traceability.md) picks up the design as the middle link between a use case and its code.
-- **How it's taught:** two lecture days in week 7, then fall break. Your team writes the design-of-record for its proving slice's use case area out of class, from the [design-of-record template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md), and merges it by pull request before the week 8 studio. The [schedule](../schedule.md) has the date.
+- **How it's taught:** in week 7, before fall break; whatever the lecture does not reach, read here. Your team writes the design-of-record for its proving slice's use case area out of class, from the [design-of-record template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md), and merges it by pull request before the week 8 studio. The [schedule](../schedule.md) has the date.
 - **Course outcome it delivers:** [making and defending design and architecture decisions](../syllabus.md#learning-outcomes) (outcome 2), with the alternatives considered and the reasoning behind the choice.
 
 ## 3. Motivation
@@ -37,7 +37,7 @@ By the end of this module, a student can:
 
 Beyond those choices sits the shape of the code, which the use case also leaves open: which classes exist and which are reused (a new `SubmissionStatusService` beside the existing `EmailService`), which calls which and in what order, the exact endpoints and their errors (`POST /api/v1/sections/{sectionId}/reminders` takes only `{ item }` and returns `400` for an inactive week), and the tests that say the feature is done ("students who reported are not emailed"). The design pins these as a class diagram, sequence diagrams, an API contract, and a test list.
 
-Hand an agent only the use case and it makes every one of these decisions silently, then returns a pull request spanning a controller, services, the scheduler, a dialog, and their tests. Ask it twice, in two fresh sessions, and it may decide them differently: two runs, two designs, neither of which you chose. You can review that line by line, but you are reviewing decisions you did not know were made, after they were built. Written as a design, the same decisions take a few pages, name what was rejected and why (see the Key decisions in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#key-decisions), the design for the `NOT` area; each design file is named after its area's code), and can be argued over before any code exists. Code review then checks the code against decisions already approved, instead of discovering them.
+Hand an agent only the use case and it makes every one of these decisions silently, then returns a pull request spanning a controller, services, the scheduler, a dialog, and their tests. Ask it twice, in two fresh sessions, and it may decide them differently: two runs, two designs, neither of which you chose. You can review that line by line, but you are reviewing decisions you did not know were made, after they were built. Written as a design, the same decisions take a few pages, name what was rejected and why, and can be argued over before any code exists. Project Pulse's are the Key decisions in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#key-decisions), the design for the `NOT` area; each design file is named after its area's code. Code review then checks the code against decisions already approved, instead of discovering them.
 
 A design also keeps the why. Months later, when someone asks why the scheduler moved out of `system` or why the request carries no week, the code cannot say; the design can. Project Pulse's [traceability matrix](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md) links the reminder's use case to its section of `not.md`, and from week 8 ([Traceability](traceability.md)) on to the code and tests that realize it. Skip the design and the chain from requirement to code has a hole in the middle, which the next agent session fills with a guess.
 
@@ -45,7 +45,7 @@ A design also keeps the why. Months later, when someone asks why the scheduler m
 >
 > Attributed to Frank Lloyd Wright, American architect
 
-**This is the last document before the code.** After the design-of-record, an agent builds. Whatever the design leaves open, the agent decides, silently. This module is about writing the design so that the decisions that matter are made by you, once, and are on the record before the agent starts. The worked example throughout is the design we wrote for that reminder, Project Pulse's [`docs/design/not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md).
+**This is the last document before the code.** After the design-of-record, an agent builds. This module is about writing the design so that the decisions that matter are made by you, once, and are on the record before the agent starts. The worked example throughout is the design we wrote for that reminder, Project Pulse's [`docs/design/not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md).
 
 ## 4. Core concepts
 
@@ -236,7 +236,7 @@ Three things to notice:
 
 - **Every extension has an error.** If the use case has an extension and the contract has no response for it, someone will invent one.
 - **A scheduled job is a contract too.** It has a trigger and a promise, and nothing calls it from the browser.
-- **What is left out is a decision.** The request carries no week, because the server always reminds for the week currently due, and a week from the client could reopen a closed peer evaluation. That one omission closes a security hole and a business-rule bug at once.
+- **What is left out is a decision.** The request carries no week, because the server always computes the week due. A week from the client could nudge students toward a peer evaluation whose window has closed (`BR-evaluation-submission-window`), and a value that sets an action's scope should never come from the caller. One omission closes both.
 
 Field types and exact JSON are left to the agent, unless another system depends on the format.
 
@@ -271,7 +271,7 @@ The design ends with one row per flow: the main scenario and every extension of 
 | UC-NOT 6a | unit | One failed send does not stop the others; that student is in `failed` |
 | FR-NOT last active week | unit | In the inactive week after the last active week, the last evaluation's reminder is still sent |
 
-This list is the **definition of done** the reviewer approves. Writing it now does two things. A missing extension shows up as a missing row, before anyone codes around it. And the agent, which will write tests later, is told which tests count. An agent asked to "add tests" afterward tests what it built, which by then is not evidence of anything. `not.md` has eighteen rows. Testing gets its own module in week 9.
+This list is the **definition of done** the reviewer approves. Writing it now does two things. A missing extension shows up as a missing row, before anyone codes around it. And the agent, which will write tests later, is told which tests count. An agent asked to "add tests" afterward tests what it built, which by then is not evidence of anything. If you know test-driven development, this is its first step, a list of the tests to write, made at the level of use case flows and approved before anyone codes. In week 8 the agent works through it red/green: each test written first and seen to fail before the code that makes it pass. `not.md` has eighteen rows. Testing gets its own module in week 9.
 
 ### 4.9 When the design changes the architecture
 
@@ -297,7 +297,7 @@ Week 5 asked how you know the context is sufficient, and answered with the [ques
 | Found | Example | Answer |
 |---|---|---|
 | 3 contradictions inside the design | The sequence diagram returned `400` for an inactive week; the contract returned `200` with `weekActive: false` | All fixed in `not.md`. The status request always answers `200`; only the send request refuses |
-| 7 guesses worth pinning | May a course admin who owns the course, but is not assigned to the section, send reminders? The design admitted only assigned instructors, though `BR-section-scoped-access` lets the admin in | Fixed: both routes admit either, with a test. Another fix went to the specification: a student does not owe an evaluation of a deactivated teammate |
+| 7 guesses worth pinning | May a course admin who owns the course, but is not assigned to the course section, send reminders? The design admitted only assigned instructors, though `BR-section-scoped-access` lets the admin in | Fixed: both routes admit either, with a test. Another fix went to the specification: a student does not owe an evaluation of a deactivated teammate |
 | 9 guesses that break nothing | The email's wording and layout; the JSON shape of the list | Kept, each with one line on why |
 
 Two lessons are in that table. The design was carefully written and still contradicted itself: the person who wrote it reads what they meant, and a fresh reader reads what is on the page. And one fix went to the specification, not the design, which is the challenge loop ([4.2](#42-firm-the-problem-first-the-challenge-loop)) happening again one level down.
@@ -318,7 +318,7 @@ The reason is anchoring, the same reason the [Napkin](se-and-ai.md#the-napkin-si
 - **Yours, or already settled in the specification:** which existing class to extend, which crosscutting rule applies, who may call the route. Check the use case and its business rules first, then answer.
 - **The client's:** what the business wants in a case nobody specified. Do not pick an option. Fix the use case or log it in `OPEN-ISSUES.md`, and let the design cite the result. This is the challenge loop ([4.2](#42-firm-the-problem-first-the-challenge-loop)) arriving as a multiple-choice question, and the same rule as the first client meeting: you cannot answer for the client ([Requirements as the Contract, 4.3](spec-driven-requirements.md#43-the-first-client-meeting)).
 
-`not.md` shows why the first check matters. Its first draft let only a section's assigned instructors send reminders. Offered that as an option, a student would have accepted it, and it is wrong: `BR-section-scoped-access` already admits the course admin who owns the course (4.10). The options anchor you exactly as a finished draft does, so read all of them. And your answers stay in the terminal, so they do not replace the questions test: the written list in the pull request is the evidence.
+`not.md` shows why the first check matters. Its first draft let only a course section's assigned instructors send reminders. Offered that as an option, a student would have accepted it, and it is wrong: `BR-section-scoped-access` already admits the course admin who owns the course (4.10). The options anchor you exactly as a finished draft does, so read all of them. And your answers stay in the terminal, so they do not replace the questions test: the written list in the pull request is the evidence.
 
 ### 4.12 The design gate
 
@@ -366,7 +366,7 @@ This week your team writes the slice's design-of-record. Week 8's studio turns i
 |---|---|---|
 | **Gold-plating and scope creep.** Features, patterns, and fields no requirement asks for. AI-amplified: the agent adds them fluently, at no effort, and a long design looks thorough. | Asking, of every message and every class, which use case step or requirement needs it | Label every sequence message with its step; a pattern must name the problem it solves here |
 | **The rubber stamp.** A teammate approves a long, polished design without reading it. AI-amplified: the drafts are long and polished by default. | A reviewer who works through the review questions in 4.12 | The questions-test list in the pull request, and review comments that answer specific questions |
-| **The lean trap.** A greenfield design that links to code that does not exist, so the agent invents the contract. | Asking whether the front end and back end could be built in separate sessions from the design alone | Never drop the contract, the decisions, or the test list |
+| **The lean trap.** A greenfield design that follows "keep it lean, link to the code" when there is no code, so the agent invents the contract. | Asking whether the front end and back end could be built in separate sessions from the design alone | Never drop the contract, the decisions, or the test list |
 | **Analysis paralysis.** Every area designed in detail now, before the proving slice has tested the architecture. | Asking which area the next week of building needs | One area at a time, in fan-out order; the proving slice's first |
 | **Cart before the horse.** Designing a solution to a problem the specification has not settled. | Running the challenge loop before the design | Fix the specification first, then design ([4.2](#42-firm-the-problem-first-the-challenge-loop)) |
 | **The stale design.** The code changed during building and the design did not. | A reviewer asking, on the implementation pull request, whether the design still describes the code | Update the design in the same pull request as the code that changed it |
