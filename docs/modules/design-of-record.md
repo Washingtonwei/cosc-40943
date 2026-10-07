@@ -28,18 +28,25 @@ By the end of this module, a student can:
 
 ## 3. Motivation
 
-**Who has not submitted?** In assignment 2 you specified a reminder that emails only the students who have not submitted their weekly activity report or peer evaluation. Every one of you had received the redundant Monday email, so the feature looked small. Then we took it one level down, to the design, against Project Pulse's code at commit `cf0beee`.
+**A use case is not enough to build from.** Many spec-driven tutorials stop at the requirements: write the specification, hand it to the agent, take the code. In assignment 2 you specified a reminder that emails only the students who have not submitted their weekly activity report or peer evaluation. Your use case says what the system does. It does not say how, and between the two sit decisions like these, each taken from the design we later wrote for it:
 
-Project Pulse already answered "who has not submitted" twice:
+- Where "has not submitted" is computed: in one service that the reminder and both report pages share, or separately in each feature.
+- Which part of the code owns the scheduler, given that the shared foundation may not depend on the activity and evaluation features.
+- Whether a request to send a reminder may name the week, or the server always computes it.
+- Whether the email goes out during the request, so the instructor sees who was not reached, or in the background.
+- Whether to keep a log of the reminders sent.
 
-| Where | How it decides | What goes wrong |
-|---|---|---|
-| The instructor's WAR page, `SectionsActivities.vue`, in the browser | A student with no activity in the selected week | It fetches the first 200 activities and the first 100 students. With 77 students filing several activities each, students who did submit show up as missing. |
-| The peer evaluation report, `EvaluationService.generateWeeklyPeerEvaluationReportForSection`, on the server | A student who evaluated *anyone* that week | The back end accepts one evaluation at a time, so a student who rated one of five teammates counts as done. |
+Beyond those choices sits the shape of the code, which the use case also leaves open: which classes exist and which are reused (a new `SubmissionStatusService` beside the existing `EmailService`), which calls which and in what order, the exact endpoints and their errors (`POST /api/v1/sections/{sectionId}/reminders` takes only `{ item }` and returns `400` for an inactive week), and the tests that say the feature is done ("students who reported are not emailed"). The design pins these as a class diagram, sequence diagrams, an API contract, and a test list.
 
-Neither is a coding error. Each piece of code did what it was asked, at a different time, probably in a different session. What nobody had done is write down the one answer before the code was built. CMU's 17-313 lecture on design documents describes this exactly: the worst design documents "accidentally embed ambiguities, which cause implementors to develop contradictory solutions that the customer doesn't want." Project Pulse had no design document for this area at all, which embeds every ambiguity there is.
+Hand an agent only the use case and it makes every one of these decisions silently, then returns a pull request spanning a controller, services, the scheduler, a dialog, and their tests. Ask it twice, in two fresh sessions, and it may decide them differently: two runs, two designs, neither of which you chose. You can review that line by line, but you are reviewing decisions you did not know were made, after they were built. Written as a design, the same decisions take a few pages, name what was rejected and why (see [`not.md`'s Key decisions](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#key-decisions)), and can be argued over before any code exists. Code review then checks the code against decisions already approved, instead of discovering them.
 
-**This is the last document before the code.** After the design-of-record, an agent builds. Whatever the design leaves open, the agent decides, silently, the way those two pages did. This module is about writing the design so that the decisions that matter are made by you, once, and are on the record before the agent starts. The worked example throughout is the design we wrote for that reminder, Project Pulse's [`docs/design/not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md).
+A design also keeps the why. Months later, when someone asks why the scheduler moved out of `system` or why the request carries no week, the code cannot say; the design can. Project Pulse's [traceability matrix](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md) links the reminder's use case to its section of `not.md`, and from week 8 ([Traceability](traceability.md)) on to the code and tests that realize it. Skip the design and the chain from requirement to code has a hole in the middle, which the next agent session fills with a guess.
+
+> You can use an eraser on the drafting table or a sledgehammer on the construction site.
+>
+> Attributed to Frank Lloyd Wright
+
+**This is the last document before the code.** After the design-of-record, an agent builds. Whatever the design leaves open, the agent decides, silently. This module is about writing the design so that the decisions that matter are made by you, once, and are on the record before the agent starts. The worked example throughout is the design we wrote for that reminder, Project Pulse's [`docs/design/not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md).
 
 ## 4. Core concepts
 
@@ -57,7 +64,7 @@ Software design is the step where you decide what components and classes will re
 
 Four properties make it a design-of-record rather than any design document:
 
-- **It is written before the code and approved before anyone builds from it.** CMU 17-313 calls a design document "code review before there is code." Changing a sequence diagram costs a minute; changing the code it describes costs a day.
+- **It is written before the code and approved before anyone builds from it.** CMU 17-313 calls a design document "code review before there is code."
 - **It cites, never restates.** The use case says *what* the system does; the design says only *how*. A design that copies the use case's steps holds a second copy that will drift. It names `UC-NOT-remind-non-submitters` and labels each interaction with the step number instead.
 - **One per area, revised in place.** An area gains use cases over the term. The overview, the class diagram, and the data model are edited when it does; sequence diagrams, contract rows, and test rows are appended per use case. It never becomes a stack of per-use-case sections.
 - **It stays true.** If building the code forces a change (a different class boundary, an extra table), the design is updated in the same pull request. A design that describes code that no longer exists misleads the next agent that reads it.
@@ -91,16 +98,18 @@ Applied to the reminder:
 
 Before designing the solution, check that the problem is sound. Read the use case against the code and the other documents, and look for steps that are ambiguous, assumptions the code contradicts, and requirements that disagree. The method calls this the **challenge loop**, and the agent is instructed to run it rather than comply silently. Doing it first is the RFC rhythm: review the problem, then review the solution.
 
-Our first draft of the reminder use case looked complete. Reading Project Pulse at `cf0beee` found six things it did not settle:
+Our first draft of the reminder use case looked complete. Reading Project Pulse's code found six things it did not settle:
 
 | Finding | Where the fix went |
 |---|---|
-| "Has not submitted" already existed twice, and the two disagreed (Motivation) | A new business rule, `BR-submission-owed`, cited by the reminder and by both reports |
+| "Has not submitted" already existed twice, and the two disagreed (below) | A new business rule, `BR-submission-owed`, cited by the reminder and by both reports |
 | The scheduler checked whether the *current* week was active, but both items are about the *previous* week: the last active week's evaluation was never reminded, and the first active week reminded one that could not yet be submitted | `FR-NOT-weekly-reminder`, amended |
 | Students on no team and deactivated accounts were emailed, though neither can submit | `BR-submission-owed` |
 | Nothing said which week the WAR reminder covers | The client's ruling (the previous week), written into the use case |
 | A peer evaluation is saved one teammate at a time, so a half-finished set is real | `BR-submission-owed`: owed until every active teammate, self included, is rated |
 | The scheduler lives in `system`, part of the shared foundation, which may not depend on `activity` or `evaluation` (`MNT-feature-locality`) | The design, and a change to the architecture (4.10) |
+
+The first row shows what happens when a question is never answered once, in writing. Project Pulse decided "has not submitted" in two places. The instructor's WAR page (`SectionsActivities.vue`) counts a student with no activity that week as missing, but it fetches only the first 200 activities and the first 100 students, so with 77 students filing several activities each, students who did submit show up as missing. The peer evaluation report (`EvaluationService.generateWeeklyPeerEvaluationReportForSection`) counts a student as done after rating anyone, but the back end saves one rating at a time, so a student who rated one of five teammates counts as done. The truncation is a plain bug; "anyone" is a term nobody defined. CMU's 17-313 lecture on design documents names the result: ambiguities "cause implementors to develop contradictory solutions that the customer doesn't want." A reminder built from the use case alone would have been a third answer.
 
 Read the second column. **Most fixes went to the specification, not the design.** A finding about what the system must do is a requirements defect, and the design that discovered it is the wrong place to record it. Only the last one, how the code is arranged, belongs in the design. Project Pulse's traceability matrix marks a use case 🔬 *Problem-validated* once this loop has run and its fixes are merged, and 📐 *Designed* once the solution design is approved.
 
@@ -439,7 +448,7 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 
 ## 9. Key papers and further reading
 
-- Michael Hilton and Josh Sunshine, "Architecture: Design Docs," lecture 14 of [17-313: Foundations of Software Engineering](https://cmu-313.github.io), Carnegie Mellon University, Spring 2026. "Code review before there is code," and the line about ambiguities quoted in [3](#3-motivation).
+- Michael Hilton and Josh Sunshine, "Architecture: Design Docs," lecture 14 of [17-313: Foundations of Software Engineering](https://cmu-313.github.io), Carnegie Mellon University, Spring 2026. "Code review before there is code," and the line about ambiguities quoted in [4.3](#43-firm-the-problem-first-the-challenge-loop).
 - Sourcegraph, [*Requests for Comments (RFCs)*](https://github.com/sourcegraph/handbook/blob/main/content/company-info-and-process/communication/rfcs/index.md), company handbook; and Gergely Orosz, [*Scaling Engineering Teams via RFCs: Writing Things Down*](https://blog.pragmaticengineer.com/scaling-engineering-teams-via-writing-things-down-rfcs/), The Pragmatic Engineer. How industry runs the design gate.
 - Ian Sommerville, *Software Engineering*, 10th ed. (Pearson, 2016), ch. 7, "Design and implementation." Object identification, sequence and state models, and design patterns, worked on a wilderness weather station.
 - Martin Fowler, *UML Distilled*, 3rd ed. (Addison-Wesley, 2003), ch. 4, "Sequence Diagrams." The notation in a dozen pages, with advice on when not to use it.

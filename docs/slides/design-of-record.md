@@ -15,48 +15,76 @@ Who got a Project Pulse reminder this term for something they had already submit
 :::
 
 ::: note
-Most hands go up. Assignment 2 asked you to specify the fix. This week we take it one level down, to the design, and find out how much the use case did not say.
+Most hands go up. Assignment 2 asked you to specify the fix: remind only the students who have not submitted. You have the use case. Can an agent build from it?
 :::
 
-## Project Pulse already knew who had not submitted
+## The tutorial recipe
 
-| Where | Decides "has not submitted" as |
-|---|---|
-| Instructor's WAR page, in the browser | No activity that week |
-| Peer evaluation report, on the server | Evaluated nobody that week |
+```mermaid
+flowchart LR
+  S[Specification] --> A[Agent] --> C[Code]
+```
 
 ::: ask
-Two places, two definitions. What could go wrong?
+What does your use case not decide?
 :::
 
 ::: note
-SectionsActivities.vue and EvaluationService.generateWeeklyPeerEvaluationReportForSection, at Project Pulse commit cf0beee. Take answers before the next slide.
+Many spec-driven tutorials stop here: write the requirements, hand them to the agent, take the code. The use case says what the system does. Take answers on what it leaves open before the next slide.
 :::
 
-## Both are wrong, differently
+## Five decisions the use case left open
 
 ::: steps
-- The WAR page reads the first **200 activities** and **100 students**. With 77 students filing several each, people who submitted show up as missing.
-- The report counts a student as done after rating **one** teammate. The back end saves one rating at a time.
+- Where is "has not submitted" computed: one shared service, or each feature on its own?
+- Which part of the code owns the scheduler?
+- May the request name the week, or does the server always compute it?
+- Send during the request, or in the background?
+- Keep a log of reminders sent?
 :::
+
+::: note
+All five come from the Key decisions of Project Pulse's docs/design/not.md, each with the alternative it rejected. The scheduler question is not idle: the shared foundation may not depend on the activity and evaluation features.
+:::
+
+## ...and the shape of the code
+
+::: steps
+- **Classes:** which exist, which are reused.
+- **Sequences:** who calls whom, in what order.
+- **Contract:** the endpoints, their inputs, outputs, and errors.
+- **Tests:** what counts as done.
+:::
+
+::: note
+The use case decides none of these either. In not.md: a new SubmissionStatusService beside the reused EmailService; a sequence diagram for the on-demand reminder and one for the scheduled one; POST /api/v1/sections/{sectionId}/reminders takes only { item } and returns 400 for an inactive week; and test rows such as "students who reported are not emailed". The design pins them as a class diagram, sequence diagrams, an API contract, and a test list.
+:::
+
+## Without a design, the agent decides
 
 ::: key
-Nobody wrote a bug. Nobody wrote down the answer.
+You review decisions you did not know were made, after they were built. Ask twice, get two designs.
 :::
 
 ::: note
-Each piece of code did exactly what it was asked, at a different time, probably in a different session. What was missing was a design: one place where the definition was decided once, before the code.
+The agent returns one pull request: a controller, services, the scheduler, a dialog, and their tests. You can read it line by line, but every one of those five decisions is buried in it. Written as a design, the same decisions take a few pages, name what was rejected and why, and can be argued over before any code exists. Code review then checks the code against decisions already approved.
 :::
 
-## CMU said it first
+## The design keeps the why {.center}
 
-> The worst design docs accidentally embed ambiguities, which cause implementors to develop contradictory solutions that the customer doesn't want.
+::: key
+The code says what it does. Only the design says why.
+:::
+
+::: note
+Months later someone asks why the scheduler moved out of system, or why the request carries no week. The code cannot say. Project Pulse's traceability matrix links the reminder's use case to its section of not.md; from week 8 the chain runs on to the code and tests. Skip the design and the chain has a hole in the middle, which the next agent session fills with a guess. Point forward to week 8 and do not teach traceability here.
+:::
+
+## Eraser or sledgehammer {.center}
+
+> You can use an eraser on the drafting table or a sledgehammer on the construction site.
 >
-> Hilton and Sunshine, CMU 17-313
-
-::: note
-Project Pulse had no design document for this area at all, which embeds every ambiguity there is. Two implementors, two contradictory solutions, one confused instructor.
-:::
+> Attributed to Frank Lloyd Wright
 
 ## The last document before the code {.center}
 
@@ -80,7 +108,7 @@ Week 6 drew the map and stopped at responsibilities. This week goes one level do
 ## Code review before there is code
 
 ::: steps
-- **Written first, approved first.** A diagram costs a minute to change; code costs a day.
+- **Written first, approved first.** Nobody builds from it before then.
 - **Cites, never restates.** The use case says what. The design says how.
 - **One per area, revised in place.** Not a stack of per-use-case sections.
 - **Stays true.** The code changed? The design changes in the same pull request.
@@ -163,7 +191,47 @@ The challenge loop. Read the use case against the code and the other documents. 
 | Foundation calls a feature | The design |
 
 ::: note
-All six came from reading Project Pulse at cf0beee. The wrong week: the scheduler checks whether the current week is active, but both items are about the previous week, so the last active week's evaluation was never reminded and the first active week reminded one that could not be submitted yet.
+All six came from reading Project Pulse's code. The wrong week: the scheduler checks whether the current week is active, but both items are about the previous week, so the last active week's evaluation was never reminded and the first active week reminded one that could not be submitted yet.
+:::
+
+## Row one: two definitions
+
+| Where | Decides "has not submitted" as |
+|---|---|
+| Instructor's WAR page, in the browser | No activity that week |
+| Peer evaluation report, on the server | Evaluated nobody that week |
+
+::: ask
+Two places, two definitions. What could go wrong?
+:::
+
+::: note
+SectionsActivities.vue and EvaluationService.generateWeeklyPeerEvaluationReportForSection, in Project Pulse. Take answers before the next slide.
+:::
+
+## Both are wrong, differently
+
+::: steps
+- The WAR page reads the first **200 activities** and **100 students**. With 77 students filing several each, people who submitted show up as missing.
+- The report counts a student as done after rating **one** teammate. The back end saves one rating at a time.
+:::
+
+::: key
+Nobody wrote down the answer.
+:::
+
+::: note
+The truncation is a plain bug. "Evaluated anyone" is a term nobody defined, and a reminder built from the use case alone would have been a third answer. The fix went to the specification: a business rule, BR-submission-owed, that the reminder and both reports cite.
+:::
+
+## CMU said it first
+
+> The worst design docs accidentally embed ambiguities, which cause implementors to develop contradictory solutions that the customer doesn't want.
+>
+> Hilton and Sunshine, CMU 17-313
+
+::: note
+Two implementors, two contradictory solutions, one confused instructor.
 :::
 
 ## Read the right column {.center}
