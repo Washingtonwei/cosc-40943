@@ -82,14 +82,26 @@ Months later someone asks why the scheduler moved out of system, or why the requ
 
 ## Eraser or sledgehammer {.center}
 
-> You can use an eraser on the drafting table or a sledgehammer on the construction site.
+> ***You can use an eraser on the drafting table or a sledgehammer on the construction site.***
 >
-> Attributed to Frank Lloyd Wright
+> Attributed to Frank Lloyd Wright, American architect
+
+::: note
+Bring it back to the reminder. Moving the scheduler out of system, or deciding the request carries no week, is an eraser in not.md: a line changed in a pull request a teammate reviews. After the agent has built it, the same change touches a controller, services, the scheduler, a dialog, and their tests. Wright knew the sledgehammer: Fallingwater's cantilevers sagged for decades and were reinforced in 2002.
+:::
 
 ## The last document before the code {.center}
 
 ::: key
 What the design leaves open, the agent decides. Silently.
+:::
+
+## Where we are
+
+![The documents so far, and where the design-of-record sits](img/document-map.svg){ height="520" }
+
+::: note
+Walk it left to right. Weeks 3 and 4 wrote the requirements: vision and scope, the glossary, use cases, business rules, and the specification. Week 6 drew one architecture for the whole system. This week each use case area gets its own design inside that map; Project Pulse's first is not.md. Week 8 builds the code from it, and week 9 tests it. The chain from use case to test is week 8's traceability; here it is only the map. The design also becomes the agent's build-context in the week 8 studio, which is week 5's idea arriving on time.
 :::
 
 ## Two levels of design
@@ -127,7 +139,7 @@ A proposal, reviewed and approved before it is built. IETF, Rust, Sourcegraph, O
 |||
 **Here: the design-of-record**
 
-Usually drafted by the agent. Reviewed by you. The review is the skill.
+Usually drafted by the agent, after your sketch. Reviewed by you. The review is the skill.
 :::
 
 ::: trace Trace: use case to design-of-record
@@ -221,17 +233,7 @@ Nobody wrote down the answer.
 :::
 
 ::: note
-The truncation is a plain bug. "Evaluated anyone" is a term nobody defined, and a reminder built from the use case alone would have been a third answer. The fix went to the specification: a business rule, BR-submission-owed, that the reminder and both reports cite.
-:::
-
-## CMU said it first
-
-> The worst design docs accidentally embed ambiguities, which cause implementors to develop contradictory solutions that the customer doesn't want.
->
-> Hilton and Sunshine, CMU 17-313
-
-::: note
-Two implementors, two contradictory solutions, one confused instructor.
+The truncation is a plain bug. "Evaluated anyone" is a term nobody defined, and a reminder built from the use case alone would have been a third answer. The fix went to the specification: a business rule, BR-submission-owed, that the reminder and both reports cite. Two implementors, two contradictory solutions, one confused instructor.
 :::
 
 ## Read the right column {.center}

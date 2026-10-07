@@ -403,7 +403,6 @@ Every module carries one, naming the classic failure for its topic and the one A
 - Carlos Jimenez et al., ["SWE-bench"](https://arxiv.org/abs/2310.06770) (ICLR 2024) and OpenAI's [Introducing SWE-bench Verified](https://openai.com/index/introducing-swe-bench-verified/) (2024). What "resolved" means, and why a hand-screened subset was needed before the number could be trusted.
 - Ian Sommerville, *Software Engineering*, chapter 1. The standard textbook framing of the life cycle.
 - Nancy Leveson, *Engineering a Safer World* (2011), chapters 1-2. Failures as control-structure failures rather than component failures: this module's thesis in another vocabulary.
-- CMU 17-313, *Foundations of Software Engineering*: the introductory lecture.
 
 ## 9. Self-check
 

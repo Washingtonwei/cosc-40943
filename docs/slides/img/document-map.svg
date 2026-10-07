@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif"><title id="t">The documents so far, and where the design-of-record sits</title><desc id="d">Left to right. Requirements from weeks 3 and 4: vision and scope, glossary, use cases, business rules, and the specification. They drive one architecture-of-record for the whole system, from week 6. Inside that map, each use case area gets its own design-of-record in week 7, such as Project Pulse's not.md for reminders; the use cases feed the designs directly. The design leads to code in week 8 and tests in week 9.</desc>
+<defs>
+<filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.45"/></filter>
+<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
+<marker id="ahy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FFB443"/></marker>
+</defs>
+<rect width="1000" height="540" rx="18" fill="#0F1420"/>
+<text x="28" y="40" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">WHERE WE ARE</text>
+<text x="972" y="40" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">The documents so far</text>
+
+<!-- Requirements -->
+<g filter="url(#sh)"><rect x="30" y="70" width="250" height="398" rx="14" fill="#171E2E" stroke="#2C374E" stroke-width="1.6"/></g>
+<text x="155" y="100" text-anchor="middle" fill="#F2EDE3" font-size="15" font-weight="800" letter-spacing="1.5">REQUIREMENTS</text>
+<text x="155" y="121" text-anchor="middle" fill="#9AA3B5" font-size="13">weeks 3 and 4 · say what</text>
+<g font-size="15">
+<rect x="50" y="138" width="210" height="52" rx="9" fill="#0F1420" stroke="#3B4A69" stroke-width="1.4"/>
+<text x="64" y="160" fill="#F2EDE3" font-weight="700">Vision and scope</text><text x="64" y="179" fill="#9AA3B5" font-size="12">objectives, features</text>
+<rect x="50" y="200" width="210" height="52" rx="9" fill="#0F1420" stroke="#3B4A69" stroke-width="1.4"/>
+<text x="64" y="222" fill="#F2EDE3" font-weight="700">Glossary</text><text x="64" y="241" fill="#9AA3B5" font-size="12">one word, one meaning</text>
+<rect x="50" y="262" width="210" height="52" rx="9" fill="#0F1420" stroke="#FFB443" stroke-width="2"/>
+<text x="64" y="284" fill="#F2EDE3" font-weight="700">Use cases</text><text x="64" y="303" fill="#FFB443" font-size="12">UC-*, grouped into areas</text>
+<rect x="50" y="324" width="210" height="52" rx="9" fill="#0F1420" stroke="#3B4A69" stroke-width="1.4"/>
+<text x="64" y="346" fill="#F2EDE3" font-weight="700">Business rules</text><text x="64" y="365" fill="#9AA3B5" font-size="12">BR-*</text>
+<rect x="50" y="386" width="210" height="64" rx="9" fill="#0F1420" stroke="#3B4A69" stroke-width="1.4"/>
+<text x="64" y="408" fill="#F2EDE3" font-weight="700">Specification</text><text x="64" y="428" fill="#9AA3B5" font-size="12">other FRs, quality attributes,</text><text x="64" y="442" fill="#9AA3B5" font-size="12">constraints</text>
+</g>
+
+<!-- Architecture -->
+<g filter="url(#sh)"><rect x="330" y="195" width="200" height="150" rx="14" fill="#171E2E" stroke="#2C374E" stroke-width="1.6"/></g>
+<text x="430" y="234" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="800">Architecture-</text>
+<text x="430" y="256" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="800">of-record</text>
+<text x="430" y="284" text-anchor="middle" fill="#9AA3B5" font-size="13">week 6 · the map</text>
+<text x="430" y="318" text-anchor="middle" fill="#C9CED8" font-size="14" font-weight="700">one per system</text>
+
+<!-- Design-of-record stack -->
+<g filter="url(#sh)">
+<rect x="614" y="166" width="210" height="170" rx="14" fill="#171E2E" stroke="#2C374E" stroke-width="1.4" opacity="0.6"/>
+<rect x="602" y="178" width="210" height="170" rx="14" fill="#171E2E" stroke="#2C374E" stroke-width="1.4" opacity="0.8"/>
+<rect x="590" y="190" width="210" height="170" rx="14" fill="#171E2E" stroke="#9B6BD6" stroke-width="2.4"/>
+</g>
+<text x="695" y="226" text-anchor="middle" fill="#F2EDE3" font-size="18" font-weight="800">Design-of-record</text>
+<text x="695" y="249" text-anchor="middle" fill="#9B6BD6" font-size="13" font-weight="700">week 7 · this week</text>
+<text x="695" y="276" text-anchor="middle" fill="#C9CED8" font-size="14" font-weight="700">one per use case area</text>
+<rect x="615" y="296" width="160" height="40" rx="8" fill="#0F1420" stroke="#3B4A69" stroke-width="1.4"/>
+<text x="695" y="321" text-anchor="middle" fill="#F2EDE3" font-size="14"><tspan font-family="'JetBrains Mono',Consolas,monospace" font-weight="700">not.md</tspan><tspan fill="#9AA3B5"> · reminders</tspan></text>
+
+<!-- Code and tests -->
+<g filter="url(#sh)">
+<rect x="862" y="170" width="112" height="72" rx="12" fill="#171E2E" stroke="#2C374E" stroke-width="1.6"/>
+<rect x="862" y="306" width="112" height="72" rx="12" fill="#171E2E" stroke="#2C374E" stroke-width="1.6"/>
+</g>
+<text x="918" y="201" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="800">Code</text>
+<text x="918" y="224" text-anchor="middle" fill="#9AA3B5" font-size="13">week 8</text>
+<text x="918" y="337" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="800">Tests</text>
+<text x="918" y="360" text-anchor="middle" fill="#9AA3B5" font-size="13">week 9</text>
+
+<!-- Arrows -->
+<g stroke="#9AA3B5" stroke-width="2.2" fill="none">
+<line x1="282" y1="232" x2="326" y2="232" marker-end="url(#ah)"/>
+<line x1="532" y1="270" x2="586" y2="270" marker-end="url(#ah)"/>
+<line x1="826" y1="206" x2="858" y2="206" marker-end="url(#ah)"/>
+<line x1="918" y1="244" x2="918" y2="302" marker-end="url(#ah)"/>
+</g>
+<text x="304" y="220" text-anchor="middle" fill="#9AA3B5" font-size="12">drive</text>
+<text x="559" y="258" text-anchor="middle" fill="#9AA3B5" font-size="12">inside</text>
+<path d="M262,300 C 380,450 540,450 640,364" stroke="#FFB443" stroke-width="2.2" fill="none" stroke-dasharray="7 5" marker-end="url(#ahy)"/>
+<text x="452" y="448" text-anchor="middle" fill="#FFB443" font-size="13" font-weight="700">each area's use cases, realized</text>
+
+<text x="500" y="506" text-anchor="middle" fill="#C9CED8" font-size="16">Requirements say what. The architecture draws the map. Each use case area gets its own design inside it.</text>
+</svg>
