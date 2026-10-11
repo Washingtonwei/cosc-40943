@@ -39,7 +39,7 @@ The slides for each week are on the [Schedule](schedule.md). They are the fast r
 
 ## Not on the midterm
 
-- **AI-assisted implementation** (week 8 Monday). It is examined on the final.
+- **Week 8 Monday and Wednesday:** estimation, security, AI-assisted implementation, and code review. They are examined on the final.
 - **Traceability beyond what is listed above.** The rest of that module is on the final.
 - Anything from week 9 on, including testing.
 

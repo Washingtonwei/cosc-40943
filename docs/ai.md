@@ -52,7 +52,7 @@ Three moves:
 2. **Kill the session rather than redirect it.** The context that captured you is the same context you would be arguing against.
 3. Write the goal down before opening the chat, so drift is checkable rather than a feeling.
 
-The [Napkin drill](studio.md) exists partly for this. A napkin written before the session gives you something external to check the conversation against.
+The [Napkin](modules/se-and-ai.md#the-napkin-six-prompts) exists partly for this. A napkin written before the session gives you something external to check the conversation against.
 
 ## Getting access
 

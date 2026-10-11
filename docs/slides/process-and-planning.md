@@ -84,7 +84,7 @@ When the target and the estimate do not fit, change the scope, not the estimate.
 :::
 
 ::: note
-McConnell, Software Estimation, 2006. An estimate is a range because it is uncertain; a commitment is one date because someone plans around it. The range narrows as decisions get made (the cone of uncertainty, Boehm 1981), which is why you estimate after the design is approved.
+McConnell, Software Estimation, 2006. An estimate is a range because it is uncertain; a commitment is one date because someone plans around it. The range narrows as decisions get made (the cone of uncertainty, Boehm 1981), so a use case is estimated twice: a coarse range when it is written, for ordering and the release plan, and the three-part estimate once its design is approved, for the commitment. Agile does the same with story points at backlog refinement and task hours at sprint planning.
 :::
 
 ## Every classic model: size times a rate
@@ -137,7 +137,7 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 | **Total** | Same size as #76, which took 3.5 | **3 to 5** |
 
 ::: note
-The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide.
+The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide: those were the coarse estimate, made without the design, the job story points do in agile. This one is the sprint-planning estimate, made with it.
 :::
 
 ## Write it down before you build

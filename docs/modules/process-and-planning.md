@@ -25,7 +25,7 @@ By the end of this module, a student can:
 - **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure this module uses.
 - **Leads into:** the fan-out, where every use case your team builds gets an estimate first, and [Checkpoint 2](../project.md#checkpoints) and Checkpoint 3, where your team shows its estimates beside its actual hours, its release plan, and at Checkpoint 3 a forecast.
 - **How it's taught:** life-cycle models are introduced in week 1 and read here in full; estimation is one lecture segment in week 8, before the first use case of the fan-out is built; whatever the lecture does not reach, read here. From then on it is practiced, not lectured: an estimate on every use-case issue, the use case ID on every weekly activity report line, and a calibration table at each checkpoint.
-- **Course outcome it delivers:** [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin drill into a number your client can plan around.
+- **Course outcome it delivers:** [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin into a number your client can plan around.
 
 ## 3. Motivation
 
@@ -53,7 +53,7 @@ Three different things share one sentence ("it'll take two weeks"), and confusin
 
 An estimate is a range because it is uncertain. A commitment is a single date because someone will plan around it. When the target and the estimate do not fit, you change the scope, not the estimate.
 
-The range narrows as decisions get made. Boehm (1981) measured it: at the concept stage an estimate can be off by a factor of four in either direction, and the spread shrinks as requirements, then design, are settled; McConnell (2006) named the shape the *cone of uncertainty*. This is why you estimate a use case *after* its design-of-record is approved, not before: the design is what turned "how hard is a reminder?" into 18 named tests and five named risks.
+The range narrows as decisions get made. Boehm (1981) measured it: at the concept stage an estimate can be off by a factor of four in either direction, and the spread shrinks as requirements, then design, are settled; McConnell (2006) named the shape the *cone of uncertainty*. So a use case is estimated twice. When it is written, you give it a **coarse range** from its main scenario and extensions, wide because nothing is designed yet; that range orders the work and feeds the release plan (4.6). Once its design-of-record is approved, the **three-part estimate** (4.3) replaces it, narrower because the design turned "how hard is a reminder?" into 18 named tests and five named risks; that one backs a commitment. Agile teams make the same two passes: story points when the backlog is refined, then task hours at sprint planning, after the team has broken the story into tasks.
 
 ### 4.2 The classical techniques, and what each one assumed
 

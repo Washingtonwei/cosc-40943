@@ -59,13 +59,7 @@ One of them is used before a client meeting, not in studio. `client-interview-gu
 
 ## The Napkin drill
 
-Six times across the term, a twenty-minute warm-up opens the hour before the main objective, usually on a non-checkpoint Friday and three times in a lecture. You are handed a one-paragraph brief for a system you have never seen and asked to size it up on six points: shape, the hard part, the bottleneck, stack, three kill risks, and a verdict. The [schedule](schedule.md#the-napkin-drill) says when each round runs.
-
-**[The frame, the rubric, and what separates a good answer from risk bingo are in the module](modules/se-and-ai.md#the-napkin-six-prompts).** Read it once before round 0; you will use it six times.
-
-The one rule to remember in the room: **write yours alone and silently first, then reconcile as a team, then ask the agent, then diff.** Prompting first anchors you on the agent's answer and teaches nothing. The diff is where the learning happens.
-
-**Round 0** napkins your own client project, before you have written a single requirement. It is sealed on the spot, not scored and not discussed. In the last full week of class you reopen it and score yourself against what actually happened, graded on **calibration, not correctness**. Being wrong in week 3 is expected. Not noticing you were wrong is the failure.
+Rounds 0 and 1 ran in weeks 3 and 5; the drill is paused for the rest of the term ([schedule](schedule.md#the-napkin-drill)). **[The frame and its rubric stay in the module](modules/se-and-ai.md#the-napkin-six-prompts)**, and its one rule still applies before any agent session: **write yours first, then ask the agent, then diff.** Prompting first anchors you on the agent's answer.
 
 ## What studio is not
 
@@ -118,7 +112,7 @@ Three rules for the drafting: expect merge conflicts in `vision-and-scope.md` an
 
 **Project Pulse registration closed at 10:50.** The invitation came from peer.evaluation.tool.senior.design@gmail.com, which also sends the weekly activity report and peer evaluation reminders every Monday and Tuesday. Late submissions are not accepted, so keep that address out of junk: mark it "Not junk" and add it to Safe senders (Outlook on the web: Settings, Mail, Junk email, Safe senders and domains). If you never received the invitation, tell your TA.
 
-**What you produced:** `docs/napkin-round-0.md`, sealed until the last full week of class; the six sections in `docs/requirements/`; commits from every member; a Project Pulse account.
+**What you produced:** `docs/napkin-round-0.md`, sealed; the six sections in `docs/requirements/`; commits from every member; a Project Pulse account.
 
 **How your TA checked it:** branch protection is on, business objectives carry numbers, commits come from more than one member, and every member is registered in Project Pulse.
 

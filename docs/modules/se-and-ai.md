@@ -25,7 +25,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** none. This is the course opener.
 - **Leads into:** The AI-Augmented Team in week 2 (onboarding the agent as a teammate), requirements as the contract in weeks 3-4, and architecture in week 6, where the Napkin's six questions get the slow, derived treatment.
-- **How it's taught:** two lecture days, then revisited at every new topic all term. It owns the [Napkin drill](../studio.md#the-napkin-drill) you will run six times in studio.
+- **How it's taught:** two lecture days, then revisited at every new topic all term. It owns the [Napkin](#the-napkin-six-prompts), the frame for sizing up a problem before the agent does.
 - **Course outcome it delivers:** [sizing up an unfamiliar problem and defending that judgment against the agent's version](../syllabus.md#learning-outcomes) (outcome 10), and it opens [collaborating with AI across the lifecycle](../syllabus.md#learning-outcomes) (outcome 6).
 
 ## 3. Motivation
@@ -354,7 +354,7 @@ A seventh prompt, **Delegate** (what goes to the agent, what stays human), waits
 
 **What scores:** a mechanism, not a category. "Scope creep, integration issues, communication problems" is risk bingo and scores nothing. "The client's system exports CSV nightly, so nothing is real-time and the dashboard requirement is dead on arrival" is the target.
 
-**Honest framing.** One semester does not manufacture ten years of pattern library. The drill offers the frame, six rounds with fast feedback, and the habit of noticing when your own estimate was wrong.
+**Honest framing.** One semester does not manufacture ten years of pattern library. The Napkin offers the frame and the habit of noticing when your own estimate was wrong.
 
 ## 5. Risks and mitigations
 
@@ -423,6 +423,6 @@ Every module carries one, naming the classic failure for its topic and the one A
 
 - [Requirements Traceability](traceability.md): how a requirement stays connected to the code that implements it and the test that proves it.
 - [Schedule](../schedule.md): when this module is taught, and what follows it.
-- [Friday Studio](../studio.md): the Napkin drill as you will actually run it.
+- [Friday Studio](../studio.md): the rounds you ran in studio.
 - [Working with AI](../ai.md): the delegation boundary and these two failure modes, stated as course policy.
 - [Senior Design Project](../project.md): the client project all of this is in service of.
