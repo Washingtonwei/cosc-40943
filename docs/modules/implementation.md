@@ -103,7 +103,7 @@ Result handleOtherException(Exception ex) {
 
 ### 4.5 Building the reminder: what Monday shows
 
-The live build runs Project Pulse's `/implement` on `not.md` after `/clear`, so the session reads only the merged design. It shows 4.1 to 4.4 in order: the suite run first, the plan, the trunk commit, the pause where the room reads the trunk aloud, and the logging and security rules applied as the leaves begin. The build stops at the pause; the rest is finished afterward, and the result is the pull request reviewed on Wednesday.
+The live build runs Project Pulse's `/implement` on `not.md` after `/clear`, so the session reads only the merged design. It shows 4.1 and 4.2 in order: the suite run first, the plan, the trunk commit, and the pause where the room reads the trunk aloud. The live build stops at the pause. The full reminder, all four commits, is built beforehand on a separate branch; Wednesday's review exercise is a copy of that pull request.
 
 ### 4.6 One engineer, several agents
 
