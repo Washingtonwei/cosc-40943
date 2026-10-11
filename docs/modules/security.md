@@ -21,7 +21,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md#49-security-as-a-quality-attribute-the-trust-boundary), whose trust boundary this module extends to the agent; the [Agent Setup](../agent-setup.md) page, whose guardrails it explains.
 - **Leads into:** every build session from week 8 on, and [Checkpoint 2](../project.md#checkpoints), where your TA checks your team's agent settings.
-- **How it's taught:** two slides in week 8 (the team's settings file and what is due before Friday), just before the agent starts building; the rest is reading. It is practiced through your team's `.claude/settings.json` and its charter.
+- **How it's taught:** two slides in week 8's [Building With the Agent](../slides/implementation.html) deck (the team's settings file and what is due before Friday), just before the agent starts building; the rest is reading. It is practiced through your team's `.claude/settings.json` and its charter.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle, delegating appropriately and verifying its output](../syllabus.md#learning-outcomes) (outcome 6).
 
 ## 3. Motivation

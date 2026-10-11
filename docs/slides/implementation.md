@@ -106,6 +106,38 @@ The trunk commit message the agent wanted: "Add some stuff." The one you merge: 
 From not.md's class diagram. Project Pulse's /implement commits this way and pauses after the trunk. This is what we build live today, after /clear, so the session reads only the merged design.
 :::
 
+## The team's settings file
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh repo delete *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
+    ]
+  }
+}
+```
+
+::: note
+.claude/settings.json, committed once so every teammate's Claude Code picks it up. The full file, with the PowerShell twins and the short force-push spelling, is on the Agent Setup page, section 10. Open it as a pull request so the team reviews what the agent may not do. The Read rules are the new part this week: anything the agent reads goes to the model provider. Test it yourself: ask the agent to read your .env and see it refused. Your TA opens this file at Checkpoint 2.
+:::
+
+## Before Friday
+
+::: steps
+- `Read` deny rules for your secrets in the team's `.claude/settings.json`, by pull request.
+- Ask the agent to read `.env`. Watch it refused.
+- Charter line: no dependency without a person's check.
+- Checked at Checkpoint 2.
+:::
+
 ## Code you did not write
 
 ::: steps
