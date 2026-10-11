@@ -69,3 +69,44 @@ assertThat(result.getTeam()).isEqualTo(team);
 ```
 
 **Teach it as:** the oracle came from the test's own input, echoed back by a mock, which is CrowdStrike in miniature. Ask the room which outcome the use case and the business rule demand that the test never checks. Then delete the two lines live and run the suite green. Run the same "write tests for `saveActivity`" prompt against an agent and see which version it writes.
+
+### The first test: given, when, then, read off the use case (moved from `MODULE-implementation`, 2026-10-11; open the Wed Oct 21 lecture with it)
+
+**Why week 8.** Tests are used before they are taught. The week 8 studio ends at "trace it design to code to first test", and *Add a use case* (assignment 3, Fri Oct 30) asks for vetted AI-generated tests, both before `MODULE-testing` on Wed Oct 21. This module teaches enough to write the first test; week 9 owns the judgment.
+
+**Frame: the use case is the scenario.** BDDMockito's `given`/`willReturn` is the vocabulary of behavior-driven development, not the practice. BDD proper writes Given/When/Then scenarios with the stakeholder and runs them with a tool such as Cucumber. The course already has that half: the use case template's trigger, `PRE-n`, `POST-n`, and extensions. Teach given/when/then as the executable form of a use case, and do not add Cucumber.
+
+| Use case | Test |
+|---|---|
+| `PRE-n`, or the precondition an extension breaks | Given |
+| Trigger or step | When |
+| `POST-n`, or the extension's outcome | Then |
+
+**Worked example: extension 1a of `UC-WAR-manage-activities`** (Project Pulse `docs/requirements/use-cases.md`). `PRE-2`: the student is assigned to a team (`BR-team-assignment-required`). Extension `1a1`: the system does not accept the activity and tells the student she must be assigned to a team. `ActivityServiceTest.testSaveActivityRejectsASubmitterWithNoTeam` tests exactly that against `ActivityService.saveActivity`. Rewritten in BDD form throughout:
+
+```java
+@Test
+void testSaveActivityRejectsASubmitterWithNoTeam() {
+    // Given: PRE-2 does not hold (extension 1a)
+    Student tracy = new Student("t.nicholson@abc.edu", "Tracy", "Nicholson", "t.nicholson@abc.edu", "123456", true, "student");
+    given(this.userUtils.hasRole("ROLE_student")).willReturn(true);
+    given(this.userUtils.getStudent()).willReturn(tracy);
+
+    // When
+    Throwable thrown = catchThrowable(() -> this.activityService.saveActivity(new Activity()));
+
+    // Then: 1a1, the activity is refused and nothing is saved
+    assertThat(thrown)
+            .isInstanceOf(ActivityIllegalArgumentException.class)
+            .hasMessage("You must be assigned to a team before submitting a weekly activity report.");
+    then(this.activityRepository).should(never()).save(any(Activity.class));
+}
+```
+
+Two changes from the repository version, both worth a slide: `catchThrowable` separates When from Then, where the original wraps both in one "When and then" block around `assertThatThrownBy`; and `then(...).should(never())` replaces `verify(...)`. Imports: `org.mockito.BDDMockito.*`, which carries `never` and `any`, plus AssertJ's `assertThat` and `catchThrowable`. Studio: pick one extension from a use case your team wrote and write its test in this shape.
+
+**Project Pulse writes half of it.** Across the 14 test files that import BDDMockito: `given(...)` 194 times and `when(...).thenReturn` never; `verify(...)` 22 times in 10 files and `then(...).should(...)` never; `doNothing().when(...)` 11 times and `willDoNothing()` never. The cause is one line. The testing section of `backend/CLAUDE.md` says only "Use BDDMockito: given(...).willReturn(...)", so the agent follows the convention for Given and falls back to classic Mockito for Then. Same mechanism as the logging gap above. Teams write both halves into their own agent charter.
+
+**Two slide notes.** `doNothing()` on a void method of a mock is redundant, because doing nothing is already the default. AssertJ's `BDDAssertions.then` and BDDMockito's `then` collide when both are statically imported; use AssertJ's `assertThat` with BDDMockito's `then`.
+
+**Hand-off.** `MODULE-testing` (week 9) takes the happy-path twin of this test, `testSaveActivity`, as its oracle example, and assumes students already write given/when/then from a use case.

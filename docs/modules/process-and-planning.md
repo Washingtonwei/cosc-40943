@@ -2,7 +2,7 @@
 
 **Slides:** [Estimating When the Agent Writes the Code](../slides/process-and-planning.html) (the fast version).
 
-> **Purpose (one line):** estimate a use case in human hours before your agent builds it and make each next estimate better from the hours you actually logged, and name the life-cycle model a team is running and what it bets on.
+> **Purpose (one line):** estimate a use case in human hours before your agent builds it, make each next estimate better from the hours you actually logged, plan which release each use case ships in and whether the MVP still fits, and name the life-cycle model a team is running and what it bets on.
 
 !!! note "This module is still being written"
     This page covers estimation and life-cycle models. The risk vocabulary (categories, impact and likelihood) is coming.
@@ -16,13 +16,14 @@ By the end of this module, a student can:
 3. Estimate a use case as a range of human hours, split into specify, build and review, and verify, sized from its design's test list.
 4. Record the estimate before the build and the actual hours in the weekly activity report, and compute a calibration ratio from the two.
 5. Use a calibration ratio to correct the next estimate, and tell the client early when a commitment no longer fits.
-6. Name what each major life-cycle model (waterfall, incremental, iterative, spiral, the Unified Process, agile) bets on, and say when each fits.
-7. Place this course's method among those models, and map Scrum's vocabulary onto the units this course uses.
+6. Place every use case in a release in the traceability matrix, and forecast from the remaining estimates and the calibration ratio whether the MVP fits.
+7. Name what each major life-cycle model (waterfall, incremental, iterative, spiral, the Unified Process, agile) bets on, and say when each fits.
+8. Place this course's method among those models, and map Scrum's vocabulary onto the units this course uses.
 
 ## 2. Where it fits
 
 - **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure this module uses.
-- **Leads into:** the fan-out, where every use case your team builds gets an estimate first, and [Checkpoint 2](../project.md#checkpoints) and Checkpoint 3, where your team shows its estimates beside its actual hours.
+- **Leads into:** the fan-out, where every use case your team builds gets an estimate first, and [Checkpoint 2](../project.md#checkpoints) and Checkpoint 3, where your team shows its estimates beside its actual hours, its release plan, and at Checkpoint 3 a forecast.
 - **How it's taught:** life-cycle models are introduced in week 1 and read here in full; estimation is one lecture segment in week 8, before the first use case of the fan-out is built; whatever the lecture does not reach, read here. From then on it is practiced, not lectured: an estimate on every use-case issue, the use case ID on every weekly activity report line, and a calibration table at each checkpoint.
 - **Course outcome it delivers:** [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin drill into a number your client can plan around.
 
@@ -111,11 +112,41 @@ A ratio of 1.5 means you take half again as long as you think. Multiply your nex
 
 When the ratio says a commitment will slip, tell the client at the next meeting, not on the date. A slipped commitment reported early is planning; reported late, it is a broken promise.
 
-### 4.6 What an estimate is not for
+### 4.6 From estimates to a release plan
+
+An estimate answers "when can I use this one?" The client's next question is "what will I have in December?" Answering it takes a **release plan**: every use case placed in the release it ships in. Agile planning has always done this with stories and velocity (Beck and Fowler 2000; Cohn 2005). The course keeps the idea and changes the units.
+
+**It is a column, not a document.** Your `traceability.md` already has one row per use case (and per non-use-case FR) with its Build and Verify state. The plan is one more column, **Release**: `v0.1.0` (the proving slice), `v0.2.0` (Checkpoint 3), `v1.0.0` (the December MVP), `Spring`, or `Out`. Plan and progress share a row, so they cannot disagree, and an empty cell is work nobody has planned. Your client agrees to scope by feature in vision and scope's MVP Scope section; the column carries that agreement down to use cases.
+
+**Placing the rows.** Risk first, for the reason your proving slice went first ([4.11](#411-spiral-let-risk-choose-the-next-step)): a wrong decision found in week 9 is cheap, and in week 14 it is not. Then what the client needs first, then dependencies. When something goes ahead of risk, the pull request that changes the column says why: the column holds the decision, and git holds the reason.
+
+**Project Pulse's plan.** Project Pulse shipped up to `v1.5.0` without a release plan. Its [Release column](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md#release-legend) starts with the work that is left:
+
+| Release | What ships | Why there |
+|---|---|---|
+| `v1.6.0` | The reminders: on-demand (`UC-NOT-remind-non-submitters`), and the scheduled one brought in line with `BR-submission-owed` | Designed; built in week 8 |
+| `v1.7.0` | The rest of the requirements editor: artifact and link screens, comments, review, export | Backends built and tested; the client wants the editor finished first |
+| `v1.8.0` | The first AI assistant end to end: `UC-AI-critique`, the proposal loop, its settings, the model proxy | The riskiest work: the first model call, with the outage scenario measured |
+| `v1.9.0` | ReqLint and the tutor | The tutor explains ReqLint's findings, so it follows ReqLint |
+| `v2.0.0` | The other six assistants | The Fall 2027 classroom deployment |
+
+Risk alone would put `v1.8.0` before `v1.7.0`. The client chose otherwise, and the plan records that trade instead of hiding it. Writing the column also exposed a disagreement: the vision listed real-time co-editing as out of the MVP, while traceability showed it as unstarted work. The use case's own Status line already said Deferred, so that line settles it, and its Release cell stays empty: one fact, one owner.
+
+**The forecast.** A use case that is not designed yet has no test list, so size it from what it has, its main scenario and extensions, as a range wider than 4.3's: it sits earlier in the cone of uncertainty (4.1). Write that range on the use case's issue; when its design is approved, the three-part estimate replaces it. Then:
+
+> **Hours still needed** = the sum of the estimate midpoints of every unfinished `v1.0.0` row × your team's calibration ratio
+
+Compare that with the hours your team will have before the MVP demo, judged from what your weekly activity reports show you actually work. If the plan does not fit, move rows out of `v1.0.0` with your client at the next meeting. This is 4.1's rule in practice: when the estimate and the target disagree, change the scope, not the estimate. Write the result as one line under your calibration table:
+
+`Forecast: 6 rows left in v1.0.0, 38 to 60 h at ratio 1.4; about 70 h available. Fits, with no slack for the high end.`
+
+Revise the column at every use-case close ([the method, Phase C](../method.md#phase-c-fan-out-per-use-case)), and recompute the forecast whenever the ratio moves.
+
+### 4.7 What an estimate is not for
 
 An estimate is not a performance score. Once estimates are used to pressure people, they stop being honest, and a dishonest estimate is worse than none (Jeffries 2021). The course grades whether you **recorded** and **interpreted** your estimates, never whether they were accurate: a team that reports a ratio of 2.3 and says why earns the same credit as a team at 1.0. Inflating the actual hours in a weekly activity report to make a ratio look good is academic dishonesty, as any inflated report is.
 
-### 4.7 Life-cycle models: each one is a bet on what is expensive
+### 4.8 Life-cycle models: each one is a bet on what is expensive
 
 [Week 1](se-and-ai.md#the-software-development-life-cycle-sdlc) drew the life cycle as eight activities in a loop. A **life-cycle model** (or *process model*) decides how a team moves through them: once, in order, or many times, in slices. Every model is a bet on what costs the most, and each was right for the costs of its time:
 
@@ -128,24 +159,24 @@ An estimate is not a performance score. Once estimates are used to pressure peop
 | **Unified Process** | Use cases drive the work, and architecture is proven early | A system big enough to need an architecture, with requirements that keep moving |
 | **Agile (Scrum, Kanban)** | Requirements will change, so deliver working software often and adjust | A customer close enough to give feedback every week or two |
 
-### 4.8 Waterfall, and what Royce actually wrote
+### 4.9 Waterfall, and what Royce actually wrote
 
 Waterfall runs the activities once, each signed off before the next begins. Real projects do not flow one way, clients cannot state every requirement up front, and nobody sees working software until the end, when change costs most.
 
 It is usually traced to Winston Royce's 1970 paper, which drew the phases in sequence and then wrote under the figure: "I believe in this concept, but the implementation described above is risky and invites failure." The rest of the paper adds what the single pass lacks: feedback between steps, early simulation, the customer involved throughout, and building the program twice. The word "waterfall" is not in it. Later standards and contracts adopted the figure and dropped the corrections (Larman and Basili 2003).
 
-### 4.9 Incremental and iterative
+### 4.10 Incremental and iterative
 
 - **Incremental:** build one feature at a time, each to full quality, and ship as you go. Your fan-out is incremental: one use case at a time, each designed, built, tested, and traced before it counts as done.
 - **Iterative:** build everything roughly, then improve all of it in passes. Your specification is iterative: the first draft for Checkpoint 1, then revised every time the design or the build exposes a gap.
 
 Jeff Patton's illustration: an incremental painter finishes the Mona Lisa one square at a time; an iterative one sketches the whole portrait, then refines it. Working teams do both.
 
-### 4.10 Spiral: let risk choose the next step
+### 4.11 Spiral: let risk choose the next step
 
 In Boehm's spiral model (1988), every cycle starts by asking what could sink the project now, then spends the cycle reducing that risk with a prototype, a simulation, or a measurement. Your proving slice is a spiral cycle: of all your use cases, you build first the one that exercises the riskiest architectural decisions, because finding out it is wrong in week 9 is cheap and in week 14 is not.
 
-### 4.11 The Unified Process, and this course's method
+### 4.12 The Unified Process, and this course's method
 
 The Unified Process (Jacobson, Booch, and Rumbaugh 1999; IBM's commercial version was the Rational Unified Process) describes itself in three phrases: **use-case driven, architecture-centric, iterative and incremental**. It runs in four phases, each made of iterations. The course's [method](../method.md#the-lifecycle) is closest to it:
 
@@ -158,7 +189,7 @@ The Unified Process (Jacobson, Booch, and Rumbaugh 1999; IBM's commercial versio
 
 The method's life cycle is not new: its phases are the Unified Process's, with a spiral's risk-first slice. What is new is what moves through them. The specification is written for an agent to build from, complete where guessing is unsafe and silent where the agent may derive. The agent challenges the specification before it builds, and the questions test measures whether the specification is enough. Humans own some levels and the agent builds others, behind approval gates. Traceability is kept true by tooling rather than by discipline. And the work flows one use case at a time instead of in time-boxed iterations.
 
-### 4.12 Agile, Scrum, and Kanban: the vocabulary you will meet
+### 4.13 Agile, Scrum, and Kanban: the vocabulary you will meet
 
 The *Manifesto for Agile Software Development* (Beck et al. 2001) values working software, customer collaboration, and responding to change over documentation, contracts, and following a plan, while granting that the second list still has value. Two practices dominate industry:
 
@@ -167,14 +198,14 @@ The *Manifesto for Agile Software Development* (Beck et al. 2001) values working
 
 This course uses parts of both under its own units. Your board, backlog, and weekly iteration are [week 2's vocabulary](ai-augmented-team.md#411-the-boards-vocabulary); your definition of done is a merged pull request that meets the use case's acceptance criteria. The use case replaces the user story, a use-case area is a milestone, and your client, not a teammate, owns what gets built.
 
-### 4.13 What agents change
+### 4.14 What agents change
 
 Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([4.3](#43-where-the-hours-go-now)). So the bet shifts: spend human effort on specification and verification, and let the agent do the iterating, each use case built and rebuilt as often as review allows.
 
 ## 5. The AI-native lens
 
-- **Delegate to AI:** the counting. Give the agent the design-of-record and it can list the test rows, the files the sequence diagrams touch, and the open risks, and draft the three-part breakdown. Give it your weekly activity report lines and it can sum the actual hours by use case ID.
-- **Keep human:** the hours and the commitment. An agent asked "how long will this take?" answers from text written about teams that wrote their own code; it has no record of your hours, your review speed, or this term's agent. The commitment to a client is a promise, and only a person can make one.
+- **Delegate to AI:** the counting. Give the agent the design-of-record and it can list the test rows, the files the sequence diagrams touch, and the open risks, and draft the three-part breakdown. Give it your weekly activity report lines and it can sum the actual hours by use case ID. Give it the traceability matrix and the ranked quality attributes and it can draft the Release column and add up the forecast.
+- **Keep human:** the hours and the commitment. An agent asked "how long will this take?" answers from text written about teams that wrote their own code; it has no record of your hours, your review speed, or this term's agent. The commitment to a client is a promise, and only a person can make one. So is the cut line: which use cases leave `v1.0.0` is agreed with the client, never decided by the agent.
 - **Context to supply:** the approved design, its test list and open questions, and your team's current calibration ratio.
 - **How to verify:** check the agent's breakdown against the design (every test row counted, every open risk reflected in the range). Never accept an hour figure from it, including one it presents as a range.
 
@@ -185,6 +216,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 | **Classic:** an estimate given as a single number becomes a commitment nobody made | Hearing "two weeks" and asking "is that an estimate or a promise?" | Always state a range; make the commitment a separate, explicit sentence |
 | **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate in the three parts of 4.3; size from the test list, not the code |
 | **AI-amplified:** trusting your felt speed with an agent, which runs fast and flattering | Comparing the estimate with the logged hours, not with memory | The calibration ratio, computed from weekly activity reports, at every checkpoint |
+| **Classic:** a release plan written once and never revised, so the December demo is a surprise | Asking at every use-case close whether the forecast still fits | Revise the Release column at every close; show the forecast at Checkpoint 3 |
 
 ## 7. Hands-on (studio + optional individual assignment)
 
@@ -192,6 +224,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 
 - **Goal:** every use case in the fan-out is estimated before it is built, and the team learns its own rate.
 - **In studio (own project):** before the first fan-out use case is built, each owner writes the three-part estimate on its issue, sized from the design's test list. From then on, weekly activity report lines carry the use case ID.
+- **Release plan:** by Checkpoint 2, every row of your traceability matrix has a Release value, revised by pull request at every use-case close. At Checkpoint 3, one forecast line under the calibration table ([4.6](#46-from-estimates-to-a-release-plan)).
 - **Deliverable & assessment:** at Checkpoints 2 and 3, one table: each finished use case, its estimate, its actual hours, its ratio, and one sentence on the biggest miss. Assessed on completeness and honest interpretation, never on accuracy.
 
 **At the final retrospective (week 15):** name the life-cycle model your team actually ran, where it departed from the method, and why. A team that ran waterfall in practice (all specification, then a scramble to build) should be able to say so, and say what it would change.
@@ -205,6 +238,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 - With an agent, the hours are in specifying, reviewing, and verifying. Size a use case by its test list.
 - Your sense of how fast you work with an agent is unreliable. Your weekly activity reports are not.
 - Estimates are graded on honesty, never on accuracy.
+- A release plan is a Release column in your traceability matrix. Revise it at every close; when the forecast does not fit, change the scope with your client.
 - Every life-cycle model is a bet on what is expensive. Royce never recommended the single pass that bears the waterfall name.
 - This course's life cycle follows the Unified Process with a spiral's risk-first slice. What is new is the specification written for an agent to build from, and the checks around it.
 
@@ -214,6 +248,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 - Boehm, B. W. *Software Engineering Economics*. Prentice-Hall, 1981. COCOMO, Wideband Delphi, and the measurements behind the cone of uncertainty.
 - Grenning, J. "Planning Poker, or How to Avoid Analysis Paralysis While Release Planning." 2002.
 - Cohn, M. *Agile Estimating and Planning*. Prentice Hall, 2005.
+- Beck, K., and Fowler, M. *Planning Extreme Programming*. Addison-Wesley, 2000. Release planning with stories and velocity.
 - Jørgensen, M. "A Review of Studies on Expert Estimation of Software Development Effort." *Journal of Systems and Software* 70, no. 1–2 (2004): 37–60. Expert judgment is the most used technique, and no worse on average than the models.
 - McConnell, S. *Software Estimation: Demystifying the Black Art*. Microsoft Press, 2006. Estimates, targets, and commitments; the cone of uncertainty.
 - Jeffries, R. "Estimation Is Evil." 2021. <https://ronjeffries.com/articles/021-01ff/estimation-is-evil/>
@@ -236,8 +271,9 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 3. A use case's design has 12 test rows and one open risk that can only be measured in production. Which part of the three-part estimate does the risk widen, and why?
 4. Your estimate was 6 to 10 hours; your weekly activity reports show 14. What is your calibration ratio, and what is your next estimate for a use case you would otherwise have called 4 to 8 hours?
 5. A teammate logs fewer actual hours than they worked so the team's ratio looks better. What has the team lost?
-6. Your team's fan-out builds one use case at a time to full quality, while the specification keeps being revised. Which part of your process is incremental, which is iterative, and why do you need both?
-7. A classmate says this course "does waterfall, because the specification comes first." Using Royce's paper and the Unified Process, explain what they have right and what they have wrong.
+6. Five unfinished use cases remain in `v1.0.0`; their estimate midpoints add up to 30 hours, your team's ratio is 1.5, and your team will have about 40 hours before the demo. Does the plan fit? What do you tell your client, and when?
+7. Your team's fan-out builds one use case at a time to full quality, while the specification keeps being revised. Which part of your process is incremental, which is iterative, and why do you need both?
+8. A classmate says this course "does waterfall, because the specification comes first." Using Royce's paper and the Unified Process, explain what they have right and what they have wrong.
 
 ## Related
 
@@ -261,6 +297,8 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 - METR and Faros figures were checked against the primary posts on 2026-10-10.
 - Royce 1970: confirm the "risky and invites failure" quotation and the do-it-twice recommendation against the paper; confirm that "waterfall" does not appear in it.
 - Patton's Mona Lisa illustration: find the original (Patton, "Don't Know What I Want, But I Know How to Get It," 2008) and confirm the attribution.
-- Week numbers in 4.11's mapping follow the published schedule as of 2026-10-10.
+- Week numbers in 4.12's mapping follow the published schedule as of 2026-10-10.
 - Project Pulse facts (`Activity.java`, `not.md`'s 18 test rows and five open risks) checked against `main` at `8768a1d` on 2026-10-10.
+- 4.6's Project Pulse release plan is from the handoff drafted 2026-10-11 against `main` at `31cd1a1`; check the Release column and its `#release-legend` anchor on `main` once committed.
+- Beck and Fowler 2000: confirm title and publisher.
 -->

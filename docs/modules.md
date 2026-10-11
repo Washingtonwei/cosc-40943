@@ -32,6 +32,9 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Process and Planning**](modules/process-and-planning.md) · [slides](slides/process-and-planning.html)
 : Estimate a use case before your agent builds it, as a range of human hours sized from its design's test list, and make each next estimate better from the hours your weekly activity reports logged. Estimates, targets, and commitments; what the classical models assumed; and the calibration ratio. Then the life-cycle models (waterfall as Royce actually wrote it, incremental and iterative, spiral, the Unified Process, Scrum and Kanban), what each bets on, and where this course's method sits among them.
 
+[**AI-Assisted Implementation**](modules/implementation.md) · [slides](slides/implementation.html)
+: Build an approved design with an agent in steps you can read: run the tests first, commit the trunk before the leaves and read it at the pause, treat existing code as evidence rather than authority, write a logging rule the agent will follow, and run several agents only where their decisions are already on the record.
+
 [**Reliability**](modules/reliability.md) · [slides](slides/reliability.html)
 : Turn an availability or performance requirement into an objective you can measure, make every call across a network fail the way your specification says, and learn from a failure without blaming whoever was at the keyboard. Fault, error, and failure; indicators, objectives, and error budgets; timeouts, retries, isolation, and degradation; and the blameless postmortem.
 

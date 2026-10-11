@@ -166,7 +166,7 @@ What to work on, as the [week 4 team work](modules/spec-driven-requirements.md#7
 
 **How your TA checks it:** the pre-class check, the six questions on your riskiest use case, and commits from every member.
 
-The use case your TA reviews is also your first build-context, in [week 8](#week-8-oct-16-your-first-build-context).
+The use case your TA reviews is also your first build-context, in [week 8](#week-8-your-first-build-context-in-your-team-meeting).
 
 ### Week 6, Oct 2: Checkpoint 1, and your architecture-of-record
 
@@ -214,15 +214,17 @@ The use case your TA reviews is also your first build-context, in [week 8](#week
 
 Fix what the issue raises by pull request, and close the issue from it. Week 7's design-of-record builds on this map from Monday.
 
-### Week 8, Oct 16: your first build-context
+### Week 8: your first build-context, in your team meeting
+
+**Friday Oct 16 is a lecture this term, not a studio.** Run this hour in your team's own meeting after Wednesday's lecture, and finish it **by Sunday Oct 18, 11:59 pm**, before your agent builds the proving slice. There is no frame from the front: this page is the frame. Your TA checks it on GitHub and replies on each issue by Tuesday Oct 20.
 
 **Objective:** each pair on your team writes one use case up as a build-context, an issue that cites the use case instead of copying it, runs the questions test on it, and sorts the gaps it exposes before building. The reading is [Context Engineering](modules/context-engineering.md), sections 4.5 and 4.7, and your individual practice run was [assignment 2](assignments/spec-a-feature.md).
 
-**Before you arrive:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Your charter carries a one-line rule, citing section 8.2 of your architecture-of-record, for at least **error handling** and **time** ([why](modules/architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
+**Before your meeting:** at least one member of each pair has a working agent session on a laptop they are bringing. Your riskiest use case is your proving slice, designed in week 7 and due running at [Checkpoint 2](project.md#checkpoints). Your charter carries a one-line rule, citing section 8.2 of your architecture-of-record, for at least **error handling** and **time** ([why](modules/architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Your build-context cites them; it does not restate them.
 
 | When | What your team does |
 |---|---|
-| 0-5 | The frame, from the front. |
+| 0-5 | Read this section together. |
 | 5-22 | **Write the issues, in pairs.** The pair with your riskiest use case takes it; the other pairs take the next two. A team of five runs a pair and a trio. One person writes, the other checks that the use case exists at the path you gave and that its Business Rules field is filled in. |
 | 22-38 | **Run the questions test, in pairs,** then sort what comes back. |
 | 38-50 | **Pool as a team.** Each pair reads out its specification pile. Questions only your client can answer go into `OPEN-ISSUES.md`. Each pair posts its sorted list as a comment on its issue. |
@@ -264,4 +266,4 @@ If everything landed in the issue pile, go around again.
 
 **What you produce:** one issue per pair on your board, with its sorted list as a comment, and new entries in `OPEN-ISSUES.md`. Close the specification and charter piles by pull request before the agent builds from the issue. Then the use case's owner fills in the Estimate, sized from the design's test list ([how](modules/process-and-planning.md#43-where-the-hours-go-now)), still before the agent builds. From then on, every weekly activity report line about that use case starts with its ID.
 
-**How your TA checks it:** the issue cites the use case rather than copying it or listing its rules; the use case it cites exists; the sorted list is posted; not everything is in the issue pile; the Estimate is a range in all three parts, and it was written before the first commit the agent made for this use case.
+**How your TA checks it,** on GitHub by Tuesday Oct 20, replying on each issue: the issue cites the use case rather than copying it or listing its rules; the use case it cites exists; the sorted list is posted; not everything is in the issue pile; the Estimate is a range in all three parts, and it was written before the first commit the agent made for this use case.
