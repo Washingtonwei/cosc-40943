@@ -21,8 +21,8 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md), whose map this module takes one level down, inside one use case area; [Context Engineering](context-engineering.md), whose questions test this module applies to a design; and [Requirements as the Contract](spec-driven-requirements.md), whose use cases a design cites and never restates.
-- **Leads into:** the week 8 studio, where your design becomes a build-context and your agent starts building, and [Checkpoint 2](../project.md#checkpoints), where the proving slice must run. [Traceability](traceability.md) picks up the design as the middle link between a use case and its code.
-- **How it's taught:** in week 7, before fall break; whatever the lecture does not reach, read here. Your team writes the design-of-record for its proving slice's use case area out of class, from the [design-of-record template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md), and merges it by pull request before the week 8 studio. The [schedule](../schedule.md) has the date.
+- **Leads into:** your team's [first build-context](../studio.md#week-8-your-first-build-context-in-your-team-meeting) in week 8, written from your design before your agent starts building, and [Checkpoint 2](../project.md#checkpoints), where the proving slice must run. [Traceability](traceability.md) picks up the design as the middle link between a use case and its code.
+- **How it's taught:** in week 7, before fall break; whatever the lecture does not reach, read here. Your team writes the design-of-record for its proving slice's use case area out of class, from the [design-of-record template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md), and merges it by pull request before week 8's build-context. The [schedule](../schedule.md) has the date.
 - **Course outcome it delivers:** [making and defending design and architecture decisions](../syllabus.md#learning-outcomes) (outcome 2), with the alternatives considered and the reasoning behind the choice.
 
 ## 3. Motivation
@@ -166,7 +166,7 @@ A **sequence diagram** shows the objects that take part in one scenario and the 
 | `loop … end` | Repetition |
 | Thin bar on a lifeline (activation) | The time that object is busy; mermaid draws it with `activate` |
 
-The rule this course adds: **label every message with the use case step it implements.** A reviewer can then check that every step is realized, and an arrow with no step is either a missing requirement or scope nobody asked for. Here is the on-demand reminder, simplified from `not.md`:
+The rule this course adds: **label each interaction with the use case step it implements.** Label the messages the actor sends and receives; the internal calls under them serve that same step. A reviewer can then check that every step is realized, and an arrow that serves no step is either a missing requirement or scope nobody asked for. Here is the on-demand reminder, simplified from `not.md`:
 
 ```mermaid
 ---
@@ -183,22 +183,26 @@ sequenceDiagram
     SPA->>RC: GET submission-status
     RC->>SS: findOwing(section, item, previous week)
     SS-->>RC: students who owe the item
-    RC-->>SPA: 200, weekActive, list by team (step 4)
+    RC-->>SPA: 200, weekActive, list by team
     alt weekActive is false (4a)
-        SPA-->>I: reminders are sent only for an active week
-    end
-    I->>SPA: Confirm (step 5)
-    SPA->>RC: POST reminders
-    RC->>RC: 400 if the week is not active (4a, guard)
-    RC->>RS: remind(section, owing, week)
-    loop each student who owes it (step 6)
-        RS->>EM: sendReminderEmail
-        opt the send fails (6a)
-            EM-->>RS: error, logged, student added to failed
+        SPA-->>I: reminders are sent only for an active week, no send button
+    else the week is active
+        SPA-->>I: the students who owe it, by team (step 4)
+        I->>SPA: Confirm (step 5)
+        SPA->>RC: POST reminders
+        RC->>RC: 400 if the week is not active (4a, server-side guard)
+        RC->>SS: findOwing again, at send time
+        RC->>RS: remind(section, owing, week)
+        loop each student who owes it (step 6)
+            RS->>EM: sendReminderEmail
+            opt the send fails (6a)
+                EM-->>RS: error, logged, student added to failed
+            end
         end
+        RS-->>RC: sent count, failed students
+        RC-->>SPA: 200, sent and failed
+        SPA-->>I: N reminders sent, names any failed (step 7)
     end
-    RS-->>RC: sent count, failed students
-    RC-->>SPA: 200, sent and failed (step 7)
 ```
 
 Draw one per use case for the main scenario, plus one for any extension that does more than return an error. A scheduled job gets a diagram too. `not.md` draws the weekly reminder ([`FR-NOT-weekly-reminder`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#fr-not-weekly-reminder-the-scheduled-reminder)) as its own sequence: the clock calls `WeeklyReminderScheduler`, which calls the same `SubmissionStatusService` and `ReminderService` as the on-demand reminder, so both paths share one definition of who owes.
@@ -236,7 +240,7 @@ Three things to notice:
 
 - **Every extension has an error.** If the use case has an extension and the contract has no response for it, someone will invent one.
 - **A scheduled job is a contract too.** It has a trigger and a promise, and nothing calls it from the browser.
-- **What is left out is a decision.** The request carries no week, because the server always computes the week due. A week from the client could nudge students toward a peer evaluation whose window has closed (`BR-evaluation-submission-window`), and a value that sets an action's scope should never come from the caller. One omission closes both.
+- **What is left out is a decision.** The send request carries no week, because the server always computes the week due. (The status request, `GET …/submission-status`, does take an optional week, because the report pages show any week; only sending is pinned to the week due.) A week from the client could nudge students toward a peer evaluation whose window has closed (`BR-evaluation-submission-window`), and a value that sets an action's scope should never come from the caller. One omission closes both.
 
 Field types and exact JSON are left to the agent, unless another system depends on the format.
 
@@ -258,7 +262,7 @@ If you cannot name a rejected alternative, it probably was not a decision; leave
 
 Show only what this area **adds**: new tables or entities, new columns, and the migration that creates them, following your architecture's crosscutting concepts: a new file in Flyway or a similar migration tool, never an edit to an old one (Project Pulse names its files `V<n>__description.sql`; see [Software Architecture, 4.10](architecture.md#410-crosscutting-concepts-what-every-component-does-the-same-way)). Use an ER diagram if there is more than one new table. The domain model is owned by your specification; link it rather than redraw it.
 
-The reminder adds nothing, and the design says so with the reason: a reminder leaves no record, so there is no table. Rejected: a reminder log showing "last reminded at", which would add a table, a migration, and seed data to guard against a double send that the confirmation step already guards. "No change" with a reason is a decision a reviewer can check. A blank section is not.
+The reminder adds nothing, and the design says so with the reason: a reminder leaves no record, so there is no table. Rejected: a reminder log showing "last reminded at", which would add a table, a migration, and seed data to guard against a double send that the confirmation step, and a Confirm button disabled while the request runs, already guard. "No change" with a reason is a decision a reviewer can check. A blank section is not.
 
 ### 4.8 The test list, before the code
 
@@ -271,7 +275,7 @@ The design ends with one row per flow: the main scenario and every extension of 
 | UC-NOT 6a | unit | One failed send does not stop the others; that student is in `failed` |
 | FR-NOT last active week | unit | In the inactive week after the last active week, the last evaluation's reminder is still sent |
 
-This list is the **definition of done** the reviewer approves. Writing it now does two things. A missing extension shows up as a missing row, before anyone codes around it. And the agent, which will write tests later, is told which tests count. An agent asked to "add tests" afterward tests what it built, which by then is not evidence of anything. If you know test-driven development, this is its first step, a list of the tests to write, made at the level of use case flows and approved before anyone codes. In week 8 the agent works through it red/green: each test written first and seen to fail before the code that makes it pass. `not.md` has eighteen rows. Testing gets its own module in week 9.
+This list is the **definition of done** the reviewer approves. Writing it now does two things. A missing extension shows up as a missing row, before anyone codes around it. And the agent, which will write tests later, is told which tests count. An agent asked to "add tests" afterward tests what it built, which by then is not evidence of anything. If you know test-driven development, this is its first step, a list of the tests to write, made at the level of use case flows and approved before anyone codes. In week 8 the agent works through it red/green: each test written first and seen to fail before the code that makes it pass. `not.md` has twenty rows. Testing gets its own module in week 9.
 
 ### 4.9 When the design changes the architecture
 
@@ -333,7 +337,7 @@ Project Pulse's worked example went through exactly this gate, as [pull request 
 **Reviewing a design is the skill being taught**, and the failure to watch for is the rubber stamp. A long, well-formatted, agent-drafted design invites approval on sight. Review against these questions instead:
 
 - Does every extension of every use case have a sequence branch or at least a test row?
-- Does every message in the sequence diagrams name a use case step? An arrow with no step is scope nobody asked for, or a requirement nobody wrote.
+- Does every interaction in the sequence diagrams name a use case step, and does every internal call serve one? An arrow that serves no step is scope nobody asked for, or a requirement nobody wrote.
 - Could the front end and the back end be built in separate sessions from the contract alone?
 - Does every decision name what it rejected?
 - Does anything here disagree with the architecture-of-record, and if so, was the architecture changed?
@@ -349,7 +353,7 @@ Before your team builds every use case, build one, all the way through: its desi
 
 The slice is **vertical**: it cuts through every layer once, so each layer's conventions (the error format, the time handling, the authorization pattern from your architecture's section 8) are exercised in real code at least once. When the slice runs, every later use case copies its shape.
 
-This week your team writes the slice's design-of-record. Week 8's studio turns it into the agent's build-context, the agent builds it in weeks 8 and 9, and it must run, not be described, at [Checkpoint 2](../project.md#checkpoints).
+This week your team writes the slice's design-of-record. In week 8 your team turns it into the agent's build-context, the agent builds it in weeks 8 and 9, and it must run, not be described, at [Checkpoint 2](../project.md#checkpoints).
 
 ## 5. The AI-native lens
 
@@ -364,7 +368,7 @@ This week your team writes the slice's design-of-record. Week 8's studio turns i
 
 | Risk (classic and AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
-| **Gold-plating and scope creep.** Features, patterns, and fields no requirement asks for. AI-amplified: the agent adds them fluently, at no effort, and a long design looks thorough. | Asking, of every message and every class, which use case step or requirement needs it | Label every sequence message with its step; a pattern must name the problem it solves here |
+| **Gold-plating and scope creep.** Features, patterns, and fields no requirement asks for. AI-amplified: the agent adds them fluently, at no effort, and a long design looks thorough. | Asking, of every message and every class, which use case step or requirement needs it | Label every interaction in the sequence diagrams with its step; a pattern must name the problem it solves here |
 | **The rubber stamp.** A teammate approves a long, polished design without reading it. AI-amplified: the drafts are long and polished by default. | A reviewer who works through the review questions in 4.12 | The questions-test list in the pull request, and review comments that answer specific questions |
 | **The lean trap.** A greenfield design that follows "keep it lean, link to the code" when there is no code, so the agent invents the contract. | Asking whether the front end and back end could be built in separate sessions from the design alone | Never drop the contract, the decisions, or the test list |
 | **Analysis paralysis.** Every area designed in detail now, before the proving slice has tested the architecture. | Asking which area the next week of building needs | One area at a time, in fan-out order; the proving slice's first |
@@ -379,7 +383,7 @@ There is no studio this week: Friday is fall break.
 
 - **Goal:** design the use case area of your proving slice, the riskiest use case your TA reviewed with you in week 5, to the depth where the questions test finds nothing that could break a requirement.
 - **How:** copy the [design-of-record template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md) to `docs/design/<area>.md` and follow its five steps: sketch, agent draft, compare, questions test, pull request. Change your architecture-of-record in the same pull request if the design requires it.
-- **Deliverable and assessment:** the design merged to `main` through a pull request approved by a teammate who did not write it, with the questions-test list in the description, by the date on the [schedule](../schedule.md). Your TA reads it before the week 8 studio, which turns it into your agent's first build-context. Work over the break is optional; the two days after it are enough if your team starts the sketch before Friday.
+- **Deliverable and assessment:** the design merged to `main` through a pull request approved by a teammate who did not write it, with the questions-test list in the description, by the date on the [schedule](../schedule.md). Your TA reads it before your team turns it into your agent's first build-context in week 8. Work over the break is optional; the two days after it are enough if your team starts the sketch before Friday.
 
 There is no individual assignment for this module. Project Pulse's [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md) is the worked example; read it, and the pull request that approved it, before writing your own.
 
@@ -387,7 +391,7 @@ There is no individual assignment for this module. Project Pulse's [`not.md`](ht
 
 - The design-of-record is the last document before the code. What it leaves open, the agent decides, silently and possibly differently on each run. It also keeps the why the code cannot.
 - Firm the problem before designing the solution. Most of what the challenge loop finds belongs in the specification, not the design.
-- Mark every class new or reused, and label every sequence message with the use case step it implements.
+- Mark every class new or reused, and label each interaction with the use case step it implements.
 - The API contract is how two sessions that never see each other's code build parts that fit. Every extension has a response.
 - A decision names what it rejected. A pattern names the problem it solves here, or it is gold-plating.
 - Write the test list before the code: it is the definition of done the reviewer approves.

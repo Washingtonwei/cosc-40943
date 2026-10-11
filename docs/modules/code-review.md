@@ -53,7 +53,7 @@ Review began as **formal inspection**: planned meetings, prepared reviewers, a m
 1. **Does this change do what the contract says?** The contract is the use case (every extension, not only the main scenario), its business rules, and the design-of-record's API table and test list. A reviewer reading only the diff cannot answer this. **A missing extension is invisible in the diff and visible in the test list.**
 2. **How deep must I read this part, given where it lands?** Not every line deserves the same attention ([4.3](#43-how-deep-trunk-security-rule-leaf)).
 
-For the reminder, the contract is `UC-NOT-remind-non-submitters` and the 18-row test list in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests). Open it beside the diff. For each row, find the test that covers it or write that none does.
+For the reminder, the contract is `UC-NOT-remind-non-submitters` and the 20-row test list in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests). Open it beside the diff. For each row, find the test that covers it or write that none does.
 
 ### 4.3 How deep: trunk, security rule, leaf
 
@@ -65,7 +65,7 @@ The pull request arrives in the commits [AI-Assisted Implementation 4.2](impleme
 | **Security rule or migration** | Every line, and where it sits |
 | **Leaf**: new code reached only through the new feature | Its tests' assertions against the test list; skim the rest |
 
-**Write the triage into the review**, one line: "Trunk: `SubmissionStatusService`, read in full. Security: the two rules, read in full. Leaves: controller and dialog, checked tests against rows 1 to 9, skimmed the rest." A skim you wrote down is a decision a teammate can challenge; a skim you did not is a rubber stamp.
+**Write the triage into the review**, one line: "Trunk: `SubmissionStatusService`, read in full. Security: the two rules, read in full. Leaves: controller and dialog, checked tests against rows 1 to 11, skimmed the rest." A skim you wrote down is a decision a teammate can challenge; a skim you did not is a rubber stamp.
 
 **Why the security rule reads alone.** Project Pulse's `SecurityConfiguration` holds one rule per route and ends its API rules with `.requestMatchers(this.baseUrl + "/**").denyAll()`, so a new endpoint "fails closed, loudly" until someone writes its rule. Spring applies the first rule that matches. The design fixes the reminder's rule: `AuthorizationManagers.anyOf(sectionInstructorAuthorizationManager, sectionOwnershipAuthorizationManager)`, before the catch-all. The failure to look for: the agent's integration test gets a `403`, and the quickest way to make it pass is a looser rule. `.authenticated()` in place of `.access(...)` is one word, and it lets any logged-in student email an entire course section. The proof is the test-list row "UC-NOT authorization": an unassigned instructor and a student get `403` on both routes.
 

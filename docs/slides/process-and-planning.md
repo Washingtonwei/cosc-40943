@@ -34,10 +34,10 @@ The agent writes all of it in one session. By that arithmetic, the answer is "th
 ## It is not this afternoon
 
 ::: cols
-**18**
+**20**
 rows in the test list. Each one is a behavior a person has to see pass.
 |||
-**5**
+**6**
 open risks. One (80 emails during one request) can only be settled by measuring on staging.
 :::
 
@@ -133,7 +133,7 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 |---|---|---|
 | Specify | Questions test already run | 0.5 to 1 |
 | Build and review | Every diff read against the diagrams | 1.5 to 2 |
-| Verify | 18 rows, latency on staging | 1 to 2 |
+| Verify | 20 rows, latency on staging | 1 to 2 |
 | **Total** | Same size as #76, which took 3.5 | **3 to 5** |
 
 ::: note

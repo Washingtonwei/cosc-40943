@@ -95,7 +95,7 @@ Bring it back to the reminder. Moving the scheduler out of system, or deciding t
 ![The documents so far, and where the design-of-record sits](img/document-map.svg){ height="520" }
 
 ::: note
-Walk it left to right. Weeks 3 and 4 wrote the requirements: vision and scope, the glossary, use cases, business rules, and the specification. Week 6 drew one architecture for the whole system. This week each use case area gets its own design inside that map; Project Pulse's first is not.md. Week 8 builds the code from it, and week 9 tests it. The chain from use case to test is week 8's traceability; here it is only the map. The design also becomes the agent's build-context in the week 8 studio, which is week 5's idea arriving on time.
+Walk it left to right. Weeks 3 and 4 wrote the requirements: vision and scope, the glossary, use cases, business rules, and the specification. Week 6 drew one architecture for the whole system. This week each use case area gets its own design inside that map; Project Pulse's first is not.md. Week 8 builds the code from it, and week 9 tests it. The chain from use case to test is week 8's traceability; here it is only the map. In week 8 the design also becomes the agent's build-context, which is week 5's idea arriving on time.
 :::
 
 ## Two levels of design
@@ -275,11 +275,11 @@ Simplified from not.md; the full one carries the key operations. Classes, import
 | loop | Repetition |
 
 ::: key
-The rule this course adds: label every message with the use case step it implements.
+The rule this course adds: label each interaction with the use case step it implements.
 :::
 
 ::: note
-Participants across the top, a lifeline down from each, time runs down the page. An activation bar shows when an object is busy. This is the core of a design-of-record, because it shows the one thing no single file can: how the parts cooperate. With step labels, a reviewer can check every step is realized, and an arrow with no step is either a missing requirement or scope nobody asked for.
+Participants across the top, a lifeline down from each, time runs down the page. An activation bar shows when an object is busy. This is the core of a design-of-record, because it shows the one thing no single file can: how the parts cooperate. Label what the actor sends and receives; the internal calls under it serve the same step. With step labels, a reviewer can check every step is realized, and an arrow that serves no step is either a missing requirement or scope nobody asked for.
 :::
 
 ## The reminder, step by step
@@ -295,19 +295,21 @@ sequenceDiagram
     RC->>SS: who owes it, previous week
     SS-->>RC: students who owe it
     RC-->>I: list by team, and weekActive (step 4)
-    opt week inactive (4a)
-        RC-->>I: only for an active week
+    alt week inactive (4a)
+        Note over I: "Only for an active week", no send button
+    else week active
+        I->>RC: confirm (step 5)
+        RC->>RS: remind them
+        loop each student (step 6)
+            RS->>EM: send
+        end
+        RS-->>RC: sent, and who failed
+        RC-->>I: sent, and who failed (step 7)
     end
-    I->>RC: confirm (step 5)
-    RC->>RS: remind them
-    loop each student (step 6)
-        RS->>EM: send
-    end
-    RS-->>I: sent, and who failed (step 7)
 ```
 
 ::: note
-Simplified. The full version in not.md includes the browser, the route guard, and extension 6a inside the loop. Point at the labels: every arrow has a step. No WeeklyReminderScheduler here: this is the on-demand use case. The scheduled reminder, FR-NOT-weekly-reminder, has its own diagram in not.md, and it calls the same SubmissionStatusService and ReminderService, so both paths share one definition of who owes.
+Simplified. The full version in not.md includes the browser, the route guard, 4b, the recount of who owes at send time (so a student who submitted after the list opened is not emailed), and extension 6a inside the loop. Point at the labels: every interaction with the instructor names its step, and each internal call serves the step above it. Point at the alt too: in 4a the flow ends, there is nothing to confirm. No WeeklyReminderScheduler here: this is the on-demand use case. The scheduled reminder, FR-NOT-weekly-reminder, has its own diagram in not.md, and it calls the same SubmissionStatusService and ReminderService, so both paths share one definition of who owes.
 :::
 
 ## When to draw a state diagram
@@ -409,7 +411,7 @@ Link the domain model; never redraw it.
 |||
 The reminder adds **nothing**.
 
-Rejected: a reminder log. A table, a migration, and seed data, to guard a double send the confirmation already guards.
+Rejected: a reminder log. A table, a migration, and seed data, to guard a double send the confirmation and a disabled Confirm button already guard.
 :::
 
 ::: key
@@ -426,7 +428,7 @@ Rejected: a reminder log. A table, a migration, and seed data, to guard a double
 | Last active week | Its reminder still goes out |
 
 ::: note
-Eighteen rows in not.md, one per flow, each with a level. This is the definition of done the reviewer approves. A missing extension shows up as a missing row. An agent asked to add tests afterward tests what it built, which by then proves nothing. If they know TDD: this is its first step, the test list, approved before anyone codes. In week 8 the agent works through it red/green.
+Twenty rows in not.md, one per flow, each with a level. This is the definition of done the reviewer approves. A missing extension shows up as a missing row. An agent asked to add tests afterward tests what it built, which by then proves nothing. If they know TDD: this is its first step, the test list, approved before anyone codes. In week 8 the agent works through it red/green.
 :::
 
 ## When the design finds the map wrong
@@ -547,7 +549,7 @@ A long, polished, agent-drafted design invites approval on sight.
 
 ::: steps
 - Does every extension have a branch or a test row?
-- Does every message name a use case step?
+- Does every interaction name a use case step?
 - Could two sessions build from the contract alone?
 - Does every decision name what it rejected?
 - Does anything disagree with the architecture?
@@ -594,7 +596,7 @@ The first 90 percent of the code takes the first 90 percent of the time. The rem
 Tom Cargill, quoted by Jon Bentley. Your team already chose the slice: the riskiest use case your TA reviewed with you in week 5's studio.
 :::
 
-## Before the week 8 studio
+## Before week 8
 
 ::: steps
 - Copy design-of-record.md to docs/design/ for your slice's area.
@@ -604,13 +606,13 @@ Tom Cargill, quoted by Jon Bentley. Your team already chose the slice: the riski
 :::
 
 ::: steps
-- **Week 8 studio:** it becomes your agent's build-context.
+- **Week 8, in your team meeting:** it becomes your agent's build-context.
 - **Weeks 8 and 9:** the agent builds it.
 - **Checkpoint 2:** it runs. Not described. Runs.
 :::
 
 ::: note
-No studio Friday: fall break. Work over the break is optional; the two days after it are enough if the team sketches before Friday. The TAs read every design before the week 8 studio. The template is in tcu-cosc-40943/course-templates under design/.
+No studio Friday: fall break. Work over the break is optional; the two days after it are enough if the team sketches before Friday. The TAs read every design on Thursday Oct 15, before teams write their build-contexts by Sunday Oct 18. The template is in tcu-cosc-40943/course-templates under design/.
 :::
 
 ## Leave with this {.center}

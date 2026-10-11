@@ -91,7 +91,7 @@ A missing extension: where would you see it, in the diff or here?
 :::
 
 ::: note
-Four of the 18 rows in not.md's test list. Fill the Test column in the room, from the seeded pull request. For each row, find the test that covers it or write that none does. A row with no test is the Heartbleed shape: nothing in the diff to look at.
+Four of the 20 rows in not.md's test list. Fill the Test column in the room, from the seeded pull request. For each row, find the test that covers it or write that none does. A row with no test is the Heartbleed shape: nothing in the diff to look at.
 :::
 
 ## How deep
@@ -130,7 +130,7 @@ Abridged. SecurityConfiguration ends its API rules with denyAll(), so a new rout
 ```text
 Trunk: SubmissionStatusService, read in full.
 Security: the two route rules, read in full.
-Leaves: controller and dialog; tests checked against rows 1 to 9; skimmed the rest.
+Leaves: controller and dialog; tests checked against rows 1 to 11; skimmed the rest.
 ```
 
 ::: key

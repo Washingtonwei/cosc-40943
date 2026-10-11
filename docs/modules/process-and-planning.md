@@ -33,7 +33,7 @@ By the end of this module, a student can:
 
 The old way to answer counts the code: a controller, a new `SubmissionStatusService`, changes to the scheduler, a dialog, their tests, then hours per unit of code. An agent will write all of that in one session. If the code were the cost, the answer would be "this afternoon."
 
-It is not this afternoon. The design's [test list](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests) has 18 rows, and each one is a behavior a person has to see pass: a student who reported is not emailed, an unassigned instructor gets `403`, a first name containing `<b>` is escaped. Its open-questions list carries five risks, one of which (whether 80 emails over Gmail sent during the request finish in a comfortable time) cannot be settled until it is measured on staging. The hours are in specifying, reviewing, and verifying. The agent made the typing free and left everything else.
+It is not this afternoon. The design's [test list](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests) has 20 rows, and each one is a behavior a person has to see pass: a student who reported is not emailed, an unassigned instructor gets `403`, a first name containing `<b>` is escaped. Its open-questions list carries six risks, one of which (whether 80 emails over Gmail sent during the request finish in a comfortable time) cannot be settled until it is measured on staging. The hours are in specifying, reviewing, and verifying. The agent made the typing free and left everything else.
 
 **Your feeling of speed is not data.** In 2025, METR ran a randomized controlled trial with 16 experienced open-source developers on 246 issues from their own repositories. Before starting, they expected AI tools to make them 24% faster. With the tools they took 19% longer. Afterward, they still believed the tools had made them 20% faster. METR's 2026 follow-up suggests later tools probably do speed developers up, but its confidence intervals include no change at all, and METR calls its own data "very weak evidence" for the size of the effect. Either way, the lesson for estimation holds: a developer's sense of how long agent-assisted work took was wrong by about 40 points, in the flattering direction.
 
@@ -89,7 +89,7 @@ The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, ma
 |---|---|---|
 | Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
 | Build and review | Every diff read against the sequence diagrams | 1.5 to 2 |
-| Verify | 18 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
+| Verify | 20 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
 | **Total** | The same size as the reference change below, which took about 3.5 hours end to end | **3 to 5, most likely about 3.5** |
 
 **The reference.** [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines added across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, so the reminder, a change of the same size, should take about the same. A reference class is your own past work, not someone else's; your first ones will be slower than the instructor's in a codebase the instructor wrote, and the calibration ratio in 4.5 is what corrects for that.
@@ -298,7 +298,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 - Royce 1970: confirm the "risky and invites failure" quotation and the do-it-twice recommendation against the paper; confirm that "waterfall" does not appear in it.
 - Patton's Mona Lisa illustration: find the original (Patton, "Don't Know What I Want, But I Know How to Get It," 2008) and confirm the attribution.
 - Week numbers in 4.12's mapping follow the published schedule as of 2026-10-10.
-- Project Pulse facts (`Activity.java`, `not.md`'s 18 test rows and five open risks) checked against `main` at `8768a1d` on 2026-10-10.
+- Project Pulse facts (`Activity.java`, `not.md`'s 18 test rows and five open risks) checked against `main` at `8768a1d` on 2026-10-10; 20 rows and six risks after [#96](https://github.com/Washingtonwei/project-pulse/pull/96), checked at `26b1ac3`.
 - 4.6's Project Pulse release plan is from the handoff drafted 2026-10-11 against `main` at `31cd1a1`; check the Release column and its `#release-legend` anchor on `main` once committed.
 - Beck and Fowler 2000: confirm title and publisher.
 -->
