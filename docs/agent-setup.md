@@ -237,7 +237,7 @@ Three things are different, and all three are team decisions, not individual one
 }
 ```
 
-The `Read` rules keep the agent out of your secrets: anything it reads is sent to the model provider and can reappear in a commit or a comment. If your secrets live somewhere else, add that path too. Then test the lock: ask the agent to read your `.env` and confirm it is refused. [Security: The Agent and the Attacker](modules/security.md#43-permissions-what-they-stop-and-what-they-do-not) explains what these rules cannot stop.
+The `Read` rules keep the agent out of your secrets: anything it reads is sent to the model provider and can reappear in a commit or a comment. If your secrets live somewhere else, add that path too. Then test the lock: ask the agent to read your `.env` and confirm it is refused. [Security](modules/security.md#43-permissions-what-they-stop-and-what-they-do-not) explains what these rules cannot stop.
 
 Open that as a pull request like any other change, so the team reviews what the agent may not do. Your TA checks this file at Checkpoint 2.
 

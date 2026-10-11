@@ -1,13 +1,13 @@
 ---
-title: "Security: The Agent and the Attacker"
+title: Security
 module: security
 week: 8
 day: Monday
 ---
 
-# The Agent and the Attacker
+# Security
 
-Week 8 · Before the agent builds
+Week 8 · The agent and the attacker
 
 ## The attacker brought no tools {.center}
 
@@ -67,6 +67,29 @@ Before an agent reads content your team did not write, you read it. Raw.
 
 ::: note
 Claude Code's docs: permission rules are enforced by Claude Code, not by the model; CLAUDE.md instructions don't change what it allows. A deny rule still misses grep -r across the folder, or a script that opens the file itself. The sandbox blocks those.
+:::
+
+## The team's settings file
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh repo delete *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
+    ]
+  }
+}
+```
+
+::: note
+.claude/settings.json, committed once so every teammate's Claude Code picks it up. The full file, with the PowerShell twins and the short force-push spelling, is on the Agent Setup page, section 10. Open it as a pull request so the team reviews what the agent may not do. The Read rules are the new part this week: anything the agent reads goes to the model provider. Test it yourself: ask the agent to read your .env and see it refused. Your TA opens this file at Checkpoint 2.
 :::
 
 ## Never switch the checks off

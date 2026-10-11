@@ -46,7 +46,7 @@ Three different things share one sentence ("it'll take two weeks"), and confusin
 
 | | What it is | Who owns it | Example |
 |---|---|---|---|
-| **Estimate** | A prediction, with a range | The person doing the work | "8 to 16 hours of work, most likely about 12" |
+| **Estimate** | A prediction, with a range | The person doing the work | "3 to 5 hours of work, most likely about 3.5" |
 | **Target** | A wish about the date | The client or the business | "We'd like it before the midterm" |
 | **Commitment** | A promise to deliver by a date | The team, after comparing the two | "It will be on staging by Friday, Oct 23" |
 
@@ -86,22 +86,24 @@ The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, ma
 
 | Part | Basis | Estimate (hours) |
 |---|---|---|
-| Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 1 to 2 |
-| Build and review | One area, two flows plus a scheduler change; every diff read against the sequence diagrams | 3 to 6 |
-| Verify | 18 test rows; the email-latency risk can only be measured on staging | 4 to 8 |
-| **Total** | | **8 to 16, most likely about 12** |
+| Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
+| Build and review | About the size of the reference change below; every diff read against the sequence diagrams | 1.5 to 2 |
+| Verify | 18 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
+| **Total** | | **3 to 5, most likely about 3.5** |
+
+**The reference.** [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines added across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, so the reminder, a change of the same size, should take about the same. A reference class is your own past work, not someone else's; your first ones will be slower than the instructor's in a codebase the instructor wrote, and the calibration ratio in 4.5 is what corrects for that.
 
 The commitment that follows: on staging by the Friday of the build week, with the latency measured, or a message to the instructor by Wednesday saying why not.
 
 The actual hours are recorded after the build, and this table gains an *Actual* column.
 
-<!-- DRAFTING NOTE: the figures above are a proposed estimate for the instructor to confirm or replace before the week 8 build. Fill in the Actual column from the build. -->
+<!-- DRAFTING NOTE: fill in the Actual column from the build. -->
 
 ### 4.5 Recording and calibrating
 
 An estimate nobody checks teaches nothing. The course already records the other half: every line of your weekly activity report in Project Pulse carries **planned hours** and **actual hours** (the `Activity` entity, [`Activity.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/activity/Activity.java)). Three habits connect the two:
 
-1. **Before building**, the use case's owner writes the estimate on its issue: `Estimate: specify 1–2 h, build and review 3–6 h, verify 4–8 h.`
+1. **Before building**, the use case's owner writes the estimate on its issue: `Estimate: specify 0.5–1 h, build and review 1.5–2 h, verify 1–2 h.`
 2. **Every week**, each weekly activity report line about that use case starts with its ID (`UC-NOT-remind-non-submitters: reviewed the agent's diff against the sequence diagram`) and uses the category from the table in 4.3.
 3. **When the use case is done**, sum the actual hours across weeks and compute the **calibration ratio**: actual hours divided by the midpoint of the estimate.
 
@@ -128,22 +130,20 @@ An estimate is not a performance score. Once estimates are used to pressure peop
 
 ### 4.8 Waterfall, and what Royce actually wrote
 
-Waterfall runs the activities once, each finished and signed off before the next begins. Its problems are the ones your client brief will show you: real projects do not flow in one direction, the client cannot state every requirement up front, and nobody sees working software until near the end, when change is most expensive.
+Waterfall runs the activities once, each signed off before the next begins. Real projects do not flow one way, clients cannot state every requirement up front, and nobody sees working software until the end, when change costs most.
 
-The model is usually traced to Winston Royce's 1970 paper, which drew the sequence of phases and then, under that figure, wrote: "I believe in this concept, but the implementation described above is risky and invites failure." The rest of the paper adds what the single pass lacks: feedback between steps, early simulation, involving the customer, and building the program twice, so that the version delivered is the second. The word "waterfall" is not in it. Later standards and contracts adopted the figure and dropped the corrections (Larman and Basili 2003).
+It is usually traced to Winston Royce's 1970 paper, which drew the phases in sequence and then wrote under the figure: "I believe in this concept, but the implementation described above is risky and invites failure." The rest of the paper adds what the single pass lacks: feedback between steps, early simulation, the customer involved throughout, and building the program twice. The word "waterfall" is not in it. Later standards and contracts adopted the figure and dropped the corrections (Larman and Basili 2003).
 
 ### 4.9 Incremental and iterative
-
-The two words are often used together and mean different things:
 
 - **Incremental:** build one feature at a time, each to full quality, and ship as you go. Your fan-out is incremental: one use case at a time, each designed, built, tested, and traced before it counts as done.
 - **Iterative:** build everything roughly, then improve all of it in passes. Your specification is iterative: the first draft for Checkpoint 1, then revised every time the design or the build exposes a gap.
 
-Jeff Patton's illustration makes the difference visible: an incremental painter finishes the Mona Lisa one square at a time, while an iterative painter sketches the whole portrait and refines it. Most working teams do both: a thin version of each feature first, then raise its quality.
+Jeff Patton's illustration: an incremental painter finishes the Mona Lisa one square at a time; an iterative one sketches the whole portrait, then refines it. Working teams do both.
 
 ### 4.10 Spiral: let risk choose the next step
 
-Boehm's spiral model (1988) is a loop in which every cycle starts by asking what could sink the project now, then spends the cycle reducing that risk: a prototype, a simulation, a measurement. The process is driven by risk rather than by documents or a calendar. Your proving slice is a spiral cycle: of all your use cases, you build first the one that exercises the riskiest architectural decisions, because finding out it is wrong in week 9 is cheap and in week 14 is not.
+In Boehm's spiral model (1988), every cycle starts by asking what could sink the project now, then spends the cycle reducing that risk with a prototype, a simulation, or a measurement. Your proving slice is a spiral cycle: of all your use cases, you build first the one that exercises the riskiest architectural decisions, because finding out it is wrong in week 9 is cheap and in week 14 is not.
 
 ### 4.11 The Unified Process, and this course's method
 
@@ -156,20 +156,20 @@ The Unified Process (Jacobson, Booch, and Rumbaugh 1999; IBM's commercial versio
 | **Construction**: build the remaining use cases, iteration by iteration | Phase C: fan out, one use case at a time (weeks 9 to 14) |
 | **Transition**: hand the system to its users | The MVP your client receives |
 
-So the method is not new. It is the Unified Process, with a spiral's risk-first slice, re-weighted for agents. What the agent changes is which artifacts carry the weight: a use case and a design-of-record that an agent builds from directly, rather than models drawn for people to read.
+The method's life cycle is not new: its phases are the Unified Process's, with a spiral's risk-first slice. What is new is what moves through them. The specification is written for an agent to build from, complete where guessing is unsafe and silent where the agent may derive. The agent challenges the specification before it builds, and the questions test measures whether the specification is enough. Humans own some levels and the agent builds others, behind approval gates. Traceability is kept true by tooling rather than by discipline. And the work flows one use case at a time instead of in time-boxed iterations.
 
 ### 4.12 Agile, Scrum, and Kanban: the vocabulary you will meet
 
-The *Manifesto for Agile Software Development* (Beck et al. 2001) values individuals and interactions, working software, customer collaboration, and responding to change over processes and tools, comprehensive documentation, contract negotiation, and following a plan, while saying the items on the right still have value. Two practices dominate industry:
+The *Manifesto for Agile Software Development* (Beck et al. 2001) values working software, customer collaboration, and responding to change over documentation, contracts, and following a plan, while granting that the second list still has value. Two practices dominate industry:
 
 - **Scrum** (Schwaber and Sutherland 2020): work happens in **sprints** of a month or less. A **product backlog** is ordered by the **Product Owner**; the team pulls a **sprint backlog** from it at **sprint planning**, meets briefly every day, shows the result at the **sprint review**, and improves its process at the **retrospective**. An item counts only when it meets the team's **definition of done**.
 - **Kanban** (Anderson 2010): no sprints. Work flows across a board, and each column has a limit on how many items it may hold, so the team pulls new work only when something finishes.
 
-This course uses parts of both under its own units. Your board, backlog, and weekly iteration are [week 2's vocabulary](ai-augmented-team.md#411-the-boards-vocabulary); your definition of done is a merged pull request that meets the use case's acceptance criteria. The use case replaces the user story, a use-case area is a milestone, and your client, not a teammate, owns what gets built. You will meet the full Scrum vocabulary at your first job; now you know which parts map to what you did here.
+This course uses parts of both under its own units. Your board, backlog, and weekly iteration are [week 2's vocabulary](ai-augmented-team.md#411-the-boards-vocabulary); your definition of done is a merged pull request that meets the use case's acceptance criteria. The use case replaces the user story, a use-case area is a milestone, and your client, not a teammate, owns what gets built.
 
 ### 4.13 What agents change
 
-Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([4.3](#43-where-the-hours-go-now)). So the bets shift: the model that fits is the one that spends human effort on specification and verification and lets the agent do the iterating. That is why this course's method front-loads the specification and the architecture like the Unified Process, proves risk first like the spiral, and then lets each use case be built and rebuilt as often as review allows.
+Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([4.3](#43-where-the-hours-go-now)). So the bet shifts: spend human effort on specification and verification, and let the agent do the iterating, each use case built and rebuilt as often as review allows.
 
 ## 5. The AI-native lens
 
@@ -206,7 +206,7 @@ Agents make code cheap and iteration cheaper. Royce's "build it twice" used to d
 - Your sense of how fast you work with an agent is unreliable. Your weekly activity reports are not.
 - Estimates are graded on honesty, never on accuracy.
 - Every life-cycle model is a bet on what is expensive. Royce never recommended the single pass that bears the waterfall name.
-- This course's method is the Unified Process with a spiral's risk-first slice, re-weighted for agents: humans specify and verify, the agent iterates.
+- This course's life cycle follows the Unified Process with a spiral's risk-first slice. What is new is the specification written for an agent to build from, and the checks around it.
 
 ## 9. Key papers & further reading
 

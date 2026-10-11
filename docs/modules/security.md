@@ -1,6 +1,6 @@
-# Security: The Agent and the Attacker
+# Security
 
-**Slides:** [Security: The Agent and the Attacker](../slides/security.html) (the fast version).
+**Slides:** [Security](../slides/security.html) (the fast version).
 
 > **Purpose (one line):** work with a coding agent without lending it to an attacker: limit what it can read and run, treat everything it reads from outside your team as possibly hostile, and check every dependency it names before it enters your build.
 
@@ -31,6 +31,8 @@ By the end of this module, a student can:
 **Your agent reads things you did not write.** Project Pulse runs the Claude GitHub Action ([`claude.yml`](https://github.com/Washingtonwei/project-pulse/blob/main/.github/workflows/claude.yml)): mention `@claude` in an issue or a comment and an agent starts working on the repository. Project Pulse is public, so anyone can open an issue, and the workflow's own condition checks only whether the text contains `@claude`, never who wrote it. What stops a stranger is a default in the action itself: it runs only for users with write access to the repository. That leaves one path open, which the action's own security guide names. A maintainer who tags `@claude` on an issue a stranger wrote hands the agent the stranger's text, and hidden instructions in it can steer the agent. The action strips HTML comments and invisible characters, which, in its documentation's words, "reduces but does not eliminate prompt injection risk."
 
 ## 4. Core concepts
+
+This part is about the agent and the attacker: the risks a coding agent adds to your project and your product.
 
 ### 4.1 The lethal trifecta
 

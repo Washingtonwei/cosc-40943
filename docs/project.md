@@ -74,10 +74,21 @@ Four times in the term, your team presents to its TA during the Friday studio ho
 |---|---|---|
 | **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by every member and committed to your repository as [`docs/team-contract.md`](team-contract.md), each member signing in their own commit. GitHub repository, Projects board, and Slack channel standing, with your TA and the instructor on both. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
 | **1** | Fri Oct 2 | Glossary, vision and scope, use cases, business rules, and draft SRS, reviewed with your TA in the room. Architecture-of-record drafted in the same studio and merged by 11:59 pm: every use-case area, component, and external integration named. Your TA checks it over the weekend and replies by Sunday evening. See the [studio](studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record). |
-| **2** | Fri Oct 23 | The architecture proven by one working vertical slice: the highest-risk use case taken through design-of-record, implementation, and tests. Demonstrated running, not described, from a tagged release (`v0.1.0`) with release notes, so you can say exactly [which commit](modules/ai-augmented-team.md#410-knowing-exactly-what-you-built) the TA saw. Your TA also checks the team's `.claude/settings.json` for deny rules covering your secrets, and the charter for the [dependency rule](modules/security.md#7-hands-on-studio-optional-individual-assignment). Plus its [calibration table](modules/process-and-planning.md#45-recording-and-calibrating): the estimate, the actual hours from your weekly activity reports, the ratio, and one sentence on the biggest miss. |
+| **2** | Fri Oct 23 | The architecture proven by one working vertical slice, demonstrated running, not described. See the [Checkpoint 2 checklist](#checkpoint-2-checklist) below. |
 | **3** | Fri Nov 13 | Fan-out progress and production readiness, demonstrated from a tagged release (`v0.2.0`) with release notes. Multiple use cases built, tested, and traced, with the traceability matrix resolving. CI/CD pipeline with at least one quality gate, static analysis wired in, observability in place. The calibration table extended to every finished use case, with a ratio per person and for the team. One availability or performance requirement turned into a [measured objective](modules/reliability.md#7-hands-on-studio-optional-individual-assignment), and one test that makes an external dependency fail and checks the degradation your specification requires. Graded on completeness and honest interpretation, never on accuracy. |
 
 Checkpoint 3 is the last one. After November 13 the next thing your client sees is the MVP demo, which means weeks 13 and 14 are hardening on your own schedule with no scheduled gate to catch you. Plan for that.
+
+### Checkpoint 2 checklist
+
+Your TA works through this list in the room on Fri Oct 23.
+
+- [ ] **The slice runs.** Your highest-risk use case, taken through design-of-record, implementation, and tests, demonstrated running from a tagged release `v0.1.0` with release notes ([why a tag](modules/ai-augmented-team.md#410-knowing-exactly-what-you-built)).
+- [ ] **The settings file.** `.claude/settings.json` merged by pull request, with `Read` deny rules covering where your secrets actually live ([the file](agent-setup.md#10-your-team-repository)).
+- [ ] **The charter.** Its list of things the agent must not do includes the [dependency rule](modules/security.md#7-hands-on-studio-optional-individual-assignment) and never removing the `Co-Authored-By` trailer. If you run more than one agent at a time, its workflow section has the [four parallel-agent lines](agent-setup.md#10-your-team-repository).
+- [ ] **The calibration table.** Each finished use case: its estimate, its actual hours from your weekly activity reports, the ratio, and one sentence on the biggest miss ([how](modules/process-and-planning.md#45-recording-and-calibrating)). Graded on completeness and honesty, never accuracy.
+
+You leave with Checkpoint 3's two reliability items: one measured SLO and one degradation test ([Reliability](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)). Start them that week. The week 12 lecture builds on what you will already have begun.
 
 ## Weekly mechanics
 

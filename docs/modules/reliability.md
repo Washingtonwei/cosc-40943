@@ -18,7 +18,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md), where availability and robustness entered your specification as quality attributes with numbers.
 - **Leads into:** Wednesday's observability lecture, which is how you see whether the objective set here is being met, and [Checkpoint 3](../project.md#checkpoints), where your team shows one objective measured and one dependency failing on purpose.
-- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. Your team does the hands-on out of class and shows it at Checkpoint 3.
+- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. The hands-on is announced at Checkpoint 2, so your team starts it three weeks before the lecture and shows it at Checkpoint 3.
 - **Course outcome it delivers:** [building, testing, and shipping a working MVP](../syllabus.md#learning-outcomes) (outcome 4). Shipping includes knowing whether it stays up.
 
 ## 3. Motivation
@@ -47,7 +47,7 @@ Three words, one chain (Avižienis, Laprie, Randell, and Landwehr 2004):
 |---|---|---|
 | **Fault** | The cause: a defect in code, configuration, or the environment | An exception for one undeliverable address escaped the method that sends a batch of invitations |
 | **Error** | The fault's effect on the system's state | The transaction around the batch rolled back, deleting invitation rows for students already emailed |
-| **Failure** | The system does something its specification says it must not | Students received an invitation and were then told they had not been invited |
+| **Failure** | The system does something its specification says it must not | A student would receive an invitation and then be told they had not been invited |
 
 A fault that never reaches an error is harmless; an error caught before it reaches a user is handled. Reliability work is putting catches in that chain.
 
@@ -99,12 +99,12 @@ A mail server fails loudly: an exception, a timeout. An LLM can also fail quietl
 
 Something will fail in production this year. The difference between a team that learns from it and one that repeats it is the postmortem: a short written account of what happened, why, and what changes. It is **blameless**: it asks what about the system let a reasonable person make that mistake, because the person who made it is the one who knows how it happened, and a blamed person stops telling you (Allspaw 2012; Beyer et al. 2016, chapter 15).
 
-Project Pulse's invitation failures, fixed on September 10, 2026, the day invitations went to a 77-student section, as a postmortem:
+Project Pulse's invitation defects, fixed on September 10, 2026, before invitations went to a 77-student section, as a postmortem:
 
 | Section | Content |
 |---|---|
 | **Summary** | Three defects in one path: a single bad address rolled back invitations already emailed; the browser timed out on a batch the server completed; a re-sent batch invalidated every link already delivered. |
-| **Impact** | Students could be told they were not invited after receiving an invitation, or hold a link that no longer worked. |
+| **Impact** | None: found in review and fixed before the invitations were sent. Had they shipped, students could have been told they were not invited after receiving an invitation, or held a link that no longer worked. |
 | **Timeline** | First fix (commit [`41d306c`](https://github.com/Washingtonwei/project-pulse/commit/41d306c)): catch per address and report invited and failed lists. Code review of that fix found that its advice (invite in batches of about 20) could not work under the 10-second client timeout, and traced the re-send that broke tokens. Second fix (`40cf96d`) seven minutes later. |
 | **Contributing causes** | Email is not transactional but sat inside a transaction; one timeout for every route regardless of how long the route takes; a non-idempotent operation the interface invites users to repeat; a test that stayed green against a broken mail path because delivery failures had become payload data. |
 | **What went well** | Review of the first fix caught the second and third defects; the new tests were checked against the reverted code to confirm they fail without the fix. |
@@ -178,5 +178,4 @@ Every action changes the system. None of them is "be more careful."
 - Jakarta Mail: confirm "Default is infinite timeout" for mail.smtp.connectiontimeout and mail.smtp.timeout in the com.sun.mail.smtp package summary.
 - Avižienis et al. 2004 pages; Beyer et al. chapter numbers; Bronson et al. author list; Allspaw 2012 date.
 - Project Pulse facts checked against `main` at `8768a1d` on 2026-10-10: AVL-uptime, PER-report-load, PER-ai-response-time, AVL-llm-degradation, SI-llm-json, FR-AI-enablement (SRS); "No alerting rules or SLOs", production telemetry not collected, the 200 text/html SPA fallback (architectural-design.md, Known gaps); no SMTP timeout in application-prod.yml; the 10-second Axios timeout and 180-second invitation timeout (frontend/src/utils/request.ts, frontend/src/apis/section/index.ts); WeeklyReminderScheduler's two catches; commits 41d306c and 40cf96d; OI-54.
-- Ask the instructor: did the invitation failures reach real students on September 10, 2026, or were they found in review first? If they reached students, the Impact row can say so.
 -->

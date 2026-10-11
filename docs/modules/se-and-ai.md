@@ -107,7 +107,7 @@ Count the boxes. **Implementation is one of eight**, it is the box you have been
 
 The arrow from maintenance back to requirements is the point. It is a loop, not a line, and you will be standing in it for the next nine months.
 
-How a team moves through the loop is its **life-cycle model**: once and in order (waterfall), one finished piece at a time (incremental), rough and then refined (iterative), riskiest question first (spiral), or in short cycles with the customer close (agile). Each is a bet on what is expensive. This course's method is closest to the Unified Process, with a spiral's risk-first step, re-weighted for agents; [Process and Planning](process-and-planning.md#47-life-cycle-models-each-one-is-a-bet-on-what-is-expensive) has the models, what Royce's "waterfall" paper actually said, and the Scrum vocabulary you will meet at work.
+How a team moves through the loop is its **life-cycle model**: once and in order (waterfall), one finished piece at a time (incremental), rough and then refined (iterative), riskiest question first (spiral), or in short cycles with the customer close (agile). Each is a bet on what is expensive. This course's life cycle follows the Unified Process, with a spiral's risk-first step; what is new is a specification written for an agent to build from, and the checks around it. [Process and Planning](process-and-planning.md#47-life-cycle-models-each-one-is-a-bet-on-what-is-expensive) has the models, what Royce's "waterfall" paper actually said, and the Scrum vocabulary you will meet at work.
 
 ### What "success" means, and how teams fail at it
 

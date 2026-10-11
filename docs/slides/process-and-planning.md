@@ -131,13 +131,13 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 
 | Part | Basis | Hours |
 |---|---|---|
-| Specify | Questions test already run | 1 to 2 |
-| Build and review | Two flows, a scheduler change | 3 to 6 |
-| Verify | 18 rows, latency on staging | 4 to 8 |
-| **Total** | | **8 to 16** |
+| Specify | Questions test already run | 0.5 to 1 |
+| Build and review | About the size of #76 | 1.5 to 2 |
+| Verify | 18 rows, latency on staging | 1 to 2 |
+| **Total** | | **3 to 5** |
 
 ::: note
-Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide.
+The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide.
 :::
 
 ## Write it down before you build
@@ -145,7 +145,7 @@ Do this live before running /implement on not.md. Commitment: on staging by Frid
 On the issue:
 
 ```text
-Estimate: specify 1–2 h, build and review 3–6 h, verify 4–8 h
+Estimate: specify 0.5–1 h, build and review 1.5–2 h, verify 1–2 h
 ```
 
 In every weekly activity report line about it:
@@ -194,4 +194,17 @@ Logging fewer hours to look accurate is inflating a weekly activity report, and 
 - Your build-context issue gets an estimate before the agent builds.
 - Your weekly activity report lines carry the use case ID.
 - Checkpoints 2 and 3: estimate, actual, ratio, and one sentence on the biggest miss.
+:::
+
+## Checkpoint 2: Oct 23
+
+::: steps
+- The slice runs from a tagged release, `v0.1.0`, with release notes.
+- `.claude/settings.json` denies reads of your secrets.
+- The charter: the dependency rule, and never remove the `Co-Authored-By` trailer.
+- The calibration table.
+:::
+
+::: note
+The full checklist is on the Project page, under Checkpoint 2. The tag and the trailer rule come from week 2's "Knowing exactly what you built"; the settings file is on the Agent Setup page, section 10. Teams leave Checkpoint 2 with Checkpoint 3's two reliability items, one measured SLO and one degradation test, and start them that week.
 :::

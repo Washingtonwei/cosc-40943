@@ -35,7 +35,7 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Reliability**](modules/reliability.md) · [slides](slides/reliability.html)
 : Turn an availability or performance requirement into an objective you can measure, make every call across a network fail the way your specification says, and learn from a failure without blaming whoever was at the keyboard. Fault, error, and failure; indicators, objectives, and error budgets; timeouts, retries, isolation, and degradation; and the blameless postmortem.
 
-[**Security: The Agent and the Attacker**](modules/security.md) · [slides](slides/security.html)
+[**Security**](modules/security.md) · [slides](slides/security.html)
 : Work with a coding agent without lending it to an attacker. The lethal trifecta, prompt injection, what permission rules can and cannot stop, secrets in the agent's context, packages an agent invents, and a model inside your own product. Authentication, authorization, and secure coding are still being written.
 
 [**Requirements Traceability**](modules/traceability.md)

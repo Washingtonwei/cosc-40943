@@ -34,6 +34,8 @@ These sections are finished prose (`DECISION-configuration-management`). Week 2'
 
 #### The same commit, the same build
 
+<!-- DRAFTING NOTE: the instructor fixes Project Pulse's workflow right after the week 11 lecture (npm ci, no --update-snapshots). Students read the live flaw first; afterward, rewrite this paragraph as a before and after citing the fix's pull request. -->
+
 A build is **reproducible** when the same commit always produces the same artifact. A lockfile records the exact version of every dependency, but only if the build obeys it. `npm ci` installs exactly what `package-lock.json` says and fails if the lockfile and `package.json` disagree; `npm install` may update the lockfile within the ranges `package.json` allows. Project Pulse's deploy workflow (`.github/workflows/azure-webapps-deploy.yml`) runs `npm install`, and its Maven step passes `--update-snapshots`, so two deploys of one commit can ship different dependencies. The fix is one word: `npm ci`. What the workflow gets right is the image tag: every container is tagged with the commit's SHA, so production can always be traced to one commit.
 
 #### Versions, tags, and release notes
