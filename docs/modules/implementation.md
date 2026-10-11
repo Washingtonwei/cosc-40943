@@ -89,3 +89,59 @@ Source: Simon Willison, *Agentic Engineering Patterns* (living guide, read 2026-
 ### Further reading (to verify links before `stable`)
 
 - Simon Willison, "First run the tests" and "Red/green TDD," in *Agentic Engineering Patterns*, <https://simonwillison.net/guides/agentic-engineering-patterns/first-run-the-tests/> and <https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/>, read 2026-10-04.
+
+### Authored: one engineer, several agents (move into Core concepts when the module is written)
+
+Finished prose (`DECISION-parallel-agents`). Renumber and link from the module's sections when it takes shape.
+
+#### What each agent will decide
+
+Running several agents at once is one command now: `claude --worktree <name>` in a second terminal starts a second session in its own checkout, on its own branch. Whether that helps turns on one question: **what will each agent decide that the others need to know?**
+
+Two findings from the people who build these systems say the question is the whole game. Anthropic's multi-agent research system (June 2025) beat a single agent on research by fanning out searches, at about 15 times the tokens of a chat, and its authors note that "most coding tasks involve fewer truly parallelizable tasks than research." Cognition's "Don't Build Multi-Agents" (Yan, June 2025) puts the reason in one line: "Actions carry implicit decisions, and conflicting decisions carry bad results." Two subagents each asked for half of a Flappy Bird clone built a background from Super Mario and a bird that matched neither.
+
+The course already has the answer to Cognition's objection. A design-of-record exists to turn implicit decisions into written ones, and the charter's crosscutting rules pin the rest. **Parallel agents are safe exactly where the decisions they would otherwise make silently are already on the record.**
+
+#### Three patterns that work
+
+| Pattern | What runs in parallel | What keeps it safe | On Project Pulse |
+|---|---|---|---|
+| **Side task** | A subagent searches, reads logs, or summarizes, and reports back | It edits nothing; your session keeps the decisions | Listing every caller of `EmailService` before changing it |
+| **Writer and reviewer** | A fresh-context agent reviews the writer's diff against the use case and the test list | It did not make the decisions it is checking | `/code-review` on the reminder's pull request |
+| **Fan-out by leaf** | Independent leaves of one design, each in its own worktree, branch, and pull request | The shared trunk is merged first; the design names every class each leaf touches | The reminder, below |
+
+**The reminder, fanned out.** [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md)'s class diagram shows a trunk both flows depend on and two leaves that touch nothing in common:
+
+```mermaid
+flowchart LR
+  T["Trunk, one agent, merged first<br/>SubmittableItem, WeekKeys,<br/>SubmissionStatusService, ReminderService,<br/>two new sibling queries"] --> L1["Leaf, worktree 1<br/>ReminderController + dialog<br/>(UC-NOT-remind-non-submitters)"]
+  T --> L2["Leaf, worktree 2<br/>WeeklyReminderScheduler, moved<br/>(FR-NOT-weekly-reminder)"]
+```
+
+Start both leaves before the trunk merges and each agent writes its own `SubmissionStatusService`, and the two pull requests disagree about what "has not submitted" means, which is the contradiction (two definitions of the same rule) that the design's challenge loop found and removed. Merge the trunk first and both leaves call the same one.
+
+#### What does not work
+
+**Splitting one use case by layer across agents**, a front-end agent and a back-end agent each building half the reminder dialog. It fails for the reason it fails for people ([What a branch should be](ai-augmented-team.md#46-what-a-branch-should-be)): the defect where the halves meet belongs to nobody, and here neither agent even knows the other exists. **Two agents on the trunk at once**, for the same reason. **Agent teams**, Claude Code's lead-and-workers mode, are experimental, off by default, and do not isolate teammates in worktrees; leave them alone this term.
+
+#### The limit is you
+
+A worktree isolates files, not decisions, and not the machine: two apps started from two worktrees still compete for the same port and the same local database, and each worktree is a fresh checkout that needs its own dependency install. Add `.claude/worktrees/` to `.gitignore` so the checkouts do not show up as untracked files.
+
+The real limit is review. Every leaf is a pull request a person reads against the design before it merges, and in teams that adopted AI heavily review time had already risen 91% before anyone ran agents in parallel (Faros AI, 2025; see [Process and Planning](process-and-planning.md#3-motivation)). Three agents finishing in an hour produce three reviews, not one. Run no more agents than pull requests you will review well today.
+
+#### Your team's charter rule
+
+Add these to the workflow section of your `AGENTS.md`:
+
+- One agent per sub-issue, each in its own worktree and branch, each ending in its own pull request.
+- Fan out only after the shared trunk the leaves depend on is merged.
+- Never split one use case's layers across agents.
+- No more agents running than pull requests you will review that day.
+
+#### Sources for this section
+
+- Anthropic. "How We Built Our Multi-Agent Research System." June 13, 2025. <https://www.anthropic.com/engineering/multi-agent-research-system>
+- Yan, W. "Don't Build Multi-Agents." Cognition, June 12, 2025. <https://cognition.com/blog/dont-build-multi-agents>
+- Anthropic. "Run agents in parallel" and "Run parallel sessions with worktrees," Claude Code documentation, read 2026-10-10. <https://code.claude.com/docs/en/agents>, <https://code.claude.com/docs/en/worktrees>
+- Project Pulse `docs/design/not.md` class diagram, checked against `main` at `8768a1d` on 2026-10-10.

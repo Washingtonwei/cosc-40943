@@ -460,6 +460,40 @@ The chain replaces the witness. Week 8 makes it a standing discipline.
 `Closes #42` in a pull request description closes the issue on merge and moves the card.
 :::
 
+## Which version is running?
+
+::: cols
+**pom.xml**
+2.0.0
+|||
+**Last tag**
+v1.5.0, December 2025, 47 merges ago
+:::
+
+::: key
+Only the commit SHA on the container image tells the truth.
+:::
+
+::: note
+Project Pulse's deploy workflow tags the image with the commit SHA. A version number nobody maintains is worse than none, because people believe it. Configuration management is knowing exactly what you shipped: the code, and also the spec, AGENTS.md, the migrations, the lockfiles, and the workflows. All of them change only by pull request. Releases and rollback are week 11.
+:::
+
+## Which commits did an agent write?
+
+```text
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+```
+
+::: steps
+- 49 of 78 commits on Project Pulse's main since August 1.
+- Claude Code adds it by default. **Never remove it.**
+- The person who merges still signs.
+:::
+
+::: note
+GitHub shows the trailer as a co-author. A reviewer reads an agent's commit differently, and when someone asks of a strange line "what asked for it?", the trailer and the session link are part of the answer. Put "never remove the Co-Authored-By trailer" in your charter's list of things not to do.
+:::
+
 ## Your board's vocabulary
 
 | Column | What it actually means |

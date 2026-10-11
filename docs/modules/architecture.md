@@ -86,7 +86,7 @@ Here are the attributes that most often shape an architecture, each with the que
 | **Robustness** | What happens when something fails? | `ROB-edit-loss-bound`: a crash loses at most 10 seconds of edits. `AVL-llm-degradation`: when the language model is down, everything else keeps working. | The browser saves to the server at least every 10 seconds. The language model sits behind one server-side proxy, so its failure is contained in one place. |
 | **Operability** | Who deploys and runs it, with what staff? | One instructor and no operations team. This is a constraint, `CO-no-ops-team`, not a quality attribute in your specification's section 9, and it pushes the structure as hard as any of them. | One container on one Azure Web App, a staging slot for safe releases, and nothing to orchestrate (`KD-modular-monolith`, [4.7](#47-one-deployable-or-several)) |
 
-Read the availability row twice. The adjective "available" says nothing about structure; the number decides it. At 99%, the simplest deployment passes. At 99.99%, it fails, and the architecture changes.
+Read the availability row twice. The adjective "available" says nothing about structure; the number decides it. At 99%, the simplest deployment passes. At 99.99%, it fails, and the architecture changes. How to measure that number once the system runs, and what each dependency does when it fails, is [Reliability](reliability.md), in week 12.
 
 Any reasonable structure can deliver the functional requirements. You assign responsibilities to components and the features work. Quality attributes are different in two ways:
 

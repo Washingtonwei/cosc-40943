@@ -29,5 +29,14 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Design-of-Record**](modules/design-of-record.md) · [slides](slides/design-of-record.html)
 : Design one use case area before anyone builds it, at the depth where an agent no longer has to guess anything that matters, and get it approved by a teammate who did not write it. The challenge loop, sequence and state diagrams, the API contract, decisions and design patterns, the test list before the code, the questions test, and choosing a proving slice by risk.
 
+[**Process and Planning**](modules/process-and-planning.md) · [slides](slides/process-and-planning.html)
+: Estimate a use case before your agent builds it, as a range of human hours sized from its design's test list, and make each next estimate better from the hours your weekly activity reports logged. Estimates, targets, and commitments; what the classical models assumed; and the calibration ratio. Then the life-cycle models (waterfall as Royce actually wrote it, incremental and iterative, spiral, the Unified Process, Scrum and Kanban), what each bets on, and where this course's method sits among them.
+
+[**Reliability**](modules/reliability.md) · [slides](slides/reliability.html)
+: Turn an availability or performance requirement into an objective you can measure, make every call across a network fail the way your specification says, and learn from a failure without blaming whoever was at the keyboard. Fault, error, and failure; indicators, objectives, and error budgets; timeouts, retries, isolation, and degradation; and the blameless postmortem.
+
+[**Security: The Agent and the Attacker**](modules/security.md) · [slides](slides/security.html)
+: Work with a coding agent without lending it to an attacker. The lethal trifecta, prompt injection, what permission rules can and cannot stop, secrets in the agent's context, packages an agent invents, and a model inside your own product. Authentication, authorization, and secure coding are still being written.
+
 [**Requirements Traceability**](modules/traceability.md)
 : Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Still being written.

@@ -15,6 +15,7 @@ By the end of this module, a student can:
 5. Own a use case across the whole stack, and explain why splitting one by layer across teammates leaves the integration defect with no owner.
 6. Write the project charter an agent needs (`AGENTS.md`, with a one-line `CLAUDE.md` beside it), and say which conventions belong at the root and which belong next to the code.
 7. Trace a merged line of code back to the requirement that asked for it, and name what a team contract must fix.
+8. Name the configuration items of a project beyond its code, say which commit is running in production, and tell which commits an agent wrote.
 
 ## 2. Where it fits
 
@@ -278,7 +279,29 @@ That last question matters most on an AI-augmented team. When most of the code w
 
 GitHub automates part of it. A pull request whose description says `Closes #42` closes issue 42 on merge, and the board moves the card.
 
-### 4.10 The board's vocabulary
+### 4.10 Knowing exactly what you built
+
+**Configuration management** is the discipline of knowing, at any moment, exactly what your system is made of and how it got that way (IEEE 828-2012). You already practice most of it under other names:
+
+| Idea | What it means | On your team |
+|---|---|---|
+| **Configuration item** | Anything whose version changes what you ship | The code, and also the specification, `AGENTS.md`, the database migrations, the lockfiles (`package-lock.json`), and the CI workflows |
+| **Baseline** | An agreed version of those items, changed only through control | Merged `main`; from Checkpoint 2 on, a tagged release for every demo |
+| **Change control** | The one path by which a baseline changes | The pull request ([4.7](#47-the-pull-request-is-the-first-read)) |
+
+The middle column is the point. A one-line edit to `AGENTS.md` changes what every future agent session builds, and an agent that "fixes" a dependency by rewriting `package-lock.json` has changed the product. Both go through a pull request like code, and a reviewer reads them like code.
+
+**Which version is running?** Ask Project Pulse. Its `pom.xml` says `2.0.0`. Its last release tag is `v1.5.0`, from December 2025, and 47 pull requests have merged since without another. The only label that tells the truth is the container image, which the deploy workflow tags with the commit's SHA. A version number nobody maintains is worse than none, because people believe it. Releases, version numbers, and rolling back are week 11's; what week 2 asks is that your team can always name the commit production runs.
+
+**Which commits did an agent write?** Of the 78 commits on Project Pulse's `main` between August 1 and October 10, 2026, 49 end with a trailer like this one, and many also link the session that produced them:
+
+```text
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+```
+
+Claude Code adds the trailer by default, and GitHub shows it as a co-author on the commit. **Never remove it**, and say so in your charter's list of things not to do. A reviewer reads a commit an agent wrote differently, and when someone later asks of a strange line "what asked for it?" ([4.9](#49-the-traceability-chain)), the trailer and the session link are part of the answer. The trailer does not move accountability: the person who merged the commit signs for it, exactly as if they had typed it.
+
+### 4.11 The board's vocabulary
 
 The columns on your board carry the planning vocabulary, worth naming once so the words are not mysterious later:
 
@@ -289,7 +312,7 @@ The columns on your board carry the planning vocabulary, worth naming once so th
 
 That is the whole vocabulary you need until the project has enough work to plan properly.
 
-### 4.11 Onboarding the AI teammate
+### 4.12 Onboarding the AI teammate
 
 You would not hand a new hire a repository URL and nothing else. You would give them the project overview, how to run it, the conventions, and the workflow. The agent needs the same, in a file, because it re-onboards itself every single session.
 
@@ -329,11 +352,11 @@ What belongs in yours, in week 2:
 3. **How to run the tests**, and what passing means.
 4. **Conventions** you have actually agreed on: naming, formatting, where things go.
 5. **The workflow the agent must follow**: work from an issue, one branch per sub-issue, never push to `main`, open a pull request.
-6. **The things it must not do.** Short and specific.
+6. **The things it must not do.** Short and specific. One every team needs: never remove the `Co-Authored-By` trailer ([4.10](#410-knowing-exactly-what-you-built)).
 
 Write it thin in week 2. It grows every time the agent gets something wrong in a way that was your fault for not saying.
 
-### 4.12 The team contract, and why it lives in the repository
+### 4.13 The team contract, and why it lives in the repository
 
 Your **team contract** is the human half of the same idea, and it goes in your repository as `docs/team-contract.md`, committed and signed by every member, each in their own commit. [The template and the clause-by-clause guidance are here](../team-contract.md).
 
@@ -390,6 +413,7 @@ Every module from here on closes by asking the same four questions about its own
 - One developer owns a use case end to end, front end to pipeline. Splitting by layer across teammates leaves the integration defect with no owner and teaches nobody the stack. Parallelism happens across use cases, not inside one.
 - A branch is a unit of integration: the smallest change that leaves `main` green and is worth reviewing on its own. It is the unit of merge, and the use case is the unit of done.
 - An issue is well-formed when a stranger can tell whether the work is done. A vague one does not stall an agent, it makes the agent design your product silently, and review is now the first read rather than a second opinion, which is what makes "LGTM" dangerous.
+- Everything whose version changes what you ship is a configuration item, the charter and the lockfile included, and it changes only by pull request. Keep the agent's `Co-Authored-By` trailer; the person who merges still signs.
 - Onboard the agent the way you onboard a person, in a file it re-reads every session: what the product is, how to run it, the conventions, and the workflow it must follow.
 
 ## 9. Key papers and further reading
@@ -412,6 +436,7 @@ Every module from here on closes by asking the same four questions about its own
 6. Your team splits `UC-RUB-view-rubric` (one Vue call, one controller method, one service method, five tests) into four sub-issues on four branches. Nothing is technically wrong. What has the team lost, and what would you have done instead?
 7. A teammate's branch has been open for nine days and now conflicts with `main` in five files. Name the decision, made nine days ago, that caused this.
 8. A teammate wires your Slack workspace into the agent and argues the team no longer needs to write decisions down. Give the two strongest reasons they are wrong, and name the one thing their change genuinely does improve.
+9. Your client reports a bug "in the version you showed us Friday." What does your team need, in the repository, to know exactly which code that was?
 
 ## Related
 

@@ -84,6 +84,8 @@ One box of eight. Agents are strongest at that one. You are accountable for the 
 
 ::: note
 Point at Code and say: this is the box you have been graded on for three years. Say the full names as you trace them (vision and scope, requirements, architecture, detailed design, implementation, testing and QA, release and operations, maintenance); the module writes them out. Then trace the arrows. Every other box is a meeting, a decision, or a document, and every one of them can sink the project on its own.
+
+One sentence on process: how a team moves through this loop is its life-cycle model (waterfall once, agile every week or two), and each model is a bet on what is expensive. Ours is closest to the Unified Process with a risk-first slice; Process and Planning has the rest.
 :::
 
 ## The iron triangle
