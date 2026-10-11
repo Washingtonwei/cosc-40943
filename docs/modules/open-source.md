@@ -8,6 +8,16 @@
 
 ## Drafting notes (raw — distribute into template sections, then delete before `stable`)
 
+### Recovering a spec from code you did not write
+
+**Why here.** Most first jobs, and some client projects, start from a system with code and few documents. The method's answer is [Starting from an existing codebase](../method.md#starting-from-an-existing-codebase); this section carries it into the module. Do not restate the method's steps; teach the one judgment.
+
+**The judgment: the code is evidence, never authority.** Ask an agent to document an existing system and it writes down what the code does, defects included. It has no way to tell an intended rule from an accident, so a missing check, a wrong default, or a race it reads back arrives in the draft as a requirement. Each recovered statement needs someone who owns the intent (the client, or the project's maintainer) to call it intended, corrected, or a defect.
+
+**Worked example still to find.** Project Pulse's requirements were written before its code, so it has no recovery story. Candidates: a client team's existing codebase this term (with permission), or an open-source project the module already uses. Pick one where the draft would have promoted a real defect into a requirement.
+
+**Exercise idea.** Have the agent draft use cases for one area of an unfamiliar repository, then mark each step intended, unclear, or suspect before anyone asks the maintainer. Count the suspects.
+
 ### The anchoring failure: xz-utils, CVE-2024-3094, March 2024
 
 The case that proves this module cannot be taught as a code-reading skill alone. This is the one module taught as self-study, so the write-up has to carry the whole argument on its own.

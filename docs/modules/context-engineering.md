@@ -71,9 +71,9 @@ So context engineering is a **selection** problem, not an accumulation problem. 
 |---|---|---|
 | `/context` | Reports how much of the window is left | When it starts forgetting things you told it, before you guess why |
 | `/compact` | Summarizes the session so far and continues | Mid-task, when you need the history but not at full detail. `/compact focus on <topic>` keeps named detail and discards the rest |
-| `/clear` | Wipes the conversation, keeps your authentication and configuration | Between unrelated tasks |
+| `/clear` | Wipes the conversation, keeps your authentication and configuration | Between unrelated tasks, and before every gate (`/design`, `/implement`, review) |
 
-Claude Code compacts automatically as the window nears its limit, clearing old tool output first and then summarizing the conversation (Copilot CLI starts at about 80%), so this happens whether you ask for it or not. Two judgments follow from that, and they are the reason this is in a software engineering course rather than a tool manual. **Compaction is lossy**: a summary of your session is not your session, and the detail it drops is chosen for you. So when you finish a task, `/clear` rather than carrying a summary of unrelated work into the next one. And **anything that must survive does not belong in the session at all.** It belongs in the repository, which is week 2's thesis arriving with a mechanism attached.
+Claude Code compacts automatically as the window nears its limit, clearing old tool output first and then summarizing the conversation (Copilot CLI starts at about 80%), so this happens whether you ask for it or not. Two judgments follow from that, and they are the reason this is in a software engineering course rather than a tool manual. **Compaction is lossy**: a summary of your session is not your session, and the detail it drops is chosen for you. So when you finish a task, `/clear` rather than carrying a summary of unrelated work into the next one. And **anything that must survive does not belong in the session at all.** It belongs in the repository, which is week 2's thesis arriving with a mechanism attached. The [method](../method.md#phase-c-fan-out-per-use-case) uses that on purpose: each gate starts from a cleared session, so the build reads only what was merged.
 
 ### 4.2 How the agent finds things
 

@@ -28,7 +28,7 @@ The methodology here is the middle path tuned specifically for a **human + codin
 5. **Bidirectional traceability and co-evolution.** Traceability is a two-direction graph, not a one-way chain (see [The traceability model](#the-traceability-model)): a matrix maps requirements → design → code → tests on a functional and a non-functional axis, checked *forward* (is every objective built?) and *backward* (does every artifact justify itself?). It is the connective tissue: changes loop *back* into the requirements and architecture, not just forward into code.
 6. **Stable identifiers decoupled from position.** Requirements carry position-independent IDs (`FEAT-<slug>`, `UC-<AREA>-<slug>`, `FR-<AREA>-<slug>`, `BR-<slug>`) so the spec can be reorganized without breaking citations, which is essential when many documents and the code all reference the same handles.
 7. **Human-owned levels, agent-built levels.** Humans own requirements quality and the high-level architectural decisions; the agent owns turning an approved use case into a design-of-record and then into code + tests, behind explicit approval gates.
-8. **Specify requirements, derive implementation.** The spec pins down what is a *requirement* (business-meaningful, testable, and unsafe to guess) to full depth, but deliberately leaves *incidental implementation detail* for the agent to derive at build time. The data model is the exemplar: the domain model names entities, fields, coarse types, and relationships, and the business rules and use cases fix the constraints that carry meaning (key formats, status transitions, validation rules); but storage types, column lengths, nullability, indexing, and cross-cutting persistence mechanisms (audit metadata, optimistic-lock version, soft-delete markers) are derived when the code is generated, not enumerated field-by-field in the spec. This is why the SRS keeps no exhaustive data dictionary: a parallel field table would either restate constraints already owned elsewhere or pin implementation choices the method exists to delegate, manufacturing two definitions that drift. The litmus test mirrors the architecture's depth-shallow rule (Principle 2): if guessing it wrong would violate a requirement, the spec pins it; otherwise the agent derives it. A corollary for a fully spec-first build (no code yet at authoring time): the spec must never point *down* at an implementation as the source of truth for a requirement-bearing fact; the spec is upstream of all code.
+8. **Specify requirements, derive implementation.** The spec pins down what is a *requirement* (business-meaningful, testable, and unsafe to guess) to full depth, but deliberately leaves *incidental implementation detail* for the agent to derive at build time. The data model is the exemplar: the domain model names entities, fields, coarse types, and relationships, and the business rules and use cases fix the constraints that carry meaning (key formats, status transitions, validation rules); but storage types, column lengths, nullability, indexing, and cross-cutting persistence mechanisms (audit metadata, optimistic-lock version, soft-delete markers) are derived when the code is generated, not enumerated field-by-field in the spec. This is why the SRS keeps no exhaustive data dictionary: a parallel field table would either restate constraints already owned elsewhere or pin implementation choices the method exists to delegate, manufacturing two definitions that drift. The litmus test mirrors the architecture's depth-shallow rule (Principle 2): if guessing it wrong would violate a requirement, the spec pins it; otherwise the agent derives it. A corollary for a fully spec-first build (no code yet at authoring time): the spec must never point *down* at an implementation as the source of truth for a requirement-bearing fact; the spec is upstream of all code. An existing codebase reverses the order, and [Starting from an existing codebase](#starting-from-an-existing-codebase) covers it.
 
 ## The artifacts: a spec→design→trace chain
 
@@ -172,18 +172,47 @@ Before fanning out, pick one **proving** use case and take it all the way throug
 
 ### Phase C: Fan out per use case
 
-With the architecture validated, realize the remaining use cases one at a time:
+With the architecture validated, realize the remaining use cases one at a time. Design, implementation, and any agent review each start in a fresh agent session that reads only the merged documents, so nothing reaches the build from a conversation the reviewer never saw. A fresh `/implement` session is also a second questions test: whatever it has to ask, the design should have said. That session fixes the design inside the implementation pull request and names the change under Reviewer focus, so the reviewer reads it as a design change.
 
 1. **`/design <UC>`**: turn the use case into an approved Level-2 design-of-record. A separately-reviewed stage that **stops before code**, and itself split into two beats, mirroring the RFC problem-then-solution rhythm. `/design` first runs the **challenge loop** against the use case (surfacing ambiguity, contradictions, and assumptions that break against the code, and looping fixes back into the spec) to firm the *problem*, reaching the `🔬 Problem-validated` state. It then designs the *solution* and has the developer accept its shape (`📐 Designed`). Trivial use cases pass through both in one motion. If the area contradicts the provisional Level-1 map, the design revises Level 1 (module architecture) and records it; platform-level changes are confirmed separately. Approval is a merged pull request, reviewed and merged by a human. Its description carries the **questions test**: a fresh agent session, reading only the use case, its business rules, the architecture-of-record's Crosscutting Concepts, and the design, lists every point it would have to guess. Each guess is either fixed in the design or kept with a one-line reason. No implementation branch opens until the design merges.
-2. **`/implement <UC>`**: build from that approved design (plan → code → tests), extending the existing packages rather than forking the architecture.
+2. **`/implement <UC>`**: build from that approved design (plan → code → tests), extending the existing packages rather than forking the architecture. Commit in steps a reviewer can read, cut along the design: the trunk first in a commit of its own, then one commit per leaf, with any security rule or schema migration alone in its commit. The agent pauses once, after the trunk commit, for the developer to read it before the leaves are built. Code the team accepted without understanding is cognitive debt, and it compounds.
 3. **Review** the implementation pull request against the contract: the use case with every extension, its business rules, and the design-of-record's API contract and test list. A diff shows what was added, never what was left out, so check each test-list row as covered or not. Set depth by risk and write the triage into the review: read the trunk (code many paths depend on, code that changes behavior existing users rely on, or code that is hard to roll back) line by line, and check the leaf (new code reached only through the new feature) through its tests.
-4. **Record**: update traceability; loop any spec/architecture fixes the work surfaced back into the docs.
+4. **Close the use case** after its pull request merges, before the next one starts:
+   - The branch is merged and deleted, and the traceability row is honest about Build and Verify.
+   - Spec and architecture fixes the work surfaced are merged; anything still open is logged in `OPEN-ISSUES`.
+   - The actual hours are recorded beside the estimate in the [calibration table](modules/process-and-planning.md#45-recording-and-calibrating).
+   - The reviewer asks what the agent had to be corrected on more than once and turns it into a rule in the agent charter, by a small pull request. Where the new rule applies to code already merged, open an issue for that code rather than widening this pull request.
+   - Check that the next use case is still the riskiest one left. Then `/clear`.
 
 ### Phase D: Continuous co-evolution
 
 During design or implementation, the team can always return to adjust **both** the requirements and the architecture. The challenge loop (Principle 4) plus traceability (Principle 5) make this the normal case, not an exception: the spec, the architecture, and the code are kept in agreement as a standing invariant.
 
 **What a change reopens.** Phase A's exit criterion is the test. A change that stays inside a named use-case area and adds no architecturally significant requirement is a spec edit: amend the use case or rule, then revise that area's design-of-record through the gate. A change that adds something Phase A must name (a use-case area, a component, an external integration, a cross-cutting subsystem), or that adds or re-ranks an architecturally significant requirement, reopens the architecture-of-record first and places the new element there; a module-level change can ride in the area's design pull request (Phase C step 1), and a platform-level one is confirmed on its own. If it overturns a key decision, record a superseding `KD-*` with the requirement that forced it before any area designs against it. A scope change starts one level higher, in vision and scope, so its new use cases trace up to a feature.
+
+### Starting from an existing codebase
+
+Phases A to D assume the spec comes first. An existing system usually arrives with code and little documentation, and the method applies once its documents exist. The agent drafts them from the code, and one rule keeps that safe: **the code is evidence, never authority.** A spec recovered from code describes what the code does, defects included. A missing permission check, read back by an agent, becomes a requirement nobody chose.
+
+1. **Recover in Phase A's order:** glossary, use cases, business rules, then the architecture-of-record as built. The agent reads the code, the UI, the database schema, and whatever notes exist, and marks every statement it drafts as recovered.
+2. **Confirm with whoever owns the intent:** the client, or the maintainer of an open-source project, never the team alone. Each recovered statement is confirmed as intended, corrected, or marked a defect. A defect becomes an `OPEN-ISSUES` entry or an issue, not a requirement.
+3. **Design-of-record only where work lands.** An area gets its design when a change first touches it, written as built: the decisions the code already made, with every departure from the confirmed spec flagged. Project Pulse's `/design` does this for areas coded before the design workflow existed.
+4. **Traceability starts honest.** A recovered use case is built but not verified until a test exercises it. The first tests on old code pin down confirmed behavior before anyone changes it.
+
+Then Phases B to D run as usual. The proving slice still earns its keep: choose the first change in the part of the old code you trust least.
+
+### Scaling the method to the change
+
+The full artifact set is sized for a team with real stakeholders and a system meant to outlive the term. A smaller change does not pay the full cost. The litmus is Principle 8 applied to whole documents: **keep a document when a wrong guess in it would break something someone cares about.**
+
+| Size of the change | What it keeps |
+|---|---|
+| **A bug fix** | No `/design`. If a use case already specifies the behavior, the code is wrong: fix it, add a regression test, and cite the use case. If no use case covers the behavior, the specification is the defect: add the extension first, then fix the code against it. |
+| **A small change inside one area** | Amend the use case and add a row to its design's test list. Revise the design itself only for a decision that would be hard to reverse. |
+| **A small project** (one or two people, a few use cases, short-lived) | A floor of three: **the agent charter**, opening with a short vision and scope (purpose, users, what is out of scope) and carrying the crosscutting rules; **use cases with their extensions**, business rules written inline; and **a test list per use case**. The glossary, the SRS, the architecture-of-record, and the traceability matrix return as stakeholders, team size, or the system's expected lifetime grow. |
+| **A team, real stakeholders, a long-lived system** | The full method, as above. |
+
+The floor keeps behavior, not just intent. Extensions are where an agent guesses most, and the test list is the definition of done; a floor of purpose and technology alone leaves both to the agent.
 
 ## The human–agent division of labor
 
@@ -199,6 +228,22 @@ During design or implementation, the team can always return to adjust **both** t
 | Judgment calls, ambiguity resolution, "is this a good idea?" | Human, prompted by the agent's challenge loop |
 
 The **approval gate** between design and code is load-bearing: design is reviewed as a deliberate stage (like requirements), so the *shape* is corrected while it is cheap, not reverse-engineered from code later.
+
+## Where this sits among spec-driven tools
+
+Several tools package spec-driven development for coding agents; as of October 2026 the two most visible are GitHub's Spec Kit and Amazon's Kiro. Böckeler ([Understanding Spec-Driven-Development](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html), October 2025) sorts such tools by what happens to the spec after the work: **spec-first** (written before a task, then left behind), **spec-anchored** (kept, and used to evolve and maintain the feature), and **spec-as-source** (humans edit only the spec, never the code). She finds Spec Kit and Kiro spec-first in practice: each change gets its own set of spec files, and in Spec Kit the spec lives "for the lifetime of a change request, not the lifetime of a feature." This method is spec-anchored by design: one living specification for the product, one design-of-record per area revised in place, and traceability that checks the two against the code.
+
+The pieces correspond, concept first, because tool names change faster than ideas:
+
+| Concept | Spec Kit | Kiro | This method |
+|---|---|---|---|
+| Standing rules for the agent | constitution | steering files | the agent charter, pointing at the architecture-of-record's Crosscutting Concepts |
+| What to build | a spec per feature | `requirements.md` per feature (EARS) | use cases, business rules, and the SRS, one set for the whole product |
+| How to build it | a plan per feature | `design.md` per feature | the design-of-record, one per area |
+| The work broken down | tasks | `tasks.md` | the design's test list, sub-issues, and trunk-then-leaf commits |
+| Cross-document consistency | an optional consistency-analysis step | not examined | `/spec-build` and traceability |
+
+**The cost, stated plainly.** Böckeler's sharpest objection, "I'd rather review code than all these markdown files," applies here with more force, because this method keeps more documents than either tool. Its defenses are the ones above: every fact has one home and is cited rather than restated (business rules, quality-attribute thresholds, and Principle 8's refusal of a parallel data dictionary), a design is reviewed for its decisions rather than its prose, and the tooling caps each pull request section at three lines.
 
 ## The tooling instance (Project Pulse)
 

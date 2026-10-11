@@ -86,9 +86,57 @@ Source: Simon Willison, *Agentic Engineering Patterns* (living guide, read 2026-
 - **"Red/green TDD."** Tell the agent to write the test first and **confirm it fails** before implementing. A test that passes before the change proves nothing about the change. The extension 1a test above is the shape to write first.
 - **What the guide does not say, and the course must:** if the agent writes both the test and the code, it can pass its own exam. The expected result in Then comes from the use case's `POST-n` or extension outcome, never from what the agent's code happens to return. That is the oracle question week 9 owns; week 8 only plants it.
 
+### Size the step to the review
+
+**The problem.** `/implement` reads the design, plans, builds back to front, tests, and commits once at the end (Project Pulse `.claude/commands/implement.md`, `main` at `8768a1d`, 2026-10-11). A use case arrives as one diff. `MODULE-code-review` tells the reviewer to read the trunk line by line, but in one diff the trunk is something the reviewer has to dig out.
+
+**The name for what goes wrong: cognitive debt.** Code the team accepted without understanding it. Like technical debt it compounds: the next agent session builds on code nobody on the team can explain, and the first defect in it is debugged from scratch. Kosmyna et al. used the term for essays written with an assistant; it fits code better still, because an agent writes more than a person can read. Forward link to `MODULE-metrics-and-tech-debt`.
+
+**The rule: commit in steps the reviewer can read, cut along the design.**
+
+- **Trunk first, in its own commit.** The design's class diagram already separates trunk from leaf; the commits follow it. This is the parallel-agents rule ("merge the trunk first") at commit size, for one engineer and one agent.
+- **Then one commit per leaf.**
+- **Smaller steps where mistakes compound.** A security rule or a schema migration goes in a commit of its own, so the reviewer sees it alone. Both are hard to roll back, and a loosened security rule is exactly what the week 8 seeded pull request hides.
+- **The agent pauses once, after the trunk commit,** and the engineer reads it before the leaves are built. Not after every step: the trunk is what everything else stands on, and a wrong trunk read late means rebuilding every leaf.
+- **The check at each pause:** can you say what changed and why without asking the agent? If not, read until you can. That is the debt paid while it is small.
+- **One pull request, several commits.** The reviewer reads commit by commit. A separate trunk pull request is only for fanning out to several agents (below).
+
+**Worked example: the reminder** ([`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md)), in four commits: (1) the trunk, `SubmittableItem`, `WeekKeys`, `SubmissionStatusService`, `ReminderService`, and the two sibling queries; (2) the two route rules in `SecurityConfiguration`, alone; (3) `ReminderController` and the dialog (`UC-NOT-remind-non-submitters`); (4) the moved `WeeklyReminderScheduler` (`FR-NOT-weekly-reminder`). The pause comes after (1). Use the week 8 live `/implement` run to show it, and re-check the class names against the merged code before `stable`.
+
+**Assignment 3 (*Add a use case*)** requires trunk-first commits and does not grade them this term; grading them is in `course-design/next-offering.md`.
+
+**Source:** the step-size and cognitive-debt framing came from DeepLearning.AI's short course *Spec-Driven Development with Coding Agents* (2026), which implements in task groups and takes smaller steps "in areas where mistakes can compound, such as security or database management."
+
+### Code you did not write
+
+**Why here.** The live build is the first time students watch an agent build into code that already exists, and some teams' clients handed them a codebase with few documents. The rule is the method's, [Starting from an existing codebase](../method.md#starting-from-an-existing-codebase); `MODULE-open-source` carries the longer reading. This module states the judgment once and links there.
+
+**The judgment.** An agent asked to document or design from existing code writes down what the code does, defects included. A missing check, read back, arrives as a requirement nobody chose. The code is evidence, never authority: the client (or the maintainer) calls each recovered statement intended, corrected, or a defect, and defects go to `OPEN-ISSUES`. Project Pulse's `/design` does the design half of this as "design-as-built" for areas coded before their design existed.
+
+**The slide, for the implementation deck** (shown just before `/implement` runs):
+
+```markdown
+## Code you did not write
+
+::: steps
+- Asked to document existing code, the agent writes down what it does, bugs included.
+- A missing check, read back, becomes a requirement nobody chose.
+- The client calls each one intended, corrected, or a defect. Not you.
+:::
+
+::: key
+The code is evidence, never authority.
+:::
+
+::: note
+For teams whose client handed them a codebase. The method's section "Starting from an existing codebase" has the four steps; Project Pulse's /design calls its version "design-as-built".
+:::
+```
+
 ### Further reading (to verify links before `stable`)
 
 - Simon Willison, "First run the tests" and "Red/green TDD," in *Agentic Engineering Patterns*, <https://simonwillison.net/guides/agentic-engineering-patterns/first-run-the-tests/> and <https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/>, read 2026-10-04.
+- Kosmyna, N., et al. "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task." arXiv:2506.08872, June 2025. <https://arxiv.org/abs/2506.08872>
 
 ### Authored: one engineer, several agents (move into Core concepts when the module is written)
 
