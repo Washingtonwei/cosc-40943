@@ -75,7 +75,7 @@ Faros AI telemetry, more than 10,000 developers on 1,255 teams, June 2025. A ven
 
 | | Who owns it | Sounds like |
 |---|---|---|
-| Estimate | You | "8 to 16 hours" |
+| Estimate | You | "3 to 5 hours" |
 | Target | The client | "Before the midterm" |
 | Commitment | The team | "On staging by Friday" |
 
@@ -132,9 +132,9 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 | Part | Basis | Hours |
 |---|---|---|
 | Specify | Questions test already run | 0.5 to 1 |
-| Build and review | About the size of #76 | 1.5 to 2 |
+| Build and review | Every diff read against the diagrams | 1.5 to 2 |
 | Verify | 18 rows, latency on staging | 1 to 2 |
-| **Total** | | **3 to 5** |
+| **Total** | Same size as #76, which took 3.5 | **3 to 5** |
 
 ::: note
 The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide.

@@ -87,9 +87,9 @@ The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, ma
 | Part | Basis | Estimate (hours) |
 |---|---|---|
 | Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
-| Build and review | About the size of the reference change below; every diff read against the sequence diagrams | 1.5 to 2 |
+| Build and review | Every diff read against the sequence diagrams | 1.5 to 2 |
 | Verify | 18 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
-| **Total** | | **3 to 5, most likely about 3.5** |
+| **Total** | The same size as the reference change below, which took about 3.5 hours end to end | **3 to 5, most likely about 3.5** |
 
 **The reference.** [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines added across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, so the reminder, a change of the same size, should take about the same. A reference class is your own past work, not someone else's; your first ones will be slower than the instructor's in a codebase the instructor wrote, and the calibration ratio in 4.5 is what corrects for that.
 
