@@ -110,7 +110,7 @@ The important habit: **you always resolve in your own branch.** `main` is never 
 
 ## 6. Things that will bite you
 
-**Merging `main` into your branch repeatedly creates merge commits, and that is fine.** Set your repository to squash merge pull requests and all of that integration history collapses into one clean commit on `main`. Do not avoid syncing because you are worried about messy history. The mess is free.
+**Merging `main` into your branch repeatedly creates merge commits, and that is fine.** What reaches `main` depends on the merge method your team picks ([below](#repository-settings)). With squash merging the whole branch collapses into one commit. With merge commits every commit arrives, sync merges included, and `git log --oneline --first-parent main` still shows one line per pull request. Either way, do not avoid syncing because you are worried about messy history.
 
 **`git merge` needs a clean working tree.** This is why "commit often" is not just tidiness advice. If you have uncommitted changes, commit them first, or use `git stash` and `git stash pop` around the merge.
 
@@ -145,7 +145,12 @@ On `main`, under branch protection: require a pull request before merging, requi
 
 **Leave "require status checks to pass" off for now.** Your repository has no pipeline until week 11, and a required check that never reports leaves every pull request stuck waiting for it forever. Turn it on when you have a build to wait for.
 
-In general settings: allow squash merging only, so history stays uniform, and enable "automatically delete head branches" so merged branches clean themselves up.
+In general settings, pick one merge method and allow only that one, so history stays uniform. Turn off rebase merging.
+
+- **Squash merging:** one commit per pull request on `main`. The trunk and leaf commits a reviewer reads one by one ([why](method.md#phase-c-fan-out-per-use-case)) stay readable in the pull request, where the review happens.
+- **Merge commits:** those commits also stay readable on `main` after the merge, for the next engineer and the next agent session. Project Pulse does this.
+
+Also enable "automatically delete head branches" so merged branches clean themselves up.
 
 Skip `CODEOWNERS`. It routes review requests by directory, which helps only when people own directories. Yours own use cases that cut across them.
 
