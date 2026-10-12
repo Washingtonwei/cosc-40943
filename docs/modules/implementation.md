@@ -2,49 +2,43 @@
 
 **Slides:** [Estimate, Then Build With the Agent](../slides/implementation.html) (the fast version).
 
-> **Purpose (one line):** estimate a use case in human hours before your agent builds it and calibrate the next estimate from the hours you log, then build the approved design with an agent in steps you can actually read, so that what gets merged is code your team understands, logs what someone will need at 2 AM, and was built on the existing code without mistaking it for the specification.
+> **Purpose (one line):** estimate a use case in human hours before your agent builds it, calibrate from the hours you log, then build the approved design in steps you can read, so the merged code is code your team understands and logs what someone will need at 2 AM.
 
 !!! note "This module is still being written"
-    The first test, written from a use case, is taught with Testing in week 9. Code review, the other half of this week, has its own module.
+    The worked example's actual hours (4.4) are added after Monday's build.
 
 ## 1. Learning objectives
 
 By the end of this module, a student can:
 
 1. Tell an estimate from a target and a commitment, and say which one a client is asking for.
-2. Name the assumption behind each classical estimation technique and say whether it still holds when an agent writes the code.
-3. Estimate a use case as a range of human hours, split into specify, build and review, and verify, sized from its design's test list.
-4. Record the estimate before the build and the actual hours in the weekly activity report, and compute a calibration ratio from the two.
-5. Use a calibration ratio to correct the next estimate, and tell the client early when a commitment no longer fits.
-6. Open an agent session by running the existing tests, and say what that tells the agent.
-7. Cut an implementation into a trunk commit and leaf commits along its design, and read the trunk before the leaves are built.
-8. Define cognitive debt and apply the check that pays it down at each pause.
-9. Treat existing code as evidence, never as authority, when an agent documents or designs from it.
-10. Write a logging rule into the agent charter, and check in review what the agent logged as well as whether it logged.
-11. Decide whether running several agents at once is safe for a given change, and fan out by leaf only after the trunk merges.
+2. Name the assumption behind each classical estimation technique and say whether it holds when an agent writes the code.
+3. Estimate a use case as a range of human hours in three parts (specify, build and review, verify), sized from its design's test list.
+4. Compute a calibration ratio from the estimate and the logged actual hours, use it to correct the next estimate, and tell the client early when a commitment no longer fits.
+5. Open an agent session by running the existing tests, and ask for a test that fails first.
+6. Cut an implementation into trunk and leaf commits along its design, and pay down cognitive debt by reading the trunk before the leaves are built.
+7. Treat existing code as evidence, never as authority, when an agent documents or designs from it.
+8. Write a logging rule into the agent charter, and review what the agent logged as well as whether it logged.
+9. Decide when running several agents at once is safe, and fan out by leaf only after the trunk merges.
 
 ## 2. Where it fits
 
 - **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure for the estimate and whose class diagram already separates trunk from leaf, and [Context Engineering](context-engineering.md), whose build-context is what the agent builds from.
-- **Leads into:** code review (the same week), which reads what this module produces; traceability (the same week), whose release plan is built from these estimates; testing in week 9, which starts from the first test; observability in week 12, which reads the logs this module asks you to write; and [Checkpoints 2 and 3](../project.md#checkpoints), where your team shows its estimates beside its actual hours.
-- **How it's taught:** the Monday of week 8, in two parts. First the estimate (4.1 to 4.6), committed before the build; from then on it is practiced, not lectured: an estimate on every use-case issue, the use case ID on every weekly activity report line, and a calibration table at each checkpoint. Then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit. Section 4.12, on running several agents, is reading.
+- **Leads into:** [Code Review](code-review.md) (the same week, its own module), which reads what this module produces; traceability (the same week), whose release plan is built from these estimates; testing in week 9, where the first test, written from a use case, is taught; observability in week 12, which reads the logs this module asks you to write; and [Checkpoints 2 and 3](../project.md#checkpoints), where your team shows its estimates beside its actual hours.
+- **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.6), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit. Wednesday reads that commit and teaches logging (4.10). After that, estimation is practiced in your project (section 7), not lectured. Section 4.11, on running several agents, is reading.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle: delegating appropriately, supplying the context it cannot infer, and verifying its output](../syllabus.md#learning-outcomes) (outcome 6), and [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin into a number your client can plan around.
 
 ## 3. Motivation
 
-**The client's question.** Project Pulse's instructors asked for a reminder that emails only the students who have not submitted. Its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), is approved. Before anyone runs `/implement`, the instructor asks the question every client asks: *when can I use it?*
+**The client's question.** Project Pulse's instructors asked for a reminder that emails only the students who have not submitted. Its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), is approved, and the instructor asks what every client asks: *when can I use it?*
 
-The old way to answer counts the code: a controller, a new `SubmissionStatusService`, changes to the scheduler, a dialog, their tests, then hours per unit of code. An agent will write all of that in one session. If the code were the cost, the answer would be "this afternoon."
+Counting the code (a controller, a new `SubmissionStatusService`, a scheduler change, a dialog, their tests) says "this afternoon," since an agent writes all of it in one session. But the design's [test list](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests) has 20 rows, each a behavior a person has to see pass, and its open questions carry six risks; one (whether 80 emails over Gmail finish during a single request) can only be settled by measuring on staging. The agent made the typing free and left everything else.
 
-It is not this afternoon. The design's [test list](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests) has 20 rows, and each one is a behavior a person has to see pass: a student who reported is not emailed, an unassigned instructor gets `403`, a first name containing `<b>` is escaped. Its open-questions list carries six risks, one of which (whether 80 emails over Gmail sent during the request finish in a comfortable time) cannot be settled until it is measured on staging. The hours are in specifying, reviewing, and verifying. The agent made the typing free and left everything else.
+**Your feeling of speed is not data.** In METR's 2025 randomized trial (16 experienced open-source developers, 246 issues in their own repositories), developers expected AI to make them 24% faster, took 19% longer, and afterward believed they had been 20% faster. METR's 2026 follow-up suggests newer tools probably help, but its confidence intervals include no change, and METR calls its data "very weak evidence." Either way, felt speed was off by about 40 points, in the flattering direction.
 
-**Your feeling of speed is not data.** In 2025, METR ran a randomized controlled trial with 16 experienced open-source developers on 246 issues from their own repositories. Before starting, they expected AI tools to make them 24% faster. With the tools they took 19% longer. Afterward, they still believed the tools had made them 20% faster. METR's 2026 follow-up suggests later tools probably do speed developers up, but its confidence intervals include no change at all, and METR calls its own data "very weak evidence" for the size of the effect. Either way, the lesson for estimation holds: a developer's sense of how long agent-assisted work took was wrong by about 40 points, in the flattering direction.
+**The hours moved to the reader.** Faros AI's telemetry (more than 10,000 developers on 1,255 teams, June 2025; a vendor's correlational data) found that teams with high AI adoption merged 98% more pull requests, 154% larger, with review time up 91%. A change the reminder's size, like [pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76) (884 lines across 23 files), comes out of one agent session. As one diff, it is either read in full, which spends the estimate, or skimmed and approved by a team that cannot explain it.
 
-**The hours moved; they did not vanish.** Faros AI's telemetry from more than 10,000 developers on 1,255 teams (June 2025) found that teams with high AI adoption merged 98% more pull requests, while pull requests grew 154% larger and review time rose 91%. It is a vendor's correlational data, not an experiment, but it points the same way: generation got cheap, and the cost moved to the person reading the result.
-
-**The agent writes faster than you read.** Project Pulse's reminder is a change of about the size of [pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which added 884 lines across 23 files. An agent writes that in one session. If it arrives as one diff, the reviewer either reads it all (and the week's estimate is gone) or skims it (and approves code nobody on the team can explain).
-
-**The agent copies the code it can see.** Of Project Pulse's 266 backend classes, 4 declare a logger, under two different names (`LOGGER` and `log`). The catch-all exception handler logs nothing. An agent asked to build a feature in that codebase writes code that does not log, because nothing near it does. Whatever your codebase does by habit, the agent does at speed.
+**The agent copies what it sees.** Only 4 of Project Pulse's 266 backend classes declare a logger, under two names (`LOGGER` and `log`), and the catch-all exception handler logs nothing, so an agent building there writes code that does not log. Whatever your codebase does by habit, the agent does at speed.
 
 ## 4. Core concepts
 
@@ -64,13 +58,13 @@ The range narrows as decisions get made. Boehm (1981) measured it: at the concep
 
 ### 4.2 The classical techniques, and what each one assumed
 
-| Technique | Origin | What it sizes | The assumption | With an agent writing the code |
-|---|---|---|---|---|
-| **Expert judgment** | The oldest; the most used in practice (Jørgensen 2004) | Whatever the expert compares it to | The expert has done comparable work | Holds only if "comparable" includes doing it *with an agent*; experience from before agents is the wrong reference |
-| **Wideband Delphi**, then **planning poker** | Boehm 1981; Grenning 2002 | Same, but several people estimate independently, then discuss the gap | Independent estimates beat one anchored voice | Holds. Nothing about agents makes anchoring less dangerous |
-| **Story points and velocity** | Extreme Programming, popularized by Cohn 2005 | Relative size, converted to time by the team's measured pace | The pace is stable from one iteration to the next | Breaks while the tools are changing every few months; a velocity measured in September describes September's agent |
-| **Function points** | Albrecht 1979 | What the software does for its users: inputs, outputs, inquiries, files, interfaces | Effort per function point is stable for a team | The *size* still holds; the hours per function point, measured when people wrote the code, do not |
-| **COCOMO** | Boehm 1981 | Effort as a function of thousands of lines of code, scaled by cost drivers | A line of code costs roughly the same to produce | Breaks. An agent produces lines at almost no cost; the cost is in reading them |
+| Technique | What it sizes | The assumption | With an agent writing the code |
+|---|---|---|---|
+| **Expert judgment**, the most used in practice (Jørgensen 2004) | Whatever the expert compares it to | The expert has done comparable work | Holds only if "comparable" includes doing it *with an agent*; experience from before agents is the wrong reference |
+| **Wideband Delphi**, then **planning poker** | Same, but several people estimate independently, then discuss the gap | Independent estimates beat one anchored voice | Holds. Nothing about agents makes anchoring less dangerous |
+| **Story points and velocity** | Relative size, converted to time by the team's measured pace | The pace is stable from one iteration to the next | Breaks while the tools change every few months; a velocity measured in September describes September's agent |
+| **Function points** | What the software does for its users: inputs, outputs, inquiries, files, interfaces | Effort per function point is stable for a team | The *size* still holds; the hours per function point, measured when people wrote the code, do not |
+| **COCOMO** | Effort as a function of thousands of lines of code, scaled by cost drivers | A line of code costs roughly the same to produce | Breaks. An agent produces lines at almost no cost; the cost is in reading them |
 
 Read down the last column and one pattern appears: every model converts a **size** into **hours** through a **rate measured when people wrote the code**. The size measures mostly survive. The rate is what agents changed. So the course keeps a size measure (the test list), throws away the borrowed rate, and measures its own (4.5).
 
@@ -84,7 +78,7 @@ Estimate a use case in three parts, each as a range of human hours:
 | **Build and review** | Driving the agent, reading every line of its diff against the design, sending it back | `DEVELOPMENT` |
 | **Verify** | Making each row of the test list pass and seeing it pass, running the flow end to end, fixing what that finds | `TESTING`, `BUGFIX` |
 
-**Size it from the test list.** Each row is one behavior a person has to see working, so the row count is the closest thing the course has to a function-point count: it measures what the software must do, and it is already written. The open-questions list sets the width of the range: a risk that can only be settled by measuring (like the reminder's email latency) widens the high end.
+**Size it from the test list.** Each row is one behavior a person has to see working, so the row count is the closest thing the course has to a function-point count: it measures what the software must do, and it is already written. It does not turn into hours by itself. Your first estimate is expert judgment by analogy: find the finished change closest in size and start from its hours. Once your team has finished two or three use cases, divide their logged hours by their test rows; that is your own rate, the one 4.2 says to measure, and it replaces the analogy. The open-questions list sets the width of the range: a risk that can only be settled by measuring (like the reminder's email latency) widens the high end.
 
 What the agent does not change is how long it takes *you* to understand a diff and know it is right. That is the term to estimate carefully.
 
@@ -97,13 +91,11 @@ The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, ma
 | Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
 | Build and review | Every diff read against the sequence diagrams | 1.5 to 2 |
 | Verify | 20 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
-| **Total** | The same size as the reference change below, which took about 3.5 hours end to end | **3 to 5, most likely about 3.5** |
+| **Total** | By analogy: the reminder matches the reference change below in scope, which took about 3.5 hours end to end, so the most likely value is its 3.5 | **3 to 5, most likely about 3.5** |
 
-**The reference.** [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines added across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, so the reminder, a change of the same size, should take about the same. A reference class is your own past work, not someone else's; your first ones will be slower than the instructor's in a codebase the instructor wrote, and the calibration ratio in 4.5 is what corrects for that.
+**The reference.** The instructor has no measured rate per test row yet, so this estimate is the analogy 4.3 starts from. [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge. Your reference class is your own past work, not someone else's: your first changes will be slower than the instructor's in the instructor's own codebase, and the calibration ratio (4.5) corrects for that.
 
 The commitment that follows: on staging by the Friday of the build week, with the latency measured, or a message to the instructor by Wednesday saying why not.
-
-The actual hours are recorded after the build, and this table gains an *Actual* column.
 
 <!-- DRAFTING NOTE: fill in the Actual column from the build. -->
 
@@ -115,7 +107,7 @@ An estimate nobody checks teaches nothing. The course already records the other 
 2. **Every week**, each weekly activity report line about that use case starts with its ID (`UC-NOT-remind-non-submitters: reviewed the agent's diff against the sequence diagram`) and uses the category from the table in 4.3.
 3. **When the use case is done**, sum the actual hours across weeks and compute the **calibration ratio**: actual hours divided by the midpoint of the estimate.
 
-A ratio of 1.5 means you take half again as long as you think. Multiply your next midpoint by it, and keep the range. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
+A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
 When the ratio says a commitment will slip, tell the client at the next meeting, not on the date. A slipped commitment reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#from-estimates-to-a-release-plan).
 
@@ -150,7 +142,7 @@ The defense is to commit in steps a reviewer can read, cut along the design:
 3. `ReminderController` and the dialog (`UC-NOT-remind-non-submitters`).
 4. The moved `WeeklyReminderScheduler` (`FR-NOT-weekly-reminder`).
 
-Project Pulse's [`/implement`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md) commits this way and pauses after the trunk. A use case with no trunk is one commit and no pause, except that a security rule still goes alone.
+Project Pulse's [`/implement`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md) commits this way and pauses after the trunk; Monday's live build stops there. A use case with no trunk is one commit and no pause, except that a security rule still goes alone.
 
 ### 4.9 Code you did not write
 
@@ -166,38 +158,25 @@ The agent imitates the code around it, so the logging rule has to be written whe
 | Levels by audience: `error` someone must act, `warn` something degraded, `info` a business event, `debug` detail for development | `LOGGER.info("Sent {} of {} weekly reminders for section {}", sent, total, name);` |
 | Parameterized messages, never string concatenation | `{}` placeholders, as above |
 | Every `catch` that does not rethrow logs the exception object | `LOGGER.error("Could not send the weekly reminders for section {}", name, e);` |
-| Never log secrets, tokens, passwords, or student records | Request bodies here carry peer evaluations (`CO-ferpa`) |
+| Log identifiers, never content: no secrets, tokens, or passwords, and for a person their ID, never their email, scores, or comments | `LOGGER.error("Could not send the weekly reminder to student {}", student.getId(), e);` Request bodies here carry peer evaluations (`CO-ferpa`) |
 
-**The catch-all, before and after.** Project Pulse's last-resort handler today:
+**The catch-all.** Project Pulse's last-resort handler logs nothing, and Spring does not log an exception a handler has already resolved, so an unexpected `NullPointerException` in production leaves no stack trace anywhere. The user sees "A server internal error occurs."; the operator, and the agent asked to debug it, see nothing. The handler also sends the raw exception message to the browser, a disclosure problem. The fix:
 
-```java
-@ExceptionHandler(Exception.class)
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-Result handleOtherException(Exception ex) {
-    return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
-}
+```diff
+ @ExceptionHandler(Exception.class)
+ @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+ Result handleOtherException(Exception ex) {
+-    return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.", ex.getMessage());
++    LOGGER.error("Unhandled exception", ex);
++    return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.");
+ }
 ```
 
-Spring does not log an exception a handler has already resolved, so an unexpected `NullPointerException` in production leaves no stack trace anywhere. The user sees "A server internal error occurs."; the operator, and the agent asked to debug it, see nothing. It also sends the raw exception message to the browser, which is a disclosure problem. After:
+**Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's `WeeklyReminderScheduler` gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log. That breaks the rule: an operator who needs the address can look it up from the ID, and a log is copied to more places than the database is (`CO-ferpa`). The fix is one argument, `student.getId()`. An agent asked to "add logging" will not make that call for you; the reviewer has to ask.
 
-```java
-@ExceptionHandler(Exception.class)
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-Result handleOtherException(Exception ex) {
-    LOGGER.error("Unhandled exception", ex);
-    return new Result(false, StatusCode.INTERNAL_SERVER_ERROR, "A server internal error occurs.");
-}
-```
+### 4.11 One engineer, several agents
 
-**Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's `WeeklyReminderScheduler` gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log. Whether that is acceptable is your client's privacy constraint to decide, and the reviewer's job to ask.
-
-### 4.11 Building the reminder: what Monday shows
-
-The live build runs Project Pulse's `/implement` on `not.md` after `/clear`, so the session reads only the merged design. It shows 4.7 and 4.8 in order: the suite run first, the plan, the trunk commit, and the pause where the room reads the trunk aloud. The live build stops at the pause. The full reminder, all four commits, is built beforehand on a separate branch; Wednesday's review exercise is a copy of that pull request.
-
-### 4.12 One engineer, several agents
-
-`claude --worktree <name>` in a second terminal starts a second session in its own checkout, on its own branch. Whether that helps turns on one question: **what will each agent decide that the others need to know?** Anthropic's multi-agent research system beat a single agent by fanning out searches, at about 15 times the tokens, and its authors note that "most coding tasks involve fewer truly parallelizable tasks than research" (Anthropic 2025). Cognition's reason fits in one line: "Actions carry implicit decisions, and conflicting decisions carry bad results" (Yan 2025). A design-of-record exists to turn implicit decisions into written ones, so **parallel agents are safe exactly where the decisions they would otherwise make silently are already on the record.**
+`claude --worktree <name>` in a second terminal starts a second session in its own checkout, on its own branch. Whether that helps turns on one question: **what will each agent decide that the others need to know?** Cognition puts it in one line: "Actions carry implicit decisions, and conflicting decisions carry bad results" (Yan 2025). Anthropic's multi-agent system gained by fanning out searches, not code, at about 15 times the tokens (Anthropic 2025). A design-of-record turns implicit decisions into written ones, so **parallel agents are safe exactly where the decisions they would make silently are already on the record.**
 
 | Pattern | What runs in parallel | What keeps it safe | On Project Pulse |
 |---|---|---|---|
@@ -211,11 +190,9 @@ flowchart LR
   T --> L2["Leaf, worktree 2<br/>WeeklyReminderScheduler, moved<br/>(FR-NOT-weekly-reminder)"]
 ```
 
-Start both leaves before the trunk merges and each agent writes its own `SubmissionStatusService`; the two pull requests then disagree about what "has not submitted" means, the very contradiction the design's challenge loop removed. Merge the trunk first and both leaves call the same one.
+Start both leaves before the trunk merges and each agent writes its own `SubmissionStatusService`, with two meanings of "has not submitted". Merge the trunk first and both leaves call the same one. Never split one use case by layer across agents: the defect where the halves meet belongs to nobody ([What a branch should be](ai-augmented-team.md#46-what-a-branch-should-be)).
 
-**What does not work:** splitting one use case by layer across agents (the defect where the halves meet belongs to nobody, as with people: [What a branch should be](ai-augmented-team.md#46-what-a-branch-should-be)); two agents on the trunk at once; and Claude Code's experimental agent teams, which are off by default and do not isolate teammates in worktrees.
-
-**The limit is you.** A worktree isolates files, not decisions and not the machine: two apps from two worktrees compete for the same port and database, and each worktree needs its own dependency install (add `.claude/worktrees/` to `.gitignore`). Every leaf is a pull request a person reads, and review time had already risen 91% in teams that adopted AI heavily ([Motivation](#3-motivation)). Run no more agents than pull requests you will review well today.
+**The limit is you.** A worktree isolates files, not decisions and not the machine: two apps compete for one port and database, and each worktree needs its own dependency install (add `.claude/worktrees/` to `.gitignore`). Every leaf is a pull request a person reads, so run no more agents than pull requests you will review well today.
 
 ## 5. The AI-native lens
 
@@ -229,17 +206,17 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Classic:** an estimate given as a single number becomes a commitment nobody made | Hearing "two weeks" and asking "is that an estimate or a promise?" | Always state a range; make the commitment a separate, explicit sentence |
-| **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate in the three parts of 4.3; size from the test list, not the code |
-| **AI-amplified:** trusting your felt speed with an agent, which runs fast and flattering | Comparing the estimate with the logged hours, not with memory | The calibration ratio, computed from weekly activity reports, at every checkpoint |
-| **AI-introduced:** cognitive debt, code merged that nobody on the team can explain | The pause check: can you say what changed and why? | Trunk first, one pause, commits cut along the design |
-| **AI-amplified:** the agent copies the codebase's habits, including not logging and not testing | Noticing the new code looks like its neighbors, gaps included | The test command and the logging rule in the charter |
+| **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate in the three parts of 4.3 |
+| **AI-amplified:** trusting your felt speed with an agent | Comparing the estimate with the logged hours, not with memory | The calibration ratio at every checkpoint |
 | **AI-introduced:** a test written to pass the agent's own code | Asking where the expected value came from | Test first, seen to fail; expected values from the use case |
-| **Classic, now faster:** recovered behavior turned into requirements | Asking the client, not the code | Code is evidence, never authority; defects to `OPEN-ISSUES.md` |
-| **AI-introduced:** parallel agents making conflicting silent decisions | Asking what each agent will decide | Fan out by leaf, after the trunk merges |
+| **AI-amplified:** cognitive debt, a diff too large to read and approved anyway | At the pause, trying to say what changed and why without asking the agent | Trunk and leaf commits along the design (4.8); one pause, after the trunk |
+| **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in the charter (4.10); fix the catch-all before the agent imitates it |
+| **AI-introduced:** existing code read back as requirements, defects included | Asking the client whether each recovered behavior was intended | The code is evidence, never authority (4.9); defects go to `OPEN-ISSUES.md` |
+| **AI-introduced:** parallel agents make conflicting decisions nobody wrote down | Asking what each agent will decide that the others need to know | Fan out by leaf only after the trunk merges (4.11); no more agents than pull requests you can review |
 
 ## 7. Hands-on (studio + optional individual assignment)
 
-**Team, own project:** before any use case is built, its owner writes the three-part estimate on its issue, sized from the design's test list, and from then on weekly activity report lines about it start with its ID. At Checkpoints 2 and 3, show one table: each finished use case, its estimate, its actual hours, its ratio, and one sentence on the biggest miss. It is assessed on completeness and honest interpretation, never on accuracy.
+**Team, own project:** before any use case is built, its owner writes the three-part estimate on its issue, sized from the design's test list, and from then on weekly activity report lines about it start with its ID. At Checkpoints 2 and 3, show one table: each finished use case, its estimate, its actual hours, its ratio, and one sentence on the biggest miss, graded as 4.6 says.
 
 Before your agent builds the proving slice, add three lines to your agent charter: the command that runs your tests, "write the test first and show it failing", and your logging rule from 4.10. If you run more than one agent, add the four parallel-agent lines from [Agent Setup](../agent-setup.md#10-your-team-repository). Build the slice trunk first, and read the trunk before the leaves.
 
@@ -247,16 +224,11 @@ Before your agent builds the proving slice, add three lines to your agent charte
 
 ## 8. Summary / key takeaways
 
-- An estimate is a range you own; a commitment is a date you promise; a target is what the client wishes. Keep the three apart.
-- Classical models convert size to hours through a rate measured when people wrote the code. Keep the size; measure your own rate.
-- With an agent, the hours are in specifying, reviewing, and verifying. Size a use case by its test list.
-- Your sense of how fast you work with an agent is unreliable. Your weekly activity reports are not. Estimates are graded on honesty, never on accuracy.
-- Start every session by running the tests; ask for the test first and see it fail.
-- Commit the trunk, then any security rule or migration alone, then each leaf. Read the trunk before the leaves are built.
-- Cognitive debt is code you accepted without understanding it. Pay it at the pause.
-- Existing code is evidence, never authority.
-- The agent logs the way your codebase logs. Write the rule down, and review what gets logged.
-- Run several agents only where the decisions they would make are already written down, and no more than you can review.
+- An estimate is a range you own, a target is the client's wish, and a commitment is a date you promise. Keep the three apart.
+- With an agent, the hours are in specifying, reviewing, and verifying. Size by the test list, and measure your own rate from your weekly activity reports, not your sense of speed.
+- Run the tests first, see the new test fail, and commit trunk first. Read the trunk before the leaves are built.
+- Existing code is evidence, never authority, and the agent logs the way your codebase logs. Write the rules down.
+- Run several agents only where their decisions are already written down, and no more than you can review.
 
 ## 9. Key papers & further reading
 
@@ -282,13 +254,11 @@ Before your agent builds the proving slice, add three lines to your agent charte
 2. COCOMO and function points both convert size to effort. Which half of each still works when an agent writes the code, and which half does not?
 3. A use case's design has 12 test rows and one open risk that can only be measured in production. Which part of the three-part estimate does the risk widen, and why?
 4. Your estimate was 6 to 10 hours; your weekly activity reports show 14. What is your calibration ratio, and what is your next estimate for a use case you would otherwise have called 4 to 8 hours?
-5. A teammate logs fewer actual hours than they worked so the team's ratio looks better. What has the team lost?
-6. Your agent's first commit adds a new service three controllers will call, plus two new screens. Which part is trunk, and where should the pause be?
-7. A teammate says the pause is a waste because the review comes later anyway. What does reading the trunk now save?
-8. Your agent's new test passes on its first run, before any code was written. What does that tell you?
-9. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
-10. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
-11. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
+5. Your agent's first commit adds a new service three controllers will call, plus two new screens. Which part is trunk, where should the pause be, and what does reading the trunk then save?
+6. Your agent's new test passes on its first run, before any code was written. What does that tell you?
+7. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
+8. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
+9. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
 
 ## Related
 

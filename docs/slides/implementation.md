@@ -9,6 +9,14 @@ day: Monday
 
 Week 8 · From an approved design to an estimate you can defend and code you can explain
 
+## Where we are
+
+![The documents so far, and this week's code](img/document-map-week-08.svg){ height="520" }
+
+::: note
+One minute, left to right. Weeks 3 and 4 wrote the requirements, week 6 the one architecture, week 7 a design-of-record per use case area; Project Pulse's first is not.md, approved last week. This week is the code box: estimate it, then build it from not.md. Week 9 tests it.
+:::
+
 ## When can I use it? {.center}
 
 ::: ask
@@ -123,7 +131,9 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 
 ::: steps
 - Each row is one behavior a person has to see working.
-- It counts what the software must do, like a function point.
+- It counts what the software must do, like a function point. It is not yet hours.
+- First estimate: by analogy to a finished change of the same size.
+- After two or three use cases: your own hours per row.
 - The open risks set the width of the range.
 :::
 
@@ -134,10 +144,10 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 | Specify | Questions test already run | 0.5 to 1 |
 | Build and review | Every diff read against the diagrams | 1.5 to 2 |
 | Verify | 20 rows, latency on staging | 1 to 2 |
-| **Total** | Same size as #76, which took 3.5 | **3 to 5** |
+| **Total** | By analogy: #76, 3.5 h | **3 to 5** |
 
 ::: note
-The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide: those were the coarse estimate, made without the design, the job story points do in agile. This one is the sprint-planning estimate, made with it.
+No measured rate yet, so this is an analogy. The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide: those were the coarse estimate, made without the design, the job story points do in agile. This one is the sprint-planning estimate, made with it.
 :::
 
 ## Write it down before you build
@@ -366,7 +376,7 @@ Abridged from ExceptionHandlerAdvice; the module, 4.10, quotes it in full. Sprin
 - error: someone must act. warn: degraded. info: a business event. debug: development.
 - Parameterized: "Sent {} of {} reminders", never concatenation.
 - Every catch that does not rethrow logs the exception object.
-- Never secrets, tokens, passwords, or student records.
+- Identifiers, never content: no secrets or passwords; a person's ID, not their email or scores.
 :::
 
 ## Review what was logged, not only whether
@@ -381,7 +391,7 @@ Right level, parameters, the exception object. And every failed student's email 
 :::
 
 ::: note
-From Project Pulse's WeeklyReminderScheduler today. It follows the rule, and it also writes student email addresses into the log. Whether that is acceptable is the client's privacy constraint to decide (CO-ferpa); asking is the reviewer's job.
+From Project Pulse's WeeklyReminderScheduler today. It follows four of the rules and breaks the fifth: every failed student's email address goes into the log. Fix: `student.getId()`; the operator looks the address up. CO-ferpa. Catching this is the reviewer's job, because the agent copied it from the code around it.
 :::
 
 ## Several agents at once
@@ -401,7 +411,7 @@ No more agents than pull requests you will review well today.
 :::
 
 ::: note
-Reading: module 4.12. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
+Reading: module 4.11. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
 :::
 
 ## Before your agent builds the slice
