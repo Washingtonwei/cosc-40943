@@ -170,7 +170,7 @@ Draft good-quality requirements first; develop the architecture-of-record alongs
 
 Before fanning out, pick one **proving** use case and take it all the way through: design-of-record → implementation → tests. Choose the one that exercises the **highest-risk ASRs** (the top of the utility tree), not merely a "typical" one, since the slice earns its keep by stressing the decisions most likely to be wrong. This validates the architecture while corrections are still cheap: boundaries that looked clean on the diagram meet real code, and the architecture-of-record is corrected from what was learned. **Architecture proven by a working slice beats architecture proven by inspection.**
 
-When the slice merges, write the **release plan**: give every row in `traceability.md` a Release value, the release its work ships in. Risk usually orders the rest; a client can put value or a dependency first, and the pull request that sets the column says why. A use case not yet designed is sized as a wide range of hours, written on its issue and replaced by the [three-part estimate](modules/process-and-planning.md#43-where-the-hours-go-now) once its design is approved, so the plan is a [forecast](modules/process-and-planning.md#46-from-estimates-to-a-release-plan) that narrows as designs land.
+When the slice merges, write the **release plan**: give every row in `traceability.md` a Release value, the release its work ships in. Risk usually orders the rest; a client can put value or a dependency first, and the pull request that sets the column says why. A use case not yet designed is sized as a wide range of hours, written on its issue and replaced by the [three-part estimate](modules/implementation.md#43-where-the-hours-go-now) once its design is approved, so the plan is a [forecast](modules/traceability.md#from-estimates-to-a-release-plan) that narrows as designs land.
 
 ### Phase C: Fan out per use case
 
@@ -182,7 +182,7 @@ With the architecture validated, realize the remaining use cases one at a time. 
 4. **Close the use case** after its pull request merges, before the next one starts:
    - The branch is merged and deleted, and the traceability row is honest about Build and Verify.
    - Spec and architecture fixes the work surfaced are merged; anything still open is logged in `OPEN-ISSUES`.
-   - The actual hours are recorded beside the estimate in the [calibration table](modules/process-and-planning.md#45-recording-and-calibrating).
+   - The actual hours are recorded beside the estimate in the [calibration table](modules/implementation.md#45-recording-and-calibrating).
    - The reviewer asks what the agent had to be corrected on more than once and turns it into a rule in the agent charter (the conventions files the agent reads at the start of every session; see [The tooling instance](#the-tooling-instance-project-pulse)), by a small pull request. Where the new rule applies to code already merged, open an issue for that code rather than widening this pull request.
    - Revise the release plan: is the next use case still the right one, and do the remaining estimates, corrected by the calibration ratio, still fit the client's date? Move rows by pull request, saying why. Then `/clear`.
 

@@ -9,7 +9,7 @@ Modules go up as they are written, in the order the course teaches them, so this
 ## Published so far
 
 [**SE and What AI Changes**](modules/se-and-ai.md) · [slides](slides/se-and-ai.html)
-: What is left for a software engineer when the agent can write the code. Places a task on the delegation boundary, and sizes an unfamiliar problem in twenty minutes well enough to defend it against the agent's version.
+: What is left for a software engineer when the agent can write the code. Places a task on the delegation boundary, and sizes an unfamiliar problem in twenty minutes well enough to defend it against the agent's version. Also the life-cycle models (waterfall as Royce actually wrote it, incremental and iterative, spiral, the Unified Process, Scrum and Kanban) and where this course's method sits among them.
 
 [**The AI-Augmented Team**](modules/ai-augmented-team.md) · [slides](slides/ai-augmented-team.html)
 : Set your team up so the work is legible to every member, including the one that forgets everything between sessions. Put what governs the project in the repository, and make every unit of work traceable from requirement to merged code.
@@ -29,11 +29,8 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Design-of-Record**](modules/design-of-record.md) · [slides](slides/design-of-record.html)
 : Design one use case area before anyone builds it, at the depth where an agent no longer has to guess anything that matters, and get it approved by a teammate who did not write it. The challenge loop, sequence and state diagrams, the API contract, decisions and design patterns, the test list before the code, the questions test, and choosing a proving slice by risk.
 
-[**Process and Planning**](modules/process-and-planning.md) · [slides](slides/process-and-planning.html)
-: Estimate a use case before your agent builds it, as a range of human hours sized from its design's test list, and make each next estimate better from the hours your weekly activity reports logged. Estimates, targets, and commitments; what the classical models assumed; and the calibration ratio. Then the life-cycle models (waterfall as Royce actually wrote it, incremental and iterative, spiral, the Unified Process, Scrum and Kanban), what each bets on, and where this course's method sits among them.
-
 [**AI-Assisted Implementation**](modules/implementation.md) · [slides](slides/implementation.html)
-: Build an approved design with an agent in steps you can read: run the tests first, commit the trunk before the leaves and read it at the pause, treat existing code as evidence rather than authority, write a logging rule the agent will follow, and run several agents only where their decisions are already on the record.
+: Estimate a use case before your agent builds it, as a range of human hours sized from its design's test list, and make each next estimate better from the hours your weekly activity reports logged. Then build the approved design with an agent in steps you can read: run the tests first, commit the trunk before the leaves and read it at the pause, treat existing code as evidence rather than authority, write a logging rule the agent will follow, and run several agents only where their decisions are already on the record.
 
 [**Code Review**](modules/code-review.md) · [slides](slides/code-review.html)
 : Review a pull request against the use case and test list it claims to implement, not only its diff. What review finds and what a rubber stamp costs; reading the trunk and the security rule in full and the leaves through their tests; a short checklist; labeled comments and when to approve; the author's half; and an agent as first reviewer, given the contract.
@@ -45,4 +42,4 @@ Modules go up as they are written, in the order the course teaches them, so this
 : Work with a coding agent without lending it to an attacker. The lethal trifecta, prompt injection, what permission rules can and cannot stop, secrets in the agent's context, packages an agent invents, and a model inside your own product. Authentication, authorization, and secure coding are still being written.
 
 [**Requirements Traceability**](modules/traceability.md)
-: Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Still being written.
+: Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code; and the release plan, every use case placed in the release it ships in. Still being written.

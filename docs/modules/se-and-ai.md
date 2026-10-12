@@ -19,13 +19,15 @@ By the end of this module, a student can:
 9. State who is accountable for work an agent wrote, and apply the explanation test to decide whether a piece of it is ready to submit.
 10. Place a given task on the delegation boundary and justify the placement using the delegation test (if guessing it wrong would violate a requirement, it stays human).
 11. Distinguish automation bias from agenda capture, name the tell for each, and apply a recovery move.
-12. Produce a Napkin for an unfamiliar one-paragraph brief in twenty minutes: shape, the hard part, the bottleneck, stack, three kill risks as mechanisms, and a feasibility verdict.
+12. Name what each major life-cycle model (waterfall, incremental, iterative, spiral, the Unified Process, agile) bets on, and say when each fits.
+13. Place this course's method among those models, and map Scrum's vocabulary onto the units this course uses.
+14. Produce a Napkin for an unfamiliar one-paragraph brief in twenty minutes: shape, the hard part, the bottleneck, stack, three kill risks as mechanisms, and a feasibility verdict.
 
 ## 2. Where it fits
 
 - **Prerequisites:** none. This is the course opener.
 - **Leads into:** The AI-Augmented Team in week 2 (onboarding the agent as a teammate), requirements as the contract in weeks 3-4, and architecture in week 6, where the Napkin's six questions get the slow, derived treatment.
-- **How it's taught:** two lecture days, then revisited at every new topic all term. It owns the [Napkin](#the-napkin-six-prompts), the frame for sizing up a problem before the agent does.
+- **How it's taught:** two lecture days, then revisited at every new topic all term. Life-cycle models get one paragraph in the lecture and are read here in full. It owns the [Napkin](#the-napkin-six-prompts), the frame for sizing up a problem before the agent does.
 - **Course outcome it delivers:** [sizing up an unfamiliar problem and defending that judgment against the agent's version](../syllabus.md#learning-outcomes) (outcome 10), and it opens [collaborating with AI across the lifecycle](../syllabus.md#learning-outcomes) (outcome 6).
 
 ## 3. Motivation
@@ -107,7 +109,63 @@ Count the boxes. **Implementation is one of eight**, it is the box you have been
 
 The arrow from maintenance back to requirements is the point. It is a loop, not a line, and you will be standing in it for the next nine months.
 
-How a team moves through the loop is its **life-cycle model**: once and in order (waterfall), one finished piece at a time (incremental), rough and then refined (iterative), riskiest question first (spiral), or in short cycles with the customer close (agile). Each is a bet on what is expensive. This course's life cycle follows the Unified Process, with a spiral's risk-first step; what is new is a specification written for an agent to build from, and the checks around it. [Process and Planning](process-and-planning.md#48-life-cycle-models-each-one-is-a-bet-on-what-is-expensive) has the models, what Royce's "waterfall" paper actually said, and the Scrum vocabulary you will meet at work.
+### Life-cycle models: each one is a bet on what is expensive
+
+The diagram above draws the life cycle as eight activities in a loop. A **life-cycle model** (or *process model*) decides how a team moves through them: once, in order, or many times, in slices. Every model is a bet on what costs the most, and each was right for the costs of its time:
+
+| Model | Its bet | Fits when |
+|---|---|---|
+| **Waterfall** | Change is expensive late, so decide everything first | Requirements are known and stable: regulated systems, fixed hardware, fixed-price contracts |
+| **Incremental** | Value should arrive early, one complete piece at a time | The core is clear, but not all of it is needed at once |
+| **Iterative** | You learn what to build by building a rough version | The product's shape is uncertain |
+| **Spiral** | Risk, not a schedule, should choose the next step | Some decision could sink the project if it is wrong |
+| **Unified Process** | Use cases drive the work, and architecture is proven early | A system big enough to need an architecture, with requirements that keep moving |
+| **Agile (Scrum, Kanban)** | Requirements will change, so deliver working software often and adjust | A customer close enough to give feedback every week or two |
+
+#### Waterfall, and what Royce actually wrote
+
+Waterfall runs the activities once, each signed off before the next begins. Real projects do not flow one way, clients cannot state every requirement up front, and nobody sees working software until the end, when change costs most.
+
+It is usually traced to Winston Royce's 1970 paper, which drew the phases in sequence and then wrote under the figure: "I believe in this concept, but the implementation described above is risky and invites failure." The rest of the paper adds what the single pass lacks: feedback between steps, early simulation, the customer involved throughout, and building the program twice. The word "waterfall" is not in it. Later standards and contracts adopted the figure and dropped the corrections (Larman and Basili 2003).
+
+#### Incremental and iterative
+
+- **Incremental:** build one feature at a time, each to full quality, and ship as you go. Your fan-out is incremental: one use case at a time, each designed, built, tested, and traced before it counts as done.
+- **Iterative:** build everything roughly, then improve all of it in passes. Your specification is iterative: the first draft for Checkpoint 1, then revised every time the design or the build exposes a gap.
+
+Jeff Patton's illustration: an incremental painter finishes the Mona Lisa one square at a time; an iterative one sketches the whole portrait, then refines it. Working teams do both.
+
+#### Spiral: let risk choose the next step
+
+In Boehm's spiral model (1988), every cycle starts by asking what could sink the project now, then spends the cycle reducing that risk with a prototype, a simulation, or a measurement. Your proving slice is a spiral cycle: of all your use cases, you build first the one that exercises the riskiest architectural decisions, because finding out it is wrong in week 9 is cheap and in week 14 is not.
+
+#### The Unified Process, and this course's method
+
+The Unified Process (Jacobson, Booch, and Rumbaugh 1999; IBM's commercial version was the Rational Unified Process) describes itself in three phrases: **use-case driven, architecture-centric, iterative and incremental**. It runs in four phases, each made of iterations. The course's [method](../method.md#the-lifecycle) is closest to it:
+
+| Unified Process | The course's method |
+|---|---|
+| **Inception**: vision, scope, the main use cases | Phase A: vision and scope, use cases, business rules (weeks 3 to 5) |
+| **Elaboration**: most use cases, and an executable architecture baseline that proves the risky decisions | Phase A's architecture-of-record (week 6), then Phase B's proving slice, chosen by risk (weeks 7 to 9) |
+| **Construction**: build the remaining use cases, iteration by iteration | Phase C: fan out, one use case at a time (weeks 9 to 14) |
+| **Transition**: hand the system to its users | The MVP your client receives |
+
+The method's life cycle is not new: its phases are the Unified Process's, with a spiral's risk-first slice. What is new is what moves through them. The specification is written for an agent to build from, complete where guessing is unsafe and silent where the agent may derive. The agent challenges the specification before it builds, and the questions test measures whether the specification is enough. Humans own some levels and the agent builds others, behind approval gates. Traceability is kept true by tooling rather than by discipline. And the work flows one use case at a time instead of in time-boxed iterations.
+
+The Unified Process also says when to plan. Inception gives a rough cost and schedule that nobody commits to. The estimate a project commits to comes at the end of Elaboration, once the risky architecture has been proven and most use cases are known, and each iteration then gets its own detailed plan. That is why this course teaches the [committed estimate](implementation.md#41-estimate-target-commitment) in week 8, as the proving slice is built, and why every later use case is estimated just before its build.
+
+#### Agile, Scrum, and Kanban: the vocabulary you will meet
+
+The *Manifesto for Agile Software Development* (Beck et al. 2001) values working software, customer collaboration, and responding to change over documentation, contracts, and following a plan, while granting that the second list still has value. Two practices dominate industry:
+
+- **Scrum** (Schwaber and Sutherland 2020): work happens in **sprints** of a month or less. A **product backlog** is ordered by the **Product Owner**; the team pulls a **sprint backlog** from it at **sprint planning**, meets briefly every day, shows the result at the **sprint review**, and improves its process at the **retrospective**. An item counts only when it meets the team's **definition of done**.
+- **Kanban** (Anderson 2010): no sprints. Work flows across a board, and each column has a limit on how many items it may hold, so the team pulls new work only when something finishes.
+
+This course uses parts of both under its own units. Your board, backlog, and weekly iteration are [week 2's vocabulary](ai-augmented-team.md#411-the-boards-vocabulary); your definition of done is a merged pull request that meets the use case's acceptance criteria. The use case replaces the user story, a use-case area is a milestone, and your client, not a teammate, owns what gets built.
+
+#### What agents change
+
+Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([where the hours go now](implementation.md#43-where-the-hours-go-now)). So the bet shifts: spend human effort on specification and verification, and let the agent do the iterating, each use case built and rebuilt as often as review allows.
 
 ### What "success" means, and how teams fail at it
 
@@ -381,6 +439,8 @@ Every module carries one, naming the classic failure for its topic and the one A
 - **Task (AI-workflow-framed):** set up and run Project Pulse, have the agent explain one package and catch a claim the code does not support, open a well-formed issue, and submit a small pull request. [Full assignment](../assignments/hello-project-pulse.md).
 - **Deliverable and assessment (per student):** the issue and the pull request. Graded on whether the issue names a real problem precisely enough to act on, and whether the pull request explains why the change is right. Not on size.
 
+**At the final retrospective (week 15):** name the life-cycle model your team actually ran, where it departed from the method, and why. A team that ran waterfall in practice (all specification, then a scramble to build) should be able to say so, and say what it would change.
+
 ## 7. Summary / key takeaways
 
 - Software engineering is the systematic, disciplined, quantifiable approach to the whole life of a system. Implementation is one of eight activities, and the one agents are best at.
@@ -392,6 +452,7 @@ Every module carries one, naming the classic failure for its topic and the one A
 - An agent can write it; you sign it. The standard is reviewed and good, not "no AI", and work you cannot explain is work you forwarded rather than reviewed.
 - Scope, schedule, and resources trade against each other, and quality is what gets spent when a team will not renegotiate. Checkpoints make renegotiation cheap and scheduled.
 - The delegation test: if guessing it wrong would violate a requirement, it stays human.
+- Every life-cycle model is a bet on what is expensive. Royce never recommended the single pass that bears the waterfall name. This course's life cycle follows the Unified Process with a spiral's risk-first slice; what is new is the specification written for an agent to build from, and the checks around it.
 - Automation bias is wrong output you trusted; agenda capture is right output on the wrong problem. The second has no error signal, so you need an external checkpoint.
 - The Napkin is that boundary at project scale: six prompts, twenty minutes, a defensible verdict. Write yours before you prompt, then diff both directions. A named mechanism beats a named category.
 - A project fails completely with no defective line of code in it, when the specification was a mood and nobody was at the wheel. That is what this course is arranged against.
@@ -404,6 +465,11 @@ Every module carries one, naming the classic failure for its topic and the one A
 - METR, ["Measuring AI Ability to Complete Long Software Tasks"](https://arxiv.org/abs/2503.14499) (Kwa, West, Becker et al., NeurIPS 2025), plus the [March 2025 post](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) carrying the four-minute and four-hour figures. Read the methodology, not just the graph.
 - Carlos Jimenez et al., ["SWE-bench"](https://arxiv.org/abs/2310.06770) (ICLR 2024) and OpenAI's [Introducing SWE-bench Verified](https://openai.com/index/introducing-swe-bench-verified/) (2024). What "resolved" means, and why a hand-screened subset was needed before the number could be trusted.
 - Ian Sommerville, *Software Engineering*, chapter 1. The standard textbook framing of the life cycle.
+- W. W. Royce, "Managing the Development of Large Software Systems," *Proceedings of IEEE WESCON*, August 1970, 1–9. The paper "waterfall" is traced to, and the one it does not describe.
+- Craig Larman and Victor R. Basili, "Iterative and Incremental Development: A Brief History," *IEEE Computer* 36, no. 6 (2003): 47–56.
+- Barry W. Boehm, "A Spiral Model of Software Development and Enhancement," *IEEE Computer* 21, no. 5 (1988): 61–72.
+- Ivar Jacobson, Grady Booch, and James Rumbaugh, *The Unified Software Development Process* (Addison-Wesley, 1999).
+- Kent Beck et al., [*Manifesto for Agile Software Development*](https://agilemanifesto.org/) (2001); Ken Schwaber and Jeff Sutherland, [*The Scrum Guide*](https://scrumguides.org/) (November 2020); David J. Anderson, *Kanban: Successful Evolutionary Change for Your Technology Business* (Blue Hole Press, 2010).
 - Nancy Leveson, *Engineering a Safer World* (2011), chapters 1-2. Failures as control-structure failures rather than component failures: this module's thesis in another vocabulary.
 
 ## 9. Self-check
@@ -418,6 +484,8 @@ Every module carries one, naming the classic failure for its topic and the one A
 8. A feature appears in your demo that the client never asked for, and nobody on the team remembers deciding to build it. Where in the chain from business need to shipped code should that have been caught, and what artifact would have caught it?
 9. Place each of these on the delegation boundary and justify it with the delegation test: choosing whether Project Pulse stores peer evaluations as immutable records or editable rows; renaming a misspelled method across the repository; deciding what "submitted on time" means when a student's browser clock is wrong; writing integration tests against an approved API contract.
 10. Someone tells you that AI has made software engineering courses obsolete. Using the METR time-horizon result, give the strongest one-paragraph rebuttal you can, and then give the strongest counter-argument against yourself.
+11. Your team's fan-out builds one use case at a time to full quality, while the specification keeps being revised. Which part of your process is incremental, which is iterative, and why do you need both?
+12. A classmate says this course "does waterfall, because the specification comes first." Using Royce's paper and the Unified Process, explain what they have right and what they have wrong.
 
 ## Related
 
@@ -426,3 +494,11 @@ Every module carries one, naming the classic failure for its topic and the one A
 - [Friday Studio](../studio.md): the rounds you ran in studio.
 - [Working with AI](../ai.md): the delegation boundary and these two failure modes, stated as course policy.
 - [Senior Design Project](../project.md): the client project all of this is in service of.
+- [The Method](../method.md#the-lifecycle): the life cycle this course runs.
+
+<!--
+Sources to check before `stable` (life-cycle models):
+- Royce 1970: confirm the "risky and invites failure" quotation and the do-it-twice recommendation against the paper; confirm that "waterfall" does not appear in it.
+- Patton's Mona Lisa illustration: find the original (Patton, "Don't Know What I Want, But I Know How to Get It," 2008) and confirm the attribution.
+- Week numbers in the Unified Process mapping follow the published schedule as of 2026-10-10.
+-->

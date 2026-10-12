@@ -1,6 +1,6 @@
 # Requirements traceability
 
-> **Purpose (one line):** a student can keep a use case honest end to end, tracing it forward (is it built and tested?) and backward (why does this code exist?), and can explain why this matters more, not less, when an AI writes the code.
+> **Purpose (one line):** a student can keep a use case honest end to end, tracing it forward (is it built and tested?) and backward (why does this code exist?), can explain why this matters more, not less, when an AI writes the code, and can place every use case in the release it ships in and forecast whether the MVP still fits.
 
 
 !!! note "This module is still being written"
@@ -19,13 +19,17 @@ guards on active weeks and on the previous-week window, updatePeerEvaluation gua
 getPeerEvaluationAverage ends in .average().orElse(0.0). Re-check before this module goes stable;
 the running example is a live repository, and OI-24 in particular is code-deferred, so the first
 example disappears the day it is fixed.
+
+The release-plan subsection's Project Pulse plan is from the handoff drafted 2026-10-11 against `main` at
+`31cd1a1`, merged as Project Pulse #95 at `81b5a97`; re-check the Release column and its `#release-legend`
+anchor before stable. Beck and Fowler 2000: confirm title and publisher.
 -->
 
 ## 2. Where it fits
 
 - **Prerequisites:** requirements as the contract (the spec is where traceable nodes get their stable IDs), AI-assisted implementation, and testing.
 - **Leads into:** maintainability, which is where the payoff and the honesty rule land.
-- **How it's taught:** one anchor lecture in week 8, when fan-out begins and the matrix first earns its keep, then practised every week on your growing codebase. You are required to keep the single-axis spine current; the fuller two-axis matrix is shown so you recognise it, not so you maintain it.
+- **How it's taught:** one anchor lecture in week 8, when fan-out begins and the matrix first earns its keep, ending on the release plan (a column in the same matrix), then practised every week on your growing codebase. You are required to keep the single-axis spine current; the fuller two-axis matrix is shown so you recognise it, not so you maintain it.
 - **Course outcome it delivers:** [maintaining living traceability from specification to design to code to test, and keeping it honest with tooling](../syllabus.md#learning-outcomes) (outcome 8).
 
 ## 3. Motivation
@@ -66,10 +70,40 @@ You will meet the opposite advice, and it is good advice. Guidance on reading an
 
 **Keep a register.** Project Pulse reconciles the two in [`docs/requirements/OPEN-ISSUES.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/requirements/OPEN-ISSUES.md), under a "Doc ↔ Code Gap Analysis" heading. Each entry names the rule, the `file:method` that diverges from it, and the direction the divergence will be resolved. Read it: a working register is worth more than the definition. And note what it is not. It is not a bug list. Each entry is a claim about *which of the two artifacts is currently wrong*, decided per item rather than assumed, which is why several of them resolve by changing the document. A divergence you have decided not to fix yet is traced. A divergence nobody noticed is not, and that is the whole difference the register buys.
 
+### From estimates to a release plan
+
+An estimate answers "when can I use this one?" The client's next question is "what will I have in December?" Answering it takes a **release plan**: every use case placed in the release it ships in. Agile planning has always done this with stories and velocity (Beck and Fowler 2000; Cohn 2005). The course keeps the idea and changes the units.
+
+**It is a column, not a document.** Your `traceability.md` already has one row per use case (and per non-use-case FR) with its Build and Verify state. The plan is one more column, **Release**: `v0.1.0` (the proving slice), `v0.2.0` (Checkpoint 3), `v1.0.0` (the December MVP), `Spring`, or `Out`. Plan and progress share a row, so they cannot disagree, and an empty cell is work nobody has planned. Your client agrees to scope by feature in vision and scope's MVP Scope section; the column carries that agreement down to use cases.
+
+**Placing the rows.** Risk first, for the reason your proving slice went first ([the spiral model](se-and-ai.md#spiral-let-risk-choose-the-next-step)): a wrong decision found in week 9 is cheap, and in week 14 it is not. Then what the client needs first, then dependencies. When something goes ahead of risk, the pull request that changes the column says why: the column holds the decision, and git holds the reason.
+
+**Project Pulse's plan.** Project Pulse shipped up to `v1.5.0` without a release plan. Its [Release column](https://github.com/Washingtonwei/project-pulse/blob/main/docs/traceability.md#release-legend) starts with the work that is left:
+
+| Release | What ships | Why there |
+|---|---|---|
+| `v1.6.0` | The reminders: on-demand (`UC-NOT-remind-non-submitters`), and the scheduled one brought in line with `BR-submission-owed` | Designed; built in week 8 |
+| `v1.7.0` | The rest of the requirements editor: artifact and link screens, comments, review, export | Backends built and tested; the client wants the editor finished first |
+| `v1.8.0` | The first AI assistant end to end: `UC-AI-critique`, the proposal loop, its settings, the model proxy | The riskiest work: the first model call, with the outage scenario measured |
+| `v1.9.0` | ReqLint and the tutor | The tutor explains ReqLint's findings, so it follows ReqLint |
+| `v2.0.0` | The other six assistants | The Fall 2027 classroom deployment |
+
+Risk alone would put `v1.8.0` before `v1.7.0`. The client chose otherwise, and the plan records that trade instead of hiding it. Writing the column also exposed a disagreement: the vision listed real-time co-editing as out of the MVP, while traceability showed it as unstarted work. The use case's own Status line already said Deferred, so that line settles it, and its Release cell stays empty: one fact, one owner.
+
+**The forecast.** A use case that is not designed yet has no test list, so size it from what it has, its main scenario and extensions, as a range wider than the [three-part estimate](implementation.md#43-where-the-hours-go-now): it sits earlier in the [cone of uncertainty](implementation.md#41-estimate-target-commitment). Write that range on the use case's issue; when its design is approved, the three-part estimate replaces it. Then:
+
+> **Hours still needed** = the sum of the estimate midpoints of every unfinished `v1.0.0` row × your team's calibration ratio
+
+Compare that with the hours your team will have before the MVP demo, judged from what your weekly activity reports show you actually work. If the plan does not fit, move rows out of `v1.0.0` with your client at the next meeting. This is the [estimate's rule](implementation.md#41-estimate-target-commitment) in practice: when the estimate and the target disagree, change the scope, not the estimate. Write the result as one line under your [calibration table](implementation.md#45-recording-and-calibrating):
+
+`Forecast: 6 rows left in v1.0.0, 38 to 60 h at ratio 1.4; about 70 h available. Fits, with no slack for the high end.`
+
+Revise the column at every use-case close ([the method, Phase C](../method.md#phase-c-fan-out-per-use-case)), and recompute the forecast whenever the ratio moves.
+
 ## 5. The AI-native lens
 
-- **Delegate to AI:** generating the design and code for a use case and updating its trace row; mechanically checking that every link resolves and every requirement has a verifying test.
-- **Keep human:** deciding what *should* trace to what, and judging whether a backward-orphan is dead code or a missing requirement. The graph's meaning is a human call.
+- **Delegate to AI:** generating the design and code for a use case and updating its trace row; mechanically checking that every link resolves and every requirement has a verifying test; drafting the Release column from the matrix and the ranked quality attributes, and adding up the forecast.
+- **Keep human:** deciding what *should* trace to what, and judging whether a backward-orphan is dead code or a missing requirement. The graph's meaning is a human call. So is the cut line: which use cases leave `v1.0.0` is agreed with the client, never decided by the agent.
 - **Context to supply:** the stable IDs and the spec they come from; the agent cannot invent a consistent handle space, it must be given the glossary and the use-case/FR/BR IDs.
 - **How to verify:** run the consistency check (`/spec-build`-style) and read its report; spot-check a random use case both directions by hand to confirm the tooling is telling the truth.
 
@@ -79,6 +113,7 @@ You will meet the opposite advice, and it is good advice. Guidance on reading an
 
 - **Goal:** …
 - **In studio (own project):** …
+- **Release plan:** by Checkpoint 2, every row of your traceability matrix has a Release value, revised by pull request at every use-case close. At Checkpoint 3, one forecast line under the calibration table.
 - **Deliverable & assessment:** …
 
 ## 7. Summary / key takeaways
@@ -86,22 +121,27 @@ You will meet the opposite advice, and it is good advice. Guidance on reading an
 <!-- To author. -->
 
 - …
+- A release plan is a Release column in your traceability matrix. Revise it at every close; when the forecast does not fit, change the scope with your client.
 
 ## 8. Key papers & further reading
 
 <!-- To author. Candidates: ISO/IEC/IEEE 29148 (traceability requirement); Gotel & Finkelstein on the traceability problem; the methodology's own traceability model in notes/methodology.md. -->
 
 - …
+- Beck, K., and Fowler, M. *Planning Extreme Programming*. Addison-Wesley, 2000. Release planning with stories and velocity.
+- Cohn, M. *Agile Estimating and Planning*. Prentice Hall, 2005.
 
 ## 9. Self-check
 
 <!-- To author. -->
 
 1. …
+2. Five unfinished use cases remain in `v1.0.0`; their estimate midpoints add up to 30 hours, your team's ratio is 1.5, and your team will have about 40 hours before the demo. Does the plan fit? What do you tell your client, and when?
 
 ## Related
 
 - [Schedule](../schedule.md): when the traceability anchor lands, and the weekly practice after it.
 - [Senior Design Project](../project.md): the traceability matrix as a graded deliverable.
+- [AI-Assisted Implementation](implementation.md#41-estimate-target-commitment): the estimates and calibration ratio the release plan is built from.
 - [SE and What AI Changes](se-and-ai.md): why the economics of rigor inverted, which is the argument this module rests on.
 - [The Method](../method.md): the full traceability model this module teaches a subset of, including the second axis and the off-spine overlays.

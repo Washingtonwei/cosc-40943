@@ -258,6 +258,6 @@ Agreeing with the list is not the output. A decision on each invented assumption
 
 If everything landed in the issue pile, go around again.
 
-**What you produce:** one issue per pair on your board, with its sorted list as a comment, and new entries in `OPEN-ISSUES.md`. Close the specification and charter piles by pull request before the agent builds from the issue. Then the use case's owner fills in the Estimate, sized from the design's test list ([how](modules/process-and-planning.md#43-where-the-hours-go-now)), still before the agent builds. From then on, every weekly activity report line about that use case starts with its ID.
+**What you produce:** one issue per pair on your board, with its sorted list as a comment, and new entries in `OPEN-ISSUES.md`. Close the specification and charter piles by pull request before the agent builds from the issue. Then the use case's owner fills in the Estimate, sized from the design's test list ([how](modules/implementation.md#43-where-the-hours-go-now)), still before the agent builds. From then on, every weekly activity report line about that use case starts with its ID.
 
 **How your TA checks it,** on GitHub by Tuesday Oct 20, replying on each issue: the issue cites the use case rather than copying it or listing its rules; the use case it cites exists; the sorted list is posted; not everything is in the issue pile; the Estimate is a range in all three parts, and it was written before the first commit the agent made for this use case.
