@@ -128,7 +128,7 @@ The first 90 percent of the code takes the first 90 percent of the time. The rem
 :::
 
 ::: note
-The joke is now literally true: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. Each part maps onto weekly activity report categories: clarify is COMMUNICATION or DOCUMENTATION, design is DESIGN, build and review is DEVELOPMENT, verify is TESTING or BUGFIX. Count only time spent on this use case; a client meeting about five use cases is overhead, not split five ways. The refined estimate folds clarify and design into one part, what is left of them: the holes the build exposes.
+The joke is now literally true: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. Each part maps onto weekly activity report categories: clarify is REQUIREMENTS or COMMUNICATION, design is DESIGN, build and review is DEVELOPMENT or REVIEW (a teammate's review of the pull request included), verify is TESTING or BUGFIX. Count only time spent on this use case; a client meeting about five use cases is overhead, not split five ways. The refined estimate folds clarify and design into one part, what is left of them: the holes the build exposes.
 :::
 
 ## Planning poker, in hours

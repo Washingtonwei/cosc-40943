@@ -57,12 +57,12 @@ A use case's hours fall into four parts, each estimated as a range:
 
 | Part | What the hours buy | Weekly activity report categories |
 |---|---|---|
-| **Clarify** | Settling the use case with the client: reviewing it, chasing the questions it raises, fixing it | `COMMUNICATION`, `DOCUMENTATION` |
+| **Clarify** | Settling the use case with the client: reviewing it, chasing the questions it raises, fixing it | `REQUIREMENTS`, `COMMUNICATION` |
 | **Design** | Running the challenge loop with the agent and revising the design-of-record until it merges | `DESIGN` |
-| **Build and review** | Driving the agent, reading every line of its diff against the design, sending it back | `DEVELOPMENT` |
+| **Build and review** | Driving the agent, reading every line of its diff against the design, sending it back | `DEVELOPMENT`, `REVIEW` |
 | **Verify** | Making each row of the test list pass and seeing it pass, running the flow end to end, fixing what that finds | `TESTING`, `BUGFIX` |
 
-Count only time spent on this use case. A client meeting that covers five use cases is not split five ways; it is overhead, and it comes out of the hours your team has available in the [release forecast](traceability.md#from-estimates-to-a-release-plan).
+A teammate's review of the pull request is `REVIEW` too, and its line starts with the use case ID, so review hours count toward the use case whoever does the reading. Count only time spent on this use case. A client meeting that covers five use cases is not split five ways; it is overhead, and it comes out of the hours your team has available in the [release forecast](traceability.md#from-estimates-to-a-release-plan).
 
 **The refined estimate keeps the last two parts and folds the first two into one:** clarify and design, what is left. The questions test closes most gaps before the build, but the build still exposes a few holes in the use case or the design, and fixing them is a person's time.
 
