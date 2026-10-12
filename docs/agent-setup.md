@@ -237,13 +237,13 @@ Three things are different, and all three are team decisions, not individual one
 }
 ```
 
-The `Read` rules keep the agent out of your secrets: anything it reads is sent to the model provider and can reappear in a commit or a comment. If your secrets live somewhere else, add that path too. Then test the lock: ask the agent to read your `.env` and confirm it is refused. [AI-Assisted Implementation 4.8](modules/implementation.md#48-what-the-agent-may-read-and-run) explains why a rule beats a request.
+The `Read` rules keep the agent out of your secrets: anything it reads is sent to the model provider and can reappear in a commit or a comment. If your secrets live somewhere else, add that path too. Then test the lock: ask the agent to read your `.env` and confirm it is refused. [AI-Assisted Implementation 4.7](modules/implementation.md#47-what-the-agent-may-read-and-run) explains why a rule beats a request.
 
 Open that as a pull request like any other change, so the team reviews what the agent may not do. Your TA checks this file at Checkpoint 2.
 
 **Never switch the permission checks off.** Starting Claude Code with `--dangerously-skip-permissions`, or Copilot CLI with `--allow-all-tools`, in a folder that holds your secrets or your GitHub login is exactly the state a 2025 supply-chain attack looked for on developers' machines.
 
-**No dependency enters without a person's check.** Agents sometimes name packages that do not exist, and attackers register those names. Put this line in your charter's list of things the agent must not do, and keep it yourself: *no dependency is added until a person confirms it exists and is the one we meant.* What to check is in [AI-Assisted Implementation 4.8](modules/implementation.md#48-what-the-agent-may-read-and-run).
+**No dependency enters without a person's check.** Agents sometimes name packages that do not exist, and attackers register those names. Put this line in your charter's list of things the agent must not do, and keep it yourself: *no dependency is added until a person confirms it exists and is the one we meant.* What to check is in [AI-Assisted Implementation 4.7](modules/implementation.md#47-what-the-agent-may-read-and-run).
 
 **Running more than one agent at once.** `claude --worktree <name>` starts a session in its own checkout and branch, so two agents do not edit the same files. It does not stop them making different decisions, so put these four lines in your charter's workflow section: one agent per sub-issue, each in its own worktree and branch and ending in its own pull request; fan out only after the shared code the leaves depend on is merged; never split one use case's layers across agents; and no more agents running than pull requests you will review that day. Add `.claude/worktrees/` to your `.gitignore`. Week 8's implementation lecture explains why.
 

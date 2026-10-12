@@ -308,40 +308,6 @@ Ask the agent for a feature there, and it writes code that does not log. Whateve
 **Background:** the two names are LOGGER and log. The catch-all exception handler logs nothing either. Same mechanism as week 2's reviewee example.
 :::
 
-## First run the tests
-
-```text
-./mvnw test        (mvnw.cmd test on Windows)
-```
-
-::: steps
-- The agent learns a suite exists, and how to run it.
-- It sees how big the project is.
-- Testing becomes the default for the session.
-:::
-
-::: note
-**Say:** First habit: run the tests before changing anything. *[Tab A: `cd backend`, then `.\mvnw.cmd test -Dtest=WeeklyReminderSchedulerTest`.]* Zero failures: that's the baseline. The agent learns the suite exists, how to run it, and how big the project is. The full suite takes minutes, so one class today. This command goes in your charter.
-
-**Background:** from Simon Willison's "First run the tests", this week's reading.
-:::
-
-## Test first, and watch it fail
-
-::: key
-A test that passes before the change proves nothing about the change.
-:::
-
-::: warn
-If the agent writes the test and the code, it can pass its own exam. The expected value comes from the use case, not from the code.
-:::
-
-::: note
-**Say:** Second habit: write the test first and watch it fail. A test that passes before the change proves nothing. If the agent writes the test and the code, it can pass its own exam; the expected value comes from the use case. Watch today's run: it won't show red first, because nothing tells it to. That line belongs in your charter.
-
-**Background:** red/green. The test comes from the use case's postcondition or extension outcome. Where the expected value comes from is week 9's question, the oracle; today only plant it.
-:::
-
 ## Cognitive debt {.center}
 
 ::: key
@@ -450,7 +416,7 @@ The code is evidence, never authority.
 :::
 
 ::: note
-**Say:** *[While the agent runs.]* For teams whose client handed you existing code. Ask the agent to document it and it writes down what the code does, bugs included. A missing check, read back, becomes a requirement nobody chose. Only your client decides whether each one is intended, corrected, or a defect. The code is evidence, never authority. Module 4.9 has the steps.
+**Say:** *[While the agent runs.]* For teams whose client handed you existing code. Ask the agent to document it and it writes down what the code does, bugs included. A missing check, read back, becomes a requirement nobody chose. Only your client decides whether each one is intended, corrected, or a defect. The code is evidence, never authority. Module 4.8 has the steps.
 
 **Background:** Project Pulse's /design calls its version "design-as-built". Defects go to OPEN-ISSUES.md, not into the specification.
 :::
@@ -470,7 +436,7 @@ A NullPointerException in production: the user sees one sentence, the operator s
 :::
 
 ::: note
-Abridged from ExceptionHandlerAdvice; the module, 4.10, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.10.
+Abridged from ExceptionHandlerAdvice; the module, 4.9, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.9.
 :::
 
 ## The logging rule, for your charter
@@ -515,7 +481,7 @@ No more agents than pull requests you will review well today.
 :::
 
 ::: note
-Reading: module 4.11. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
+Reading: module 4.10. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
 :::
 
 ## `/implement` is a file
@@ -530,7 +496,7 @@ Reading: module 4.11. Start both reminder leaves before the trunk merges and eac
 | Stop | Once, after the trunk |
 
 ::: note
-Project Pulse's .claude/commands/implement.md, 88 lines; design.md has the same skeleton and stops earlier, before writing the design doc, until you accept its shape. Claude Code turns .claude/commands/name.md into /name. The stop is the most important line: a command with no stop hands your judgment to the agent. Module 4.12.
+Project Pulse's .claude/commands/implement.md, 88 lines; design.md has the same skeleton and stops earlier, before writing the design doc, until you accept its shape. Claude Code turns .claude/commands/name.md into /name. The stop is the most important line: a command with no stop hands your judgment to the agent. Module 4.11.
 :::
 
 ## Write your own
@@ -554,8 +520,6 @@ Optional, not graded. Commit it by pull request, like the charter, because the w
 ## Before your agent builds the slice
 
 ::: steps
-- Charter: the command that runs your tests.
-- Charter: "write the test first and show it failing."
 - Charter: your logging rule.
 - Build trunk first; read it before the leaves.
 :::

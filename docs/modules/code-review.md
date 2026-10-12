@@ -11,7 +11,7 @@
 
 By the end of this module, a student can:
 
-1. Review a pull request against its use case and test list, and find what the diff leaves out.
+1. Review a pull request against its use case and approved design (diagrams, API contract, decisions, test list), and find what the diff leaves out.
 2. Set review depth by where the code lands (trunk, security rule, leaf) and write that decision into the review as a triage line.
 3. Write labeled review comments, and approve by the standard of "better than before", not "perfect".
 4. Write the author's half: a pull request description that says what was verified, what was not, and where to look.
@@ -50,14 +50,26 @@ Review began as **formal inspection**: planned meetings, prepared reviewers, a m
 
 ### 4.2 Two questions every review answers
 
-1. **Does this change do what the contract says?** The contract is the use case (every extension, not only the main scenario), its business rules, and the design-of-record's API table and test list. A reviewer reading only the diff cannot answer this. **A missing extension is invisible in the diff and visible in the test list.**
+1. **Does this change do what the contract says?** The contract is the use case (every extension, not only the main scenario), its business rules, and the approved design-of-record: its diagrams, API contract, key decisions, and test list. A reviewer reading only the diff cannot answer this. **A missing extension is invisible in the diff and visible in the test list.**
 2. **How deep must I read this part, given where it lands?** Not every line deserves the same attention ([4.3](#43-how-deep-trunk-security-rule-leaf)).
 
-For the reminder, the contract is `UC-NOT-remind-non-submitters` and the 20-row test list in [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#tests). Open it beside the diff. For each row, find the test that covers it or write that none does.
+**Read the design beside the diff.** The agent built from an approved design, so the first question is whether it built *that* design or one it preferred. For the reminder, the contract is `UC-NOT-remind-non-submitters` and [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md). Walk its sections against the code:
+
+| Design section | What to check in the code | In the reminder |
+|---|---|---|
+| **Class diagram** | Each class exists in the package the design names, with the methods it names; no class the design did not ask for; dependencies run only the way the arrows run | `SubmissionStatusService` sits in `notification` and calls `ActivityService` and `EvaluationService`, never their repositories |
+| **Sequence diagrams** | The calls happen in the order drawn, and every `alt` and `opt` branch is in the code | On Confirm, `ReminderController` calls `findOwing` again before sending, so a student who submitted a minute ago is not emailed |
+| **API contract** | Each route, request, success response, and error status, extension by extension | `POST /reminders` takes only `{ item }`; the server computes the week |
+| **Key decisions** | The code took the chosen option, not one the design rejected | "Store nothing": no reminder table, no Flyway migration |
+| **Tests** | Each row has a test, at the level the row names, asserting what the row says | "UC-NOT 6a" is a unit test in which one send throws and the others still go out |
+
+**Review the tests, not only that they pass.** For each row of the test list, find the test that covers it or write that none does. Then read its assertion against the row: row "UC-NOT 4a" asks for a `400` *and* no email sent, so a test that checks only the status covers half the row. A test the agent wrote from its own code checks that the code does what the code does; the expected value has to come from the use case ([4.4](#44-a-checklist-short-enough-to-use), item 6).
+
+**A deviation is not automatically wrong.** `/implement` tells the agent to shout when it sees a better way ([AI-Assisted Implementation 4.11](implementation.md#411-package-your-workflow-as-a-command)). A deviation the pull request names, with the design updated in the same pull request, is a design change under review. A silent one is a defect even when the code works, because the design no longer describes the code ([Design-of-Record 6](design-of-record.md#6-risks-and-mitigations), the stale design).
 
 ### 4.3 How deep: trunk, security rule, leaf
 
-The pull request arrives in the commits [AI-Assisted Implementation 4.7](implementation.md#47-size-the-step-to-the-review) asked for, and the commits set the depth:
+The pull request arrives in the commits [AI-Assisted Implementation 4.6](implementation.md#46-size-the-step-to-the-review) asked for, and the commits set the depth:
 
 | Commit | Depth |
 |---|---|
@@ -74,10 +86,11 @@ The pull request arrives in the commits [AI-Assisted Implementation 4.7](impleme
 Checklists work when they are short and name what experts skip under pressure. When Peter Pronovost gave ICU staff at Johns Hopkins a five-step checklist for inserting central lines, the ten-day line infection rate fell from 11% to zero (Gawande 2007). A review checklist does the same for the steps a reviewer skips when a pull request looks fine:
 
 1. **The test list.** Each row: covered by a test, or named as missing.
-2. **The triage line.** Trunk and security commits read in full.
-3. **The logic against the description.** Does the code do what the pull request says, and what the use case says?
-4. **Each extension's error path.** What happens when it fails, and does every `catch` that does not rethrow log the exception ([AI-Assisted Implementation 4.10](implementation.md#410-log-what-the-person-at-2-am-will-need))?
-5. **The tests check the contract.** An expected value taken from the use case, not echoed from a mock.
+2. **The design.** Classes, calls, routes, and decisions match the design-of-record; every deviation is named and the design updated in the same pull request.
+3. **The triage line.** Trunk and security commits read in full.
+4. **The logic against the description.** Does the code do what the pull request says, and what the use case says?
+5. **Each extension's error path.** What happens when it fails, and does every `catch` that does not rethrow log the exception ([AI-Assisted Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need))?
+6. **The tests check the contract.** An expected value taken from the use case, not echoed from a mock.
 
 Style, formatting, unused variables, and duplication are real, and they are the linter's job from week 10. Leave them to a "Nit:" comment until then.
 
@@ -201,7 +214,7 @@ Claude Code's `/code-review` runs in a fresh context: it does not see the conver
 
 ### Carried forward
 
-- From the instructor's 2018 deck ("Agile Review and Metrics", slides 29 to 36): the "What to review?" list, kept as checklist items 3 and 4 (logic against the description, error handling), with syntax, duplication, and unused code handed to linters; and "review spreads knowledge", kept as the Bacchelli and Bird row.
+- From the instructor's 2018 deck ("Agile Review and Metrics", slides 29 to 36): the "What to review?" list, kept as checklist items 4 and 5 (logic against the description, error handling), with syntax, duplication, and unused code handed to linters; and "review spreads knowledge", kept as the Bacchelli and Bird row.
 - From CMU 17-313's code-review lecture: the Swiss cheese model and the checklist.
 
 ### Hand-offs
