@@ -2,7 +2,7 @@
 
 **Slides:** [Estimate, Then Build With the Agent](../slides/implementation.html) (the fast version).
 
-> **Purpose (one line):** estimate a use case in human hours before your agent builds it, calibrate from the hours you log, then build the approved design in steps you can read, with an agent that cannot reach your secrets, so the merged code is code your team understands and logs what someone will need at 2 AM.
+> **Purpose (one line):** estimate the human hours a use case costs, from clarifying it with the client to seeing its tests pass, calibrate from the hours you log, then build the approved design in steps you can read, with an agent that cannot reach your secrets, so the merged code is code your team understands and logs what someone will need at 2 AM.
 
 !!! note "This module is still being written"
     The worked example's actual hours (4.3) are added after Monday's build.
@@ -11,7 +11,7 @@
 
 By the end of this module, a student can:
 
-1. Estimate a use case as a range of human hours in three parts (specify, build and review, verify), sized from its design's test list.
+1. Estimate a use case as a range of human hours, twice: in four parts (clarify, design, build and review, verify) by planning poker when it is written, and again once its design is approved, sized from the design's test list.
 2. Compute a calibration ratio from the estimate and the logged actual hours, use it to correct the next estimate, and tell the client early when a promised date no longer fits.
 3. Open an agent session by running the existing tests, and ask for a test that fails first.
 4. Cut an implementation into trunk and leaf commits along its design, and pay down cognitive debt by reading the trunk before the leaves are built.
@@ -43,36 +43,45 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 ### 4.1 An estimate is a range, made twice
 
+**Estimate the people, not the agent.** `/implement` writes the reminder in a session of a few minutes, and no line of the estimate is that session. Every hour in it is a person's: settling the use case with the client, designing with the agent, reading what it wrote, and seeing it work.
+
 Give an estimate as a range of human hours: "3 to 5 hours, most likely about 3.5." The work is uncertain, and a single number gets heard as a promise. If the client needs it sooner than the range allows, cut scope; do not shrink the estimate.
 
-**Estimate each use case twice.** When it is written, give it a **coarse range** from its main scenario and extensions; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the **three-part estimate** (4.2) replaces it. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
+**Estimate each use case twice.** When it is written, the team gives it a **coarse estimate** in all four parts of 4.2; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the owner gives a **refined estimate** of what is left. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
 
 ### 4.2 Where the hours go now
 
-Estimate a use case in three parts, each as a range of human hours:
+A use case's hours fall into four parts, each estimated as a range:
 
 | Part | What the hours buy | Weekly activity report categories |
 |---|---|---|
-| **Specify** | Closing the gaps the agent would otherwise guess at: fixing the use case, the design, or the build-context when the questions test or the build exposes a hole | `DESIGN`, `DOCUMENTATION` |
+| **Clarify** | Settling the use case with the client: reviewing it, chasing the questions it raises, fixing it | `COMMUNICATION`, `DOCUMENTATION` |
+| **Design** | Running the challenge loop with the agent and revising the design-of-record until it merges | `DESIGN` |
 | **Build and review** | Driving the agent, reading every line of its diff against the design, sending it back | `DEVELOPMENT` |
 | **Verify** | Making each row of the test list pass and seeing it pass, running the flow end to end, fixing what that finds | `TESTING`, `BUGFIX` |
 
-**Size it from the test list.** Each row is one behavior a person has to see working, so the row count measures what the software must do, and it is already written. It does not turn into hours by itself. Make your first estimate by analogy: find the finished change closest in size and start from its hours. Once your team has finished two or three use cases, divide their logged hours by their test rows; that is your own rate, and it replaces the analogy. Do not borrow anyone else's rate, including one measured before agents wrote the code. The open-questions list sets the width of the range: a risk that can only be settled by measuring (like the reminder's email latency) widens the high end.
+Count only time spent on this use case. A client meeting that covers five use cases is not split five ways; it is overhead, and it comes out of the hours your team has available in the [release forecast](traceability.md#from-estimates-to-a-release-plan).
+
+**The refined estimate keeps the last two parts and folds the first two into one:** clarify and design, what is left. The questions test closes most gaps before the build, but the build still exposes a few holes in the use case or the design, and fixing them is a person's time.
+
+**Make the coarse estimate by planning poker** (Grenning 2002; Cohn 2005). In a team meeting, each member writes a range for each part without showing it, everyone reveals at once, and the highest and lowest explain before the team agrees on a range. The reveal matters more than the number: if one teammate puts clarify at half an hour and another at four, they have read two different use cases, and the gap is a question for the client. Give each use case a few minutes and spend them on the gaps. Agile teams play with story points; play with hours, because the client asks for a date, your weekly activity reports log hours, and one semester is too few sprints for a points velocity to settle.
+
+**Size the refined estimate from the test list.** Each row is one behavior a person has to see working, so the row count measures what the software must do, and it is already written. It does not turn into hours by itself. Make your first estimate by analogy: find the finished change closest in size and start from its hours. Once your team has finished two or three use cases, divide their logged hours by their test rows; that is your own rate, and it replaces the analogy. Do not borrow anyone else's rate, including one measured before agents wrote the code. The open-questions list sets the width of the range: a risk that can only be settled by measuring (like the reminder's email latency) widens the high end.
 
 What the agent does not change is how long it takes *you* to understand a diff and know it is right. That is the term to estimate carefully.
 
 ### 4.3 Worked example: the reminder
 
-The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, made from `not.md` before `/implement` runs:
+The refined estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, made from `not.md` before `/implement` runs. The reminder was designed before the course taught estimation, so it has no coarse estimate; neither does your proving slice.
 
 | Part | Basis | Estimate (hours) |
 |---|---|---|
-| Specify | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
+| Clarify and design, what is left | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
 | Build and review | Every diff read against the sequence diagrams | 1.5 to 2 |
 | Verify | 20 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
 | **Total** | By analogy: the reminder matches the reference change below in scope, which took about 3.5 hours end to end, so the most likely value is its 3.5 | **3 to 5, most likely about 3.5** |
 
-**The reference.** The instructor has no measured rate per test row yet, so this estimate is the analogy 4.2 starts from. [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge. Your reference class is your own past work, not someone else's: your first changes will be slower than the instructor's in the instructor's own codebase, and the calibration ratio (4.4) corrects for that.
+**The reference.** The instructor has no measured rate per test row yet, so this estimate is the analogy 4.2 starts from. [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, though the agent's sessions in it took minutes. Your reference class is your own past work, not someone else's: your first changes will be slower than the instructor's in the instructor's own codebase, and the calibration ratio (4.4) corrects for that.
 
 The date that follows: on staging by the Friday of the build week, with the latency measured, or a message to the instructor by Wednesday saying why not.
 
@@ -82,9 +91,9 @@ The date that follows: on staging by the Friday of the build week, with the late
 
 An estimate nobody checks teaches nothing. The course already records the other half: every line of your weekly activity report in Project Pulse carries **planned hours** and **actual hours** (the `Activity` entity, [`Activity.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/activity/Activity.java)). Three habits connect the two:
 
-1. **Before building**, the use case's owner writes the estimate on its issue: `Estimate: specify 0.5–1 h, build and review 1.5–2 h, verify 1–2 h.`
+1. **Before building**, the use case's owner writes the refined estimate on its issue, under the coarse one: `Estimate: clarify and design 0.5–1 h, build and review 1.5–2 h, verify 1–2 h.`
 2. **Every week**, each weekly activity report line about that use case starts with its ID (`UC-NOT-remind-non-submitters: reviewed the agent's diff against the sequence diagram`) and uses the category from the table in 4.2.
-3. **When the use case is done**, sum the actual hours across weeks and compute the **calibration ratio**: actual hours divided by the midpoint of the estimate.
+3. **When the use case is done**, compute a **calibration ratio** for each of its estimates: the hours logged since that estimate was made, divided by its midpoint. The refined ratio says how well you estimate a build; the coarse ratio says how well you estimate a use case you have only read, and the release forecast uses it.
 
 A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
@@ -184,7 +193,7 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 
 ## 5. The AI-native lens
 
-- **Delegate to AI:** the counting for the estimate (list the design's test rows, the files its sequence diagrams touch, and the open risks, and draft the three-part breakdown; sum your weekly activity report hours by use case ID); writing the code and tests from an approved design, running the suite, committing along trunk and leaves, and side tasks that edit nothing.
+- **Delegate to AI:** the counting for the estimate (list the design's test rows, the files its sequence diagrams touch, and the open risks, and draft the refined breakdown; sum your weekly activity report hours by use case ID); writing the code and tests from an approved design, running the suite, committing along trunk and leaves, and side tasks that edit nothing.
 - **Keep human:** what the agent may read and run, and whether a new dependency enters; the hours and the date (an agent asked "how long will this take?" answers from text written about teams that wrote their own code, with no record of your hours, your review speed, or this term's agent; only a person can make a promise to a client); reading the trunk at the pause, deciding what is trunk when the design is unclear, judging what may be logged, and calling recovered behavior intended or a defect.
 - **Context to supply:** for the estimate, the approved design, its test list and open questions, and your team's current calibration ratio; for the build, the merged design and use case only (start after `/clear`), the charter with the test command, the logging rule, and the dependency rule, the team's settings file with its deny rules, and, when fanning out, the merged trunk.
 - **How to verify:** check the agent's estimate breakdown against the design (every test row counted, every open risk reflected in the range) and never accept an hour figure from it, including one it presents as a range; at the pause, explain the trunk without asking the agent; read every new log line for what it writes out; confirm each new test failed before its code existed; ask the agent to read a denied file and watch it refused.
@@ -194,7 +203,7 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Classic:** an estimate given as a single number is heard as a promise | Hearing "two weeks" and asking "is that an estimate or a promise?" | Always state a range; give a date only as a separate, explicit promise |
-| **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate in the three parts of 4.2 |
+| **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate the parts of 4.2, every one of them a person's hours |
 | **AI-amplified:** trusting your felt speed with an agent | Comparing the estimate with the logged hours, not with memory | The calibration ratio at every checkpoint |
 | **AI-introduced:** a test written to pass the agent's own code | Asking where the expected value came from | Test first, seen to fail; expected values from the use case |
 | **AI-amplified:** cognitive debt, a diff too large to read and approved anyway | At the pause, trying to say what changed and why without asking the agent | Trunk and leaf commits along the design (4.7); one pause, after the trunk |
@@ -205,7 +214,7 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 
 ## 7. Hands-on (studio + optional individual assignment)
 
-**Team, own project:** before any use case is built, its owner writes the three-part estimate on its issue, sized from the design's test list, and from then on weekly activity report lines about it start with its ID. At Checkpoints 2 and 3, show one table: each finished use case, its estimate, its actual hours, its ratio, and one sentence on the biggest miss, graded as 4.5 says.
+**Team, own project:** before Checkpoint 2, play one planning-poker round for every use case not yet designed and write each coarse estimate on its issue; the release plan adds them up. Before any use case is built, its owner writes the refined estimate on its issue, sized from the design's test list, and from then on weekly activity report lines about it start with its ID. At Checkpoints 2 and 3, show one table: each finished use case, its estimates, its actual hours, its ratios, and one sentence on the biggest miss, graded as 4.5 says.
 
 Before your agent builds the proving slice, commit the team's `.claude/settings.json` with `Read` deny rules for your secrets, by pull request, and confirm the agent is refused. Add four lines to your agent charter: the command that runs your tests, "write the test first and show it failing", your logging rule from 4.10, and "no dependency is added until a person confirms it exists and is the intended one". Your TA checks both at Checkpoint 2. If you run more than one agent, add the four parallel-agent lines from [Agent Setup](../agent-setup.md#10-your-team-repository). Build the slice trunk first, and read the trunk before the leaves.
 
@@ -213,7 +222,7 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 
 ## 8. Summary / key takeaways
 
-- An estimate is a range of hours, made twice: coarse when the use case is written, in three parts once its design is approved. Cut scope, never the estimate.
+- An estimate counts people's hours, never the agent's minutes, as a range made twice: coarse, in four parts by planning poker, when the use case is written; refined once its design is approved. Cut scope, never the estimate.
 - With an agent, the hours are in specifying, reviewing, and verifying. Size by the test list, and measure your own rate from your weekly activity reports, not your sense of speed.
 - Run the tests first, see the new test fail, and commit trunk first. Read the trunk before the leaves are built.
 - Deny the agent your secrets with a rule, never switch its checks off, read outside content before it does, and confirm every dependency it names.
@@ -222,6 +231,8 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 
 ## 9. Key papers & further reading
 
+- Cohn, M. *Agile Estimating and Planning*. Prentice Hall, 2005. Chapter 6 covers planning poker.
+- Grenning, J. "Planning Poker or How to Avoid Analysis Paralysis while Release Planning." 2002.
 - Jeffries, R. "Estimation Is Evil." 2021. <https://ronjeffries.com/articles/021-01ff/estimation-is-evil/>
 - METR. "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity." July 10, 2025. <https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/>
 - Willison, S. "First run the tests" and "Red/green TDD," in *Agentic Engineering Patterns*, 2026. <https://simonwillison.net/guides/agentic-engineering-patterns/first-run-the-tests/>, <https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/>. Week 8 reading.
@@ -234,15 +245,16 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 ## 10. Self-check
 
 1. Your client asks, "Can you have the export feature by next Friday?" Its use case is written but not yet designed. What do you answer, and when can you give a firmer one?
-2. A use case's design has 12 test rows and one open risk that can only be measured in production. Which part of the three-part estimate does the risk widen, and why?
-3. Your estimate was 6 to 10 hours; your weekly activity reports show 14. What is your calibration ratio, and what is your next estimate for a use case you would otherwise have called 4 to 8 hours?
-4. Your agent's first commit adds a new service three controllers will call, plus two new screens. Which part is trunk, where should the pause be, and what does reading the trunk then save?
-5. Your agent's new test passes on its first run, before any code was written. What does that tell you?
-6. Your `CLAUDE.md` says "never read `.env`." A teammate says that is enough. What does a `Read(./.env)` deny rule in `.claude/settings.json` add, and how do you check it works?
-7. Your agent adds `react-query-helpers-pro` to `package.json`. What do you check before merging?
-8. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
-9. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
-10. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
+2. In planning poker, one teammate puts clarify at 0.5 hours and another at 4. What do you do before agreeing on a range?
+3. A use case's design has 12 test rows and one open risk that can only be measured in production. Which part of the refined estimate does the risk widen, and why?
+4. Your estimate was 6 to 10 hours; your weekly activity reports show 14. What is your calibration ratio, and what is your next estimate for a use case you would otherwise have called 4 to 8 hours?
+5. Your agent's first commit adds a new service three controllers will call, plus two new screens. Which part is trunk, where should the pause be, and what does reading the trunk then save?
+6. Your agent's new test passes on its first run, before any code was written. What does that tell you?
+7. Your `CLAUDE.md` says "never read `.env`." A teammate says that is enough. What does a `Read(./.env)` deny rule in `.claude/settings.json` add, and how do you check it works?
+8. Your agent adds `react-query-helpers-pro` to `package.json`. What do you check before merging?
+9. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
+10. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
+11. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
 
 ## Related
 

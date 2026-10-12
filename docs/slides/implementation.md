@@ -78,12 +78,22 @@ up 91%.
 Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap; the cost moved to the person reading the result.
 :::
 
+## People's hours, not the agent's {.center}
+
+::: key
+`/implement` writes the reminder in a few minutes. None of the estimate is those minutes.
+:::
+
+::: note
+Every hour in the estimate is a person's: settling the use case with the client, designing with the agent, reading what it wrote, seeing it work. Pull request #76 was agent-written and still took about 3.5 hours from first commit to merge.
+:::
+
 ## A range, made twice
 
 ::: steps
 - Always a range: "3 to 5 hours, most likely about 3.5."
-- When the use case is written: a coarse range, for ordering and the release plan.
-- When its design is approved: the three-part estimate, the one you give a date from.
+- When the use case is written: a coarse estimate, by the team, for ordering and the release plan.
+- When its design is approved: the refined estimate, the one you give a date from.
 :::
 
 ::: warn
@@ -97,7 +107,8 @@ A single number gets heard as a promise. The coarse range is wide because nothin
 ## Where the hours go now
 
 ::: steps
-- **Specify:** closing the gaps the agent would guess at.
+- **Clarify:** settling the use case with the client.
+- **Design:** the challenge loop and the design-of-record, until it merges.
 - **Build and review:** driving the agent, reading every line of the diff.
 - **Verify:** seeing each test row pass, end to end.
 :::
@@ -107,7 +118,28 @@ The first 90 percent of the code takes the first 90 percent of the time. The rem
 :::
 
 ::: note
-The joke is now literally true: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. Each part maps onto weekly activity report categories: specify is DESIGN or DOCUMENTATION, build and review is DEVELOPMENT, verify is TESTING or BUGFIX.
+The joke is now literally true: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. Each part maps onto weekly activity report categories: clarify is COMMUNICATION or DOCUMENTATION, design is DESIGN, build and review is DEVELOPMENT, verify is TESTING or BUGFIX. Count only time spent on this use case; a client meeting about five use cases is overhead, not split five ways. The refined estimate folds clarify and design into one part, what is left of them: the holes the build exposes.
+:::
+
+## Planning poker, in hours
+
+::: steps
+- Each teammate writes a range per part, privately.
+- Reveal at once.
+- Highest and lowest explain.
+- Agree on a range.
+:::
+
+::: key
+The gap is the finding. Clarify at 0.5 hours and at 4 means two people read two different use cases.
+:::
+
+::: ask
+`UC-AI-critique`, not yet designed. Your range for clarify?
+:::
+
+::: note
+Grenning 2002, popularized by Cohn. A few minutes per use case, spent on the gaps; a gap on clarify is a question for the client. Hours, not story points: the client asks for a date, weekly activity reports log hours, and a semester is too few sprints for a points velocity to settle. If time allows, take a show of hands on the ask and get the extremes to explain.
 :::
 
 ## Size it by the test list
@@ -124,13 +156,13 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 
 | Part | Basis | Hours |
 |---|---|---|
-| Specify | Questions test already run | 0.5 to 1 |
+| Clarify and design, left | Questions test already run | 0.5 to 1 |
 | Build and review | Every diff read against the diagrams | 1.5 to 2 |
 | Verify | 20 rows, latency on staging | 1 to 2 |
 | **Total** | By analogy: #76, 3.5 h | **3 to 5** |
 
 ::: note
-No measured rate yet, so this is an analogy. The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. Compare with the numbers the room gave on the first slide: those were the coarse estimate, made without the design, the job story points do in agile. This one is the sprint-planning estimate, made with it.
+No measured rate yet, so this is an analogy. The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. This is the refined estimate. The reminder was designed before we taught estimation, so it has no coarse one, and neither do the teams' proving slices. Compare with the numbers the room gave on the first slide: those were coarse guesses made without the design, the job planning poker does. This one is the sprint-planning estimate, made with it.
 :::
 
 ## Write it down before you build
@@ -138,7 +170,7 @@ No measured rate yet, so this is an analogy. The reference class is Project Puls
 On the issue:
 
 ```text
-Estimate: specify 0.5–1 h, build and review 1.5–2 h, verify 1–2 h
+Estimate: clarify and design 0.5–1 h, build and review 1.5–2 h, verify 1–2 h
 ```
 
 In every weekly activity report line about it:
@@ -154,7 +186,7 @@ Project Pulse already stores planned and actual hours on every activity line (th
 ## Calibrate
 
 ::: key
-Calibration ratio = actual hours ÷ midpoint of the estimate.
+Calibration ratio = hours logged since the estimate ÷ its midpoint.
 :::
 
 ::: steps
@@ -168,7 +200,7 @@ Hofstadter's Law: it always takes longer than you expect, even when you take int
 :::
 
 ::: note
-The ratio is how you take Hofstadter's Law into account for real. Track it per person and per team: six ratios is how a team finds out that review, not building, is where its hours go.
+The ratio is how you take Hofstadter's Law into account for real. One ratio per estimate: the refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Track them per person and per team: six ratios is how a team finds out that review, not building, is where its hours go.
 :::
 
 ## Graded on honesty, not accuracy {.center}
@@ -184,7 +216,8 @@ Logging fewer hours to look accurate is inflating a weekly activity report, and 
 ## In your team meeting, by Sunday
 
 ::: steps
-- Your build-context issue gets an estimate before the agent builds.
+- Your build-context issue gets a refined estimate before the agent builds.
+- Before Checkpoint 2: planning poker for every use case not yet designed, its coarse estimate on its issue.
 - Your weekly activity report lines carry the use case ID.
 - Checkpoints 2 and 3: estimate, actual, ratio, and one sentence on the biggest miss.
 :::
