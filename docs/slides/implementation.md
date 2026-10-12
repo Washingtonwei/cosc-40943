@@ -27,12 +27,11 @@ The reminder's design is approved. The instructor asks: when can I use it? What 
 Take two or three numbers from the room and write them on the board. Do not comment on them yet; they come back at the end. The design is Project Pulse's docs/design/not.md from week 7.
 :::
 
-## The old answer: count the code
+## Count the code?
 
 ::: steps
 - A controller, a `SubmissionStatusService`, a scheduler change, a dialog, their tests.
 - Lines of code, times hours per line.
-- That is COCOMO (Boehm, 1981).
 :::
 
 ::: ai
@@ -62,7 +61,7 @@ The agent made the typing free and left everything else.
 :::
 
 ::: note
-METR's randomized controlled trial, July 2025: 16 experienced open-source developers, 246 issues in their own repositories. METR's 2026 follow-up suggests newer tools probably do speed people up, but its confidence intervals include no change, and METR calls its own data very weak evidence. The point for estimation survives either way: felt speed was off by about 40 points, in the flattering direction.
+METR's randomized trial, July 2025, 16 experienced developers on their own repositories. Felt speed was off by about 40 points, so log your hours rather than remember them.
 :::
 
 ## The hours moved
@@ -76,7 +75,7 @@ up 91%.
 :::
 
 ::: note
-Faros AI telemetry, more than 10,000 developers on 1,255 teams, June 2025. A vendor's correlational data, not an experiment. It points the same way as METR: generation got cheap, and the cost moved to the person reading the result.
+Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap; the cost moved to the person reading the result.
 :::
 
 ## Three things that sound alike
@@ -92,23 +91,7 @@ When the target and the estimate do not fit, change the scope, not the estimate.
 :::
 
 ::: note
-McConnell, Software Estimation, 2006. An estimate is a range because it is uncertain; a commitment is one date because someone plans around it. The range narrows as decisions get made (the cone of uncertainty, Boehm 1981), so a use case is estimated twice: a coarse range when it is written, for ordering and the release plan, and the three-part estimate once its design is approved, for the commitment. Agile does the same with story points at backlog refinement and task hours at sprint planning.
-:::
-
-## Every classic model: size times a rate
-
-| Model | Size | Rate |
-|---|---|---|
-| Function points | What it does for users | Hours per function point |
-| COCOMO | Lines of code | Effort per line |
-| Velocity | Story points | Points per iteration |
-
-::: key
-The rates were measured when people wrote the code. Keep the size. Measure your own rate.
-:::
-
-::: note
-Function points: Albrecht, 1979. Velocity breaks for a second reason: it assumes a stable pace, and the agent changes every few months. Expert judgment is still the most used technique and no worse than the models on average (Jørgensen, 2004), but only if the expert's experience includes working with an agent. Planning poker survives untouched: independent estimates still beat one anchored voice.
+An estimate is a range because it is uncertain; a commitment is one date because someone plans around it. Estimate each use case twice: a coarse range when it is written, for ordering and the release plan, and the three-part estimate once its design is approved, for the commitment.
 :::
 
 ## Where the hours go now
@@ -131,7 +114,7 @@ The joke is now literally true: the agent does the first 90 percent of the code 
 
 ::: steps
 - Each row is one behavior a person has to see working.
-- It counts what the software must do, like a function point. It is not yet hours.
+- It counts what the software must do. It is not yet hours.
 - First estimate: by analogy to a finished change of the same size.
 - After two or three use cases: your own hours per row.
 - The open risks set the width of the range.
@@ -366,7 +349,7 @@ A NullPointerException in production: the user sees one sentence, the operator s
 :::
 
 ::: note
-Abridged from ExceptionHandlerAdvice; the module, 4.10, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.10.
+Abridged from ExceptionHandlerAdvice; the module, 4.9, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.10.
 :::
 
 ## The logging rule, for your charter
@@ -411,7 +394,7 @@ No more agents than pull requests you will review well today.
 :::
 
 ::: note
-Reading: module 4.11. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
+Reading: module 4.10. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
 :::
 
 ## Before your agent builds the slice

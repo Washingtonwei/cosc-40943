@@ -165,7 +165,7 @@ This course uses parts of both under its own units. Your board, backlog, and wee
 
 #### What agents change
 
-Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([where the hours go now](implementation.md#43-where-the-hours-go-now)). So the bet shifts: spend human effort on specification and verification, and let the agent do the iterating, each use case built and rebuilt as often as review allows.
+Agents make code cheap and iteration cheaper. Royce's "build it twice" used to double the cost; now a throwaway first version takes an afternoon, and Brooks's advice to "plan to throw one away" (1975) costs almost nothing to follow. What did not get cheaper is deciding what to build and checking what was built ([where the hours go now](implementation.md#42-where-the-hours-go-now)). So the bet shifts: spend human effort on specification and verification, and let the agent do the iterating, each use case built and rebuilt as often as review allows.
 
 ### What "success" means, and how teams fail at it
 

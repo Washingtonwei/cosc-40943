@@ -52,5 +52,5 @@ Doesn't fit? Move rows out of `v1.0.0` with your client at the next meeting. Cha
 :::
 
 ::: note
-A use case not yet designed has no test list, so size it from its main scenario and extensions, as a wider range: it is earlier in the cone of uncertainty. Compare with the hours the team will have before the demo, judged from what the weekly activity reports show the team actually works. Revise the Release column at every use-case close.
+A use case not yet designed has no test list, so size it from its main scenario and extensions, as a wider range, because nothing is designed yet. Compare with the hours the team will have before the demo, judged from what the weekly activity reports show the team actually works. Revise the Release column at every use-case close.
 :::
