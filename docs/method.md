@@ -182,7 +182,7 @@ With the architecture validated, realize the remaining use cases one at a time. 
 4. **Close the use case** after its pull request merges, before the next one starts:
    - The branch is merged and deleted, and the traceability row is honest about Build and Verify.
    - Spec and architecture fixes the work surfaced are merged; anything still open is logged in `OPEN-ISSUES`.
-   - The actual hours are recorded beside the estimate in the [calibration table](modules/implementation.md#44-recording-and-calibrating).
+   - The actual hours are recorded beside the estimate in the [calibration table](modules/implementation.md#44-recording-and-calibrating), with the owner's five-minute retrospective: which part missed most, what was not known when estimating, and what changes next time.
    - The reviewer asks what the agent had to be corrected on more than once and turns it into a rule in the agent charter (the conventions files the agent reads at the start of every session; see [The tooling instance](#the-tooling-instance-project-pulse)), by a small pull request. Where the new rule applies to code already merged, open an issue for that code rather than widening this pull request.
    - Revise the release plan: is the next use case still the right one, and do the remaining estimates, corrected by the calibration ratio, still fit the client's date? Move rows by pull request, saying why. Then `/clear`.
 

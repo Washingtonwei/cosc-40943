@@ -88,6 +88,16 @@ Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap
 Every hour in the estimate is a person's: settling the use case with the client, designing with the agent, reading what it wrote, seeing it work. Pull request #76 was agent-written and still took about 3.5 hours from first commit to merge.
 :::
 
+## A skill the agent cannot take {.center}
+
+::: key
+When anyone can generate the code, the engineer a client trusts is the one whose dates hold.
+:::
+
+::: note
+The agent can count test rows and draft a breakdown. It cannot know how fast your team reads a diff, how long your client takes to answer, or which risk will bite, and it cannot promise a date. Say plainly that this is a skill to build on purpose this term: every use case is a repetition, and every miss is data about your own judgment.
+:::
+
 ## A range, made twice
 
 ::: steps
@@ -201,6 +211,22 @@ Hofstadter's Law: it always takes longer than you expect, even when you take int
 
 ::: note
 The ratio is how you take Hofstadter's Law into account for real. One ratio per estimate: the refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Track them per person and per team: six ratios is how a team finds out that review, not building, is where its hours go.
+:::
+
+## Then look back
+
+::: steps
+- Which part missed most?
+- What did you not know when you estimated?
+- What will you do differently next time?
+:::
+
+::: key
+The ratio corrects your bias. The retrospective improves your judgment.
+:::
+
+::: note
+Five minutes, by the owner, the day the use case closes and before the next one starts. The answer is that use case's biggest-miss sentence in the calibration table; written at the checkpoint weeks later, it is a guess. Estimate often, look back every time, and the estimates get better.
 :::
 
 ## Graded on honesty, not accuracy {.center}

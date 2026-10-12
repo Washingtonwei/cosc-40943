@@ -45,6 +45,8 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 **Estimate the people, not the agent.** `/implement` writes the reminder in a session of a few minutes, and no line of the estimate is that session. Every hour in it is a person's: settling the use case with the client, designing with the agent, reading what it wrote, and seeing it work.
 
+**Estimating is a skill worth building now, on purpose.** An agent can count test rows and draft a breakdown in seconds. It cannot know how fast your team reads a diff, how long your client takes to answer, or which risk will bite, and it cannot promise a date and stand behind it (section 5). As the code gets cheaper, that judgment is worth more: when anyone can generate the code, the engineer a client trusts is the one whose dates hold. Practice it on every use case this term, and treat each miss as data about your own judgment.
+
 Give an estimate as a range of human hours: "3 to 5 hours, most likely about 3.5." The work is uncertain, and a single number gets heard as a promise. If the client needs it sooner than the range allows, cut scope; do not shrink the estimate.
 
 **Estimate each use case twice.** When it is written, the team gives it a **coarse estimate** in all four parts of 4.2; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the owner gives a **refined estimate** of what is left. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
@@ -89,11 +91,12 @@ The date that follows: on staging by the Friday of the build week, with the late
 
 ### 4.4 Recording and calibrating
 
-An estimate nobody checks teaches nothing. The course already records the other half: every line of your weekly activity report in Project Pulse carries **planned hours** and **actual hours** (the `Activity` entity, [`Activity.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/activity/Activity.java)). Three habits connect the two:
+An estimate nobody checks teaches nothing. The course already records the other half: every line of your weekly activity report in Project Pulse carries **planned hours** and **actual hours** (the `Activity` entity, [`Activity.java`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/activity/Activity.java)). Four habits connect the two:
 
 1. **Before building**, the use case's owner writes the refined estimate on its issue, under the coarse one: `Estimate: clarify and design 0.5–1 h, build and review 1.5–2 h, verify 1–2 h.`
 2. **Every week**, each weekly activity report line about that use case starts with its ID (`UC-NOT-remind-non-submitters: reviewed the agent's diff against the sequence diagram`) and uses the category from the table in 4.2.
 3. **When the use case is done**, compute a **calibration ratio** for each of its estimates: the hours logged since that estimate was made, divided by its midpoint. The refined ratio says how well you estimate a build; the coarse ratio says how well you estimate a use case you have only read, and the release forecast uses it.
+4. **When the use case closes, run a five-minute retrospective** before the next one starts. The owner answers three questions: Which part missed most? What did you not know when you estimated? What will you do differently on the next estimate? Write the answer as that use case's biggest-miss sentence in the calibration table that day, not at the checkpoint. The ratio corrects your bias; the retrospective improves your judgment.
 
 A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
