@@ -106,7 +106,7 @@ There is no formula for identifying classes; it takes skill, domain knowledge, a
 - **Domain:** start from the things the domain already has. Project Pulse's domain model already has `Section`, `Team`, `Student`, `Activity`, and `PeerEvaluation`, so none of those is new.
 - **Scenario:** walk one flow and ask which object does each step. Whatever is left with no owner is a missing class.
 
-Walking the reminder's main scenario leaves three jobs with no owner: deciding who owes what, sending a batch of reminders while surviving individual failures, and taking the instructor's request. That is three new classes, plus the scheduler that already existed:
+Walking the reminder's main scenario leaves three jobs with no owner: deciding who owes what, sending a batch of reminders while surviving individual failures, and taking the instructor's request. That is three new classes, plus the scheduler that already existed. `not.md` adds two small ones the diagram below leaves out: `WeekKeys`, the one place that computes "the previous week", and `SubmittableItem`, the enum naming the two items.
 
 ```mermaid
 ---
@@ -122,6 +122,7 @@ classDiagram
     class SubmissionStatusService {
         <<new>>
         +findOwing(sectionId, item, week)
+        +findOwedItems(sectionId, items, week)
     }
     class ReminderService {
         <<new>>
@@ -140,8 +141,13 @@ classDiagram
     class EmailService {
         <<reused>>
     }
+    class SectionService {
+        <<reused>>
+        +findReminderEligibleSectionsForWeek(week)
+    }
     ReminderController --> SubmissionStatusService
     ReminderController --> ReminderService
+    WeeklyReminderScheduler --> SectionService
     WeeklyReminderScheduler --> SubmissionStatusService
     WeeklyReminderScheduler --> ReminderService
     SubmissionStatusService --> ActivityService
@@ -204,6 +210,8 @@ sequenceDiagram
         SPA-->>I: N reminders sent, names any failed (step 7)
     end
 ```
+
+Compare it with the [full diagram in `not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#uc-not-remind-non-submitters-the-on-demand-reminder). This one is drawn for you to learn the notation; that one is drawn for the agent that builds the feature and the reviewer who approves it, so it adds the dialog's name, extension 4b, the cancel in 5a, and the exact requests. Drawing one design at two levels of detail for two readers is normal. What it never does is leave out a step.
 
 Draw one per use case for the main scenario, plus one for any extension that does more than return an error. A scheduled job gets a diagram too. `not.md` draws the weekly reminder ([`FR-NOT-weekly-reminder`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md#fr-not-weekly-reminder-the-scheduled-reminder)) as its own sequence: the clock calls `WeeklyReminderScheduler`, which calls the same `SubmissionStatusService` and `ReminderService` as the on-demand reminder, so both paths share one definition of who owes.
 

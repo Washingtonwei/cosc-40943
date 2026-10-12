@@ -251,8 +251,12 @@ classDiagram
     class EmailService {
         <<reused>>
     }
+    class SectionService {
+        <<reused>>
+    }
     ReminderController --> SubmissionStatusService
     ReminderController --> ReminderService
+    WeeklyReminderScheduler --> SectionService
     WeeklyReminderScheduler --> SubmissionStatusService
     WeeklyReminderScheduler --> ReminderService
     SubmissionStatusService --> ActivityService
@@ -261,7 +265,7 @@ classDiagram
 ```
 
 ::: note
-Simplified from not.md; the full one carries the key operations. Classes, important operations, dependencies. Fields and getters belong to the code. "Reused" is the most valuable word in the diagram: it tells the agent to extend what exists instead of writing a parallel copy, which is exactly how Project Pulse ended up with two definitions of "has not submitted".
+Simplified from not.md; the full one carries the key operations, plus WeekKeys (the one place that computes the previous week) and the SubmittableItem enum. The scheduler asks SectionService which sections are active for the previous week, then asks SubmissionStatusService who owes what. Classes, important operations, dependencies. Fields and getters belong to the code. "Reused" is the most valuable word in the diagram: it tells the agent to extend what exists instead of writing a parallel copy, which is exactly how Project Pulse ended up with two definitions of "has not submitted".
 :::
 
 ## Reading a sequence diagram
