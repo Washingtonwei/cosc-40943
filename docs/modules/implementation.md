@@ -22,7 +22,7 @@ By the end of this module, a student can:
 
 ## 2. Where it fits
 
-- **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure for the estimate and whose class diagram already separates trunk from leaf, and [Context Engineering](context-engineering.md), whose build-context is what the agent builds from.
+- **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure for the estimate and whose class diagram shows which classes the rest of the code depends on, the trunk of 4.7, and [Context Engineering](context-engineering.md), whose build-context is what the agent builds from.
 - **Leads into:** [Code Review](code-review.md) (the same week, its own module), which reads what this module produces; traceability (the same week), whose release plan is built from these estimates; testing in week 9, where the first test, written from a use case, is taught; observability in week 12, which reads the logs this module asks you to write; and [Checkpoints 2 and 3](../project.md#checkpoints), where your team shows its estimates beside its actual hours.
 - **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.5), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit, with what the agent may read and run (4.8) shown just before it starts. Wednesday reads that commit and teaches logging (4.10). After that, estimation is practiced in your project (section 7), not lectured. Section 4.11, on running several agents, is reading.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle: delegating appropriately, supplying the context it cannot infer, and verifying its output](../syllabus.md#learning-outcomes) (outcome 6), and [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin into a number your client can plan around.
@@ -37,7 +37,7 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 **The hours moved to the reader.** A change the reminder's size, like [pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76) (884 lines across 23 files), comes out of one agent session. As one diff, it is either read in full, which spends the estimate, or skimmed and approved by a team that cannot explain it.
 
-**The agent copies what it sees.** Only 4 of Project Pulse's 266 backend classes declare a logger, under two names (`LOGGER` and `log`), and the catch-all exception handler logs nothing, so an agent building there writes code that does not log. Whatever your codebase does by habit, the agent does at speed.
+**The agent takes its habits from your code.** Only 4 of Project Pulse's 266 backend classes declare a logger, and its catch-all exception handler logs nothing. Whatever your codebase does by habit, the agent will do too, unless a written rule says otherwise (4.10).
 
 ## 4. Core concepts
 
@@ -78,7 +78,7 @@ The refined estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-remin
 |---|---|---|
 | Clarify and design, what is left | Design approved; the questions test already closed its three contradictions and sixteen guesses. Allow for holes the build exposes | 0.5 to 1 |
 | Build and review | Every diff read against the sequence diagrams | 1.5 to 2 |
-| Verify | 20 agent-written test rows: trunk rows read line by line, leaf rows checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
+| Verify | 20 agent-written test rows: rows for the shared code (the trunk, 4.7) read line by line, rows for code only the new feature reaches checked by running them. The email-latency risk can only be measured on staging, and it sets the high end | 1 to 2 |
 | **Total** | By analogy: the reminder matches the reference change below in scope, which took about 3.5 hours end to end, so the most likely value is its 3.5 | **3 to 5, most likely about 3.5** |
 
 **The reference.** The instructor has no measured rate per test row yet, so this estimate is the analogy 4.2 starts from. [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge, though the agent's sessions in it took minutes. Your reference class is your own past work, not someone else's: your first changes will be slower than the instructor's in the instructor's own codebase, and the calibration ratio (4.4) corrects for that.
@@ -258,7 +258,7 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 
 ## Related
 
-- [Design-of-Record](design-of-record.md): where trunk and leaf come from.
+- [Design-of-Record](design-of-record.md): the class diagram you cut trunk and leaf from.
 - [Requirements Traceability](traceability.md#from-estimates-to-a-release-plan): the release plan and forecast built from these estimates.
 - [Project](../project.md): the checkpoints where the calibration table is shown, and the weekly activity reports it is built from.
 - [The Method](../method.md#phase-c-fan-out-per-use-case): Phase C, steps 2 to 4.
