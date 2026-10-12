@@ -88,7 +88,7 @@ Your TA works through this list in the room on Fri Oct 23.
 
 - [ ] **The slice runs.** Your highest-risk use case, taken through design-of-record, implementation, and tests, demonstrated running from a tagged release `v0.1.0` with release notes ([why a tag](modules/ai-augmented-team.md#410-knowing-exactly-what-you-built)).
 - [ ] **The settings file.** `.claude/settings.json` merged by pull request, with `Read` deny rules covering where your secrets actually live ([the file](agent-setup.md#10-your-team-repository)).
-- [ ] **The charter.** Its list of things the agent must not do includes the [dependency rule](modules/security.md#7-hands-on-studio-optional-individual-assignment) and never removing the `Co-Authored-By` trailer. If you run more than one agent at a time, its workflow section has the [four parallel-agent lines](agent-setup.md#10-your-team-repository).
+- [ ] **The charter.** Its list of things the agent must not do includes the [dependency rule](modules/implementation.md#48-what-the-agent-may-read-and-run) and never removing the `Co-Authored-By` trailer. If you run more than one agent at a time, its workflow section has the [four parallel-agent lines](agent-setup.md#10-your-team-repository).
 - [ ] **The calibration table.** Each finished use case: its estimate, its actual hours from your weekly activity reports, the ratio, and one sentence on the biggest miss ([how](modules/implementation.md#44-recording-and-calibrating)). Graded on completeness and honesty, never accuracy.
 - [ ] **The release plan.** Every use case and FR row in `docs/traceability.md` has a Release value (`v0.1.0`, `v0.2.0`, `v1.0.0`, `Spring`, or `Out`), set by pull request ([how](modules/traceability.md#from-estimates-to-a-release-plan)).
 

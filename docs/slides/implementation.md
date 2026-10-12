@@ -78,20 +78,20 @@ up 91%.
 Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap; the cost moved to the person reading the result.
 :::
 
-## Three things that sound alike
+## A range, made twice
 
-| | Who owns it | Sounds like |
-|---|---|---|
-| Estimate | You | "3 to 5 hours" |
-| Target | The client | "Before the midterm" |
-| Commitment | The team | "On staging by Friday" |
+::: steps
+- Always a range: "3 to 5 hours, most likely about 3.5."
+- When the use case is written: a coarse range, for ordering and the release plan.
+- When its design is approved: the three-part estimate, the one you give a date from.
+:::
 
 ::: warn
-When the target and the estimate do not fit, change the scope, not the estimate.
+Client needs it sooner? Cut scope, not the estimate.
 :::
 
 ::: note
-An estimate is a range because it is uncertain; a commitment is one date because someone plans around it. Estimate each use case twice: a coarse range when it is written, for ordering and the release plan, and the three-part estimate once its design is approved, for the commitment.
+A single number gets heard as a promise. The coarse range is wide because nothing is designed yet; the design turns unknowns into named tests and risks, so the second estimate is narrower.
 :::
 
 ## Where the hours go now
@@ -349,7 +349,7 @@ A NullPointerException in production: the user sees one sentence, the operator s
 :::
 
 ::: note
-Abridged from ExceptionHandlerAdvice; the module, 4.9, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.10.
+Abridged from ExceptionHandlerAdvice; the module, 4.10, quotes it in full. Spring does not log an exception a handler has resolved. The fix is one line, LOGGER.error("Unhandled exception", ex), and dropping ex.getMessage() from the response. The full before and after is in the module, 4.10.
 :::
 
 ## The logging rule, for your charter
@@ -394,7 +394,7 @@ No more agents than pull requests you will review well today.
 :::
 
 ::: note
-Reading: module 4.10. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
+Reading: module 4.11. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
 :::
 
 ## Before your agent builds the slice

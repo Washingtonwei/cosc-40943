@@ -2,7 +2,7 @@
 
 **Slides:** [Estimate, Then Build With the Agent](../slides/implementation.html) (the fast version).
 
-> **Purpose (one line):** estimate a use case in human hours before your agent builds it, calibrate from the hours you log, then build the approved design in steps you can read, so the merged code is code your team understands and logs what someone will need at 2 AM.
+> **Purpose (one line):** estimate a use case in human hours before your agent builds it, calibrate from the hours you log, then build the approved design in steps you can read, with an agent that cannot reach your secrets, so the merged code is code your team understands and logs what someone will need at 2 AM.
 
 !!! note "This module is still being written"
     The worked example's actual hours (4.3) are added after Monday's build.
@@ -11,11 +11,11 @@
 
 By the end of this module, a student can:
 
-1. Tell an estimate from a target and a commitment, and say which one a client is asking for.
-2. Estimate a use case as a range of human hours in three parts (specify, build and review, verify), sized from its design's test list.
-3. Compute a calibration ratio from the estimate and the logged actual hours, use it to correct the next estimate, and tell the client early when a commitment no longer fits.
-4. Open an agent session by running the existing tests, and ask for a test that fails first.
-5. Cut an implementation into trunk and leaf commits along its design, and pay down cognitive debt by reading the trunk before the leaves are built.
+1. Estimate a use case as a range of human hours in three parts (specify, build and review, verify), sized from its design's test list.
+2. Compute a calibration ratio from the estimate and the logged actual hours, use it to correct the next estimate, and tell the client early when a promised date no longer fits.
+3. Open an agent session by running the existing tests, and ask for a test that fails first.
+4. Cut an implementation into trunk and leaf commits along its design, and pay down cognitive debt by reading the trunk before the leaves are built.
+5. Deny the agent your secrets with a permission rule, keep its checks on, read outside content before it does, and check every dependency it names.
 6. Treat existing code as evidence, never as authority, when an agent documents or designs from it.
 7. Write a logging rule into the agent charter, and review what the agent logged as well as whether it logged.
 8. Decide when running several agents at once is safe, and fan out by leaf only after the trunk merges.
@@ -24,7 +24,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure for the estimate and whose class diagram already separates trunk from leaf, and [Context Engineering](context-engineering.md), whose build-context is what the agent builds from.
 - **Leads into:** [Code Review](code-review.md) (the same week, its own module), which reads what this module produces; traceability (the same week), whose release plan is built from these estimates; testing in week 9, where the first test, written from a use case, is taught; observability in week 12, which reads the logs this module asks you to write; and [Checkpoints 2 and 3](../project.md#checkpoints), where your team shows its estimates beside its actual hours.
-- **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.5), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit. Wednesday reads that commit and teaches logging (4.9). After that, estimation is practiced in your project (section 7), not lectured. Section 4.10, on running several agents, is reading.
+- **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.5), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit, with what the agent may read and run (4.8) shown just before it starts. Wednesday reads that commit and teaches logging (4.10). After that, estimation is practiced in your project (section 7), not lectured. Section 4.11, on running several agents, is reading.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle: delegating appropriately, supplying the context it cannot infer, and verifying its output](../syllabus.md#learning-outcomes) (outcome 6), and [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin into a number your client can plan around.
 
 ## 3. Motivation
@@ -41,19 +41,11 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 ## 4. Core concepts
 
-### 4.1 Estimate, target, commitment
+### 4.1 An estimate is a range, made twice
 
-Three different things share one sentence ("it'll take two weeks"), and confusing them is how teams break promises they never meant to make:
+Give an estimate as a range of human hours: "3 to 5 hours, most likely about 3.5." The work is uncertain, and a single number gets heard as a promise. If the client needs it sooner than the range allows, cut scope; do not shrink the estimate.
 
-| | What it is | Who owns it | Example |
-|---|---|---|---|
-| **Estimate** | A prediction, with a range | The person doing the work | "3 to 5 hours of work, most likely about 3.5" |
-| **Target** | A wish about the date | The client or the business | "We'd like it before the midterm" |
-| **Commitment** | A promise to deliver by a date | The team, after comparing the two | "It will be on staging by Friday, Oct 23" |
-
-An estimate is a range because it is uncertain. A commitment is a single date because someone will plan around it. When the target and the estimate do not fit, you change the scope, not the estimate.
-
-**Estimate each use case twice.** When it is written, give it a **coarse range** from its main scenario and extensions; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the **three-part estimate** (4.2) replaces it. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one a commitment rests on.
+**Estimate each use case twice.** When it is written, give it a **coarse range** from its main scenario and extensions; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the **three-part estimate** (4.2) replaces it. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
 
 ### 4.2 Where the hours go now
 
@@ -82,7 +74,7 @@ The estimate for `UC-NOT-remind-non-submitters` and `FR-NOT-weekly-reminder`, ma
 
 **The reference.** The instructor has no measured rate per test row yet, so this estimate is the analogy 4.2 starts from. [Project Pulse pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76), which hardened student invitations, is the closest change already built with an agent: 884 lines across 23 files, a new endpoint and dialog, a scheduler change, and two review rounds that each caught real defects. It took about 3.5 hours from first commit to merge. Your reference class is your own past work, not someone else's: your first changes will be slower than the instructor's in the instructor's own codebase, and the calibration ratio (4.4) corrects for that.
 
-The commitment that follows: on staging by the Friday of the build week, with the latency measured, or a message to the instructor by Wednesday saying why not.
+The date that follows: on staging by the Friday of the build week, with the latency measured, or a message to the instructor by Wednesday saying why not.
 
 <!-- DRAFTING NOTE: fill in the Actual column from the build. -->
 
@@ -96,7 +88,7 @@ An estimate nobody checks teaches nothing. The course already records the other 
 
 A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
-When the ratio says a commitment will slip, tell the client at the next meeting, not on the date. A slipped commitment reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#from-estimates-to-a-release-plan).
+When the ratio says a promised date will slip, tell the client at the next meeting, not on the date. A slip reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#from-estimates-to-a-release-plan).
 
 ### 4.5 What an estimate is not for
 
@@ -131,11 +123,20 @@ The defense is to commit in steps a reviewer can read, cut along the design:
 
 Project Pulse's [`/implement`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md) commits this way and pauses after the trunk; Monday's live build stops there. A use case with no trunk is one commit and no pause, except that a security rule still goes alone.
 
-### 4.8 Code you did not write
+### 4.8 What the agent may read and run
+
+An agent that can read your secrets, reads text an outsider wrote, and can send data out can be turned against you (Willison 2025 calls this the *lethal trifecta*). A coding agent on your laptop has all three by default. Four habits cover what matters for your project:
+
+1. **Deny secrets with a rule, not a request.** "Never read `.env`" in your charter is advice the model may ignore; a `Read` deny rule in the team's committed `.claude/settings.json` is enforced by Claude Code itself. Test it: ask the agent to read `.env` and watch it refused. The file is on the [Agent Setup](../agent-setup.md#10-your-team-repository) page.
+2. **Never switch the permission checks off** (`--dangerously-skip-permissions`, `--allow-all-tools`) in a folder holding anything you would mind losing. In 2025, a poisoned release of the `nx` build tool looked for exactly that: it ran the developer's own agent with its checks off and told it to collect tokens and keys.
+3. **Read outside content yourself before the agent does.** A model cannot reliably tell your instructions from text it reads, so instructions hidden in an issue, a web page, or a client's document can steer it (*prompt injection*).
+4. **Check every dependency the agent names.** Agents sometimes invent package names, and attackers register them. Before a new package enters the lockfile, a person confirms it exists, is the one you meant (publisher, repository, age, usage), and is the only thing the change added.
+
+### 4.9 Code you did not write
 
 Some of your clients handed you a codebase with few documents. Asked to document or design from existing code, the agent writes down what the code does, defects included, so a missing check read back from the code arrives as a requirement nobody chose. **The code is evidence, never authority.** Your client calls each recovered statement intended, corrected, or a defect; defects go to `OPEN-ISSUES.md`, not into the specification. The method's [Starting from an existing codebase](../method.md#starting-from-an-existing-codebase) has the four steps. Project Pulse's `/design` calls its version "design-as-built".
 
-### 4.9 Log what the person at 2 AM will need
+### 4.10 Log what the person at 2 AM will need
 
 The agent imitates the code around it, so the logging rule has to be written where the agent reads it: your charter. The rule, for Spring Boot (SLF4J):
 
@@ -161,7 +162,7 @@ The agent imitates the code around it, so the logging rule has to be written whe
 
 **Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's `WeeklyReminderScheduler` gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log. That breaks the rule: an operator who needs the address can look it up from the ID, and a log is copied to more places than the database is (`CO-ferpa`). The fix is one argument, `student.getId()`. An agent asked to "add logging" will not make that call for you; the reviewer has to ask.
 
-### 4.10 One engineer, several agents
+### 4.11 One engineer, several agents
 
 `claude --worktree <name>` in a second terminal starts a second session in its own checkout, on its own branch. Whether that helps turns on one question: **what will each agent decide that the others need to know?** Cognition puts it in one line: "Actions carry implicit decisions, and conflicting decisions carry bad results" (Yan 2025). A design-of-record turns implicit decisions into written ones, so **parallel agents are safe exactly where the decisions they would make silently are already on the record.**
 
@@ -184,36 +185,38 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 ## 5. The AI-native lens
 
 - **Delegate to AI:** the counting for the estimate (list the design's test rows, the files its sequence diagrams touch, and the open risks, and draft the three-part breakdown; sum your weekly activity report hours by use case ID); writing the code and tests from an approved design, running the suite, committing along trunk and leaves, and side tasks that edit nothing.
-- **Keep human:** the hours and the commitment (an agent asked "how long will this take?" answers from text written about teams that wrote their own code, with no record of your hours, your review speed, or this term's agent; only a person can make a promise to a client); reading the trunk at the pause, deciding what is trunk when the design is unclear, judging what may be logged, and calling recovered behavior intended or a defect.
-- **Context to supply:** for the estimate, the approved design, its test list and open questions, and your team's current calibration ratio; for the build, the merged design and use case only (start after `/clear`), the charter with the test command and the logging rule, and, when fanning out, the merged trunk.
-- **How to verify:** check the agent's estimate breakdown against the design (every test row counted, every open risk reflected in the range) and never accept an hour figure from it, including one it presents as a range; at the pause, explain the trunk without asking the agent; read every new log line for what it writes out; confirm each new test failed before its code existed.
+- **Keep human:** what the agent may read and run, and whether a new dependency enters; the hours and the date (an agent asked "how long will this take?" answers from text written about teams that wrote their own code, with no record of your hours, your review speed, or this term's agent; only a person can make a promise to a client); reading the trunk at the pause, deciding what is trunk when the design is unclear, judging what may be logged, and calling recovered behavior intended or a defect.
+- **Context to supply:** for the estimate, the approved design, its test list and open questions, and your team's current calibration ratio; for the build, the merged design and use case only (start after `/clear`), the charter with the test command, the logging rule, and the dependency rule, the team's settings file with its deny rules, and, when fanning out, the merged trunk.
+- **How to verify:** check the agent's estimate breakdown against the design (every test row counted, every open risk reflected in the range) and never accept an hour figure from it, including one it presents as a range; at the pause, explain the trunk without asking the agent; read every new log line for what it writes out; confirm each new test failed before its code existed; ask the agent to read a denied file and watch it refused.
 
 ## 6. Risks & mitigations
 
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
-| **Classic:** an estimate given as a single number becomes a commitment nobody made | Hearing "two weeks" and asking "is that an estimate or a promise?" | Always state a range; make the commitment a separate, explicit sentence |
+| **Classic:** an estimate given as a single number is heard as a promise | Hearing "two weeks" and asking "is that an estimate or a promise?" | Always state a range; give a date only as a separate, explicit promise |
 | **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate in the three parts of 4.2 |
 | **AI-amplified:** trusting your felt speed with an agent | Comparing the estimate with the logged hours, not with memory | The calibration ratio at every checkpoint |
 | **AI-introduced:** a test written to pass the agent's own code | Asking where the expected value came from | Test first, seen to fail; expected values from the use case |
 | **AI-amplified:** cognitive debt, a diff too large to read and approved anyway | At the pause, trying to say what changed and why without asking the agent | Trunk and leaf commits along the design (4.7); one pause, after the trunk |
-| **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in the charter (4.9); fix the catch-all before the agent imitates it |
-| **AI-introduced:** existing code read back as requirements, defects included | Asking the client whether each recovered behavior was intended | The code is evidence, never authority (4.8); defects go to `OPEN-ISSUES.md` |
-| **AI-introduced:** parallel agents make conflicting decisions nobody wrote down | Asking what each agent will decide that the others need to know | Fan out by leaf only after the trunk merges (4.10); no more agents than pull requests you can review |
+| **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in the charter (4.10); fix the catch-all before the agent imitates it |
+| **AI-introduced:** the agent reads a secret, follows instructions hidden in outside content, or adds an invented package | Asking who wrote the text the agent is about to read, and whether anyone chose the new dependency | Deny rules for secrets in `.claude/settings.json`; checks never off; outside content read raw first; every new dependency confirmed by a person (4.8) |
+| **AI-introduced:** existing code read back as requirements, defects included | Asking the client whether each recovered behavior was intended | The code is evidence, never authority (4.9); defects go to `OPEN-ISSUES.md` |
+| **AI-introduced:** parallel agents make conflicting decisions nobody wrote down | Asking what each agent will decide that the others need to know | Fan out by leaf only after the trunk merges (4.11); no more agents than pull requests you can review |
 
 ## 7. Hands-on (studio + optional individual assignment)
 
 **Team, own project:** before any use case is built, its owner writes the three-part estimate on its issue, sized from the design's test list, and from then on weekly activity report lines about it start with its ID. At Checkpoints 2 and 3, show one table: each finished use case, its estimate, its actual hours, its ratio, and one sentence on the biggest miss, graded as 4.5 says.
 
-Before your agent builds the proving slice, add three lines to your agent charter: the command that runs your tests, "write the test first and show it failing", and your logging rule from 4.9. If you run more than one agent, add the four parallel-agent lines from [Agent Setup](../agent-setup.md#10-your-team-repository). Build the slice trunk first, and read the trunk before the leaves.
+Before your agent builds the proving slice, commit the team's `.claude/settings.json` with `Read` deny rules for your secrets, by pull request, and confirm the agent is refused. Add four lines to your agent charter: the command that runs your tests, "write the test first and show it failing", your logging rule from 4.10, and "no dependency is added until a person confirms it exists and is the intended one". Your TA checks both at Checkpoint 2. If you run more than one agent, add the four parallel-agent lines from [Agent Setup](../agent-setup.md#10-your-team-repository). Build the slice trunk first, and read the trunk before the leaves.
 
 **Individual assignment:** *Add a use case* (assignment 3, due Fri Oct 30) takes one use case end to end on Project Pulse, trunk first.
 
 ## 8. Summary / key takeaways
 
-- An estimate is a range you own, a target is the client's wish, and a commitment is a date you promise. Keep the three apart.
+- An estimate is a range of hours, made twice: coarse when the use case is written, in three parts once its design is approved. Cut scope, never the estimate.
 - With an agent, the hours are in specifying, reviewing, and verifying. Size by the test list, and measure your own rate from your weekly activity reports, not your sense of speed.
 - Run the tests first, see the new test fail, and commit trunk first. Read the trunk before the leaves are built.
+- Deny the agent your secrets with a rule, never switch its checks off, read outside content before it does, and confirm every dependency it names.
 - Existing code is evidence, never authority, and the agent logs the way your codebase logs. Write the rules down.
 - Run several agents only where their decisions are already written down, and no more than you can review.
 
@@ -222,20 +225,24 @@ Before your agent builds the proving slice, add three lines to your agent charte
 - Jeffries, R. "Estimation Is Evil." 2021. <https://ronjeffries.com/articles/021-01ff/estimation-is-evil/>
 - METR. "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity." July 10, 2025. <https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/>
 - Willison, S. "First run the tests" and "Red/green TDD," in *Agentic Engineering Patterns*, 2026. <https://simonwillison.net/guides/agentic-engineering-patterns/first-run-the-tests/>, <https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/>. Week 8 reading.
+- Willison, S. "The Lethal Trifecta for AI Agents." June 16, 2025. <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/>
+- Anthropic. "Configure permissions," Claude Code documentation. <https://code.claude.com/docs/en/permissions>
 - Kosmyna, N., et al. "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task." arXiv:2506.08872, 2025. <https://arxiv.org/abs/2506.08872>
 - Yan, W. "Don't Build Multi-Agents." Cognition, June 12, 2025. <https://cognition.com/blog/dont-build-multi-agents>
 - Anthropic. "Run parallel sessions with worktrees," Claude Code documentation, read 2026-10-10. <https://code.claude.com/docs/en/worktrees>
 
 ## 10. Self-check
 
-1. Your client says, "Can you have the export feature by next Friday?" Is that an estimate, a target, or a commitment? What do you need before you can turn it into a commitment?
+1. Your client asks, "Can you have the export feature by next Friday?" Its use case is written but not yet designed. What do you answer, and when can you give a firmer one?
 2. A use case's design has 12 test rows and one open risk that can only be measured in production. Which part of the three-part estimate does the risk widen, and why?
 3. Your estimate was 6 to 10 hours; your weekly activity reports show 14. What is your calibration ratio, and what is your next estimate for a use case you would otherwise have called 4 to 8 hours?
 4. Your agent's first commit adds a new service three controllers will call, plus two new screens. Which part is trunk, where should the pause be, and what does reading the trunk then save?
 5. Your agent's new test passes on its first run, before any code was written. What does that tell you?
-6. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
-7. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
-8. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
+6. Your `CLAUDE.md` says "never read `.env`." A teammate says that is enough. What does a `Read(./.env)` deny rule in `.claude/settings.json` add, and how do you check it works?
+7. Your agent adds `react-query-helpers-pro` to `package.json`. What do you check before merging?
+8. Your client's old system skips the permission check on one page, and the agent, documenting the system, writes that behavior into a use case. What should happen to it?
+9. The agent adds `LOGGER.info("Saved evaluation {}", evaluation)`, and the class's `toString()` prints every score and comment. What is wrong, and where does the rule that prevents it belong?
+10. Two leaves of your design both need a new query on `SectionRepository`. Can two agents build them in parallel? What would you do first?
 
 ## Related
 
@@ -243,11 +250,15 @@ Before your agent builds the proving slice, add three lines to your agent charte
 - [Requirements Traceability](traceability.md#from-estimates-to-a-release-plan): the release plan and forecast built from these estimates.
 - [Project](../project.md): the checkpoints where the calibration table is shown, and the weekly activity reports it is built from.
 - [The Method](../method.md#phase-c-fan-out-per-use-case): Phase C, steps 2 to 4.
+- [Agent Setup](../agent-setup.md#10-your-team-repository): the team's settings file and its deny rules.
+- [Software Architecture, Just Enough](architecture.md#49-security-as-a-quality-attribute-the-trust-boundary): security as a quality attribute, and the trust boundary.
 
 <!--
 ## Drafting notes (raw: distribute into template sections, then delete before `stable`)
 
 ### Sources and facts to check before `stable`
+
+- 4.8: the `nx` attack (August 26, 2025) per Wiz's "s1ngularity" post; Claude Code's permission enforcement per its permissions docs, read 2026-10-10; Copilot CLI's `--allow-all-tools` matches the Agent Setup page, confirm against current docs.
 
 - METR figures were checked against the primary post on 2026-10-10.
 - Project Pulse facts in 4.2 to 4.4 (`Activity.java`, `not.md`'s 20 test rows and six open risks) checked at `26b1ac3`.
@@ -258,6 +269,7 @@ Before your agent builds the proving slice, add three lines to your agent charte
 
 ### Hand-offs
 
+- Security beyond 4.8 (the old `MODULE-security`, folded in 2026-10-11, `DECISION-security-folded`): a model inside the team's own product (Project Pulse's `CO-server-side-llm-proxy`, `FR-AI-source-material-context`, `SI-llm-json`) goes to whichever week first builds one; taint to `MODULE-static-analysis` (week 10); secrets and known-vulnerable dependencies in the pipeline to `MODULE-ci-cd` (week 11). The deleted page's text is in the website repository's history.
 - The first test, given/when/then read off a use case, moved to `MODULE-testing`'s drafting notes on 2026-10-11, taught Wed Oct 21.
 - `MODULE-static-analysis` (week 10): PMD's `SystemPrintln` and `AvoidPrintStackTrace`. No analyzer flags missing logging, so that stays a review item for `MODULE-code-review`.
 - `MODULE-observability` (week 12): reading logs, Actuator `/loggers`, correlation IDs with MDC, structured output, handing the log to the agent when debugging.

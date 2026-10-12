@@ -90,11 +90,11 @@ An estimate answers "when can I use this one?" The client's next question is "wh
 
 Risk alone would put `v1.8.0` before `v1.7.0`. The client chose otherwise, and the plan records that trade instead of hiding it. Writing the column also exposed a disagreement: the vision listed real-time co-editing as out of the MVP, while traceability showed it as unstarted work. The use case's own Status line already said Deferred, so that line settles it, and its Release cell stays empty: one fact, one owner.
 
-**The forecast.** A use case that is not designed yet has no test list, so size it from what it has, its main scenario and extensions, as a range wider than the [three-part estimate](implementation.md#42-where-the-hours-go-now), because [nothing is designed yet](implementation.md#41-estimate-target-commitment). Write that range on the use case's issue; when its design is approved, the three-part estimate replaces it. Then:
+**The forecast.** A use case that is not designed yet has no test list, so size it from what it has, its main scenario and extensions, as a range wider than the [three-part estimate](implementation.md#42-where-the-hours-go-now), because [nothing is designed yet](implementation.md#41-an-estimate-is-a-range-made-twice). Write that range on the use case's issue; when its design is approved, the three-part estimate replaces it. Then:
 
 > **Hours still needed** = the sum of the estimate midpoints of every unfinished `v1.0.0` row × your team's calibration ratio
 
-Compare that with the hours your team will have before the MVP demo, judged from what your weekly activity reports show you actually work. If the plan does not fit, move rows out of `v1.0.0` with your client at the next meeting. This is the [estimate's rule](implementation.md#41-estimate-target-commitment) in practice: when the estimate and the target disagree, change the scope, not the estimate. Write the result as one line under your [calibration table](implementation.md#44-recording-and-calibrating):
+Compare that with the hours your team will have before the MVP demo, judged from what your weekly activity reports show you actually work. If the plan does not fit, move rows out of `v1.0.0` with your client at the next meeting. This is the [estimate's rule](implementation.md#41-an-estimate-is-a-range-made-twice) in practice: when the estimate and the target disagree, change the scope, not the estimate. Write the result as one line under your [calibration table](implementation.md#44-recording-and-calibrating):
 
 `Forecast: 6 rows left in v1.0.0, 38 to 60 h at ratio 1.4; about 70 h available. Fits, with no slack for the high end.`
 
@@ -142,6 +142,6 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 
 - [Schedule](../schedule.md): when the traceability anchor lands, and the weekly practice after it.
 - [Senior Design Project](../project.md): the traceability matrix as a graded deliverable.
-- [AI-Assisted Implementation](implementation.md#41-estimate-target-commitment): the estimates and calibration ratio the release plan is built from.
+- [AI-Assisted Implementation](implementation.md#41-an-estimate-is-a-range-made-twice): the estimates and calibration ratio the release plan is built from.
 - [SE and What AI Changes](se-and-ai.md): why the economics of rigor inverted, which is the argument this module rests on.
 - [The Method](../method.md): the full traceability model this module teaches a subset of, including the second axis and the off-spine overlays.

@@ -76,7 +76,7 @@ Checklists work when they are short and name what experts skip under pressure. W
 1. **The test list.** Each row: covered by a test, or named as missing.
 2. **The triage line.** Trunk and security commits read in full.
 3. **The logic against the description.** Does the code do what the pull request says, and what the use case says?
-4. **Each extension's error path.** What happens when it fails, and does every `catch` that does not rethrow log the exception ([AI-Assisted Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need))?
+4. **Each extension's error path.** What happens when it fails, and does every `catch` that does not rethrow log the exception ([AI-Assisted Implementation 4.10](implementation.md#410-log-what-the-person-at-2-am-will-need))?
 5. **The tests check the contract.** An expected value taken from the use case, not echoed from a mock.
 
 Style, formatting, unused variables, and duplication are real, and they are the linter's job from week 10. Leave them to a "Nit:" comment until then.
