@@ -456,6 +456,39 @@ No more agents than pull requests you will review well today.
 Reading: module 4.11. Start both reminder leaves before the trunk merges and each agent writes its own SubmissionStatusService, with two definitions of "has not submitted". Never split one use case's layers across agents.
 :::
 
+## `/implement` is a file
+
+| Part | In `/implement` |
+|---|---|
+| Front matter | `argument-hint: <UC-ID>` |
+| The argument | `$ARGUMENTS`, the use case ID |
+| Preconditions | No design? Stop. Old conversation? `/clear` |
+| Standing rule | "When in doubt, or when you see a better way, shout." |
+| Phases | Read first; then plan, build, test, trace, open the pull request |
+| Stop | Once, after the trunk |
+
+::: note
+Project Pulse's .claude/commands/implement.md, 88 lines; design.md has the same skeleton and stops earlier, before writing the design doc, until you accept its shape. Claude Code turns .claude/commands/name.md into /name. The stop is the most important line: a command with no stop hands your judgment to the agent. Module 4.12.
+:::
+
+## Write your own
+
+::: steps
+- Package what your team has done by hand twice.
+- Copy the skeleton, not Project Pulse's paths. About 20 lines.
+- `/design` and `/implement` for your repository.
+- `/close-use-case`: the closing checklist and the three retrospective questions.
+- `/estimate`: count the rows and risks; leave the hours blank for a person.
+:::
+
+::: joke
+A good programmer is someone who looks both ways before crossing a one-way street. A good command checks its preconditions anyway.
+:::
+
+::: note
+Optional, not graded. Commit it by pull request, like the charter, because the whole team runs it. On a tool other than Claude Code, keep the same file as a prompt and paste it in.
+:::
+
 ## Before your agent builds the slice
 
 ::: steps

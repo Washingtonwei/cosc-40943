@@ -24,7 +24,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Design-of-Record](design-of-record.md), whose test list is the size measure for the estimate and whose class diagram shows which classes the rest of the code depends on, the trunk of 4.7, and [Context Engineering](context-engineering.md), whose build-context is what the agent builds from.
 - **Leads into:** [Code Review](code-review.md) (the same week, its own module), which reads what this module produces; traceability (the same week), whose release plan is built from these estimates; testing in week 9, where the first test, written from a use case, is taught; observability in week 12, which reads the logs this module asks you to write; and [Checkpoints 2 and 3](../project.md#checkpoints), where your team shows its estimates beside its actual hours.
-- **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.5), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit, with what the agent may read and run (4.8) shown just before it starts. Wednesday reads that commit and teaches logging (4.10). After that, estimation is practiced in your project (section 7), not lectured. Section 4.11, on running several agents, is reading.
+- **How it's taught:** on Monday of week 8, the estimate (4.1 to 4.5), then a live build of Project Pulse's reminder from its design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), stopped at the pause after the trunk commit, with what the agent may read and run (4.8) shown just before it starts. Wednesday reads that commit and teaches logging (4.10). After that, estimation is practiced in your project (section 7), not lectured. Sections 4.11, on running several agents, and 4.12, on writing your own command, are reading, with two slides on Wednesday.
 - **Course outcome it delivers:** [collaborating with AI across the lifecycle: delegating appropriately, supplying the context it cannot infer, and verifying its output](../syllabus.md#learning-outcomes) (outcome 6), and [sizing up a problem and judging whether it is feasible for this team in this time](../syllabus.md#learning-outcomes) (outcome 10), carried from the first week's Napkin into a number your client can plan around.
 
 ## 3. Motivation
@@ -193,6 +193,31 @@ flowchart LR
 Start both leaves before the trunk merges and each agent writes its own `SubmissionStatusService`, with two meanings of "has not submitted". Merge the trunk first and both leaves call the same one. Never split one use case by layer across agents: the defect where the halves meet belongs to nobody ([What a branch should be](ai-augmented-team.md#46-what-a-branch-should-be)).
 
 **The limit is you.** A worktree isolates files, not decisions and not the machine: two apps compete for one port and database, and each worktree needs its own dependency install (add `.claude/worktrees/` to `.gitignore`). Every leaf is a pull request a person reads, so run no more agents than pull requests you will review well today.
+
+### 4.12 Package your workflow as a command
+
+You have typed `/design` and `/implement` in Project Pulse. Each is one Markdown file in its [`.claude/commands/`](https://github.com/Washingtonwei/project-pulse/tree/main/.claude/commands) directory, [`design.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/design.md) and [`implement.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md). Claude Code turns `.claude/commands/<name>.md` into `/<name>`, and the file is the prompt it runs. Open both: they read like the checklist a careful senior engineer would hand a new teammate.
+
+**One skeleton, two commands.**
+
+| Part | What it does | In `/implement` |
+|---|---|---|
+| **Front matter** | A `description` for the `/` menu and an `argument-hint` | `argument-hint: <UC-ID>` |
+| **The argument** | `$ARGUMENTS` is whatever you type after the command | "Take the use case named in `$ARGUMENTS`" |
+| **Preconditions** | Refuse to start when the inputs are wrong | No design-of-record: stop and send the developer to `/design`. A session that already holds the design conversation: ask for `/clear` |
+| **Standing rules** | How to behave in every phase | Challenge the spec and the design, never comply silently: "When in doubt, or when you see a better way, shout." |
+| **Phases, reading first** | Numbered steps; nothing is edited until the agent has read the use case, the design, Crosscutting Concepts, and the code it extends | Phase 1 reads; later phases plan, implement, test, trace, and open the pull request |
+| **Stops and handoff** | Where the agent waits for a person, and what comes next | One pause, after the trunk commit (4.7); ends with a pull request and a pointer to closing the use case |
+
+**Where a command stops is its most important line.** `/design` stops before writing the design doc, until you accept the shape, because a design is cheap to change only before it is written. `/implement` has no approval gate, since the design was approved already, and pauses only after the trunk. A command with no stop hands your judgment to the agent.
+
+**Write your own.** Package a workflow your team has done by hand at least twice ([the loop](context-engineering.md#49-context-is-earned-and-the-loop-is-the-point)); a wrapper around a thing you have never done teaches the wrapper. Copy the skeleton, not Project Pulse's paths, area codes, or FR lists, and start at about 20 lines, not 88. Three that fit where your team is now:
+
+- **`/design` and `/implement` for your repository:** your document paths, your templates, your test command.
+- **`/close-use-case`:** the method's [closing checklist](../method.md#phase-c-fan-out-per-use-case) and the retrospective of 4.4. The agent sums the logged hours by use case ID and asks the owner the three questions; the owner answers them.
+- **`/estimate`:** count the design's test rows, the files its sequence diagrams touch, and its open risks, and draft the refined breakdown with the hours left blank for a person (section 5).
+
+Commit a command by pull request, as you would the charter, because the whole team runs it. It is optional and not graded. The format is Claude Code's ([what does not transfer](ai-augmented-team.md#412-onboarding-the-ai-teammate)); on another tool, keep the same file as a prompt and paste it in.
 
 ## 5. The AI-native lens
 
