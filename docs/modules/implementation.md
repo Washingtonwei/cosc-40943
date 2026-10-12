@@ -187,30 +187,30 @@ Start both leaves before the trunk merges and each agent writes its own `Submiss
 
 **The limit is you.** A worktree isolates files, not decisions and not the machine: two apps compete for one port and database, and each worktree needs its own dependency install (add `.claude/worktrees/` to `.gitignore`). Every leaf is a pull request a person reads, so run no more agents than pull requests you will review well today.
 
-### 4.11 Package your workflow as a command
+### 4.11 Package your workflow as a skill
 
-You have typed `/design` and `/implement` in Project Pulse. Each is one Markdown file in its [`.claude/commands/`](https://github.com/Washingtonwei/project-pulse/tree/main/.claude/commands) directory, [`design.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/design.md) and [`implement.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md). Claude Code turns `.claude/commands/<name>.md` into `/<name>`, and the file is the prompt it runs. Open both: they read like the checklist a careful senior engineer would hand a new teammate.
+You have typed `/design` and `/implement` in Project Pulse. Each is one Markdown file in its [`.claude/commands/`](https://github.com/Washingtonwei/project-pulse/tree/main/.claude/commands) directory, [`design.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/design.md) and [`implement.md`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md). Claude Code turns `.claude/commands/<name>.md` into `/<name>`, and the file is the prompt it runs. Claude Code calls these **skills**; a file in `.claude/commands/` is the older form, and it still works. A new skill goes in a folder, `.claude/skills/<name>/SKILL.md`, which creates the same `/<name>` and can keep supporting files, such as a template, beside it ([Claude Code: skills](https://code.claude.com/docs/en/slash-commands)). Open both: they read like the checklist a careful senior engineer would hand a new teammate.
 
-**One skeleton, two commands.**
+**One skeleton, two skills.**
 
 | Part | What it does | In `/implement` |
 |---|---|---|
 | **Front matter** | A `description` for the `/` menu and an `argument-hint` | `argument-hint: <UC-ID>` |
-| **The argument** | `$ARGUMENTS` is whatever you type after the command | "Take the use case named in `$ARGUMENTS`" |
+| **The argument** | `$ARGUMENTS` is whatever you type after the skill's name | "Take the use case named in `$ARGUMENTS`" |
 | **Preconditions** | Refuse to start when the inputs are wrong | No design-of-record: stop and send the developer to `/design`. A session that already holds the design conversation: ask for `/clear` |
 | **Standing rules** | How to behave in every phase | Challenge the spec and the design, never comply silently: "When in doubt, or when you see a better way, shout." |
 | **Phases, reading first** | Numbered steps; nothing is edited until the agent has read the use case, the design, Crosscutting Concepts, and the code it extends | Phase 1 reads; later phases plan, implement, test, trace, and open the pull request |
 | **Stops and handoff** | Where the agent waits for a person, and what comes next | One pause, after the trunk commit (4.6); ends with a pull request and a pointer to closing the use case |
 
-**Where a command stops is its most important line.** `/design` stops before writing the design doc, until you accept the shape, because a design is cheap to change only before it is written. `/implement` has no approval gate, since the design was approved already, and pauses only after the trunk. A command with no stop hands your judgment to the agent.
+**Where a skill stops is its most important line.** `/design` stops before writing the design doc, until you accept the shape, because a design is cheap to change only before it is written. `/implement` has no approval gate, since the design was approved already, and pauses only after the trunk. A skill with no stop hands your judgment to the agent.
 
-**Write your own.** Package a workflow your team has done by hand at least twice ([the loop](context-engineering.md#49-context-is-earned-and-the-loop-is-the-point)); a wrapper around a thing you have never done teaches the wrapper. Copy the skeleton, not Project Pulse's paths, area codes, or FR lists, and start at about 20 lines, not 88. Three that fit where your team is now:
+**Write your own.** Package a workflow your team has done by hand at least twice ([the loop](context-engineering.md#49-context-is-earned-and-the-loop-is-the-point)); a wrapper around a thing you have never done teaches the wrapper. Copy the skeleton, not Project Pulse's paths, area codes, or FR lists, and start at about 20 lines, not 88, in `.claude/skills/<name>/SKILL.md`. Three that fit where your team is now:
 
 - **`/design` and `/implement` for your repository:** your document paths, your templates, your test command.
 - **`/close-use-case`:** the method's [closing checklist](../method.md#phase-c-fan-out-per-use-case) and the retrospective of 4.4. The agent sums the logged hours by use case ID and asks the owner the three questions; the owner answers them.
 - **`/estimate`:** count the design's test rows, the files its sequence diagrams touch, and its open risks, and draft the refined breakdown with the hours left blank for a person (section 5).
 
-Commit a command by pull request, as you would the charter, because the whole team runs it. It is optional and not graded. The format is Claude Code's ([what does not transfer](ai-augmented-team.md#412-onboarding-the-ai-teammate)); on another tool, keep the same file as a prompt and paste it in.
+Commit a skill by pull request, as you would the charter, because the whole team runs it. It is optional and not graded. The format is Claude Code's ([what does not transfer](ai-augmented-team.md#412-onboarding-the-ai-teammate)); on another tool, keep the same file as a prompt and paste it in.
 
 ## 5. The AI-native lens
 

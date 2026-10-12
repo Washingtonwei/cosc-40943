@@ -332,7 +332,7 @@ Claude Code expands that import at session start, so every tool reads the same i
 
 **Why not a symlink?** `ln -s AGENTS.md CLAUDE.md` does work, and it is the tidier answer on macOS and Linux. On Windows it needs Administrator privileges or Developer Mode, and a repository cloned without symlink support checks the file out as a text file containing the path `AGENTS.md`, which the agent then reads as your entire project charter. On a mixed team, use the import.
 
-**What does not transfer.** Instructions are portable; tooling is not. Project Pulse's `.claude/commands/` holds `/design`, `/implement`, `/spec-build`, and `/sync-check`, the project's workflow gates written as commands the agent can run. They are Claude Code's format, so switching tools means running those workflows by hand or rebuilding them. You meet the gates themselves in week 7; know what the directory is when you see it, and know the cost before you plan a week around a tool you might run out of.
+**What does not transfer.** Instructions are portable; tooling is not. Project Pulse's `.claude/commands/` holds `/design`, `/implement`, `/spec-build`, and `/sync-check`, the project's workflow gates written as skills the agent can run (Claude Code's older command-file form). They are Claude Code's format, so switching tools means running those workflows by hand or rebuilding them. You meet the gates themselves in week 7; know what the directory is when you see it, and know the cost before you plan a week around a tool you might run out of.
 
 Project Pulse is a worked example, and the instructive part is that it is not one file. It is Claude-only (it is developed with Claude Code, so there is no `AGENTS.md`), but the layering is what to copy:
 

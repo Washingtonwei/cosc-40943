@@ -332,7 +332,7 @@ A design is approved by **merging a pull request**, not by the drafter agreeing 
 - Its description carries the questions-test list (4.10).
 - **A teammate who did not write it reviews and approves it.** Nobody starts an implementation branch from this design until it is merged.
 
-Project Pulse's worked example went through exactly this gate, as [pull request #89](https://github.com/Washingtonwei/project-pulse/pull/89): the specification commit, the design commit, three more commits answering the questions test, and the list in the description. The steps up to the gate are packaged as Project Pulse's [`/design`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/design.md) command, which stops for your approval before it writes the design; week 8 opens it up and shows you how to [write your own](implementation.md#411-package-your-workflow-as-a-command).
+Project Pulse's worked example went through exactly this gate, as [pull request #89](https://github.com/Washingtonwei/project-pulse/pull/89): the specification commit, the design commit, three more commits answering the questions test, and the list in the description. The steps up to the gate are packaged as Project Pulse's [`/design`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/design.md) command, which stops for your approval before it writes the design; week 8 opens it up and shows you how to [write your own](implementation.md#411-package-your-workflow-as-a-skill).
 
 **Reviewing a design is the skill being taught**, and the failure to watch for is the rubber stamp. A long, well-formatted, agent-drafted design invites approval on sight. Review against these questions instead:
 

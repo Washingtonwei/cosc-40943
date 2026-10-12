@@ -782,7 +782,7 @@ A charter that never grows is a charter nobody is learning from.
 
 ## Assembled the same thing three times?
 
-Then the assembly is worth packaging: a custom command, or a skill file that carries the steps.
+Then the assembly is worth packaging: a skill, a file that carries the steps.
 
 Week 7, where the design and implementation gates give one something to do.
 

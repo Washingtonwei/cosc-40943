@@ -251,7 +251,7 @@ And it converts the lesson into something an agent can act on rather than a prin
 
 That is the loop. The agent gets something wrong, you decide whether the fault was the code or the context, and when it was the context you bank the lesson where the next session will read it. A charter that never grows is a charter nobody is learning from.
 
-One thing the loop eventually produces: when you have assembled the same shape of build-context three times, the assembly itself is worth packaging. Every agent supports some version of this, a custom command or a skill file that carries the steps so you stop retyping them. Week 8 takes that up in [Package your workflow as a command](implementation.md#411-package-your-workflow-as-a-command), once the design and implementation gates give a packaged command something to do. Write them by hand first. A wrapper around a thing you have never done teaches the wrapper.
+One thing the loop eventually produces: when you have assembled the same shape of build-context three times, the assembly itself is worth packaging. Every agent supports some version of this; Claude Code calls it a skill, a file that carries the steps so you stop retyping them. Week 8 takes that up in [Package your workflow as a skill](implementation.md#411-package-your-workflow-as-a-skill), once the design and implementation gates give a packaged skill something to do. Write them by hand first. A wrapper around a thing you have never done teaches the wrapper.
 
 ## 5. The AI-native lens
 

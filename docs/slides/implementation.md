@@ -496,21 +496,22 @@ Reading: module 4.10. Start both reminder leaves before the trunk merges and eac
 | Stop | Once, after the trunk |
 
 ::: note
-Project Pulse's .claude/commands/implement.md, 88 lines; design.md has the same skeleton and stops earlier, before writing the design doc, until you accept its shape. Claude Code turns .claude/commands/name.md into /name. The stop is the most important line: a command with no stop hands your judgment to the agent. Module 4.11.
+Project Pulse's .claude/commands/implement.md, 88 lines; design.md has the same skeleton and stops earlier, before writing the design doc, until you accept its shape. It is a skill: Claude Code turns .claude/commands/name.md into /name, the older form of a skill, which still works; a new one goes in .claude/skills/name/SKILL.md. The stop is the most important line: a skill with no stop hands your judgment to the agent. Module 4.11.
 :::
 
 ## Write your own
 
 ::: steps
 - Package what your team has done by hand twice.
-- Copy the skeleton, not Project Pulse's paths. About 20 lines.
+- A skill: `.claude/skills/<name>/SKILL.md`, about 20 lines.
+- Copy the skeleton, not Project Pulse's paths.
 - `/design` and `/implement` for your repository.
 - `/close-use-case`: the closing checklist and the three retrospective questions.
 - `/estimate`: count the rows and risks; leave the hours blank for a person.
 :::
 
 ::: joke
-A good programmer is someone who looks both ways before crossing a one-way street. A good command checks its preconditions anyway.
+A good programmer is someone who looks both ways before crossing a one-way street. A good skill checks its preconditions anyway.
 :::
 
 ::: note

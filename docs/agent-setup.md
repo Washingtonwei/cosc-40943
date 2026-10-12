@@ -149,7 +149,7 @@ Three things to try in your first session.
 
 **Plan before it writes.** Press **Shift+Tab** until the bottom of the screen says **plan mode**. In plan mode the agent reads and proposes but does not change files. Part 3 of assignment 2 runs here.
 
-**Find the course commands.** Type `/` to see the commands this repository provides, including `/design`, `/implement`, and `/spec-build`.
+**Find the course skills.** Type `/` to see the skills this repository provides, including `/design`, `/implement`, and `/spec-build`.
 
 **When it asks permission to run a command, read the command.** "Yes" runs it once. "Yes, and don't ask again" allows it for good in this repository, so save that for commands you have seen and understood.
 
@@ -256,7 +256,7 @@ Steps 1 to 4, 6, 8, and 10's branch protection are identical; `gh` and Git do no
 - **Install:** `winget install GitHub.Copilot` on Windows, `brew install --cask copilot-cli` on a Mac, or see [GitHub's install page](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli). Start it with `copilot` and log in with `/login`.
 - **Plan mode:** also Shift+Tab.
 - **Instructions:** it reads the same `CLAUDE.md` files.
-- **Course commands:** `/design`, `/implement`, and `/spec-build` are Claude Code's; run those steps by hand.
+- **Course skills:** `/design`, `/implement`, and `/spec-build` are Claude Code skills; run those steps by hand.
 - **Guardrails** are start-up flags instead of a settings file. Copilot asks before every shell command unless you start it with `--allow-all-tools`, so don't. To stop it pushing at all, start it with `copilot --deny-tool='shell(git push)'` and push yourself. See GitHub's [allowing and denying tools](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/allowing-tools).
 
 ## When something goes wrong

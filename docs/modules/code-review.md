@@ -65,7 +65,7 @@ Review began as **formal inspection**: planned meetings, prepared reviewers, a m
 
 **Review the tests, not only that they pass.** For each row of the test list, find the test that covers it or write that none does. Then read its assertion against the row: row "UC-NOT 4a" asks for a `400` *and* no email sent, so a test that checks only the status covers half the row. A test the agent wrote from its own code checks that the code does what the code does; the expected value has to come from the use case ([4.4](#44-a-checklist-short-enough-to-use), item 6).
 
-**A deviation is not automatically wrong.** `/implement` tells the agent to shout when it sees a better way ([AI-Assisted Implementation 4.11](implementation.md#411-package-your-workflow-as-a-command)). A deviation the pull request names, with the design updated in the same pull request, is a design change under review. A silent one is a defect even when the code works, because the design no longer describes the code ([Design-of-Record 6](design-of-record.md#6-risks-and-mitigations), the stale design).
+**A deviation is not automatically wrong.** `/implement` tells the agent to shout when it sees a better way ([AI-Assisted Implementation 4.11](implementation.md#411-package-your-workflow-as-a-skill)). A deviation the pull request names, with the design updated in the same pull request, is a design change under review. A silent one is a defect even when the code works, because the design no longer describes the code ([Design-of-Record 6](design-of-record.md#6-risks-and-mitigations), the stale design).
 
 ### 4.3 How deep: trunk, security rule, leaf
 
