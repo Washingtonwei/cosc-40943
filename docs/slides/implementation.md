@@ -9,12 +9,20 @@ day: Monday
 
 Week 8 · From an approved design to an estimate you can defend and code you can explain
 
+::: note
+**Say:** *[0:00]* Welcome back from fall break. Two halves today. First we estimate the reminder we designed last week, then we start building it with the agent, live. By the end of the hour you should be able to put a range on a use case and defend it.
+:::
+
 ## Where we are
 
-![The documents so far, and this week's code](img/document-map-week-08.svg){ height="520" }
+![The documents so far, and this week's code](img/document-map-week-08.svg){ height="480" }
+
+Today's build: [`not.md`, the approved design](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md)
 
 ::: note
-One minute, left to right. Weeks 3 and 4 wrote the requirements, week 6 the one architecture, week 7 a design-of-record per use case area; Project Pulse's first is not.md, approved last week. This week is the code box: estimate it, then build it from not.md. Week 9 tests it.
+**Say:** Every document so far, left to right. Requirements in weeks 3 and 4, the architecture in week 6, a design-of-record per use case area last week; Project Pulse's first is not.md. This week is the code box: estimate it, then build it from not.md. Next week we test it.
+
+*[Open the not.md link. Two or three minutes, scrolling, no reading line by line.]* **Say:** A quick reminder of what we approved. The Overview: one question, which students still owe which item for a week, a weekly activity report or a peer evaluation, and a reminder to exactly those students, on a schedule and on an instructor's demand. Components and classes: that's the trunk we build first. Tests: 20 rows, which is what we estimate from in a minute. Open questions and risks at the bottom, including the 80 emails in one request. Everything the agent builds today comes from this file and nothing else.
 :::
 
 ## When can I use it? {.center}
@@ -24,7 +32,9 @@ The reminder's design is approved. The instructor asks: when can I use it? What 
 :::
 
 ::: note
-Take two or three numbers from the room and write them on the board. Do not comment on them yet; they come back at the end. The design is Project Pulse's docs/design/not.md from week 7.
+**Say:** Pretend I'm the client. The reminder's design was approved last week. When can I use it? Give me a number. *[Write two or three on the board, no comment.]* Hold on to those; we come back to them.
+
+**Background:** the design is Project Pulse's docs/design/not.md, from week 7.
 :::
 
 ## Count the code?
@@ -36,6 +46,10 @@ Take two or three numbers from the room and write them on the board. Do not comm
 
 ::: ai
 The agent writes all of it in one session. By that arithmetic, the answer is "this afternoon."
+:::
+
+::: note
+**Say:** One way to answer: count the code. not.md asks for a controller, a service, a scheduler change, a dialog, and tests. Lines times hours per line. But the agent writes all of that in one session, so by that arithmetic it's ready this afternoon.
 :::
 
 ## It is not this afternoon
@@ -52,6 +66,10 @@ open risks. One (80 emails during one request) can only be settled by measuring 
 The agent made the typing free and left everything else.
 :::
 
+::: note
+**Say:** It isn't. The design has 20 rows in its test list, and a person has to see each one pass. It has 6 open risks, and one of them, 80 emails sent during one request, we can only settle by measuring on staging. The agent made the typing free. Everything else is still there.
+:::
+
 ## Your feeling of speed is not data
 
 ::: steps
@@ -61,7 +79,9 @@ The agent made the typing free and left everything else.
 :::
 
 ::: note
-METR's randomized trial, July 2025, 16 experienced developers on their own repositories. Felt speed was off by about 40 points, so log your hours rather than remember them.
+**Say:** And don't trust how fast it feels. *[Click through.]* Expected 24% faster, measured 19% slower, and afterwards they still believed 20% faster. These were experienced developers on their own code. So log your hours; don't remember them.
+
+**Background:** METR's randomized trial, July 2025, 16 experienced developers on their own repositories. Felt speed was off by about 40 points.
 :::
 
 ## The hours moved
@@ -75,7 +95,9 @@ up 91%.
 :::
 
 ::: note
-Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap; the cost moved to the person reading the result.
+**Say:** Where did the time go? Teams that use AI heavily open far more pull requests, and much bigger ones, and review time went up 91%. Generating got cheap. Reading did not.
+
+**Background:** Faros AI telemetry, June 2025, teams with high AI adoption.
 :::
 
 ## People's hours, not the agent's {.center}
@@ -85,7 +107,7 @@ Faros AI telemetry, June 2025, teams with high AI adoption. Generation got cheap
 :::
 
 ::: note
-Every hour in the estimate is a person's: settling the use case with the client, designing with the agent, reading what it wrote, seeing it work. Pull request #76 was agent-written and still took about 3.5 hours from first commit to merge.
+**Say:** Now look at the board. How many of those numbers were pricing the agent's session? /implement writes the reminder in minutes, and none of the estimate is those minutes. Every hour is a person's: settling the use case with the client, designing, reading what the agent wrote, seeing it work. Pull request #76 was agent-written and still took about three and a half hours from first commit to merge.
 :::
 
 ## A skill the agent cannot take {.center}
@@ -95,7 +117,7 @@ When anyone can generate the code, the engineer a client trusts is the one whose
 :::
 
 ::: note
-The agent can count test rows and draft a breakdown. It cannot know how fast your team reads a diff, how long your client takes to answer, or which risk will bite, and it cannot promise a date. Say plainly that this is a skill to build on purpose this term: every use case is a repetition, and every miss is data about your own judgment.
+**Say:** So estimation is worth building as a skill, on purpose. The agent can count test rows and draft a breakdown. It can't know how fast your team reads a diff, how slowly your client answers, or which risk will bite, and it can't promise a date. When anyone can generate code, the engineer a client trusts is the one whose dates hold. Every use case this term is a repetition, and every miss is data about your own judgment.
 :::
 
 ## A range, made twice
@@ -111,7 +133,7 @@ Client needs it sooner? Cut scope, not the estimate.
 :::
 
 ::: note
-A single number gets heard as a promise. The coarse range is wide because nothing is designed yet; the design turns unknowns into named tests and risks, so the second estimate is narrower.
+**Say:** Two rules. Always a range, because one number gets heard as a promise. And estimate twice: coarse when the use case is written, narrower once the design is approved, because the design turns unknowns into named tests and risks. If the client needs it sooner, cut scope. Never shrink the estimate.
 :::
 
 ## Where the hours go now
@@ -128,7 +150,9 @@ The first 90 percent of the code takes the first 90 percent of the time. The rem
 :::
 
 ::: note
-The joke is now literally true: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. Each part maps onto weekly activity report categories: clarify is REQUIREMENTS or COMMUNICATION, design is DESIGN, build and review is DEVELOPMENT or REVIEW (a teammate's review of the pull request included), verify is TESTING or BUGFIX. Count only time spent on this use case; a client meeting about five use cases is overhead, not split five ways. The refined estimate folds clarify and design into one part, what is left of them: the holes the build exposes.
+**Say:** Four buckets: clarify, design, build and review, verify. *[Read the joke.]* That used to be an exaggeration. Now it's literal: the agent does the first 90 percent of the code in minutes, and the other 90 percent of the time is review and verification. The buckets match your weekly activity report categories.
+
+**Background:** clarify is REQUIREMENTS or COMMUNICATION, design is DESIGN, build and review is DEVELOPMENT or REVIEW (a teammate's review of the pull request included), verify is TESTING or BUGFIX. Count only time spent on this use case; a client meeting about five use cases is overhead, not split five ways. The refined estimate folds clarify and design into one part, what is left of them: the holes the build exposes.
 :::
 
 ## Planning poker, in hours
@@ -149,7 +173,9 @@ The gap is the finding. Clarify at 0.5 hours and at 4 means two people read two 
 :::
 
 ::: note
-Grenning 2002, popularized by Cohn. A few minutes per use case, spent on the gaps; a gap on clarify is a question for the client. Hours, not story points: the client asks for a date, weekly activity reports log hours, and a semester is too few sprints for a points velocity to settle. If time allows, take a show of hands on the ask and get the extremes to explain.
+**Say:** How does a team agree on a range? Planning poker, in hours. Write privately, reveal together, highest and lowest explain. Try it: UC-AI-critique, not designed yet. Clarify: under an hour? One to three? More than three? *[Hands; get the two extremes to explain. Short on time: skip the hands and say the key line.]* That gap is the finding: two people read two different use cases. Hours, not story points, because the client asks for a date.
+
+**Background:** Grenning 2002, popularized by Cohn. A few minutes per use case, spent on the gaps; a gap on clarify is a question for the client. Points also fail here because weekly activity reports log hours and a semester is too few sprints for a points velocity to settle.
 :::
 
 ## Size it by the test list
@@ -162,6 +188,10 @@ Grenning 2002, popularized by Cohn. A few minutes per use case, spent on the gap
 - The open risks set the width of the range.
 :::
 
+::: note
+**Say:** What do you estimate from? The test list. Each row is a behavior someone has to watch work. Rows aren't hours yet, so the first estimate is by analogy to a finished change of the same size. After two or three use cases you'll have your own hours per row. The open risks set the width.
+:::
+
 ## The reminder, estimated
 
 | Part | Basis | Hours |
@@ -172,7 +202,9 @@ Grenning 2002, popularized by Cohn. A few minutes per use case, spent on the gap
 | **Total** | By analogy: #76, 3.5 h | **3 to 5** |
 
 ::: note
-No measured rate yet, so this is an analogy. The reference class is Project Pulse pull request #76, the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder is the same size, so most likely about 3.5. Do this live before running /implement on not.md. Commitment: on staging by Friday with the latency measured, or a message to the instructor by Wednesday saying why not. This is the refined estimate. The reminder was designed before we taught estimation, so it has no coarse one, and neither do the teams' proving slices. Compare with the numbers the room gave on the first slide: those were coarse guesses made without the design, the job planning poker does. This one is the sprint-planning estimate, made with it.
+**Say:** Let's commit to one now, before the agent runs. Clarify and design are mostly done: half an hour to an hour. Build and review, 1.5 to 2. Verify, 20 rows plus latency on staging, 1 to 2. Total 3 to 5, most likely 3.5, the same as #76, which was about this size. Compare the board: those were coarse guesses without a design, the job planning poker does. This one is made with it. On staging by Friday with the latency measured, or a message by Wednesday saying why not.
+
+**Background:** no measured rate yet, so this is an analogy. Pull request #76 is the invitation hardening: 884 lines, 23 files, two review rounds, about 3.5 hours from first commit to merge. The reminder was designed before estimation was taught, so it has no coarse estimate, and neither do the teams' proving slices.
 :::
 
 ## Write it down before you build
@@ -190,7 +222,9 @@ UC-NOT-remind-non-submitters: reviewed the agent's diff against the sequence dia
 ```
 
 ::: note
-Project Pulse already stores planned and actual hours on every activity line (the Activity entity). The use case ID at the start is what lets you add them up later.
+**Say:** Write it on the issue before you build, not after. And every weekly activity report line about this use case starts with its ID. That's what lets you add up the actual hours later.
+
+**Background:** Project Pulse already stores planned and actual hours on every activity line (the Activity entity).
 :::
 
 ## Calibrate
@@ -210,7 +244,9 @@ Hofstadter's Law: it always takes longer than you expect, even when you take int
 :::
 
 ::: note
-The ratio is how you take Hofstadter's Law into account for real. One ratio per estimate: the refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Track them per person and per team: six ratios is how a team finds out that review, not building, is where its hours go.
+**Say:** Then compare. Hours logged divided by the estimate's midpoint. Estimated 8 to 16, logged 18: ratio 1.5. Next time you'd say 4 to 8, say 6 to 12. And a slip you see coming goes to the client at the next meeting, not on the date. *[Read the joke.]* The ratio is how you actually take that law into account.
+
+**Background:** one ratio per estimate. The refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Tracked per person and per team, six ratios is how a team finds out that review, not building, is where its hours go.
 :::
 
 ## Then look back
@@ -226,7 +262,7 @@ The ratio corrects your bias. The retrospective improves your judgment.
 :::
 
 ::: note
-Five minutes, by the owner, the day the use case closes and before the next one starts. The answer is that use case's biggest-miss sentence in the calibration table; written at the checkpoint weeks later, it is a guess. Estimate often, look back every time, and the estimates get better.
+**Say:** The ratio corrects your bias. A retrospective improves your judgment. Five minutes, by the owner, the day the use case closes and before the next one starts. *[Click through the three questions.]* The answer becomes that use case's biggest-miss sentence in the calibration table. Written then, it's evidence. Written at the checkpoint weeks later, it's a guess.
 :::
 
 ## Graded on honesty, not accuracy {.center}
@@ -239,6 +275,10 @@ A ratio of 2.3 with a reason earns the same as a ratio of 1.0.
 Logging fewer hours to look accurate is inflating a weekly activity report, and it is academic dishonesty.
 :::
 
+::: note
+**Say:** How is this graded? Honesty, not accuracy. A ratio of 2.3 with a reason earns the same as 1.0. Shaving your logged hours to look accurate is inflating a report, and that's academic dishonesty. I'd much rather see a bad estimate honestly reported.
+:::
+
 ## In your team meeting, by Sunday
 
 ::: steps
@@ -246,6 +286,10 @@ Logging fewer hours to look accurate is inflating a weekly activity report, and 
 - Before Checkpoint 2: planning poker for every use case not yet designed, its coarse estimate on its issue.
 - Your weekly activity report lines carry the use case ID.
 - Checkpoints 2 and 3: estimate, actual, ratio, and one sentence on the biggest miss.
+:::
+
+::: note
+**Say:** *[About minute 22.]* By Sunday, in your team meeting: a refined estimate on your build-context issue before the agent builds; planning poker for every use case you haven't designed, coarse ranges on their issues; use case IDs on your report lines. The calibration table shows up at Checkpoints 2 and 3. Now let's build.
 :::
 
 ## The agent copies what it sees {.center}
@@ -259,7 +303,9 @@ Ask the agent for a feature there, and it writes code that does not log. Whateve
 :::
 
 ::: note
-Two different logger names among the four, LOGGER and log. The catch-all exception handler logs nothing. Nothing near the new code logs, so the new code will not either. Same mechanism as week 2's reviewee example. This is why the rules in today's lecture go into the charter, not into a prompt.
+**Say:** Before the agent touches anything, one fact about Project Pulse. Of 266 backend classes, 4 declare a logger, and they don't agree on its name. Ask the agent for a feature here and it copies what it sees. Whatever your code does by habit, the agent does at speed. We'll check whether today's build logs. That's why rules go in the charter, not in a prompt.
+
+**Background:** the two names are LOGGER and log. The catch-all exception handler logs nothing either. Same mechanism as week 2's reviewee example.
 :::
 
 ## First run the tests
@@ -275,7 +321,9 @@ Two different logger names among the four, LOGGER and log. The catch-all excepti
 :::
 
 ::: note
-From Simon Willison's "First run the tests", this week's reading. Put the command in your agent charter so every session starts there. Project Pulse's backend suite takes several minutes; in class we run one test class to show the habit.
+**Say:** First habit: run the tests before changing anything. *[Tab A: `cd backend`, then `.\mvnw.cmd test -Dtest=WeeklyReminderSchedulerTest`.]* Zero failures: that's the baseline. The agent learns the suite exists, how to run it, and how big the project is. The full suite takes minutes, so one class today. This command goes in your charter.
+
+**Background:** from Simon Willison's "First run the tests", this week's reading.
 :::
 
 ## Test first, and watch it fail
@@ -289,7 +337,9 @@ If the agent writes the test and the code, it can pass its own exam. The expecte
 :::
 
 ::: note
-Red/green: the agent writes the test from the use case's postcondition or extension outcome, runs it, sees it fail, then writes the code. Where the expected value comes from is week 9's question, the oracle. Today only plant it.
+**Say:** Second habit: write the test first and watch it fail. A test that passes before the change proves nothing. If the agent writes the test and the code, it can pass its own exam; the expected value comes from the use case. Watch today's run: it won't show red first, because nothing tells it to. That line belongs in your charter.
+
+**Background:** red/green. The test comes from the use case's postcondition or extension outcome. Where the expected value comes from is week 9's question, the oracle; today only plant it.
 :::
 
 ## Cognitive debt {.center}
@@ -299,7 +349,9 @@ Code your team accepted without understanding it.
 :::
 
 ::: note
-Kosmyna et al. named it for essays written with an assistant; it fits code better, because an agent writes more than a person can read. It compounds like technical debt: the next session builds on code nobody can explain, and the first defect in it is debugged from scratch.
+**Say:** The risk of going fast has a name. Cognitive debt: code your team accepted without understanding it. It compounds like technical debt. The next session builds on code nobody can explain, and the first bug in it gets debugged from scratch.
+
+**Background:** Kosmyna et al. named it for essays written with an assistant; it fits code better, because an agent writes more than a person can read.
 :::
 
 ## Size the step to the review
@@ -315,7 +367,7 @@ The agent pauses once, after the trunk. You read it before the leaves are built.
 :::
 
 ::: note
-Not a pause after every step: a wrong trunk found late means rebuilding every leaf; a wrong leaf does not. All the commits still go in one pull request, read commit by commit.
+**Say:** How do you keep up without reading after every line? Size the steps. The trunk, what many paths depend on or is hard to undo, goes first, and the agent stops once so you read it. A security rule or migration goes alone. Leaves come after. A wrong trunk found late means rebuilding every leaf; a wrong leaf is cheap. All the commits still go in one pull request, read commit by commit.
 :::
 
 ## The pause check {.center}
@@ -325,7 +377,7 @@ Can you say what changed and why, without asking the agent?
 :::
 
 ::: note
-If not, read until you can. That is cognitive debt paid while it is small.
+**Say:** At the pause, one question. *[Read it.]* If you can't answer it, keep reading until you can. That's paying the debt while it's small.
 :::
 
 ## The reminder, in four commits
@@ -342,7 +394,7 @@ The trunk commit message the agent wanted: "Add some stuff." The one you merge: 
 :::
 
 ::: note
-From not.md's class diagram. Project Pulse's /implement commits this way and pauses after the trunk. This is what we build live today, after /clear, so the session reads only the merged design.
+**Say:** Here's the reminder in those terms, from not.md's class diagram. Trunk first: the service that knows who owes what this week, and its helpers. Pause. The two route rules, alone. Then the controller and dialog, then the moved scheduler. Project Pulse's /implement commits exactly this way, and it's what we start live today. *[Read the joke.]* You write the commit message that says what the code is for.
 :::
 
 ## The team's settings file
@@ -365,7 +417,9 @@ From not.md's class diagram. Project Pulse's /implement commits this way and pau
 ```
 
 ::: note
-.claude/settings.json, committed once so every teammate's Claude Code picks it up. The full file, with the PowerShell twins and the short force-push spelling, is on the Agent Setup page, section 10. Open it as a pull request so the team reviews what the agent may not do. The Read rules are the new part this week: anything the agent reads goes to the model provider. Test it yourself: ask the agent to read your .env and see it refused. Your TA opens this file at Checkpoint 2.
+**Say:** *[About minute 36.]* Before the agent gets the keys: what it may not do. This is the team's settings file. No force push, no merge, no deleting the repository, and, new this week, no reading your secrets. Anything the agent reads goes to the model provider. Commit it once by pull request so the team reviews it. Project Pulse doesn't have one, so test the refusal on your own repository.
+
+**Background:** the file is .claude/settings.json. The full version, with the PowerShell twins and the short force-push spelling, is on the Agent Setup page, section 10. The TA opens it at Checkpoint 2.
 :::
 
 ## Before Friday
@@ -375,6 +429,12 @@ From not.md's class diagram. Project Pulse's /implement commits this way and pau
 - Ask the agent to read `.env`. Watch it refused.
 - Charter line: no dependency without a person's check.
 - Checked at Checkpoint 2.
+:::
+
+::: note
+**Say:** Before Friday: the Read deny rules, by pull request. Ask the agent to read .env and watch it refuse. A charter line: no new dependency without a person's check. Your TA checks it at Checkpoint 2.
+
+*[Minute 39, the build.]* Tab A: `git switch -c not-reminder`. Tab B: `claude`, then `/clear`, then `/implement UC-NOT-remind-non-submitters`. Say: I clear on purpose, so it reads only the merged design, not a conversation. While it reads: "It reads only merged documents." While it plans: "No approval gate, the design was approved last week." Read every permission prompt aloud and choose Yes once, never "don't ask again". During phase 1 or 2, open `.claude/commands/implement.md` for a minute: "This file is what is executing. Wednesday we take it apart." Then show "Code you did not write". At the pause, do not answer it: `git log --oneline -3`, `git show --stat HEAD`, and stop. "Reading the trunk is how we open Wednesday." If it hasn't paused by 10:50, leave it running. If it fails, say so: a failed run is also a lesson.
 :::
 
 ## Code you did not write
@@ -390,7 +450,9 @@ The code is evidence, never authority.
 :::
 
 ::: note
-For teams whose client handed them a codebase. The method's section "Starting from an existing codebase" has the four steps; Project Pulse's /design calls its version "design-as-built". Defects go to OPEN-ISSUES.md, not into the specification.
+**Say:** *[While the agent runs.]* For teams whose client handed you existing code. Ask the agent to document it and it writes down what the code does, bugs included. A missing check, read back, becomes a requirement nobody chose. Only your client decides whether each one is intended, corrected, or a defect. The code is evidence, never authority. Module 4.9 has the steps.
+
+**Background:** Project Pulse's /design calls its version "design-as-built". Defects go to OPEN-ISSUES.md, not into the specification.
 :::
 
 ## The catch-all logs nothing
