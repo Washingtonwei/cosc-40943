@@ -219,6 +219,6 @@ Claude Code's `/code-review` runs in a fresh context: it does not see the conver
 
 ### Hand-offs
 
-- `MODULE-testing` (Wed Oct 21): the seeded pull request's test that cannot fail is a candidate opening example of a test without an oracle.
+- `MODULE-testing` (Fri Oct 23): the seeded pull request's test that cannot fail is a candidate opening example of a test without an oracle.
 - `MODULE-static-analysis` (week 10): the checklist's style items move to linters.
 -->

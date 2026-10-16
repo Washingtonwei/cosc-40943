@@ -18,7 +18,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md), where availability and robustness entered your specification as quality attributes with numbers.
 - **Leads into:** Wednesday's observability lecture, which is how you see whether the objective set here is being met, and [Checkpoint 3](../project.md#checkpoints), where your team shows one objective measured and one dependency failing on purpose.
-- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. The hands-on is announced at Checkpoint 2, so your team starts it three weeks before the lecture and shows it at Checkpoint 3.
+- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. The hands-on is announced at Checkpoint 2, so your team starts it ten days before the lecture and shows it at Checkpoint 3.
 - **Course outcome it delivers:** [building, testing, and shipping a working MVP](../syllabus.md#learning-outcomes) (outcome 4). Shipping includes knowing whether it stays up.
 
 ## 3. Motivation

@@ -36,7 +36,7 @@ Once named, the CrowdStrike line becomes a definition rather than an aphorism: t
 
 **Hand-off.** `MODULE-dynamic-analysis` (week 12) builds its oracle ladder on this word and teaches the in-source `assert` as an oracle over every execution rather than one example. Its section 4 assumes the word was named here. Skip these three minutes and week 12 has to define it cold.
 
-**Keep the `assert` statement out of week 9.** It belongs beside fuzzing, where a stronger oracle is what turns a crash-finder into a bug-finder, and this week is a single Wednesday anyway (the midterm takes Monday). Week 9 owns the test assertion as an oracle for one input; week 12 owns the in-source assertion as an oracle for all of them.
+**Keep the `assert` statement out of week 9.** It belongs beside fuzzing, where a stronger oracle is what turns a crash-finder into a bug-finder, and this week is a single Friday anyway (the midterm takes Monday and traceability Wednesday). Week 9 owns the test assertion as an oracle for one input; week 12 owns the in-source assertion as an oracle for all of them.
 
 ### The opener: "how would you test the login?"
 
@@ -70,9 +70,9 @@ assertThat(result.getTeam()).isEqualTo(team);
 
 **Teach it as:** the oracle came from the test's own input, echoed back by a mock, which is CrowdStrike in miniature. Ask the room which outcome the use case and the business rule demand that the test never checks. Then delete the two lines live and run the suite green. Run the same "write tests for `saveActivity`" prompt against an agent and see which version it writes.
 
-### The first test: given, when, then, read off the use case (moved from `MODULE-implementation`, 2026-10-11; open the Wed Oct 21 lecture with it)
+### The first test: given, when, then, read off the use case (moved from `MODULE-implementation`, 2026-10-11; open the Fri Oct 23 lecture with it)
 
-**Why week 8.** Tests are used before they are taught. The week 8 studio ends at "trace it design to code to first test", and *Add a use case* (assignment 3, Fri Oct 30) asks for vetted AI-generated tests, both before `MODULE-testing` on Wed Oct 21. This module teaches enough to write the first test; week 9 owns the judgment.
+**Why week 8.** Tests are used before they are taught. The week 8 studio ends at "trace it design to code to first test", before `MODULE-testing` on Fri Oct 23, and *Add a use case* (assignment 3, Fri Oct 30) asks for vetted AI-generated tests a week after it. This module teaches enough to write the first test; week 9 owns the judgment.
 
 **Frame: the use case is the scenario.** BDDMockito's `given`/`willReturn` is the vocabulary of behavior-driven development, not the practice. BDD proper writes Given/When/Then scenarios with the stakeholder and runs them with a tool such as Cucumber. The course already has that half: the use case template's trigger, `PRE-n`, `POST-n`, and extensions. Teach given/when/then as the executable form of a use case, and do not add Cucumber.
 

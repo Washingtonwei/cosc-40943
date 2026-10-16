@@ -33,22 +33,19 @@ Your own work is study material too. [Assignment 2](assignments/spec-a-feature.m
 | 5 | Context engineering | [Reading](modules/context-engineering.md): all of section 4, especially 4.3 to 4.8 | [Self-check](modules/context-engineering.md#10-self-check) |
 | 6 | Software architecture | [Reading](modules/architecture.md): 4.1 to 4.4, 4.6, 4.7, 4.9, 4.11 (quality attributes, architecturally significant requirements, decomposition by domain, one deployable or several, the trust boundary, writing a decision down) | [Self-check](modules/architecture.md#10-self-check) |
 | 7 | Design-of-record | [Reading](modules/design-of-record.md): 4.1 to 4.7, 4.9, 4.11, 4.13, 4.14 (how much to write, finding the classes, sequence diagrams, the API contract, design decisions, the questions test, the design gate, the proving slice) | [Self-check](modules/design-of-record.md#10-self-check) |
-| 8 | Traceability | [Reading](modules/traceability.md): section 3 and "Three ways the specification and the code drift apart" | The trace boxes in the requirements and design-of-record modules |
 
 The slides for each week are on the [Schedule](schedule.md). They are the fast review; the readings are what the questions are written from.
 
 ## Not on the midterm
 
-- **Week 8 Monday and Wednesday:** estimation, security, AI-assisted implementation, and code review. They are examined on the final.
-- **Traceability beyond what is listed above.** The rest of that module is on the final.
-- Anything from week 9 on, including testing.
+- **Anything from week 8 on:** estimation, security, AI-assisted implementation, code review, traceability, and testing. They are examined on the final.
 
 ## Sample questions
 
 These show the shape, not the content, of the real exam. No answers are posted: compare yours with a classmate, in Slack, or in office hours.
 
 1. A teammate writes this requirement: "Students who haven't submitted their weekly activity report should be reminded." Name two decisions it leaves open that an agent would make for you, then rewrite it so a test could decide whether the system meets it.
-2. Project Pulse's `getPeerEvaluationAverage` ends in `.average().orElse(0.0)`, so a student nobody evaluated gets an average of `0.0`. No business rule mentions the case. Which of the three ways the specification and the code drift apart is this? Say what your team does next, and which artifact changes first.
+2. Project Pulse's `getPeerEvaluationAverage` ends in `.average().orElse(0.0)`, so a student nobody evaluated gets an average of `0.0`. No business rule mentions the case. Who should decide what that student sees, and how does your team get the answer? Write the business rule you would propose to them.
 3. An agent's design-of-record for a new "export peer evaluations" use case includes a Strategy pattern with CSV and PDF exporters. The use case mentions only CSV. Its API contract lists one response, `200 OK`, while the use case has three extensions. You are the reviewer on the pull request. What do you ask for before you approve, and why?
 
 ## Related
