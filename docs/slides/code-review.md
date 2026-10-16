@@ -2,7 +2,7 @@
 title: Reviewing What the Agent Built
 module: code-review
 week: 8
-day: Wednesday
+day: Friday
 ---
 
 # Reviewing What the Agent Built
@@ -19,6 +19,11 @@ Two housekeeping items. The midterm is Monday and covers weeks one to seven. Tod
 
 ## Approved, merged, shipped {.center}
 
+![xkcd 1354, Heartbleed Explanation, its six panels in three columns](img/xkcd-heartbleed.png)
+
+Randall Munroe, [xkcd 1354](https://xkcd.com/1354/), CC BY-NC 2.5; panels rearranged into three columns.
+{: .small }
+
 ::: key
 A diff shows what was added, never what was left out.
 :::
@@ -26,13 +31,23 @@ A diff shows what was added, never what was left out.
 ::: note
 New Year's Eve, twenty eleven. A developer commits a new feature to OpenSSL, the library that encrypts a large share of the web. It is called heartbeat. A core maintainer reviews it and merges it. So far, this is exactly the process we teach.
 
-Here is what the code did. A message arrives saying, I contain this many bytes, please echo them back. The code copied back that many bytes. It never checked whether the message actually contained that many.
+Here is what heartbeat is for. Two computers on an encrypted connection go quiet for a while. One of them wants to know: are you still there? So it sends a little message, and the other side echoes it back.
 
-It shipped in March twenty twelve. It was found in April twenty fourteen and named Heartbleed. For two years, anyone could ask a server for sixty-four kilobytes of its memory at a time, private keys included.
+Point at the first column. "Server, are you still there? If so, reply POTATO, six letters." The server finds POTATO in its memory and sends back six letters. POTATO. Perfect.
+
+Second column. "Reply BIRD, four letters." Back comes BIRD. Look at her face in the bottom panel. She is thinking.
+
+Third column. "Reply HAT. Five hundred letters." HAT is three letters. But the server never checks. It was told five hundred, so it starts at HAT and keeps copying: HAT, and then whatever happens to sit next to it in memory. Someone's password change. A master key. Four hundred and ninety-seven letters of other people's secrets, handed to a stranger who asked nicely.
+
+That is the whole bug. The real thing was the same: send three bytes, claim sixty-four thousand, and get back sixty-four kilobytes of the server's memory, private keys included. Over and over, and nothing in the logs.
+
+It shipped in March twenty twelve. It was found in April twenty fourteen and named Heartbleed. Two years.
+
+The fix was about one line: if the claimed length is bigger than what actually arrived, throw the message away.
 
 Now, the question I want you to sit with. What should the reviewer have spotted in that diff?
 
-Pause. Then say: nothing. The missing check was never written, so it was never in the diff. A diff shows what was added, never what was left out.
+Pause. Then say: nothing. That one line was never written, so it was never in the diff. The reviewer read every line that was there. The bug was a line that wasn't. A diff shows what was added, never what was left out.
 :::
 
 ## What review actually finds
