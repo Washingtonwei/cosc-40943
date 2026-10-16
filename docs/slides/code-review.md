@@ -21,7 +21,7 @@ Two housekeeping items. The midterm is Monday and covers weeks one to seven. Tod
 
 ![xkcd 1354, Heartbleed Explanation, its six panels in three columns](img/xkcd-heartbleed.png)
 
-Randall Munroe, [xkcd 1354](https://xkcd.com/1354/), CC BY-NC 2.5; panels rearranged into three columns.
+Randall Munroe, [xkcd 1354](https://xkcd.com/1354/), CC BY-NC 2.5, rearranged.
 {: .small }
 
 ::: key
@@ -98,10 +98,7 @@ That joke is the four hundred line finding in one sentence. And the last pull re
 
 ## Every layer has holes {.center}
 
-::: steps
-- The agent, its tests, the linters, CI: the code checked against **itself**.
-- You: the code checked against **the use case**.
-:::
+![Five slices of Swiss cheese: the agent, its tests, the linters, and CI let a missing extension through aligned holes; you, checking against the use case, stop it](img/swiss-cheese-review.svg)
 
 ::: key
 Your slice is the only one holding the use case.
@@ -112,7 +109,9 @@ Here is a picture from safety engineering, James Reason's Swiss cheese model. Ev
 
 Count the slices on your pull request. The agent. Its tests. The linters. Continuous integration. Notice what they all have in common. They check the code against itself. The agent wrote the tests from the code it wrote.
 
-There is one slice that checks the code against what the client actually asked for. That slice is you.
+Point at the red line. That is a missing extension, like Heartbleed's missing check. It goes straight through all four, because their holes line up: none of them knows the extension was supposed to exist.
+
+There is one slice that checks the code against what the client actually asked for. The purple one. That slice is you.
 
 Your slice is the only one holding the use case.
 :::

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">Every layer has holes: the Swiss cheese model applied to a pull request</title>
+<desc id="d">Five slices of cheese in a row. The first four are the agent, its tests, the linters, and CI; each checks the code against itself, and one hole lines up through all four, so a missing extension passes straight through them. The fifth slice, you the reviewer, checks the code against the use case and has no hole there, so it stops the defect. After James Reason, 2000.</desc>
+<rect width="1000" height="400" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">SWISS CHEESE</text>
+<text x="972" y="388" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">after James Reason, 2000</text>
+<path d="M120,72 v-10 H642 v10" fill="none" stroke="#5BE0E6" stroke-width="2"/>
+<text x="381" y="54" text-anchor="middle" fill="#5BE0E6" font-size="18" font-weight="700">the code checked against itself</text>
+<path d="M760,72 v-10 H832 v10" fill="none" stroke="#9B6BD6" stroke-width="2"/>
+<text x="796" y="54" text-anchor="middle" fill="#C9A8F0" font-size="18" font-weight="700">against the use case</text>
+<line x1="40" y1="205" x2="748" y2="205" stroke="#FF4D4D" stroke-width="5" stroke-linecap="round"/>
+<text x="40" y="191" fill="#FF8080" font-size="16" font-weight="700">a missing</text>
+<text x="40" y="233" fill="#FF8080" font-size="16" font-weight="700">extension</text>
+<polygon points="120,110 180,80 192,86 132,116" fill="#FFD08A"/>
+<polygon points="180,80 192,86 192,306 180,300" fill="#C98A2E"/>
+<path d="M120,110 L180,80 L180,300 L120,330 Z M133,140 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z M152,262 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M137,205 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="156" y="368" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="600">Agent</text>
+<polygon points="270,110 330,80 342,86 282,116" fill="#FFD08A"/>
+<polygon points="330,80 342,86 342,306 330,300" fill="#C98A2E"/>
+<path d="M270,110 L330,80 L330,300 L270,330 Z M300,130 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M281,285 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z M287,205 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="306" y="368" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="600">Its tests</text>
+<polygon points="420,110 480,80 492,86 432,116" fill="#FFD08A"/>
+<polygon points="480,80 492,86 492,306 480,300" fill="#C98A2E"/>
+<path d="M420,110 L480,80 L480,300 L420,330 Z M432,150 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M453,255 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z M437,205 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="456" y="368" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="600">Linters</text>
+<polygon points="570,110 630,80 642,86 582,116" fill="#FFD08A"/>
+<polygon points="630,80 642,86 642,306 630,300" fill="#C98A2E"/>
+<path d="M570,110 L630,80 L630,300 L570,330 Z M601,145 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z M584,272 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M587,205 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="606" y="368" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="600">CI</text>
+<polygon points="760,110 820,80 832,86 772,116" fill="#B58BE6"/>
+<polygon points="820,80 832,86 832,306 820,300" fill="#6E46A3"/>
+<path d="M760,110 L820,80 L820,300 L760,330 Z M774,135 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M791,280 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z" fill="#9B6BD6" fill-rule="evenodd"/>
+<text x="796" y="368" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="800">You</text>
+<g stroke="#FF4D4D" stroke-width="4" stroke-linecap="round"><line x1="736" y1="193" x2="752" y2="217"/><line x1="752" y1="193" x2="736" y2="217"/></g>
+<text x="848" y="211" fill="#F2EDE3" font-size="17" font-weight="700">stopped</text>
+</svg>

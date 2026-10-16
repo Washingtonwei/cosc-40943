@@ -29,6 +29,10 @@ By the end of this module, a student can:
 
 **A diff shows what was added, never what was left out.** On New Year's Eve 2011 a developer committed OpenSSL's new heartbeat feature, and a core maintainer reviewed and merged it. The code read a length from the incoming message and copied that many bytes back, without checking the length against the message it came with. The missing check was not in the diff, because it was never written. OpenSSL 1.0.1 shipped it in March 2012; it was disclosed as Heartbleed in April 2014, by which time any server running it could be asked for 64 KB of its own memory at a time, private keys included.
 
+![xkcd 1354, Heartbleed Explanation: asked to reply POTATO (6 letters) and BIRD (4 letters), the server echoes them; asked to reply HAT (500 letters), it sends HAT and 497 letters of other users' secrets from its memory](../slides/img/xkcd-heartbleed.png)
+
+Randall Munroe, [xkcd 1354](https://xkcd.com/1354/), CC BY-NC 2.5, panels rearranged.
+
 **The agent writes more than you can read.** Project Pulse's reminder is expected to arrive as a pull request about the size of [#76](https://github.com/Washingtonwei/project-pulse/pull/76), which added 884 lines across 23 files. A reviewer who tries to read all of it evenly reads none of it well, and one who skims approves whatever is there. Neither notices what is missing.
 
 ## 4. Core concepts
@@ -47,6 +51,8 @@ Review began as **formal inspection**: planned meetings, prepared reviewers, a m
 | Participants with an AI assistant wrote less secure code and were more likely to believe it was secure. | Perry et al. 2023 | The author's confidence is not evidence, and the agent's even less. |
 
 **Review is one layer.** In Reason's Swiss cheese model, every defense has holes, and an accident happens when the holes line up. The agent, its tests, the linters, CI, and the human reviewer are separate slices; the reviewer's slice is the one that holds the contract, so that is where to look.
+
+![Five slices of Swiss cheese: the agent, its tests, the linters, and CI check the code against itself and let a missing extension through holes that line up; the reviewer, checking against the use case, stops it](../slides/img/swiss-cheese-review.svg)
 
 ### 4.2 Two questions every review answers
 
