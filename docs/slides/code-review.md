@@ -9,6 +9,14 @@ day: Wednesday
 
 Week 8 · Review the change, not the diff
 
+::: note
+Good morning. On Monday we watched an agent build. Today we learn to read what it built, and I will warn you now: reading is becoming the bigger half of the job.
+
+The subtitle is the whole lecture in five words. Review the change, not the diff.
+
+Two housekeeping items. The midterm is Monday and covers weeks one to seven. Today is not on it, so you are free to actually enjoy this. And your build-context is due in your team meeting by Sunday. With the midterm on Monday, meet early in the weekend.
+:::
+
 ## Approved, merged, shipped {.center}
 
 ::: key
@@ -16,7 +24,15 @@ A diff shows what was added, never what was left out.
 :::
 
 ::: note
-Heartbleed. On New Year's Eve 2011 a developer committed OpenSSL's heartbeat feature, and a core maintainer reviewed and merged it. The code copied back as many bytes as the message claimed to contain, without checking the claim. The missing check was not in the diff because it was never written. Shipped in OpenSSL 1.0.1, March 2012; disclosed April 2014; any server running it could be asked for 64 KB of its memory at a time, private keys included.
+New Year's Eve, twenty eleven. A developer commits a new feature to OpenSSL, the library that encrypts a large share of the web. It is called heartbeat. A core maintainer reviews it and merges it. So far, this is exactly the process we teach.
+
+Here is what the code did. A message arrives saying, I contain this many bytes, please echo them back. The code copied back that many bytes. It never checked whether the message actually contained that many.
+
+It shipped in March twenty twelve. It was found in April twenty fourteen and named Heartbleed. For two years, anyone could ask a server for sixty-four kilobytes of its memory at a time, private keys included.
+
+Now, the question I want you to sit with. What should the reviewer have spotted in that diff?
+
+Pause. Then say: nothing. The missing check was never written, so it was never in the diff. A diff shows what was added, never what was left out.
 :::
 
 ## What review actually finds
@@ -32,7 +48,11 @@ Fewer defects than expected. Knowledge of code you did not write. Findings that 
 :::
 
 ::: note
-Bacchelli and Bird 2013 (Microsoft): defects are the top expectation, but knowledge transfer and team awareness are major outcomes, and understanding the change is the hardest part. Mäntylä and Lassenius 2009: three quarters of review findings are evolvability defects. So: hand style to linters in week 10, and aim people at behavior and the contract. On a team of six, review is how anyone learns the parts they did not write.
+So what does review find? Researchers at Microsoft asked developers what they expect from code review. Number one answer: finding defects. Then they looked at what reviews actually deliver. Fewer defects than people expect. Something else instead: knowledge of code you did not write.
+
+A second study found that about three quarters of what reviews catch is style and structure. Naming, readability, layout. Not behavior.
+
+Two things follow. First, style is a job for a machine. In week ten, linters take it over, and your attention goes to behavior and the contract. Second, on a team of six, review is how anyone learns the parts they did not write. If you only ever read your own code, you know one sixth of your product.
 :::
 
 ## The rubber stamp has a price
@@ -48,7 +68,17 @@ Ask a programmer to review 10 lines of code and they will find 10 issues. Ask th
 :::
 
 ::: note
-McIntosh et al. 2014 (Qt, VTK, ITK): low coverage up to two, low participation up to five additional defects. Cohen 2006 is SmartBear's Cisco study, industry data and not peer reviewed: about 400 lines a session, 500 lines an hour, 60 to 90 minutes. Perry et al. 2023, 47 participants. The reminder pull request is 884 lines: not one sitting. The joke is the 400-line finding in one sentence.
+What happens when review is a rubber stamp? Three numbers.
+
+A study of three open-source projects found that components with low review participation had up to five more defects after release.
+
+An industry study at Cisco found that past about four hundred lines in one session, reviewers stop finding things. That one is a vendor study, not peer reviewed, so hold it loosely. But it matches everyone's experience.
+
+And a Stanford study: people with an AI assistant wrote less secure code, and were more confident it was secure. Less safe, more sure. That is the worst combination.
+
+Read the joke. Ask a programmer to review ten lines of code and they will find ten issues. Ask them to review five hundred lines, and they will say it looks good.
+
+That joke is the four hundred line finding in one sentence. And the last pull request of this size on Project Pulse was eight hundred and eighty-four lines. That is not one sitting.
 :::
 
 ## Every layer has holes {.center}
@@ -63,7 +93,13 @@ Your slice is the only one holding the use case.
 :::
 
 ::: note
-Reason's Swiss cheese model (2000), which CMU 17-313 uses for review: every defense has holes, and accidents happen when they line up. The agent, its tests, the linters, and CI all check the code against itself. Only the reviewer checks it against what the client asked for.
+Here is a picture from safety engineering, James Reason's Swiss cheese model. Every defense is a slice of cheese, and every slice has holes. Accidents happen when the holes line up.
+
+Count the slices on your pull request. The agent. Its tests. The linters. Continuous integration. Notice what they all have in common. They check the code against itself. The agent wrote the tests from the code it wrote.
+
+There is one slice that checks the code against what the client actually asked for. That slice is you.
+
+Your slice is the only one holding the use case.
 :::
 
 ## Two questions every review answers
@@ -74,7 +110,11 @@ Reason's Swiss cheese model (2000), which CMU 17-313 uses for review: every defe
 :::
 
 ::: note
-The contract: the use case, every extension included, its business rules, and the design's API table and test list. The diff alone cannot answer the first question.
+So every review answers two questions.
+
+One. Does this change do what the contract says? By contract I mean the use case, every extension included, its business rules, and the design's API table and test list. Notice you cannot answer this question from the diff alone. You need the contract open beside it.
+
+Two. How deep must I read this part, given where it lands? Not every line deserves the same attention. We will get to that in a minute.
 :::
 
 ## Open the test list beside the diff
@@ -91,7 +131,15 @@ A missing extension: where would you see it, in the diff or here?
 :::
 
 ::: note
-Four of the 20 rows in not.md's test list. Fill the Test column in the room, from the seeded pull request. For each row, find the test that covers it or write that none does. A row with no test is the Heartbleed shape: nothing in the diff to look at.
+Here are four rows from the reminder's test list, in its design file, not dot m d. The full list has twenty. Each row says what has to be true. The main scenario: only students with no activity get emailed. Extension four a: the week is inactive, so the answer is a four hundred and no email. Six a: one email fails and the others still go. And authorization: an unassigned instructor or a student gets a four oh three.
+
+Read the question. A missing extension: where would you see it, in the diff or here?
+
+Take two or three answers before moving on.
+
+Then say: here. If nobody handled four a, there is no code for it, so there is nothing in the diff to look at. That is the Heartbleed shape. But in this table, the row is sitting right there with an empty Test column. The test list is how you see what is not there.
+
+If the seeded pull request is up, fill the Test column with the room now: for each row, name the test that covers it, or say that none does. If it is not up, take the question alone and move on.
 :::
 
 ## How deep
@@ -103,7 +151,15 @@ Four of the 20 rows in not.md's test list. Fill the Test column in the room, fro
 | **Leaf** | Its tests against the test list; skim the rest |
 
 ::: note
-The commits from Monday set the depth. Trunk: code many paths depend on, behavior users rely on, hard to undo. Leaf: reached only through the new feature.
+Now the second question. How deep?
+
+On Monday the agent built in commits, and it stopped after the first one so we could read it. That was not politeness. The commits tell you how deep to read.
+
+The trunk is code that many paths depend on, that changes behavior users rely on, or that is hard to undo. Read every line.
+
+A security rule or a database migration. Read every line, and also where it sits. You will see why on the next slide.
+
+A leaf is new code reached only through the new feature. Check its tests against the test list, and skim the rest. Skimming a leaf is allowed. Skimming the trunk is not.
 :::
 
 ## One word
@@ -122,7 +178,17 @@ Any logged-in student can now email an entire course section.
 :::
 
 ::: note
-Abridged. SecurityConfiguration ends its API rules with denyAll(), so a new route fails closed until someone writes its rule, and Spring applies the first rule that matches. The agent's integration test gets a 403; loosening the rule is the fastest green. The proof is the test-list row "UC-NOT authorization". This is why the rule goes in a commit of its own.
+Here is the design's security rule for sending reminders. A POST to the section's reminders route, and access goes to the section's instructor or the course owner.
+
+Below it is the quickest way to make a failing four oh three test pass. Same route. Dot authenticated.
+
+One word changed. Here is what it means.
+
+Read the warning. Any logged-in student can now email an entire course section.
+
+How does this happen? Project Pulse's security configuration ends with a rule that denies everything, so a new route fails closed until someone writes its rule. The agent writes an integration test, gets a four oh three, and the fastest path to green is a looser rule. Nobody intended harm. The test passed. The tests always pass.
+
+What catches it? The test-list row for authorization: a student must get a four oh three. And this is why the security rule goes in a commit of its own, where one word cannot hide among eight hundred lines.
 :::
 
 ## Write the triage down
@@ -137,6 +203,16 @@ Leaves: controller and dialog; tests checked against rows 1 to 11; skimmed the r
 A skim you wrote down is a decision. A skim you did not is a rubber stamp.
 :::
 
+::: note
+So you decided what to read deeply and what to skim. Write it down. One line, at the top of your review. Something like this.
+
+Read the three lines. Trunk: Submission Status Service, read in full. Security: the two route rules, read in full. Leaves: controller and dialog, tests checked against rows one to eleven, skimmed the rest.
+
+Read the key line. A skim you wrote down is a decision. A skim you did not is a rubber stamp.
+
+The written skim is honest, and a teammate can challenge it. Maybe they say: wait, the controller does the recount at send time, read that part too. Good. That is review working.
+:::
+
 ## Checklists save lives {.center}
 
 ::: key
@@ -144,7 +220,11 @@ Five steps for central lines. Infections: 11% to zero.
 :::
 
 ::: note
-Peter Pronovost at Johns Hopkins, told by Atul Gawande in "The Checklist", The New Yorker, 2007. The steps were ones every doctor knew. The checklist caught the ones skipped under pressure, which is what a review checklist is for too.
+A story from medicine. Peter Pronovost at Johns Hopkins gave intensive care staff a checklist for inserting central lines. Five steps. The line infection rate fell from eleven percent to zero.
+
+Here is the part I love. Every doctor already knew all five steps. Nobody learned anything new. The checklist caught the steps people skip when they are busy and tired and confident.
+
+That is what a review checklist is for. Not to teach you something. To catch what you skip when a pull request looks fine.
 :::
 
 ## The review checklist
@@ -158,7 +238,13 @@ Peter Pronovost at Johns Hopkins, told by Atul Gawande in "The Checklist", The N
 :::
 
 ::: note
-Items 3 and 4 come from the 2018 version of this course's "What to review?" list. Its other items (syntax, duplication, unused code) are real and belong to the linters from week 10; until then, a "Nit:" comment.
+So here is ours. Five items.
+
+Each test-list row: covered by a test, or named as missing. The trunk and security commits read in full. The logic matches the description and the use case. Each extension's error path, and whether it logs. And the tests check the contract, not a mock's echo. If a test only checks the value a mock was told to return, it cannot fail. It is a test of the mock.
+
+Items three and four come from the twenty eighteen version of this course. Yes, I am recycling my own slides. Good ideas age better than slide designs.
+
+The other items from that old list, syntax, duplication, unused code, are real. They belong to the linters starting in week ten. Until then, a nit comment.
 :::
 
 ## Label every comment
@@ -170,7 +256,11 @@ nitpick (non-blocking): `cnt` → `sentCount`.
 ```
 
 ::: note
-Conventional Comments: issue, suggestion, question, nitpick, praise, each blocking or non-blocking. The label tells the author what you need. A question with a specific answer beats "looks odd".
+When you write a comment, label it. This convention is called Conventional Comments. Issue, suggestion, question, nitpick, praise. And each one is blocking or non-blocking.
+
+Read the two examples. Issue, blocking: test-list row four a has no test. What does POST reminders do for an inactive week? And nitpick, non-blocking: rename c n t to sent count.
+
+The label tells the author what you need from them. And notice the first comment asks a question with a specific answer. That is worth far more than "this looks odd." "This looks odd" makes the author guess. A specific question makes them check.
 :::
 
 ## When to approve
@@ -184,7 +274,15 @@ Approve when the change is better than what was there, not when it is perfect.
 :::
 
 ::: note
-Google's standard of code review. Holding out for perfect stalls the team; approving what you did not check is the rubber stamp. Never approve with a blocking comment open. The joke is the failure the checklist prevents: attention spent where it is easy.
+So when do you approve? Google's standard is the one I like best.
+
+Read the key line. Approve when the change is better than what was there, not when it is perfect.
+
+Hold out for perfect, and the team stalls. Approve what you did not check, and you are the rubber stamp. Between those two is a simple rule: never approve with a blocking comment open.
+
+Read the joke. "Nit: missing period in comment." On a pull request that drops the users table.
+
+Wait a beat. That reviewer was not lazy. They were busy, on the easy thing. The checklist exists to move your attention from where it is easy to where it matters.
 :::
 
 ## The author's half
@@ -201,7 +299,13 @@ Google's standard of code review. Holding out for perfect stalls the team; appro
 :::
 
 ::: note
-The template is .github/PULL_REQUEST_TEMPLATE.md in the course templates. Willison's rule: never file a pull request with code you have not reviewed yourself. Across 80,000 pull requests, only 13.7% explained their tests, and naming the feedback you need went with 64 to 72% higher merge likelihood (Pirouzkhah et al. 2026, correlation). Reviewer focus is that element.
+Review is not only the reviewer's job. The author can make it far easier, by bringing proof.
+
+Your pull request template has four sections. Why: the problem, readable without opening the issue. What changed: a summary, plus any decision the code does not show. How it was verified: what you checked, mapped to test-list rows, and also what you did not check. And reviewer focus: which commit is the trunk, where the security rule is, where to start.
+
+Read the quote. Simon Willison: "Agents write convincing looking pull request descriptions. You need to review these too!" His other rule: never file a pull request with code you have not reviewed yourself.
+
+One number. A study of eighty thousand pull requests found only about fourteen percent explained their tests, and the ones that named the feedback they needed were much more likely to merge. That is a correlation, not proof. But the reviewer focus section costs you one minute.
 :::
 
 ## The most useful line {.center}
@@ -215,7 +319,11 @@ It tells the reviewer where to look. It is never penalized.
 :::
 
 ::: note
-"High confidence" is not evidence (Perry et al.). An honest "not verified" is evidence about where the risk is.
+If you remember one line from the author's half, make it this one. Not verified: the email failure path.
+
+It tells the reviewer exactly where to look. And in this course it is never penalized. I would much rather read an honest "not verified" than a confident "all tests pass."
+
+Remember the Stanford study from earlier. High confidence is not evidence. An honest "not verified" is evidence. It tells us where the risk is.
 :::
 
 ## Your turn: the seeded pull request
@@ -225,7 +333,15 @@ Find what matters. Label each comment. Do not block on nits.
 :::
 
 ::: note
-Four minutes alone, three with a neighbour, then answers aloud. Planted: four kinds of defect (see the lecture plan). Push for the triage line first, then the test list. Credit the pair who declines to block on the nits.
+Your turn. On screen is a pull request for the reminder. I will tell you a secret: it was planted. Someone put defects in it on purpose, so we know the answers.
+
+Read the instructions. Find what matters. Label each comment. Do not block on nits.
+
+Four minutes on your own. Then three minutes with a neighbor. Start with your triage line, then go to the test list.
+
+Time it. When the seven minutes are up, take answers aloud. Ask for a triage line first, then the test list. Then ask what they found. Give the room credit for every planted defect it finds, and give extra credit, out loud, to the pair who saw the nits and chose not to block on them.
+
+If the seeded pull request is not ready, use Project Pulse pull request seventy-six instead: real, merged, eight hundred and eighty-four lines, three commits. Say: you have seven minutes for an eight hundred line pull request, so you cannot read it all. Write the triage line, which commit you read in full and why, and one labeled comment. Then compare triage lines across the room. Different triage lines are fine. Unwritten ones are not.
 :::
 
 ## The agent as first reviewer
@@ -241,7 +357,15 @@ The reviewer bot approved its own pull request. It found the code clear, well st
 :::
 
 ::: note
-Its documentation says it "focuses on correctness... not formatting preferences or missing test coverage". A missing extension is missing test coverage. Anthropic's managed reviewer always ends its check neutral: it cannot approve or block. LLM evaluators favor their own output (Panickssery et al. 2024, on summaries), which is the joke and the reason for the fresh context.
+Now let the agent review. Claude Code has a code review command. You give it a pull request number, and with the comment flag it posts its findings on the pull request.
+
+Two things make it useful. First, it runs in a fresh context. It never saw the conversation that wrote the code, so it cannot inherit the author's reasoning, or the author's blind spots.
+
+Second, the catch. By default it reviews the diff, not the change. Its own documentation says it focuses on correctness, not missing test coverage. And a missing extension is missing test coverage. So unless you give it the contract, it has the same Heartbleed blind spot a lazy human has.
+
+Read the joke. The reviewer bot approved its own pull request. It found the code clear, well structured, and written by someone with excellent taste.
+
+That joke is real research. Language models tend to favor their own output. That is why the review runs in a fresh context, and why Anthropic's managed reviewer can never approve or block. The person approves.
 :::
 
 ## Same pull request, run twice
@@ -252,7 +376,11 @@ Its documentation says it "focuses on correctness... not formatting preferences 
 | With the use case and test list | | |
 
 ::: note
-Fill in from the rehearsal before class, and keep screenshots: the output varies between runs. Put both lists beside the room's.
+If the two runs are done: here is the same seeded pull request, reviewed twice by the agent. Once with only the pull request number. Once with the use case and the test list named in the request. Walk the Found column and the Missed column of each, and put them beside what the room found. Then ask: who did better on the missing extension, you or the plain run?
+
+If the two runs are not done, say so plainly: I am running both this weekend, and I will post both lists with screenshots on the module page. Then say what we are testing: whether naming the contract changes what the agent finds. Do not predict the result. That is the point of running it.
+
+One honest note either way. The output varies from run to run, so treat one run as one sample, not a verdict.
 :::
 
 ## Triage its findings
@@ -261,6 +389,16 @@ Fill in from the rehearsal before class, and keep screenshots: the output varies
 - Each finding: fixed, or rejected with a reason.
 - Spot-check one it flagged and one it passed.
 - No mention of the test list? It reviewed the diff.
+:::
+
+::: note
+Whatever the agent finds, treat it like a teammate's review, not a ruling.
+
+Each finding is either fixed, or rejected with a reason. Write which, under how it was verified.
+
+Spot-check one thing it flagged and one thing it passed. The second one matters more. A reviewer you never check becomes a reviewer you simply trust.
+
+And a simple smell test: if its review never mentions the test list, it reviewed the diff.
 :::
 
 ## Before your slice merges
@@ -273,5 +411,11 @@ Fill in from the rehearsal before class, and keep screenshots: the output varies
 :::
 
 ::: note
-The TA reads two reviews per team. Assignment 3 (due Fri Oct 30) asks for the same review on your own pull request before you submit.
+So here is what this means for your team, starting with your proving slice.
+
+A teammate who did not write it reviews it. Not the author, and not the author's agent. The review carries the triage line, and every test-list row marked covered or missing. The comments are labeled. And there is one code review run with the contract, with every finding answered.
+
+Your teaching assistant reads two reviews per team. And assignment three, due Friday, October thirtieth, asks you for the same review on your own pull request before you submit.
+
+One last thing. On Monday, you are the reviewer and the midterm is the pull request. Read the whole question, write down what you skip, and you will be fine. Good luck, and have a good weekend.
 :::
