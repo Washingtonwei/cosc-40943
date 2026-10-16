@@ -8,6 +8,8 @@
 
 Short written answers. Most questions hand you something (a requirement, a use case step, a design excerpt, a few lines of Project Pulse code, a situation on a team) and ask you to judge it: what is wrong, what you would do, and why. A good answer names the specific defect and the specific fix. A paragraph of correct vocabulary that never commits to a judgment earns little.
 
+Expect about six questions, each like the samples below. One of them is about your own team's project, answered from what your team has merged: the specification, the architecture-of-record, and your proving slice's design. Plan on seven or eight minutes a question, which leaves a few minutes to reread.
+
 There is no recall section. You will not be asked to reproduce a definition for its own sake, but you will need the definitions to answer.
 
 ## How to study
