@@ -2,11 +2,14 @@
 
 **When:** Monday, October 19, 2026, in class (50 minutes)
 **Weight:** 15% of your grade
-**Allowed:** nothing. No notes, no devices, no agent.
+**Format:** a TCU Online quiz, taken on your laptop in Respondus LockDown Browser
+**Allowed:** your laptop, running the exam in LockDown Browser. No notes, no other devices, no agent.
+
+**Before Monday:** install LockDown Browser (TCU Online links the download from the exam's page) and launch it once to make sure it runs. Bring your laptop charged. If you have no working laptop, tell the instructor before class; a few paper copies will be on hand.
 
 ## What the exam looks like
 
-Short written answers. Most questions hand you something (a requirement, a use case step, a design excerpt, a few lines of Project Pulse code, a situation on a team) and ask you to judge it: what is wrong, what you would do, and why. A good answer names the specific defect and the specific fix. A paragraph of correct vocabulary that never commits to a judgment earns little.
+Short typed answers. Most questions hand you something (a requirement, a use case step, a design excerpt, a few lines of Project Pulse code, a situation on a team) and ask you to judge it: what is wrong, what you would do, and why. A good answer names the specific defect and the specific fix. A paragraph of correct vocabulary that never commits to a judgment earns little.
 
 Expect about six questions, each like the samples below. One of them is about your own team's project, answered from what your team has merged: the specification, the architecture-of-record, and your proving slice's design. Plan on seven or eight minutes a question, which leaves a few minutes to reread.
 
