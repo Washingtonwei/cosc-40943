@@ -55,7 +55,7 @@ If you copied `requirements/` in week 3, run only the last line.
 
 Copy them, do not fork. Each file opens with instructions telling you what the section is for, how to produce it, and how to check it; leave those in place until the document is finished, because they are context for your agent on every later pass. The [Requirements as the Contract](modules/spec-driven-requirements.md) module is the reading behind them.
 
-One of them is used before a client meeting, not in studio. `client-interview-guide.md` is your script for each client meeting and the record of what was said in it. Work it with your agent beforehand, take it into the meeting on the scribe's laptop, and commit it the same day as `client-interview-YYYY-MM-DD.md`, one file per meeting. Everything it leaves unanswered becomes an entry in `OPEN-ISSUES.md`.
+One of them is used before a client meeting, not in studio. `client-interview-guide.md` is your script for each client meeting and the record of what was said in it. Work it with your agent beforehand, take it into the meeting on the scribe's laptop, and commit it the same day as `client-interview-YYYY-MM-DD.md`, one file per meeting. Your repository is public, so the record names people by role, never by name, and carries no contact details or anything the client asks you to keep private; those go in your Drive ([why](project.md#what-you-deliver-this-fall)). Everything it leaves unanswered becomes an entry in `OPEN-ISSUES.md`.
 
 ## The Napkin drill
 

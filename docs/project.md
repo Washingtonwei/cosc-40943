@@ -45,13 +45,14 @@ Your team also keeps a **Google Drive** for everything that is not part of that 
 | Team GitHub repository | Team Google Drive |
 |---|---|
 | Glossary, vision and scope, use cases, business rules, SRS | Team and client meeting minutes |
+| Client interview records, people named by role | Client names, contact details, and anything the client asks you to keep private |
 | Architecture-of-record, design-of-record | Client-facing slides and demo decks |
 | Traceability matrix | Shared working drafts and scratch |
 | Source code and tests | |
 
 Anything the agent must build against, or that a consistency check must resolve, is Markdown in the repository. A use case in a Google Doc cannot be cited by an ID, diffed in a pull request, or verified against the code, so it is not a specification, it is a note about one. Everything else, where six people co-writing matters more than machine-readability, belongs in Drive. Share the Drive with the instructor and your TA at kickoff. Weekly activity reports and peer evaluations go in neither; you submit them in Project Pulse (see [Weekly mechanics](#weekly-mechanics)).
 
-**Your repository is public, so keep your client's material out of it.** The brief stays on TCU Online, and anything your client hands you or asks you to keep private stays in Drive. What goes in the repository is what your team writes: the specification, the design, the code.
+**Your repository is public, so keep your client's material out of it.** The brief stays on TCU Online, and anything your client hands you or asks you to keep private stays in Drive. What goes in the repository is what your team writes: the specification, the design, the code, and your record of each client interview, because the specification traces to it. That record names people by role, never by name, and carries no contact details.
 
 | Deliverable | What it is |
 |---|---|
