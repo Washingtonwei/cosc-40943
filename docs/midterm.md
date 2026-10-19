@@ -29,12 +29,12 @@ Your own work is study material too. [Assignment 2](assignments/spec-a-feature.m
 | Week | Topic | Read closely | Practice |
 |---|---|---|---|
 | 1 | What software engineering is, and what AI changed | [Reading](modules/se-and-ai.md): what software engineering is, what a requirement is, AI is an amplifier, the delegation boundary, agenda capture, the Napkin | [Self-check](modules/se-and-ai.md#9-self-check) |
-| 2 | The AI-augmented team | [Reading](modules/ai-augmented-team.md): 4.1 to 4.9 and 4.11 (what the agent can see, well-formed issues, branches, pull requests, the traceability chain, onboarding the agent) | [Self-check](modules/ai-augmented-team.md#10-self-check) |
+| 2 | The AI-augmented team | [Reading](modules/ai-augmented-team.md): 4.1 to 4.9 and 4.12 (what the agent can see, well-formed issues, branches, pull requests, the traceability chain, onboarding the agent) | [Self-check](modules/ai-augmented-team.md#10-self-check) |
 | 2 | Professionalism | [Reading](modules/professionalism.md): the four steps (observe, analyze, investigate, fix) and escalation. Expect at most one scenario question. | [Self-check](modules/professionalism.md#8-self-check) |
 | 3 and 4 | Requirements as the contract | [Reading](modules/spec-driven-requirements.md): business objectives and success metrics, the glossary, the kinds of requirement, use cases (4.10 to 4.17), business rules, quality attributes. Also [Requirement Types](requirement-types.md). | [Self-check](modules/spec-driven-requirements.md#10-self-check) |
 | 5 | Context engineering | [Reading](modules/context-engineering.md): all of section 4, especially 4.3 to 4.8 | [Self-check](modules/context-engineering.md#10-self-check) |
 | 6 | Software architecture | [Reading](modules/architecture.md): 4.1 to 4.4, 4.6, 4.7, 4.9, 4.11 (quality attributes, architecturally significant requirements, decomposition by domain, one deployable or several, the trust boundary, writing a decision down) | [Self-check](modules/architecture.md#10-self-check) |
-| 7 | Design-of-record | [Reading](modules/design-of-record.md): 4.1 to 4.7, 4.9, 4.11, 4.13, 4.14 (how much to write, finding the classes, sequence diagrams, the API contract, design decisions, the questions test, the design gate, the proving slice) | [Self-check](modules/design-of-record.md#10-self-check) |
+| 7 | Design-of-record | [Reading](modules/design-of-record.md): 4.1 to 4.7, 4.9, 4.10, 4.12, 4.13 (how much to write, finding the classes, sequence diagrams, the API contract, design decisions, when the design changes the architecture, the questions test, the design gate, the proving slice) | [Self-check](modules/design-of-record.md#10-self-check) |
 
 The slides for each week are on the [Schedule](schedule.md). They are the fast review; the readings are what the questions are written from.
 
