@@ -48,7 +48,7 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 Give an estimate as a range of human hours: "3 to 5 hours, most likely about 3.5." The work is uncertain, and a single number gets heard as a promise. If the client needs it sooner than the range allows, cut scope; do not shrink the estimate.
 
-**Estimate each use case twice.** When it is written, the team gives it a **coarse estimate** in all four parts of 4.2; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#from-estimates-to-a-release-plan). Once its design-of-record is approved, the owner gives a **refined estimate** of what is left. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
+**Estimate each use case twice.** When it is written, the team gives it a **coarse estimate** in all four parts of 4.2; it is wide because nothing is designed yet, and it orders the work and feeds the [release plan](traceability.md#47-from-estimates-to-a-release-plan). Once its design-of-record is approved, the owner gives a **refined estimate** of what is left. That one is narrower, because the design turned "how hard is a reminder?" into 20 named tests and six named risks, and it is the one you give the client a date from.
 
 ### 4.2 Where the hours go now
 
@@ -61,7 +61,7 @@ A use case's hours fall into four parts, each estimated as a range:
 | **Build and review** | Driving the agent, reading every line of its diff against the design, sending it back | `DEVELOPMENT`, `REVIEW` |
 | **Verify** | Making each row of the test list pass and seeing it pass, running the flow end to end, fixing what that finds | `TESTING`, `BUGFIX` |
 
-A teammate's review of the pull request is `REVIEW` too, and its line starts with the use case ID, so review hours count toward the use case whoever does the reading. Count only time spent on this use case. A client meeting that covers five use cases is not split five ways; it is overhead, and it comes out of the hours your team has available in the [release forecast](traceability.md#from-estimates-to-a-release-plan).
+A teammate's review of the pull request is `REVIEW` too, and its line starts with the use case ID, so review hours count toward the use case whoever does the reading. Count only time spent on this use case. A client meeting that covers five use cases is not split five ways; it is overhead, and it comes out of the hours your team has available in the [release forecast](traceability.md#47-from-estimates-to-a-release-plan).
 
 **The refined estimate keeps the last two parts and folds the first two into one:** clarify and design, what is left. The questions test closes most gaps before the build, but the build still exposes a few holes in the use case or the design, and fixing them is a person's time.
 
@@ -99,7 +99,7 @@ An estimate nobody checks teaches nothing. The course already records the other 
 
 A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
-When the ratio says a promised date will slip, tell the client at the next meeting, not on the date. A slip reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#from-estimates-to-a-release-plan).
+When the ratio says a promised date will slip, tell the client at the next meeting, not on the date. A slip reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#47-from-estimates-to-a-release-plan).
 
 ### 4.5 What an estimate is not for
 
@@ -277,7 +277,7 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 ## Related
 
 - [Design-of-Record](design-of-record.md): the class diagram you cut trunk and leaf from.
-- [Requirements Traceability](traceability.md#from-estimates-to-a-release-plan): the release plan and forecast built from these estimates.
+- [Requirements Traceability](traceability.md#47-from-estimates-to-a-release-plan): the release plan and forecast built from these estimates.
 - [Project](../project.md): the checkpoints where the calibration table is shown, and the weekly activity reports it is built from.
 - [The Method](../method.md#phase-c-fan-out-per-use-case): Phase C, steps 2 to 4.
 - [Agent Setup](../agent-setup.md#10-your-team-repository): the team's settings file and its deny rules.
