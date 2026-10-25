@@ -384,17 +384,23 @@ That joke is real research. Language models tend to favor their own output. That
 
 ## Same pull request, run twice
 
+Project Pulse [#102](https://github.com/Washingtonwei/project-pulse/pull/102), the reminder: 2,171 lines added, 41 files.
+
 | Run | Found | Missed |
 |---|---|---|
-| `/code-review <PR>` | | |
-| With the use case and test list | | |
+| `/code-review 102` | 8 code bugs: wrong year in a week key, a race in the dialog, a send across midnight | Every question about the tests |
+| With the use case and test list | The test list row by row: 1 row untested, 4 half-tested | Two pages that hang on a failed request |
 
 ::: note
-If the two runs are done: here is the same seeded pull request, reviewed twice by the agent. Once with only the pull request number. Once with the use case and the test list named in the request. Walk the Found column and the Missed column of each, and put them beside what the room found. Then ask: who did better on the missing extension, you or the plain run?
+This is the reminder's real pull request, reviewed twice by the agent. Once with only the pull request number. Once with the use case and the design's test list named in the request.
 
-If the two runs are not done, say so plainly: I am running both this weekend, and I will post both lists with screenshots on the module page. Then say what we are testing: whether naming the contract changes what the agent finds. Do not predict the result. That is the point of running it.
+The plain run found eight things, all in the code, and some are good. On January fifth, the report pages ask for the wrong year's week, because the date format uses the calendar year instead of the ISO week year. Click two options fast in the dialog and it can show one list and send the other. It never said a word about the tests. It never opened the design, so it could not.
 
-One honest note either way. The output varies from run to run, so treat one run as one sample, not a verdict.
+The second run walked the test list row by row. One row has no test at all. Four are half-tested: the test labeled 4b checks that the list is empty, and never checks that the send emails nobody. It also caught five of the plain run's code bugs. It missed two pages that hang on their spinner when a request fails.
+
+So naming the contract changed what the agent read. The first run reviewed the diff. The second reviewed the change.
+
+One honest note. The output varies from run to run, so treat one run as one sample, not a verdict. And one finding, a possible conflict with the active-weeks rule, is arguable. Deciding that is the author's job, with the client.
 :::
 
 ## Triage its findings

@@ -5,7 +5,7 @@
 > **Purpose (one line):** review a pull request against the use case and test list it claims to implement, reading each part as deeply as where it lands demands, so that an approval means someone checked the change and not only the diff.
 
 !!! note "This module is still being written"
-    The two agent review runs in [4.7](#47-the-agent-as-first-reviewer) are filled in after the instructor rehearses them. Design review is in [Design-of-Record](design-of-record.md#412-the-design-gate); this module is about code.
+    Design review is in [Design-of-Record](design-of-record.md#412-the-design-gate); this module is about code.
 
 ## 1. Learning objectives
 
@@ -132,12 +132,14 @@ Claude Code's `/code-review` runs in a fresh context: it does not see the conver
 
 **By default it reviews the diff, not the change.** Its documentation says it "focuses on correctness... not formatting preferences or missing test coverage". A missing extension is missing test coverage, so an agent given only the diff will not find it. The fix is the week 5 lesson applied to review: give it the contract. Name the use case and the design's test list in the request, or put the rule in your `CLAUDE.md`.
 
-**On the reminder's seeded pull request, run twice:**
+**On the reminder's pull request, run twice.** Both runs reviewed Project Pulse [#102](https://github.com/Washingtonwei/project-pulse/pull/102) (2,171 lines added across 41 files) on 2026-10-25, before it merged. One run is one sample; the output varies.
 
 | Run | Found | Missed |
 |---|---|---|
-| `/code-review <PR>` alone | _filled in after rehearsal_ | |
-| With the use case and test list named | _filled in after rehearsal_ | |
+| `/code-review 102` alone | Eight findings, all in the code. The report pages send a week key with the calendar year, not the ISO week year, so on Jan 5, 2026 they ask for `2025-W01` and list the students who owed a report a year earlier. The dialog has no guard against out-of-order responses, so it can show one item's list and send the other. A send that crosses Monday midnight reminds students about a week nobody reviewed. Two pages hang on their spinner when a request fails. Three cleanups. | Everything about the tests. It never opened the design, so it could not say which test-list rows were covered. |
+| With the use case and test list named | The design's test list, row by row: one row has no test (the peer evaluation page's list), and four are covered only in part. The test labeled 4b checks that the list is empty, never that the send emails nobody. It also found a possible conflict with `BR-active-weeks`, and assertions that check only the status code against the project's own `CLAUDE.md`, plus five of the plain run's code findings. | The two hanging pages. |
+
+Naming the contract changed what the agent read: the second run reviewed the change; the first reviewed the diff. Neither run is a verdict. The `BR-active-weeks` finding is arguable (a test asserts that behavior on purpose), and deciding which way it goes is the author's call, made with the client. The rest were triaged before the merge: the week key, the out-of-order list, the send across midnight, the hanging pages, and the half-tested rows were fixed in three commits ([`975c122`](https://github.com/Washingtonwei/project-pulse/commit/975c122), [`16568ed`](https://github.com/Washingtonwei/project-pulse/commit/16568ed), [`cb1e22e`](https://github.com/Washingtonwei/project-pulse/commit/cb1e22e)). The two new guards each got a test, and each test was seen to fail with its guard removed. Three cleanups were left open with a reason in the pull request.
 
 **Triage its findings like a teammate's.** For each one: fix it, or reject it with a reason, and record which under How it was verified. Spot-check one thing it flagged and one thing it passed. If its review never mentions the test list, it reviewed the diff.
 
