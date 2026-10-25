@@ -120,12 +120,18 @@ The defense is to commit in steps a reviewer can read, cut along the design:
 
 **The agent pauses once, after the trunk commit,** and you read it before the leaves are built. Not after every step: a wrong trunk found late means rebuilding every leaf, and a wrong leaf does not. At the pause, check one thing: **can you say what changed and why without asking the agent?** If not, read until you can. That is the debt paid while it is small. All the commits still go in one pull request, read commit by commit.
 
-**The reminder, in four commits** (from `not.md`'s class diagram):
+**The reminder, as merged** ([pull request #102](https://github.com/Washingtonwei/project-pulse/pull/102), cut along `not.md`'s class diagram). The build was eight commits:
 
-1. The trunk: `SubmittableItem`, `WeekKeys`, `SubmissionStatusService`, `ReminderService`, and two new sibling queries. **The pause comes here.**
+1. The trunk: `SubmittableItem`, `WeekKeys`, `SubmissionStatusService`, `ReminderService`, two new sibling queries, and their tests. **The pause comes here.**
 2. The two route rules in `SecurityConfiguration`, alone.
-3. `ReminderController` and the dialog (`UC-NOT-remind-non-submitters`).
+3. `ReminderController` and its DTOs (`UC-NOT-remind-non-submitters`).
 4. The moved `WeeklyReminderScheduler` (`FR-NOT-weekly-reminder`).
+5. The SMTP timeouts, alone: a configuration change that reaches every email the app sends, invitations included.
+6. The two report pages, now asking the server who owes.
+7. `RemindNonSubmittersDialog` and its Cypress test.
+8. `not.md` and the traceability matrix, brought in line with the code.
+
+Review then added six more commits, each one small thing: four fixes (week keys formatted with the ISO week year, a send limited to the list the instructor reviewed, report pages that stop loading when a request fails, no second send offered when the first may have gone out), one simplification, and the design updated to match. Fourteen commits in one pull request, and every one readable alone.
 
 Project Pulse's [`/implement`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md) commits this way and pauses after the trunk; Monday's live build stops there. A use case with no trunk is one commit and no pause, except that a security rule still goes alone.
 
@@ -300,7 +306,7 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 - METR figures were checked against the primary post on 2026-10-10.
 - Project Pulse facts in 4.2 to 4.4 (`Activity.java`, `not.md`'s 20 test rows and six open risks) checked at `26b1ac3`.
 - Project Pulse facts checked against `main` at `81b5a97` on 2026-10-11: 266 backend classes, 4 with a logger (`AuthController`, `WeeklyReminderScheduler`, and `UserInvitationService` as `LOGGER`; `DocumentTemplateRegistry` as `log`); `ExceptionHandlerAdvice.handleOtherException` returns `ex.getMessage()` and logs nothing; `WeeklyReminderScheduler` logs `student.getEmail()` on a failed send; `/implement` pauses after the trunk commit. Re-check after the reminder is built, because the build moves the scheduler.
-- The four reminder commits follow `not.md`'s class diagram; re-check the class names against the merged code.
+- The reminder's commits are Project Pulse #102's fourteen (eight from the build, six from review), merged as `aefb193`; class names and commit contents checked on 2026-10-25.
 - `spring.mvc.log-resolved-exception` defaults to false: confirm against the Spring Boot 4 documentation.
 
 ### Hand-offs

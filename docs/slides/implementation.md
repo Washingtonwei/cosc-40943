@@ -347,13 +347,15 @@ Can you say what changed and why, without asking the agent?
 **Say:** At the pause, one question. *[Read it.]* If you can't answer it, keep reading until you can. That's paying the debt while it's small.
 :::
 
-## The reminder, in four commits
+## The reminder, as merged
 
 ::: steps
 - Trunk: SubmittableItem, WeekKeys, SubmissionStatusService, ReminderService, two new queries. **Pause.**
 - The two route rules in SecurityConfiguration, alone.
-- ReminderController and the dialog.
-- The moved WeeklyReminderScheduler.
+- One commit per leaf: the controller, the moved scheduler, the report pages, the dialog.
+- The SMTP timeouts, alone: they touch every email.
+- The design and traceability, brought in line.
+- Review: six more commits, one small thing each.
 :::
 
 ::: joke
@@ -361,7 +363,7 @@ The trunk commit message the agent wanted: "Add some stuff." The one you merge: 
 :::
 
 ::: note
-**Say:** Here's the reminder in those terms, from not.md's class diagram. Trunk first: the service that knows who owes what this week, and its helpers. Pause. The two route rules, alone. Then the controller and dialog, then the moved scheduler. Project Pulse's /implement commits exactly this way, and it's what we start live today. *[Read the joke.]* You write the commit message that says what the code is for.
+**Say:** Here's the reminder as it merged, pull request 102, cut along not.md's class diagram. Trunk first: the service that knows who owes what this week, and its helpers. Pause. The two route rules, alone. Then one commit per leaf: the controller, the moved scheduler, the report pages, the dialog. The SMTP timeouts went alone too, because they change every email the app sends, invitations included. Then the design docs caught up with the code. That's eight commits to build it. Review added six more, four fixes, one simplification, one docs update, each its own commit, so the second read was easy. Fourteen commits, one pull request. Project Pulse's /implement commits exactly this way, and it's what we start live today. *[Read the joke.]* You write the commit message that says what the code is for.
 :::
 
 ## The agent tidies as it goes
