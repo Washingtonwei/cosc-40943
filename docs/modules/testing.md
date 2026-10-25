@@ -49,6 +49,8 @@ The gap between "I can build this" and "I can say when this is done" is the dist
 
 **Ask an agent for the list and it reaches the fourth row in seconds**, better organized than most rooms manage. Generating the list is no longer the skill. Deciding which rows are real requirements for *this* system is: is a lockout threshold in your specification, who sets it, and is a million concurrent logins a requirement or ceremony? That decision stays with you and your client.
 
+**A designed feature arrives with its list.** The reminder's design, [`not.md`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/not.md), had 20 test rows before any code was written ([Design-of-Record](design-of-record.md#48-the-test-list-before-the-code)), one or more per flow of `UC-NOT-remind-non-submitters`, each with its level. Review of [pull request #102](https://github.com/Washingtonwei/project-pulse/pull/102) added four more, and all four are about time: a Confirm that lands after Monday midnight (two rows), a send that gets no answer, and an instructor who switches items before the first list arrives. A list read off the use case's steps misses what happens between them.
+
 ### 4.2 A test is inputs plus an oracle
 
 An **oracle** is whatever decides that an execution was correct. A test is inputs plus an oracle, and the oracle is the half that carries intent: inputs decide what the code does, and the oracle decides what "right" means.
@@ -108,6 +110,23 @@ Run the partitions through it. A bare `.sort()` compares character codes, so eve
 
 **The test asks the design question.** Until October 2026 this code built "Last, First" by splitting the full name on a space, so "Mary Ann Smith" became "Ann, Mary" and "Cher" became "undefined, Cher". Logic inside a component's data-loading function cannot be tested without mounting the page and faking the server. Pulled into a pure function, every case is a one-line test, and writing that test asks why the client is guessing a last name the server already knows. The reminder's pull request answered it: the list now comes from the server with the names in separate fields. The sort is still inline. Extract one comparator into `utils/`, test it on the partitions, and both lists use it. Code that is hard to test is usually telling you something about its design.
 
+**Boundaries in time.** Project Pulse files every report under an ISO week key such as `2026-W40`, and at New Year a week's year is not always the calendar year of its days: Monday, December 29, 2025 starts `2026-W01`. The partitions for "the key of a date" are a date inside the year, a December date in next year's week 1, a January date in last year's week 52 or 53, and a year with 53 weeks (2020 and 2026 have one). As one parameterized test on [`WeekKeys.of`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/WeekKeys.java):
+
+```java
+@ParameterizedTest
+@CsvSource({
+    "2026-10-01, 2026-W40",   // inside the year
+    "2025-12-29, 2026-W01",   // a December Monday in next year's week 1
+    "2021-01-03, 2020-W53",   // a January Sunday in last year's week 53
+    "2026-12-31, 2026-W53"    // a year with 53 weeks
+})
+void weekKeyUsesTheIsoWeekYear(LocalDate date, String key) {
+    assertThat(WeekKeys.of(date)).isEqualTo(key);
+}
+```
+
+The server's `WeekKeysTest` already pins the third row, and refuses `2021-W53`, a week that does not exist. The browser had its own copy of the rule in `frontend/src/utils/week.ts`, which formatted keys with moment's `YYYY`, the calendar year, and Project Pulse's frontend has no unit tests at all. So on January 5, 2026 the report pages would have asked the server for `2025-W01`, a year early. Code review found it in #102, not a test (fix `975c122`, now `GGGG`, the ISO week year). One rule in two places, and only one of them tested at its boundary.
+
 ### 4.4 JUnit 5, and given/when/then from a use case
 
 Project Pulse's backend tests use JUnit 5 with AssertJ assertions. The parts you will use every day:
@@ -125,70 +144,86 @@ Project Pulse's backend tests use JUnit 5 with AssertJ assertions. The parts you
 
 | Use case | Test |
 |---|---|
-| The precondition, or the one an extension breaks | Given |
+| The precondition, or the extension's condition | Given |
 | The trigger or step | When |
 | The postcondition, or the extension's outcome | Then |
 
-`UC-WAR-manage-activities` has `PRE-2`: the student is assigned to a team (`BR-team-assignment-required`). Extension `1a1` says what happens when she is not: the system refuses the activity and tells her she must be assigned to a team. Project Pulse tests it in [`ActivityServiceTest`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/test/java/team/projectpulse/activity/ActivityServiceTest.java). Here it is in given/when/then form throughout:
+`UC-NOT-remind-non-submitters` has extension `6a`: a reminder to one or more students cannot be sent. Its outcome has two parts: `6a1`, the system continues with the remaining students, and `6a2`, it names the students it could not reach. The agent tested it in [`ReminderServiceTest`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/test/java/team/projectpulse/notification/ReminderServiceTest.java), and the test is the extension, line for line:
 
 ```java
 @Test
-void testSaveActivityRejectsASubmitterWithNoTeam() {
-    // Given: PRE-2 does not hold (extension 1a)
-    Student tracy = new Student("t.nicholson@abc.edu", "Tracy", "Nicholson", "t.nicholson@abc.edu", "123456", true, "student");
-    given(this.userUtils.hasRole("ROLE_student")).willReturn(true);
-    given(this.userUtils.getStudent()).willReturn(tracy);
+void testRemindContinuesAfterOneSendFailsAndReportsWhoWasNotReached() {
+    // Given (UC-NOT-remind-non-submitters 6a): three students owe a report; the send to s2 fails
+    Map<Student, List<SubmittableItem>> owed = new LinkedHashMap<>();
+    owed.put(s1, List.of(SubmittableItem.WEEKLY_ACTIVITY_REPORT));
+    owed.put(s2, List.of(SubmittableItem.WEEKLY_ACTIVITY_REPORT));
+    owed.put(s3, List.of(SubmittableItem.WEEKLY_ACTIVITY_REPORT));
+    willDoNothing().given(this.emailService).sendReminderEmail(anyString(), anyString(), anyString());
+    willThrow(new RuntimeException("Failed to send reminder email"))
+            .given(this.emailService).sendReminderEmail(eq("s2@abc.edu"), anyString(), anyString());
 
-    // When
-    Throwable thrown = catchThrowable(() -> this.activityService.saveActivity(new Activity()));
+    // When: step 6
+    ReminderService.ReminderResult result = this.reminderService.remind(this.section, owed, WEEK);
 
-    // Then: 1a1, the activity is refused and nothing is saved
-    assertThat(thrown)
-            .isInstanceOf(ActivityIllegalArgumentException.class)
-            .hasMessage("You must be assigned to a team before submitting a weekly activity report.");
-    then(this.activityRepository).should(never()).save(any(Activity.class));
+    // Then: 6a1, s3 was still tried after the failure; 6a2, s2 is named
+    ArgumentCaptor<String> recipients = ArgumentCaptor.forClass(String.class);
+    verify(this.emailService, times(3)).sendReminderEmail(recipients.capture(), eq(ReminderService.SUBJECT), anyString());
+    assertThat(recipients.getAllValues()).containsExactly("s1@abc.edu", "s2@abc.edu", "s3@abc.edu");
+    assertThat(result.sent()).isEqualTo(2);
+    assertThat(result.failed()).containsExactly(s2);
 }
 ```
+
+(Shortened: the real test also builds the three students, and its comments are extended here to name each part.)
 
 The test name says the behavior, not the method: Google's guidance is to test behaviors, not methods, one behavior per test.
 
 ### 4.5 Mockito, and when not to mock
 
-`ActivityService` depends on a repository (the database) and on `UserUtils` (who is logged in). A unit test replaces both with **mocks**, objects whose answers the test controls, so the test runs in milliseconds, needs no database, and fails only when `ActivityService` is wrong:
+`ReminderService` sends through `EmailService`, which talks to Gmail. The test in 4.4 replaces it with a **mock**, an object whose answers the test controls, so the test runs in milliseconds, emails nobody, and makes the send to s2 fail on demand, which no real mail server does when asked. A service with several dependencies gets a mock for each; [`SubmissionStatusServiceTest`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/test/java/team/projectpulse/notification/SubmissionStatusServiceTest.java), for who owes what, starts:
 
 ```java
 @ExtendWith(MockitoExtension.class)
-class ActivityServiceTest {
-    @Mock ActivityRepository activityRepository;
-    @Mock UserUtils userUtils;
-    @InjectMocks ActivityService activityService;   // receives both mocks
+class SubmissionStatusServiceTest {
+    @Mock StudentRepository studentRepository;
+    @Mock ActivityService activityService;
+    @Mock EvaluationService evaluationService;
+    @InjectMocks SubmissionStatusService submissionStatusService;   // receives all three mocks
 ```
 
-Two calls do most of the work, both from `org.mockito.BDDMockito`: `given(mock.call()).willReturn(value)` sets up an answer, and `then(mock).should().call()` checks that a call happened (`should(never())` that it did not). Mockito only works because `ActivityService` receives its dependencies through its constructor. A class that calls `new` on its own database client cannot be given a mock, which is one more way a hard test points at a design problem.
+A few calls do most of the work, all from `org.mockito.BDDMockito`: `given(mock.call()).willReturn(value)` sets up an answer, `willThrow(exception).given(mock).call()` makes a call fail (the 6a test's s2), and `then(mock).should().call()` checks that a call happened (`should(never())` that it did not). Mockito only works because `ReminderService` receives `EmailService` through its constructor. A class that calls `new` on its own mail client cannot be given a mock, which is one more way a hard test points at a design problem.
 
-**Project Pulse writes half the style.** Its tests call `given(...)` more than 200 times and `then(...).should(...)` never, using classic `verify(...)` 38 times instead. The cause is one comment in the testing section of its agent charter (`backend/CLAUDE.md`), "Use BDDMockito: given(...).willReturn(...)", which names the Given half only, so the agent follows it for Given and falls back for Then. Write both halves into your own charter.
+**Project Pulse writes half the style.** Its tests call `given(...)` more than 200 times and `then(...).should(...)` never, using classic `verify(...)` about 60 times instead, as the 6a test does. The cause is one comment in the testing section of its agent charter (`backend/CLAUDE.md`), "Use BDDMockito: given(...).willReturn(...)", which names the Given half only, so the agent follows it for Given and falls back for Then. Write both halves into your own charter.
 
-**Mock less than you can.** Google's testing chapters prefer real objects to mocks "as long as the real objects are fast and deterministic", because a test that checks which calls were made breaks on every refactoring, even when the behavior is unchanged. Mock what is slow or out of your control: the database, the network, email, the clock. Assert on results (state) before calls (interactions). The `should(never()).save(...)` in 4.4 earns its place because "nothing is saved" is the extension's outcome.
+**Mock less than you can.** Google's testing chapters prefer real objects to mocks "as long as the real objects are fast and deterministic", because a test that checks which calls were made breaks on every refactoring, even when the behavior is unchanged. Mock what is slow or out of your control: the database, the network, email, the clock. Assert on results (state) before calls (interactions). [`WeeklyReminderSchedulerTest`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/test/java/team/projectpulse/notification/WeeklyReminderSchedulerTest.java) gets the balance right: it builds the real `ReminderService`, so its assertions read the emails themselves. It mocks `EmailService`, who owes what ("because `SubmissionStatusService` has its own tests"), and which course sections are reminded, a choice 4.6 comes back to. The `verify(..., times(3))` in 4.4 earns its place because "every student was tried" is the extension's outcome, and a call is the only place that outcome shows.
 
 **The clock is the dependency everyone forgets.** `EvaluationService` reads today's date through a `Clock` injected in its constructor (`WeekKeys.previousWeek(this.clock)`), so a test can fix the date and run the same way next year. Project Pulse's suite fixes it two ways. `EvaluationServiceTest` mocks the clock, builds a `Clock.fixed(...)`, and stubs `instant()` and `getZone()` with values copied out of it. `WeekKeysTest` passes the `Clock.fixed(...)` straight in: a real, fast, deterministic clock and two stubs fewer, and one of its tests pins the week that spans New Year. A test that reads the real time, or a random number it did not seed, passes today and fails in some other week.
 
 ### 4.6 Reading a test the agent wrote
 
-The happy-path twin of the test in 4.4, [`ActivityServiceTest.testSaveActivity`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/test/java/team/projectpulse/activity/ActivityServiceTest.java), checks `POST-1` of `UC-WAR-manage-activities`: a new activity is added to the student's weekly activity report. It builds an activity, stubs `activityRepository.save` to return that same object, and asserts that the result has the category, description, hours, and status the test itself set.
-
-The only logic in `ActivityService.saveActivity` after its two guards is two lines:
+`FR-NOT-weekly-reminder` reminds a course section only about its active weeks: nothing in the first active week, when there is nothing yet to submit, and the last active week's items in the week after it. The agent wrote a test for each, named for exactly that behavior. The second:
 
 ```java
-newActivity.setStudent(submitter);
-newActivity.setTeam(submitter.getTeam());
+@Test
+void testTheLastActiveWeeksPeerEvaluationIsRemindedInTheWeekAfterIt() {
+    // Given: 2026-W38 is the course section's last active week; Wednesday 2026-09-23 is in the inactive week after
+    Section section = section(1, DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY);
+    section.setActiveWeeks(List.of("2026-W37", PREVIOUS_WEEK));
+    given(this.sectionService.findReminderEligibleSectionsForWeek(PREVIOUS_WEEK)).willReturn(List.of(section));
+    given(this.submissionStatusService.findOwedItems(1, List.of(SubmittableItem.PEER_EVALUATION), PREVIOUS_WEEK))
+            .willReturn(Map.of(student("s1@abc.edu"), List.of(SubmittableItem.PEER_EVALUATION)));
+
+    // When
+    scheduler(LocalDate.of(2026, 9, 23), true).sendWeeklyReminders();
+
+    // Then
+    verify(this.emailService, times(1)).sendReminderEmail(eq("s1@abc.edu"), anyString(), anyString());
+}
 ```
 
-They file the activity under the submitter and her own team, never one she names (`BR-team-scoped-access`). The test checks neither, so it passes with both lines deleted. Its oracle is the test's own input, echoed back by a mock: CrowdStrike in miniature. The missing Then:
+The scheduler never reads `activeWeeks`. Which course sections are reminded is decided by one JPQL query, `SectionRepository.findReminderEligibleSectionsForWeek` (`:weekKey member of s.activeWeeks`), and the test stubs that query to return the section. Delete the `setActiveWeeks` line and the test stays green. Drop the query's `member of` condition and it stays green too, as does the whole suite, because no test runs that query. The first-active-week test is the same: it passes because a mock's default answer is an empty list. Both tests mock the very thing their names claim to check, and the design's test list asked for exactly that: it put both rows at the unit level, for a rule that lives in SQL. The missing test is an integration test that runs the query on real data: one course section whose active weeks include the week and one whose do not, and only the first comes back.
 
-```java
-assertThat(result.getStudent()).isEqualTo(submitter);
-assertThat(result.getTeam()).isEqualTo(team);
-```
+The same file shows the agent can see the trap. In the test for a failed send, a comment explains why the broad `willDoNothing()` stub must come first: under Mockito's strict stubs an unmatched call throws, `ReminderService` catches every `RuntimeException`, and the test "would pass while proving nothing". An agent that writes that comment can still write the test above. Read each one.
 
 **Break the code once.** Deleting a line to see whether any test goes red is manual **mutation testing**; tools such as PIT do it to every line. It is the fastest way to find out whether a test checks anything.
 
@@ -212,7 +247,9 @@ assertThat(result.getTeam()).isEqualTo(team);
 
 Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittle, and closest to the user. Google aims for about 80% unit and 20% broader tests. Project Pulse is closer to the reverse, mostly integration tests, partly because its business and security rules (who may see which team's work) are enforced across layers and only an integration test exercises them. Know which shape you have and why.
 
-**Coverage tells you what ran, not what was checked.** `testSaveActivity` executes every line of `saveActivity` and verifies the two that matter not at all. Use coverage to find code no test touches; never read it as a measure of quality.
+**The reminder's pull request spans all three layers,** each checking what only it can. Its 22 unit tests (`SubmissionStatusServiceTest`, `ReminderServiceTest`, `WeeklyReminderSchedulerTest`, `WeekKeysTest`) check the rules on students made up in the test. Its 21 integration tests (`ReminderIntegrationTest`, `SubmissionStatusServiceIntegrationTest`) run the real queries on seed data and check who may call each route. Its 9 Cypress tests (`reminders.spec.cy.js`, with the server stubbed) check the dialog's timing: a double click on Confirm, two lists arriving out of order, a send that never answers.
+
+**Coverage tells you what ran, not what was checked.** `WeeklyReminderSchedulerTest` runs every line of `sendWeeklyReminders`, and the rule that picks which course sections are reminded is checked nowhere. Use coverage to find code no test touches; never read it as a measure of quality.
 
 **A flaky test is worse than none.** A test that fails at random teaches the team to ignore red. Most flakiness comes from time, ordering, and shared state; fix the cause, never just rerun.
 
@@ -231,6 +268,7 @@ Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittl
 | **AI-introduced:** tests written from the code, so their oracle agrees with any bug | Asking where each assertion's expected value came from | Supply the specification as context; break the code once per new test |
 | **AI-introduced:** the agent edits or weakens a failing test to turn the suite green | Reading the test diff in every pull request | Charter rule: failing tests change only with a reason in the pull request description |
 | **Classic:** over-mocking makes tests break on every refactoring | Asking whether a real object would be fast and deterministic | Mock the database, network, and clock; assert on results first |
+| **AI-introduced:** a test mocks the very thing its name claims to check | Asking, for each mock, whether the rule under test lives behind it | Find where the rule lives; a rule in a query gets an integration test on real data |
 | **Classic:** coverage read as quality | Finding a covered line no assertion checks | Use coverage to find untested code, never as a target |
 
 ## 7. Hands-on (studio + optional individual assignment)
@@ -269,7 +307,8 @@ Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittl
 3. Give the partitions for a method that takes a list of student names and returns them sorted by last name.
 4. Write the given/when/then outline for extension 1b of a use case you wrote: which part comes from the precondition, which from the step, which from the outcome?
 5. Your service calls `LocalDate.now()`. Why will its test eventually fail, and what one change fixes it?
-6. Coverage of `saveActivity` is 100%. Name the defect that number hides.
+6. Every line of `WeeklyReminderScheduler.sendWeeklyReminders` runs under its tests. Name the rule that number hides, and the test that would check it.
+7. Your frontend computes the same week key as the server, and only the server's code has a test. Which inputs would you add first, and in which code?
 
 ## Related
 
