@@ -270,19 +270,19 @@ Remind only the students who still owe something (`BR-submission-owed`).
 |||
 **`WeeklyReminderScheduler.sendWeeklyReminders`**
 
-Still emails every student in the section, and its tests check that it does.
+Kept emailing every student in the section, and its tests checked that it did.
 :::
 
 ::: key
-The row reads 📐 Designed, not ✅ Built. The gap is traced, not hidden.
+For three weeks the row read 📐 Designed, not ✅ Built. The gap was traced, not hidden.
 :::
 
 ::: note
-In early October the client amended the weekly reminder: remind only the students who still owe something. The scheduler still emails everybody, and its tests happily confirm that it emails everybody.
+In early October the client amended the weekly reminder: remind only the students who still owe something. The scheduler kept emailing everybody, and its tests happily confirmed that it emailed everybody.
 
-The tests pass. The code is wrong. Because the tests predate the rule.
+The tests passed. The code was wrong. Because the tests predated the rule.
 
-What makes this fine, for now, is the row. It reads Designed, not Built, and its Code cell says the code predates the amendment. The gap is known and written down. It is scheduled for the next release.
+What made that fine, for a while, was the row. It read Designed, not Built, and its Code cell said the code predated the amendment. The gap was known and written down. On October 25 one pull request fixed the scheduler and moved the row to Built and Verified together. Code and row, same pull request.
 :::
 
 ## Neither says anything
@@ -389,7 +389,7 @@ Agile teams have always planned releases with stories and velocity. Beck and Fow
 
 | UC | Build | Verify | **Release** |
 |---|---|---|---|
-| `UC-NOT-remind-non-submitters` | 📐 Designed |  | `v1.6.0` |
+| `UC-NOT-remind-non-submitters` | ✅ Built | ✅ Verified | `v1.6.0` |
 | `UC-AI-critique` | ❌ Not started |  | `v1.8.0` |
 | `UC-AI-draft-skeleton` | ❌ Not started |  | `Later` |
 
@@ -493,11 +493,11 @@ Ask the room for a gut answer. How many files? Take a couple of numbers. Then we
 |||
 **`UC-NOT-remind-non-submitters`**
 
-📐 Designed. The change lands in `design/not.md`, not in code.
+✅ Built since October 25. The change lands in code and tests.
 :::
 
 ::: key
-Fixing a design costs minutes. Fixing a built reminder does not.
+Two weeks earlier it was a design edit. A change caught at design is cheap.
 :::
 
 ::: note
@@ -505,7 +505,7 @@ Step one. Start at the changed rule, in the business-rule index. Two use cases c
 
 Submit evaluation is built. Its row hands you the Vue page, the service method, and the tests that pin the window: not for the previous week, update after the window closed, and their integration twins.
 
-Remind non-submitters is only designed. Its design says the reminder is always for the week currently due, the previous week. So this change lands in a design document. That is a few minutes of editing, because the code does not exist yet. Catch a change at design and it is cheap.
+Remind non-submitters is built now. It merged on October 25, and the reminder is always for the previous week, which the server checks again at send time. Two weeks earlier its row read Designed, and this same change would have been a few minutes in a design document. Now it is code and tests. Catch a change at design and it is cheap.
 :::
 
 ## Step 2: search for the ID
@@ -537,7 +537,7 @@ Every ID and file from steps 1 and 2, in the issue.
 |||
 **The agent finds the reach**
 
-`EvaluationService.previousWeek()`, shared by both paths, and `getPreviousWeek()` in the frontend's `utils/week`.
+`WeekKeys.previousWeek`, shared by the window, the reminder, and the scheduled job, and `getPreviousWeek()` in the frontend's `utils/week`.
 :::
 
 ::: ai
@@ -547,7 +547,7 @@ The IDs steer the agent before the change. The matrix checks what came back afte
 ::: note
 Step three. The issue for the change carries everything from steps one and two. That is the scope you hand the agent.
 
-Now the agent does what it is good at: finding the reach no document names. The private previousWeek method in EvaluationService, shared by submit and update. And getPreviousWeek in the frontend, which decides which week the form even opens on.
+Now the agent does what it is good at: finding the reach no requirement names. WeekKeys dot previousWeek, shared by the evaluation window, the reminder, and the scheduled job. And getPreviousWeek in the frontend, which decides which week the form even opens on.
 
 Neither appears in any requirement. Both break if you miss them.
 :::

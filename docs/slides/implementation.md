@@ -326,6 +326,7 @@ Code your team accepted without understanding it.
 |---|---|
 | **Trunk** | What many paths depend on, or existing users rely on, or is hard to undo |
 | **Security rule or migration** | Alone |
+| **A refactor the use case needs** | Proposed first; after your yes, alone, with no change in behavior |
 | **Each leaf** | New code reached only through the new feature |
 
 ::: key
@@ -361,6 +362,26 @@ The trunk commit message the agent wanted: "Add some stuff." The one you merge: 
 
 ::: note
 **Say:** Here's the reminder in those terms, from not.md's class diagram. Trunk first: the service that knows who owes what this week, and its helpers. Pause. The two route rules, alone. Then the controller and dialog, then the moved scheduler. Project Pulse's /implement commits exactly this way, and it's what we start live today. *[Read the joke.]* You write the commit message that says what the code is for.
+:::
+
+## The agent tidies as it goes
+
+::: steps
+- It builds the use case faithfully, and often improves the code around it too.
+- 21% of agent patches mixed in refactoring (developers: 37%), and those compiled less often.
+- The reminder: `previousWeek` moved into `WeekKeys`, and `parseWeekDate` was left behind.
+:::
+
+::: key
+Propose it, then do it first and alone. Never in the same commit as the feature.
+:::
+
+::: note
+**Say:** Here's something I keep seeing. The agent reads the use case and the design, and it builds them faithfully. And then it tidies. A rename here, a helper moved there, an old method rewritten. It isn't only agents: in a 2026 study of about 3,700 agent patches, 21 percent mixed refactoring into the fix, and human developers did it even more, 37 percent. But the mixed patches compiled less often.
+
+Our own reminder did it. The agent moved previousWeek into the new WeekKeys class, which was fair, because the reminder needed one owner for week keys. But it did it inside the trunk commit, mixed in with the new service, and it stopped halfway: parseWeekDate still parses week keys its own way, so now two parsers can disagree at New Year. Our code review caught it. A half-finished cleanup is worse than none, because it leaves two ways to do one thing.
+
+So don't forbid refactoring. Kent Beck: make the change easy, then make the easy change. Reshape the code first, then add the feature. Just never in the same commit, and you decide the first part. Before it writes any code, the agent tells you what it wants to refactor, why the use case needs it, and every place the old way appears. Here it would have listed parseWeekDate, and we would have caught the half. You say yes, it refactors in its own commit, behavior unchanged, tests green. Then it builds the use case. Anything the use case doesn't need, it proposes and doesn't do. If your agent tidies more than you like, put that rule in your /implement. Project Pulse's says so.
 :::
 
 ## The team's settings file

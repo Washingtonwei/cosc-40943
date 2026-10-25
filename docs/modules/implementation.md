@@ -115,6 +115,7 @@ The defense is to commit in steps a reviewer can read, cut along the design:
 |---|---|---|
 | **Trunk**, one commit | Code many paths depend on, code that changes behavior existing users rely on, code hard to roll back | Everything else stands on it |
 | **A security rule or a schema migration**, alone | One rule, one migration | Both are hard to undo, and a loosened rule is easy to miss beside other changes |
+| **A refactor the use case needs**, first and alone, after you agree | Existing code reshaped so the feature fits, with no change in behavior | The reviewer reads "same behavior" in one commit and "new behavior" in the others |
 | **Each leaf**, one commit | New code reached only through the new feature | Small, and checked through its own tests |
 
 **The agent pauses once, after the trunk commit,** and you read it before the leaves are built. Not after every step: a wrong trunk found late means rebuilding every leaf, and a wrong leaf does not. At the pause, check one thing: **can you say what changed and why without asking the agent?** If not, read until you can. That is the debt paid while it is small. All the commits still go in one pull request, read commit by commit.
@@ -127,6 +128,10 @@ The defense is to commit in steps a reviewer can read, cut along the design:
 4. The moved `WeeklyReminderScheduler` (`FR-NOT-weekly-reminder`).
 
 Project Pulse's [`/implement`](https://github.com/Washingtonwei/project-pulse/blob/main/.claude/commands/implement.md) commits this way and pauses after the trunk; Monday's live build stops there. A use case with no trunk is one commit and no pause, except that a security rule still goes alone.
+
+**The agent tidies as it goes.** It builds the use case faithfully from the design, and it often improves the code around it too. In 3,691 agent patches for real issues, 21% mixed refactoring into the fix (developers did it in 37% of theirs), and those patches compiled less often (Tian et al. 2026). The reminder's build did it. It moved `EvaluationService.previousWeek` into the new `WeekKeys`, which the reminder needed, inside the trunk commit beside the new service, and it changed `ExceptionHandlerAdvice` for every endpoint, though only its own two needed it. The move also stopped halfway: `EvaluationService.parseWeekDate` still parses week keys its own way, so two parsers can disagree at New Year. A half-finished cleanup leaves two ways to do one thing.
+
+Do not forbid refactoring; some of it is how the feature fits. Beck's rule is "make the change easy, then make the easy change": reshape the existing code first, without changing what it does, so the feature becomes a simple addition. Keep the two apart, and decide the first one yourself. Before writing any code, the agent proposes the refactor: what it would change, why the use case needs it, and every place the old way appears. After you agree, it makes the refactor first, in its own commit, with no behavior change, the suite green before and after, and finished everywhere. Then it builds the use case on top. For the reminder, that proposal would have listed `parseWeekDate` beside `previousWeek` before anyone wrote a line. An improvement the use case does not need is proposed, not made, as a follow-up in the pull request. Project Pulse's `/implement` works this way; if your agent tidies more than you want, put the same rule in yours.
 
 ### 4.7 What the agent may read and run
 
@@ -227,6 +232,7 @@ Commit a skill by pull request, as you would the charter, because the whole team
 | **AI-introduced:** estimating how long the agent takes to write the code, and forgetting review and verification | Noticing that the estimate has no line for reading the diff | Estimate the parts of 4.2, every one of them a person's hours |
 | **AI-amplified:** trusting your felt speed with an agent | Comparing the estimate with the logged hours, not with memory | The calibration ratio at every checkpoint |
 | **AI-amplified:** cognitive debt, a diff too large to read and approved anyway | At the pause, trying to say what changed and why without asking the agent | Trunk and leaf commits along the design (4.6); one pause, after the trunk |
+| **AI-amplified:** refactoring mixed into the feature, sometimes left half done | Asking of each changed file outside the design: did the use case need this? | A needed refactor proposed before any code, then made first in its own commit and finished everywhere; anything else proposed, not made (4.6) |
 | **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in the charter (4.9); fix the catch-all before the agent imitates it |
 | **AI-introduced:** the agent reads a secret, follows instructions hidden in outside content, or adds an invented package | Asking who wrote the text the agent is about to read, and whether anyone chose the new dependency | Deny rules for secrets in `.claude/settings.json`; checks never off; outside content read raw first; every new dependency confirmed by a person (4.7) |
 | **AI-introduced:** existing code read back as requirements, defects included | Asking the client whether each recovered behavior was intended | The code is evidence, never authority (4.8); defects go to `OPEN-ISSUES.md` |
@@ -258,6 +264,7 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 - Willison, S. "The Lethal Trifecta for AI Agents." June 16, 2025. <https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/>
 - Anthropic. "Configure permissions," Claude Code documentation. <https://code.claude.com/docs/en/permissions>
 - Kosmyna, N., et al. "Your Brain on ChatGPT: Accumulation of Cognitive Debt when Using an AI Assistant for Essay Writing Task." arXiv:2506.08872, 2025. <https://arxiv.org/abs/2506.08872>
+- Tian, Z., Zhang, Z., Xiao, T., Wang, D., Kondo, M., Chen, J., and Kamei, Y. "'Refactoring Runaway': Understanding and Mitigating Tangled Refactorings in Coding Agents for Issue Resolution." arXiv:2605.22526, 2026. <https://arxiv.org/abs/2605.22526>
 - Yan, W. "Don't Build Multi-Agents." Cognition, June 12, 2025. <https://cognition.com/blog/dont-build-multi-agents>
 - Anthropic. "Run parallel sessions with worktrees," Claude Code documentation, read 2026-10-10. <https://code.claude.com/docs/en/worktrees>
 
