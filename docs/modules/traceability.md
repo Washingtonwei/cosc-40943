@@ -28,9 +28,11 @@ By the end of this module, a student can:
 
 **Why it matters more with AI.** Traceability is the antidote to the specific way AI-generated code rots. A human who writes code carries the "why" in their head; that tacit memory is what lets them maintain it later. An agent doesn't carry that memory across sessions, and it generates plausible code faster than any human, so unmapped code accumulates faster than on any human team. The traceability matrix is that lost memory, externalized into a durable artifact. So traceability isn't just as important for vibe-coded projects, it's arguably more important than it ever was for hand-written code, precisely because AI removed the natural friction that used to cap how fast un-understood code piled up. In ISO-25010 terms it buys you analysability (locate what a change affects) and testability (every requirement has a verifying test), the two maintainability sub-characteristics vibe coding destroys first.
 
-**Why we can finally afford it.** Traceability is not a new idea. The literature always prescribed it; real teams always skipped it or let it rot. The reason was never doubt about its value: maintaining the matrix was tedious, error-prone, unrewarding labor, and writing code was more fun. An agent works tirelessly with text and does not lose patience, so the old objection "a stale matrix is worse than none" flips from a reason to skip traceability into a reason to *delegate its upkeep*. Once the human cost of a discarded practice collapses, it becomes worth reinstating.
+**The evidence.** For years the benefit was taken on faith, and practitioners doubted it. Then it was measured. In a controlled experiment, 71 developers doing real maintenance tasks on unfamiliar systems were about 24% faster with traceability and produced about 50% more correct solutions (Mäder and Egyed 2015). Across 24 open-source projects, components with more complete traceability had lower defect rates (Rempel and Mäder 2017).
 
-**The honesty rule.** Cheap to maintain is not the same as safe to trust. An agent can produce plausible but wrong links faster than any human, so *unverified* traceability rots faster than the hand-drawn kind ever did. What makes it safe is a three-way split: the agent does the upkeep; **deterministic tooling** does the checking (do the IDs resolve? does every requirement have a verifying test?); a human keeps the *meaning* (what should trace to what; is this untraced code dead or a missing requirement). Letting the agent judge its own links brings the drift back as confident, false assurance.
+**Why we can finally afford it.** Traceability is not a new idea. The literature always prescribed it; in practice it was done ad hoc and after the fact, or not at all (Cleland-Huang et al. 2014). Maintaining the matrix was tedious, error-prone, unrewarding labor, and writing code was more fun. In six open-source projects, only about 60% of commits even named the issue they worked on (Rath et al. 2018). The research community's answer was *ubiquitous* traceability: links produced as a by-product of the work, not as a separate chore. An agent works tirelessly with text and does not lose patience, so the old objection "a stale matrix is worse than none" flips from a reason to skip traceability into a reason to *delegate its upkeep*. Once the human cost of a discarded practice collapses, it becomes worth reinstating.
+
+**The honesty rule.** Cheap to maintain is not the same as safe to trust. Language models now recover trace links better than the older retrieval tools, and their authors still say the approach is not ready for practice (Fuchß et al. 2025): some share of the links are wrong, and nothing in a wrong link looks wrong. An agent can produce plausible but wrong links faster than any human, so *unverified* traceability rots faster than the hand-drawn kind ever did. What makes it safe is a three-way split: the agent does the upkeep; **deterministic tooling** does the checking (do the IDs resolve? does every requirement have a verifying test?); a human keeps the *meaning* (what should trace to what; is this untraced code dead or a missing requirement). Letting the agent judge its own links brings the drift back as confident, false assurance.
 
 ## 4. Core concepts
 
@@ -146,7 +148,7 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
-| **Classic:** the matrix goes stale because rows are updated "later" | A reviewer who asks where the row changed | The row changes in the same pull request as the code; Build and Verify are checked at every use-case close |
+| **Classic:** the matrix goes stale because rows are updated "later", and commits stop naming what they work on (about 40% did not, in Rath et al. 2018) | A reviewer who asks where the row changed | The row changes in the same pull request as the code; Build and Verify are checked at every use-case close |
 | **AI-introduced:** asked to fill the matrix, the agent populates every cell, and some links are invented | Opening the document at the other end of a link you did not write | Blank cells stay blank; spot-check one row both ways per close; never let the agent's report be the only check |
 | **AI-introduced:** a change request goes straight to the agent, which edits beyond what the requirement reaches and answers the open questions on its own | Writing the impact list before the agent starts, and taking its questions to the client | The issue carries the list; the review compares the diff with it |
 
@@ -158,7 +160,7 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 
 - **Spine:** every use case and non-use-case FR has a row in table 3, with Build and Verify matching the code. Update the row in the pull request that changes its state.
 - **Release plan:** by Checkpoint 2, every row has a Release value, revised by pull request at every use-case close. At Checkpoint 3, one forecast line under the calibration table.
-- **Impact list:** the next time your client changes a requirement or a rule, the issue for the change carries its impact list (the IDs and files from the matrix, what a search added, and the questions you took to the client), and the pull request's description says which files outside the list it touched and why.
+- **Impact list:** the next time your client changes a requirement or a rule, the issue for the change carries its impact list (the IDs and files from the matrix, what a search added, and the questions you took to the client), and the pull request's description says which files outside the list it touched and why. Checked at [Checkpoint 2](../project.md#checkpoint-2-checklist).
 
 **Individual assignment:** in *Add a use case* (assignment 3, due Fri Oct 30), the agent's use case gets its row in table 3, and its Verify cell names the tests that make it true.
 
@@ -180,6 +182,11 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 - ISO/IEC/IEEE 29148:2018. *Systems and software engineering: Life cycle processes, Requirements engineering.* The bidirectional traceability requirement.
 - Beck, K., and Fowler, M. *Planning Extreme Programming*. Addison-Wesley, 2000. Release planning with stories and velocity.
 - Cohn, M. *Agile Estimating and Planning*. Prentice Hall, 2005.
+- Mäder, P., and Egyed, A. "Do Developers Benefit from Requirements Traceability When Evolving and Maintaining a Software System?" *Empirical Software Engineering* 20(2), 2015. The controlled experiment: faster, and more often right.
+- Rempel, P., and Mäder, P. "Preventing Defects: The Impact of Requirements Traceability Completeness on Software Quality." *IEEE Transactions on Software Engineering* 43(8), 2017.
+- Cleland-Huang, J., Gotel, O., Huffman Hayes, J., Mäder, P., and Zisman, A. "Software Traceability: Trends and Future Directions." Future of Software Engineering (FOSE), ICSE 2014. The case for traceability as a by-product of the work.
+- Rath, M., Rendall, J., Guo, J. L. C., Cleland-Huang, J., and Mäder, P. "Traceability in the Wild: Automatically Augmenting Incomplete Trace Links." ICSE 2018.
+- Fuchß, D., et al. "LiSSA: Toward Generic Traceability Link Recovery through Retrieval-Augmented Generation." ICSE 2025. Language models recovering trace links, and how far that is from practice.
 
 ## 10. Self-check
 
@@ -198,15 +205,3 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 - [Code Review](code-review.md): reviewing a change against its contract, which for a changed requirement includes its impact list.
 - [SE and What AI Changes](se-and-ai.md): why the economics of rigor inverted, which is the argument this module rests on.
 - [The Method](../method.md#the-traceability-model): the full traceability model this module teaches a subset of.
-
-<!--
-## Drafting notes (raw: delete before `stable`)
-
-### Facts to check before `stable`
-
-- Project Pulse facts checked against `main` at `8d8cbd3` on 2026-10-19: the `UC-EVA-submit-evaluation`, `UC-WAR-student-war-report`, `UC-NOT-remind-non-submitters`, and `FR-NOT-weekly-reminder` rows; the business-rule index row for `BR-evaluation-submission-window` (two citing use cases) and `BR-role-based-access` (41); `WeeklyReminderScheduler.sendWeeklyReminders` emailing every student; `EvaluationService.previousWeek()` and `requireOpenSubmissionWindow`; `getPreviousWeek` imported from `@/utils/week` in `SubmitTeamsEvaluations.vue`; `design/not.md`'s "always reminded for the week it is currently due for, the previous week" (in `use-cases.md` too); OI-24's dates (decided 2026-06-20, code fixed 2026-09-10 in `41d306c`).
-- `FR-NOT-weekly-reminder` is `v1.6.0`, built in week 8. When the scheduled reminder is fixed, 4.5's first example disappears; find another before `stable`.
-- The two-week change in 4.6 is hypothetical, and is framed as "Suppose".
-- Beck and Fowler 2000: confirm title and publisher. Check the other readings' details against the primary sources.
-- The impact-list item in Hands-on is not yet on the Checkpoint 2 list in `project.md`.
--->

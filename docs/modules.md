@@ -38,5 +38,5 @@ Modules go up as they are written, in the order the course teaches them, so this
 [**Reliability**](modules/reliability.md) · [slides](slides/reliability.html)
 : Turn an availability or performance requirement into an objective you can measure, make every call across a network fail the way your specification says, and learn from a failure without blaming whoever was at the keyboard. Fault, error, and failure; indicators, objectives, and error budgets; timeouts, retries, isolation, and degradation; and the blameless postmortem.
 
-[**Requirements Traceability**](modules/traceability.md)
-: Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code; and the release plan, every use case placed in the release it ships in. Still being written.
+[**Requirements Traceability**](modules/traceability.md) · [slides](slides/traceability.html)
+: Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Before a requirement changes, list what the change will touch. Then place every use case in the release it ships in.
