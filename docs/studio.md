@@ -284,14 +284,23 @@ Run each one in a fresh session (`/clear` first), so the agent reads your docume
 
 **Make them yours.** They are your team's files once they are in your repository, so change them by pull request like any other file the agent reads: point them at the paths your project actually uses, add your stack's test commands and conventions, add a check your reviews keep catching, or drop a step that does not fit your project. Keep the stops for a person (the accepted shape, the trunk read, a teammate's merge), because those are where your judgment goes in. Say in the pull request what you changed and why.
 
-**Before Wednesday:** at least two members bring a laptop with a working agent session in your team repository. Pull `course-templates` (`git pull` in your clone of it, or clone it as in [where your requirements documents live](#where-your-requirements-documents-live)). Know which use case is your slice, and whether its area's design-of-record is merged on `main`.
+**Before Wednesday:** at least two members bring a laptop with a working agent session in your team repository. Pull `course-templates` (`git pull` in your clone of it, or clone it as in [where your requirements documents live](#where-your-requirements-documents-live)). Know which use case is your slice, and which of these your team is in, because it decides your Wednesday:
+
+| Your slice today | Wednesday | Friday |
+|---|---|---|
+| No design yet | Run `/design` | `/implement` |
+| Design pull request open, not merged | A teammate reviews and merges it in the first half hour; then the questions test if it was skipped | `/implement` |
+| Design merged, not built | Questions test on it, fix what it finds; then the Checkpoint 2 items that are not code | `/implement` |
+| Built and merged already | The Checkpoint 2 items, then tag `v0.1.0` | `/design` your next use case by its Release order |
+
+**Your TAs run both hours.** Ask your TA in the room, and post anything the room cannot settle in your team's Slack channel.
 
 #### Wednesday Oct 28: install the commands, then the design
 
 | When | What your team does |
 |---|---|
 | 0-10 | **Install the commands by pull request.** One member copies them in, opens the pull request, and a teammate merges it. |
-| 10-45 | **No design merged yet:** the slice's owner and a partner run `/design UC-<AREA>-<slug>`. Read the draft, answer every assumption it lists (a question only your client can answer goes into `OPEN-ISSUES.md`), accept the shape, then run the questions test in a fresh session. **Design already merged:** run the questions test on it in a fresh session and fix what it finds by pull request. Everyone else finishes the build-context issues from [week 8](#week-8-your-first-build-context-in-your-team-meeting) or the Checkpoint 2 items that are not code (the calibration table, the coarse estimates, the release plan). |
+| 10-45 | **No design merged yet:** the slice's owner and a partner run `/design UC-<AREA>-<slug>`. Read the draft, answer every assumption it lists (a question only your client can answer goes into `OPEN-ISSUES.md`), accept the shape, then run the questions test in a fresh session (its prompt is the last section of the [template](https://github.com/tcu-cosc-40943/course-templates/blob/main/design/design-of-record.md)). **Design already merged:** run the questions test on it in a fresh session and fix what it finds by pull request. Everyone else finishes the build-context issues from [week 8](#week-8-your-first-build-context-in-your-team-meeting) or the Checkpoint 2 items that are not code (the calibration table, the coarse estimates, the release plan). |
 | 45-50 | **Open the design's pull request** and name the teammate who reviews it. It must merge before anyone runs `/implement`, so aim for Thursday. |
 
 ```bash
@@ -309,9 +318,11 @@ git push -u origin add-workflow-commands
 | When | What your team does |
 |---|---|
 | 0-5 | Confirm the slice's design is merged on `main`. If not, merge it first; nobody builds from an unmerged design. |
-| 5-35 | **The owner runs `/clear`, then `/implement UC-<AREA>-<slug>`.** It will stop to propose a refactor if one is needed, and it stops after the trunk commit: read that commit and say what it changed and why before letting it go on. The rest of the team runs the fresh-context review on whatever the agent has pushed and starts the calibration table rows from your activity reports. |
-| 35-50 | **A teammate who did not build it reviews the pull request** against the use case and the design's test list, marking each row covered or not ([how](modules/code-review.md)). Apply Monday's testing lecture to each test the agent wrote: what is its oracle, and would it fail if the code were wrong ([how](modules/testing.md)). |
+| 5-35 | **The owner runs `/clear`, then `/implement UC-<AREA>-<slug>`.** It will stop to propose a refactor if one is needed, and it stops after the trunk commit: read that commit and say what it changed and why before letting it go on. The build will likely run past the hour; that is expected, and the owner finishes it after class. The rest of the team starts the calibration table rows from your activity reports and the Checkpoint 2 items that are not code. |
+| 35-50 | **When the pull request is open,** run a fresh-context review first: a new session (`/clear`), then `/code-review` in Claude Code, or on Copilot CLI ask it to review the pull request against the use case and the design's test list. Then **a teammate who did not build it reviews the pull request** against the use case and the design's test list, marking each row covered or not ([how](modules/code-review.md)). Apply Monday's testing lecture to each test the agent wrote: what is its oracle, and would it fail if the code were wrong ([how](modules/testing.md)). Not open by minute 35: do this in your next team meeting, before your Checkpoint 2 slot. |
 
-**What you produce:** the commands on `main`, the slice's design merged, and the slice's implementation pull request open or merged by the end of Friday. Your TA is in the room both days to unblock you; this is not a checkpoint, and nothing is graded in the room.
+**What you produce:** the commands on `main`, the slice's design merged, and the slice's implementation pull request open or merged by the end of Friday. Your TA is in the room both days to unblock you and takes attendance, which counts as it does every studio; this is not a checkpoint, and nothing else is graded in the room.
+
+**When the agent gets in the way.** Out of usage: switch to a teammate's laptop and session; the documents are in the repository, so nothing is lost. A command not found: check that `.claude/commands/` is on the branch you are on and restart the session. The agent wants to skip a stop or approve its own work: say no, it is following your files, and the stops are in them.
 
 **Before your Checkpoint 2 slot:** the slice merged, `v0.1.0` tagged with release notes, and every item on the [checklist](project.md#checkpoint-2-checklist) ready to show. Book the slot with your TA in your team's Slack channel by the end of Friday's studio.
