@@ -259,24 +259,32 @@ Ask the question on the slide. Let them work it out: both show zero point zero.
 No business rule covers the empty case. Trace backward from that zero and you arrive nowhere. It is not a violation, because there is nothing to violate. Someone decided, in code, that "not evaluated" and "rated zero" are the same number. No document records it, and an instructor reading the weekly report cannot tell the two students apart.
 :::
 
-## The shape that scales badly {.center}
+## The drift no tool can find {.center}
+
+::: cols
+**The reminder**
+
+The rule and the code disagreed. A test written from the rule fails; a reviewer reading both sees it.
+|||
+**The 0.0 average**
+
+No rule exists. Nothing can fail, because only the code ever spoke.
+:::
 
 ::: ai
 Hand an agent an under-specified use case and it always picks something, in seconds, in code that looks exactly like a decision you made.
 :::
 
-::: key
-The first two shapes are inconsistencies a machine can find. The third leaves nothing to compare.
-:::
-
 ::: note
-Why does the third shape get its own slide? Because it is the one that grows with an agent.
+Put the last two slides side by side.
 
-The first two are inconsistencies. Two artifacts exist, and they disagree, so a checker can find them. The third produces no disagreement at all. Only one artifact ever spoke: the code.
+The reminder was the first shape: specification right, code behind. Two artifacts existed, and they disagreed. Disagreement is findable. Write a test from the rule and it fails; put the rule next to the code and a reviewer sees it. A stale document, the second shape, is the same: two things that disagree.
 
-And an agent handed a gap never says "I don't know". It picks something, in seconds, and the code looks exactly like code implementing a decision you made. That is how an implementation quietly becomes the specification.
+The 0.0 average is the third shape, and it is different in kind. There is no rule to disagree with. No test fails, no checker complains, no reviewer comparing documents sees anything wrong. Only one artifact ever spoke: the code.
 
-So you ask the backward question out loud. You do not assume the forward map covers you.
+Now add the agent. An agent handed a gap never says "I don't know". It picks something, in seconds, and the code looks exactly like code implementing a decision you made. Every gap in a use case becomes one of these. That is how an implementation quietly becomes the specification.
+
+So ask the backward question out loud: why does this code do that, and who decided? No tool will ask it for you.
 :::
 
 ## Keep a register
