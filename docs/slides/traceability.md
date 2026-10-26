@@ -404,7 +404,7 @@ Submit evaluation is built. Its row hands you the Vue page, the service method, 
 Remind non-submitters is built now. It merged on October 25, and the reminder is always for the previous week, which the server checks again at send time. Two weeks earlier its row read Designed, and this same change would have been a few minutes in a design document. Now it is code and tests. Catch a change at design and it is cheap.
 :::
 
-## Step 2: search for the ID
+## Step 2: search the docs for `BR-evaluation-submission-window`
 
 ::: steps
 - `BR-active-weeks`: "each active week is evaluated during the *following* calendar week".
@@ -417,7 +417,7 @@ The index records which requirements cite a rule, not which rules lean on each o
 :::
 
 ::: note
-Step two. The index records which requirements cite a rule. It does not record which rules lean on each other. So search the docs folder for the ID.
+Step two. Take the rule's ID, BR-evaluation-submission-window, and search the docs folder for it, a plain text search. The index records which requirements cite a rule. It does not record which rules lean on each other, and the search finds those.
 
 That adds two more rules. Active weeks says each week is evaluated during the following calendar week. One week, baked into another rule. And editable-until-close: an evaluation stays editable while its window is open, so a longer window means a longer edit period too.
 
@@ -533,7 +533,7 @@ Then compare with the list we just built. If you found something we did not, tel
 ::: steps
 - Keep the spine; Build and Verify in two cells.
 - Forward finds what is missing; backward finds what nobody asked for.
-- Classify a drift before repairing it, and register what you have not repaired.
+- Classify a drift before repairing it.
 - Before a change: the impact list is the agent's scope, the review's checklist, and the client's questions.
 - **Checkpoint 2:** a change since your slice carries its impact list.
 :::
@@ -541,7 +541,7 @@ Then compare with the list we just built. If you found something we did not, tel
 ::: note
 Five things to leave with.
 
-Keep the spine, with built and tested in two cells. Forward finds what is missing; backward finds what nobody asked for. Classify a drift before you repair it, and write down the ones you have not repaired yet.
+Keep the spine, with built and tested in two cells. Forward finds what is missing; backward finds what nobody asked for. Classify a drift before you repair it.
 
 Before any requirement changes, make the impact list. It scopes the agent, it checks the review, and it surfaces the questions for your client.
 
