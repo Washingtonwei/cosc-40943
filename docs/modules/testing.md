@@ -57,43 +57,40 @@ An **oracle** is whatever decides that an execution was correct. A test is input
 
 Where the oracle comes from decides what the test can catch. A test whose oracle comes from the specification can fail. A test whose oracle comes from the implementation agrees with the implementation, which is what CrowdStrike's suite did. An agent asked to "write tests for this method" reads the method and writes the second kind unless you give it the first. Week 12 (dynamic analysis) builds a ladder of stronger oracles on this word.
 
-### 4.3 Choosing inputs: a sort
+### 4.3 Choosing inputs: partitions and boundaries
 
 You cannot try every input (CMU 17-313 estimates 72 billion cases for a four-parameter fare calculator), so you choose. Two heuristics do most of the work:
 
 - **Equivalence partitioning:** group inputs the specification treats alike and take one from each group.
 - **Boundary values:** bugs live at the edges, so test the minimum, maximum, and just past each.
 
-For a method that sorts an array of integers, the partitions and boundaries give this list:
+The classic example is a grading scale. `letterGrade(score)` gives an A for 90–100, B for 80–89, C for 70–79, D for 60–69, and F for 0–59, and rejects anything else:
 
-| Input | Why |
-|---|---|
-| `[]` | Empty: the boundary below one |
-| `[7]` | One element |
-| `[1, 2, 3]` | Already sorted |
-| `[3, 2, 1]` | Reversed |
-| `[2, 1, 2, 1]` | Duplicates |
-| `[0, -5, 3]` | Negatives and zero |
-| `[Integer.MAX_VALUE, Integer.MIN_VALUE]` | Extremes, where a comparison by subtraction overflows |
+| Partition | One input from inside | Both sides of its edges |
+|---|---|---|
+| Invalid, below | `-5` | `-1` |
+| F | `30` | `0`, `59` |
+| D | `65` | `60`, `69` |
+| C | `75` | `70`, `79` |
+| B | `85` | `80`, `89` |
+| A | `95` | `90`, `100` |
+| Invalid, above | `120` | `101` |
 
-In JUnit 5 the list becomes one parameterized test. The oracle is a property, not a hand-typed answer: the output is in order, and it holds the same elements as the input.
+Seven partitions, one test each, then both sides of every edge, which is where a `>` written for `>=` turns a 90 into a B. The invalid partitions are the ones a happy-path list forgets, so check that an agent's list has them. In JUnit 5 the edges become one parameterized test, and the invalid side its own test, because the right answer there is an exception:
 
 ```java
 @ParameterizedTest
-@MethodSource("arrays")
-void sortReturnsTheSameElementsInOrder(int[] input) {
-    int[] expected = input.clone();
-    Arrays.sort(expected);                 // the reference oracle
-
-    int[] actual = Sorter.sort(input.clone());
-
-    assertThat(actual).containsExactly(expected);
+@CsvSource({ "0, F", "59, F", "60, D", "69, D", "70, C", "79, C",
+             "80, B", "89, B", "90, A", "100, A" })
+void letterGradeFollowsTheScale(int score, String grade) {
+    assertThat(Grades.letterGrade(score)).isEqualTo(grade);
 }
 
-static Stream<int[]> arrays() {
-    return Stream.of(new int[]{}, new int[]{7}, new int[]{1, 2, 3}, new int[]{3, 2, 1},
-            new int[]{2, 1, 2, 1}, new int[]{0, -5, 3},
-            new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE});
+@ParameterizedTest
+@ValueSource(ints = { -1, 101 })
+void letterGradeRejectsScoresOutsideZeroToHundred(int score) {
+    assertThat(catchThrowable(() -> Grades.letterGrade(score)))
+            .isInstanceOf(IllegalArgumentException.class);
 }
 ```
 

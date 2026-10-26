@@ -71,43 +71,61 @@ From the specification: it can fail. From the code: it agrees with the code, bug
 
 ## Choosing inputs: partitions and boundaries
 
-```java
-@ParameterizedTest
-@CsvSource({
-    "2026-10-01, 2026-W40",   // inside the year
-    "2025-12-29, 2026-W01",   // a December Monday in next year's week 1
-    "2021-01-03, 2020-W53",   // a January Sunday in last year's week 53
-    "2026-12-31, 2026-W53"    // a year with 53 weeks
-})
-void weekKeyUsesTheIsoWeekYear(LocalDate date, String key) {
-    assertThat(WeekKeys.of(date)).isEqualTo(key);
-}
-```
+`letterGrade(score)`: 90–100 A · 80–89 B · 70–79 C · 60–69 D · 0–59 F · anything else invalid
+
+::: cols
+**Partitions: one input from each group**
+
+`-5` · `30` · `65` · `75` · `85` · `95` · `120`
+|||
+**Boundaries: both sides of every edge**
+
+`-1, 0` · `59, 60` · `69, 70` · `79, 80` · `89, 90` · `100, 101`
+:::
 
 ::: joke
-"Every week belongs to the year it's in." Said every programmer, until December 29.
+A QA engineer orders a beer. Orders 0 beers. Orders 99999999999 beers. Orders a lizard. Orders -1 beers. The first real customer asks where the bathroom is. The bar bursts into flames.
 :::
 
 ::: note
-**Say:** You can't try every input, so you choose. Two heuristics. Partitions: group the inputs the specification treats alike and take one from each. Boundaries: bugs live at the edges, so test them.
+**Say:** You can't try every input, so you choose, and two heuristics do most of the work.
 
-Project Pulse files every report under an ISO week key, like 2026-W40. At New Year, a week's year is not always the calendar year of its days. December 29, 2025 starts 2026's week one. January 3, 2021 ends 2020's week fifty-three. Four partitions, four rows, one parameterized test. WeekKeys.of is the real server method.
+Partitions: a partition is a group of inputs the rule treats the same way, so one input stands for the whole group. The grading scale has seven: five letters and two kinds of invalid, below zero and above a hundred. One test each.
 
-The browser had its own copy of this rule, with the calendar year, and no test. On January 5 the report pages would have asked for the wrong year. Code review caught it, not a test.
+Boundaries: bugs live at the edges. Somebody writes greater-than where they meant greater-or-equal, and 90 becomes a B. So test both sides of every edge: 89 and 90, 59 and 60, and the outer walls, minus one and zero, a hundred and a hundred and one.
+
+Ask an agent for these tests and it will write them in seconds. Check one thing: did it find the invalid groups? Those are the ones a happy-path list forgets.
+
+*[Read the joke.]* Brenan Keller, 2018. The engineer tested every partition of the input. Nobody tested the use case. You need both.
 :::
 
 ## The JUnit 5 you need
 
-| Annotation or call | Use |
-|---|---|
-| `@Test` | One test method |
-| `@ParameterizedTest` with `@CsvSource` or `@MethodSource` | One test body over many inputs |
-| `@BeforeEach` | Fresh setup before every test |
-| `assertThat(x).isEqualTo(y)` | A readable assertion (AssertJ) |
-| `catchThrowable(() -> ...)` | Capture an exception, then assert on it |
+```java
+@ParameterizedTest
+@CsvSource({ "0, F", "59, F", "60, D", "69, D", "70, C", "79, C",
+             "80, B", "89, B", "90, A", "100, A" })
+void letterGradeFollowsTheScale(int score, String grade) {
+    assertThat(Grades.letterGrade(score)).isEqualTo(grade);
+}
+
+@Test
+void letterGradeRejectsScoresOutsideZeroToHundred() {
+    assertThat(catchThrowable(() -> Grades.letterGrade(101)))
+            .isInstanceOf(IllegalArgumentException.class);
+}
+```
+
+::: steps
+- `@ParameterizedTest`: one test body, every boundary a row.
+- `@Test`, and `catchThrowable` when the right answer is an exception.
+- `@BeforeEach` for fresh setup, so no test depends on another.
+:::
 
 ::: note
-**Say:** This is the whole toolkit for most of your tests. Project Pulse's backend uses JUnit 5 with AssertJ. @Test for one test, @ParameterizedTest for the table you just saw, @BeforeEach so no test depends on another, assertThat for the check, catchThrowable when the right answer is an exception. Full table in module 4.4.
+**Say:** Here is the last slide's list as code. The edges become rows of one parameterized test. The invalid side gets its own test, because the right answer there is an exception, and catchThrowable captures it so you can assert on it. A complete version would take minus one too, a second row of the same kind.
+
+Project Pulse's backend uses exactly this: JUnit 5 with AssertJ's assertThat. @BeforeEach gives every test fresh setup. That is the whole toolkit for most of your tests; the full table is in module 4.4.
 :::
 
 ## Given, when, then
