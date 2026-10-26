@@ -12,7 +12,7 @@ Week 9 · Forward, backward, and what a change will touch
 ::: note
 Good morning, and welcome back from the midterm. Today is lighter on your nerves and heavier on your repository.
 
-Here is the week. Today: the spine of your traceability matrix, how to read it in both directions, the three ways your specification and your code drift apart, and the release plan. Friday: what a change will touch before you make it, and then testing.
+Here is the week. Today: the spine of your traceability matrix, how to read it in both directions, the three ways your specification and your code drift apart, and the release plan. Friday: what a change will touch before you make it.
 
 The subtitle is the arc. Forward, backward, and what a change will touch.
 :::
@@ -35,55 +35,31 @@ When a person writes code, the why lives in their head, at least for a while. An
 Read the joke. That is not exaggeration. That is your team in week 14 unless you write the why down somewhere that lasts. That somewhere is your traceability matrix.
 :::
 
-## Does it pay? It was measured
+## It paid, and teams skipped it anyway
 
 ::: cols
-**Without traceability**
+**Measured**
 
-About 50% of maintenance tasks solved correctly.
+With traceability: about 24% faster, and about 50% more correct solutions.
 |||
-**With traceability**
+**Skipped**
 
-About 24% faster, and about 50% more correct solutions.
-:::
-
-Mäder and Egyed, *Empirical Software Engineering*, 2015: 71 developers, real maintenance tasks on unfamiliar systems.
-{: .small }
-
-::: note
-For years, traceability was something textbooks prescribed and practitioners doubted. Then Patrick Mäder and Alexander Egyed measured it. Seventy-one developers did real maintenance tasks on systems they had never seen. Half the tasks with traceability, half without.
-
-With traceability, they were about a quarter faster. And they were right about half again as often.
-
-A second study, by Rempel and Mäder, looked at twenty-four open-source projects. Components with more complete traceability had fewer defects.
-
-So the question is not whether it pays. The question is why almost nobody did it.
-:::
-
-## Why teams skipped it, and why you won't
-
-::: cols
-**Then**
-
-Tedious, error-prone upkeep. In six open-source projects, about 40% of commits did not even name their issue.
-|||
-**Now**
-
-The upkeep is text work, and an agent does text work without getting bored.
+In six open-source projects, about 40% of commits did not even name their issue.
 :::
 
 ::: key
 When the cost of a discarded practice collapses, bring it back.
 :::
 
+Mäder and Egyed, *Empirical Software Engineering*, 2015; Rath et al., ICSE 2018.
+{: .small }
+
 ::: note
-Why did teams skip it? Not because it was useless. Because keeping the matrix up to date was miserable. Tedious, error-prone, and nobody ever got promoted for it. Writing code was more fun.
+For years, traceability was something textbooks prescribed and practitioners doubted. Then Patrick Mäder and Alexander Egyed measured it. Seventy-one developers did real maintenance tasks on systems they had never seen, half with traceability and half without. With it, they were about a quarter faster, and they were right about half again as often. A second study, by Rempel and Mäder, found that components with more complete traceability had fewer defects.
 
-Rath and colleagues, ICSE 2018, looked at six open-source projects. About forty percent of commits did not even say which issue they worked on. If people will not type an issue number, they will not maintain a matrix.
+So why did almost nobody do it? Because keeping the matrix up to date was miserable: tedious, error-prone, and nobody ever got promoted for it. Rath and colleagues looked at six open-source projects, and about forty percent of commits did not even say which issue they worked on. If people will not type an issue number, they will not maintain a matrix.
 
-The research community has a name for the dream: ubiquitous traceability. Links that appear as a by-product of the work, not as a separate chore. An agent gets us most of the way there. Updating a row is text work, and the agent does it in the same pull request as the code, every time, without complaint.
-
-So the old objection, "a stale matrix is worse than none", flips. It used to be a reason to skip traceability. Now it is a reason to delegate the upkeep.
+Now the upkeep is text work, and an agent does text work in the same pull request as the code, every time, without getting bored. So the old objection, "a stale matrix is worse than none", flips. It used to be a reason to skip traceability. Now it is a reason to delegate the upkeep.
 :::
 
 ## The honesty rule
@@ -116,26 +92,12 @@ So the work splits three ways. The agent does the upkeep. A deterministic tool d
 If the agent writes the links and also tells you the links are fine, you have the drift back, now with a confident report on top.
 :::
 
-## The spine
+## The spine, with two state columns
 
 ```mermaid
 flowchart LR
   UC["Use case"] --> D["Design"] --> C["Code"] --> T["Test"]
 ```
-
-::: trace Trace: use case to design to code to test
-One row per use case in table 3 of `docs/traceability.md`, added the day the use case is written.
-:::
-
-::: note
-Here is the part you keep. Four links: use case, design, code, test. One row per use case in table three of your traceability file. Plus one row per functional requirement that no single use case owns, like a reminder that runs on a timer.
-
-The row goes in the day the use case is written. Not the day it is built. A row that exists before the code is how you see work that is promised and not done.
-
-You already have tables one and two from week four: feature to use case area, and business rule to what enforces it. This is the third table, and the one that lives longest.
-:::
-
-## Two columns, never one "done"
 
 ::: cols
 **Build**
@@ -152,13 +114,13 @@ Built and tested are two facts. Keep them in two cells.
 :::
 
 ::: note
-Each row carries its state in two columns, on purpose.
+Here is the part you keep. Four links: use case, design, code, test. One row per use case in table three of your traceability file, plus one row per functional requirement that no single use case owns, like a reminder that runs on a timer. You already have tables one and two from week four; this is the third, and the one that lives longest.
 
-Build says how far the code got. Designed means the design pull request merged. Built means the code is in.
+The row goes in the day the use case is written, not the day it is built. A row that exists before the code is how you see work that is promised and not done.
 
-Verify says whether tests prove it. Verified, Partial, or None. Partial means the Tests cell names the gap.
+Each row carries its state in two columns, on purpose. Build says how far the code got: Designed means the design pull request merged, Built means the code is in. Verify says whether tests prove it: Verified, Partial, or None, and Partial means the Tests cell names the gap.
 
-Why two columns and not one "done"? Because "done" is where built and tested blur together, and the untested half hides inside it. Two cells, two facts.
+Why not one "done"? Because "done" is where built and tested blur together, and the untested half hides inside it.
 :::
 
 ## Forward and backward
@@ -173,6 +135,10 @@ Start at `UC-EVA-submit-evaluation`. Its row names `SubmitTeamsEvaluations.vue`,
 Start at `WeeklyReminderScheduler`. It traces to `FR-NOT-weekly-reminder`, a row of its own: no use case owns a timer.
 :::
 
+::: ask
+`ExportService.java` appears in no row of your matrix. What could it be, and who decides?
+:::
+
 ::: note
 The same row answers two questions, starting from opposite ends.
 
@@ -181,20 +147,8 @@ Forward: start at a requirement and ask, is it built and tested? Project Pulse's
 Backward: start at a piece of code and ask, who asked for this? The weekly reminder scheduler traces to a functional requirement, not a use case, because no actor starts a job that runs on a timer.
 
 Forward finds work that is missing. Backward finds work nobody asked for. The ISO requirements standard, 29148, asks for both.
-:::
 
-## Hands up {.center}
-
-::: ask
-`ExportService.java` appears in no row of your matrix. What could it be, and who decides?
-:::
-
-::: note
-Put it to the room. Take two or three answers.
-
-What you are fishing for: it is either dead code, or it is a decision nobody wrote down. Maybe the client asked for an export in a meeting and nobody added a use case.
-
-And who decides which? Not the agent. The agent will happily tell you it is "used by the reporting feature". A human decides, and if it is a missing requirement, it goes to the client.
+Now put the question at the bottom to the room, and take two or three answers. You are fishing for two readings: it is dead code, or it is a decision nobody wrote down, maybe an export the client asked for in a meeting that never became a use case. And who decides which? Not the agent; it will happily tell you it is "used by the reporting feature". A human decides, and if it is a missing requirement, it goes to the client.
 :::
 
 ## No test, not traced
@@ -215,30 +169,6 @@ A row is Verified only when you can name the test that exercises the main flow a
 Read the joke. A row that says Verified because a test file exists is not verified. It is decorated.
 
 The check is mechanical, so an agent can do the opening and the reporting. But the agent that wrote the row cannot be the only one who checks it. Spot-check one row yourself, both ends, every time a use case closes.
-:::
-
-## The rest of the graph
-
-::: steps
-- Quality attribute → quality scenario `QS-<slug>` → test, a second axis.
-- Business objective → success metric: was it achieved, not just built?
-- The business-rule index, generated, never hand-edited.
-:::
-
-::: key
-Recognise these. You keep the spine and your two week 4 tables.
-:::
-
-::: note
-Project Pulse's matrix carries more than the spine, and you will meet all of it in industry.
-
-A second axis for quality attributes, because a response-time requirement is never verified through a use case. It goes quality attribute, quality scenario, test.
-
-Each business objective traces to a success metric. Not "did we build it", but "did it work".
-
-And a business-rule index that lists every requirement citing each rule. It is generated from the use cases, never edited by hand. We will use it on Friday.
-
-You recognise these. You maintain the spine and your two week four tables. That is plenty.
 :::
 
 ## Three ways they drift apart
@@ -325,32 +255,6 @@ And an agent handed a gap never says "I don't know". It picks something, in seco
 So you ask the backward question out loud. You do not assume the forward map covers you.
 :::
 
-## Neither artifact is true by default
-
-::: cols
-**"Docs lie; read the code."**
-
-Good advice for an unfamiliar codebase.
-|||
-**"The spec is the contract."**
-
-Good advice for this course.
-:::
-
-::: joke
-"The code is the documentation," said the developer who left in May.
-:::
-
-::: note
-You will hear the opposite advice, and it is good advice. Guides to reading an unfamiliar codebase say: treat the docs as a starting point, not the truth, because they are often out of date.
-
-That is not the opposite of what we teach. It is the other half. A contract can be behind the system. A system can be wrong about the contract. Neither is true by default.
-
-Read the joke. The code tells you what it does. It never tells you what was intended, and the person who knew has left.
-
-Which of the two is wrong gets decided item by item. Deciding it, and writing the decision down, is what a register is for.
-:::
-
 ## Keep a register
 
 ::: steps
@@ -364,6 +268,8 @@ A divergence you decided not to fix yet is traced. One nobody noticed is not.
 :::
 
 ::: note
+You will hear the opposite advice: "docs lie, read the code." For an unfamiliar codebase it is good advice, and it is the other half of ours, not the opposite. A contract can be behind the system, and a system can be wrong about the contract. Neither is true by default, so which one is wrong gets decided item by item, and the decision gets written down. That is what a register is for.
+
 Project Pulse keeps its register in the open issues file, under "Doc to Code Gap Analysis". Each entry names the rule, the method that diverges, and which side will change.
 
 It is not a bug list. Each entry is a claim about which of the two artifacts is currently wrong, and several close by changing the document, not the code.
@@ -373,19 +279,7 @@ OI-24 shows the whole cycle. In June the client decided the submission window bi
 That is what honest looks like: not zero gaps, but every gap written down.
 :::
 
-## "What will I have in December?" {.center}
-
-::: key
-A release plan: every use case placed in the release it ships in.
-:::
-
-::: note
-Last topic for today. The estimate answers "when can I use this one?" Your client's next question is about the whole term: what will I have in December?
-
-Agile teams have always planned releases with stories and velocity. Beck and Fowler, Cohn. We keep the idea and change the units.
-:::
-
-## A column, not a document
+## "What will I have in December?"
 
 | UC | Build | Verify | **Release** |
 |---|---|---|---|
@@ -400,6 +294,8 @@ Agile teams have always planned releases with stories and velocity. Beck and Fow
 :::
 
 ::: note
+Last topic for today. The estimate answers "when can I use this one?" Your client's next question is about the whole term: what will I have in December? Agile teams have always planned releases with stories and velocity (Beck and Fowler, Cohn). We keep the idea and change the units: a release plan is every use case placed in the release it ships in.
+
 These rows are from Project Pulse's traceability matrix. The release plan is one more column on the table you already keep. Plan and progress share a row, so they cannot disagree.
 
 Your values: v0.1.0 is the proving slice, v0.2.0 is Checkpoint 3, v1.0.0 is the December MVP, then Spring or Out.
@@ -445,30 +341,18 @@ If it does not fit, take it to the client at the next meeting. Change the scope,
 ::: note
 So, for your team. Every pull request that changes a use case's state changes its row. Same pull request, not later. Later is how matrices die.
 
-By Checkpoint 2, Friday October thirtieth, every row has a Release value. At Checkpoint 3, one forecast line.
+By Checkpoint 2, in week 11, every row has a Release value. At Checkpoint 3, one forecast line.
 
 And in assignment three, the use case your agent builds gets its row, and its Verify cell names the tests that make it true.
 
 On Friday: what a change will touch, before you make it.
 :::
 
-## If this requirement changes, what else has to? {.center}
+## If this requirement changes, what else has to?
 
 ::: key
 Impact analysis: answer it before anyone edits code. The matrix turns it from a memory test into a lookup.
 :::
-
-::: note
-Friday. Good morning.
-
-On Wednesday, forward and backward asked about what exists. Every change request asks a third question: if this changes, what else has to?
-
-Answering that before anyone touches the code is called impact analysis. It is an old idea; Bohner and Arnold edited the classic collection on it in 1996. What is new is that your matrix makes it a lookup, and the agent does the legwork.
-
-Twenty minutes on this, and then testing.
-:::
-
-## The change
 
 ::: ask
 The client wants two weeks, not one, to finish a peer evaluation. What does that touch?
@@ -479,9 +363,13 @@ The client wants two weeks, not one, to finish a peer evaluation. What does that
 :::
 
 ::: note
-Suppose Project Pulse's client asks for this. Two weeks instead of one to finish a peer evaluation. It sounds like one number in one rule: the submission window.
+Friday. Good morning.
 
-Ask the room for a gut answer. How many files? Take a couple of numbers. Then we find out.
+On Wednesday, forward and backward asked about what exists. Every change request asks a third question: if this changes, what else has to? Answering that before anyone touches the code is called impact analysis. It is an old idea; Bohner and Arnold edited the classic collection on it in 1996. What is new is that your matrix makes it a lookup, and the agent does the legwork.
+
+Here is the change. Project Pulse's client asks for two weeks instead of one to finish a peer evaluation. It sounds like one number in one rule: the submission window.
+
+Ask the room for a gut answer. How many files? Write two numbers on the board. Then we find out.
 :::
 
 ## Step 1: read the matrix
@@ -649,5 +537,5 @@ Keep the spine, with built and tested in two cells. Forward finds what is missin
 
 Before any requirement changes, make the impact list. It scopes the agent, it checks the review, and it surfaces the questions for your client.
 
-And at Checkpoint 2, if your client has changed anything since your slice, that change's issue carries its impact list. Now, testing.
+And at Checkpoint 2, if your client has changed anything since your slice, that change's issue carries its impact list.
 :::
