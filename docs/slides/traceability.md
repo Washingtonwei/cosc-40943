@@ -123,6 +123,30 @@ Each row carries its state in two columns, on purpose. Build says how far the co
 Why not one "done"? Because "done" is where built and tested blur together, and the untested half hides inside it.
 :::
 
+## The reminder, traced
+
+| Row | Design | Code | Tests | Build | Verify |
+|---|---|---|---|---|---|
+| `UC-NOT-remind-non-submitters` | `design/not.md` | `RemindNonSubmittersDialog.vue`, `ReminderController.sendReminders` | `ReminderIntegrationTest`, `reminders.spec.cy.js` | ✅ Built | ✅ Verified |
+| `FR-NOT-weekly-reminder` | `design/not.md` | `WeeklyReminderScheduler` | `WeeklyReminderSchedulerTest` | ✅ Built | ✅ Verified |
+
+::: key
+An instructor starts one reminder; a timer starts the other. Two requirements, two rows.
+:::
+
+Project Pulse, `docs/traceability.md` on `main`, cells trimmed.
+{: .small }
+
+::: note
+Here is the spine filled in, on a feature you have heard about all semester: the reminders.
+
+Project Pulse has two of them. The first is a use case: an instructor opens a dialog, sees who still owes a weekly activity report or a peer evaluation, and clicks send. An actor starts it, so it is a use case row. The second runs on a timer, every due day, with nobody clicking anything. No actor, so no use case owns it. It gets a functional requirement row of its own.
+
+Read across each row. Use case, design, code, test, the four links. Both rows point at the same design document, `design/not.md`, and the scheduler reuses the services the dialog uses, so the two rows share code below what the table shows. The real cells are much longer; I trimmed them to fit.
+
+Both read Built and Verified today. They did not always, and we will see why in a few minutes. Next slide, we read these rows in both directions.
+:::
+
 ## Forward and backward
 
 ::: cols
