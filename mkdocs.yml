@@ -23,7 +23,6 @@ hooks:
 exclude_docs: |
   slides/*.md
   slides/tier1/*
-  modules/testing.md
   modules/ci-cd.md
   modules/metrics-and-tech-debt.md
   modules/open-source.md

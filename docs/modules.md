@@ -40,3 +40,6 @@ Modules go up as they are written, in the order the course teaches them, so this
 
 [**Requirements Traceability**](modules/traceability.md) · [slides](slides/traceability.html)
 : Keep a use case honest end to end, forward (is it built and tested?) and backward (why does this code exist?), and see why that matters more, not less, when an AI writes the code. Before a requirement changes, list what the change will touch. Then place every use case in the release it ships in.
+
+[**Testing**](modules/testing.md) · [slides](slides/testing.html)
+: Write the test list before the code, and read every test, yours or the agent's, for what it actually checks. A test as inputs plus an oracle; partitions and boundaries; JUnit 5 and given/when/then straight from a use case extension; Mockito, and when a real object beats a mock; breaking the code once; which layer (unit, integration, end to end) a rule belongs on; and what coverage does not tell you.

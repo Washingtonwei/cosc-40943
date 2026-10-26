@@ -17,7 +17,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Spec-Driven Requirements](spec-driven-requirements.md), whose extensions are most of your test cases; [Design-of-Record](design-of-record.md#48-the-test-list-before-the-code), whose test list is written before the code; [AI-Assisted Implementation](implementation.md); and [Code Review](code-review.md), which reviews the change against that test list.
 - **Leads into:** static analysis (week 10, checks that never run the program), CI/CD (week 11, the suite as a gate on every pull request), and dynamic analysis (week 12, which builds on the oracle named here).
-- **How it's taught:** Friday of week 9, after impact analysis. Practised in *Add a use case* (assignment 3) and in every pull request after it.
+- **How it's taught:** Monday of week 10, then two studio days on your proving slice. Practised in *Add a use case* (assignment 3) and in every pull request after it.
 - **Course outcome it delivers:** [build, test, and ship a working MVP](../syllabus.md#learning-outcomes) (outcome 4), and verifying AI output without lowering the bar (outcome 6).
 
 ## 3. Motivation
