@@ -3,13 +3,15 @@
 **Fall 2026, section 020. MWF 10:00 - 10:50 AM, SWR LH3.**
 Instructor: Bingyang Wei, b.wei@tcu.edu, TUC 341D, office hours MW 11:00 - 12:00 or by appointment.
 
-!!! important "Week 6: Friday is Checkpoint 1"
+!!! important "Week 10: testing Monday, then two studio days for your proving slice"
 
-    **Studio this Friday, Oct 2, is [Checkpoint 1](project.md#checkpoints).** Your TA reviews your specification with you in the room while your team drafts its architecture-of-record, merged to `main` by **11:59 pm**. Your TA checks it over the weekend and replies with one issue in your repository by 8 pm Sunday. Section 8.2, crosscutting concepts, is due Friday too. Before you walk in: every quality attribute in section 9 of your specification has a number, your use case areas are settled, and the template is in `docs/design/`. Your TA checks the first two on GitHub before class. Everything is on the [Studio page](studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record).
+    **Monday Oct 26 is the testing lecture.** The deck is on the [Schedule](schedule.md).
 
-    **[Assignment 2, Spec a feature](assignments/spec-a-feature.md), is due at the start of class Friday.**
+    **Wednesday Oct 28 and Friday Oct 30 are both studio, run by your TAs.** Install the new `/design` and `/implement` commands from [course-templates](https://github.com/tcu-cosc-40943/course-templates/tree/main/.claude/commands), merge your proving slice's design, then build, review, and merge the slice. Find your team's row in the table on the [Studio page](studio.md#week-10-oct-28-and-30-catch-up-on-your-proving-slice) before Wednesday; it is your plan for both days.
 
-    **Monday and Wednesday are software architecture:** the few decisions that are expensive to reverse, drawn so that a teammate or an agent can build inside them. The reading is [Software Architecture, Just Enough](modules/architecture.md).
+    **Checkpoint 2 moves to week 11:** a 20-minute demo with your TA, in a slot your team books outside class by **Fri Nov 6**. Book it in your team's Slack channel by the end of Friday's studio. The [checklist](project.md#checkpoint-2-checklist) has not changed.
+
+    **New dates:** [assignment 3](assignments.md) is due Fri Nov 6 and assignment 4 Fri Nov 13. Checkpoint 3 is Fri Nov 20.
 
 ## What this course is
 
@@ -33,7 +35,7 @@ This is also where your Senior Design project starts. It continues into COSC 409
 | Day | What happens |
 |---|---|
 | **Monday, Wednesday** | Lecture. A software engineering topic, demonstrated live on [Project Pulse](https://github.com/Washingtonwei/project-pulse), a real Vue.js and Spring Boot application. |
-| **Friday** | [Studio](studio.md). Same room, whole class, TA-led. Your team applies the week's move to your own client project. Four Fridays in the term are your checkpoint presentation. |
+| **Friday** | [Studio](studio.md). Same room, whole class, TA-led. Your team applies the week's move to your own client project. Three Fridays in the term are your checkpoint presentation; Checkpoint 2 is a demo you book with your TA. |
 | **Outside class** | Team working meetings, client meetings, and building. |
 
 See it on Project Pulse Wednesday. Do it on your project Friday.
