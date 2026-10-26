@@ -287,30 +287,6 @@ Now add the agent. An agent handed a gap never says "I don't know". It picks som
 So ask the backward question out loud: why does this code do that, and who decided? No tool will ask it for you.
 :::
 
-## Keep a register
-
-::: steps
-- Each entry: the rule, the `file:method` that diverges, and which side will change.
-- Not a bug list: several entries close by fixing the document.
-- OI-24: edits ignored the submission window. Held 82 days, fixed 2026-09-10.
-:::
-
-::: key
-A divergence you decided not to fix yet is traced. One nobody noticed is not.
-:::
-
-::: note
-You will hear the opposite advice: "docs lie, read the code." For an unfamiliar codebase it is good advice, and it is the other half of ours, not the opposite. A contract can be behind the system, and a system can be wrong about the contract. Neither is true by default, so which one is wrong gets decided item by item, and the decision gets written down. That is what a register is for.
-
-Project Pulse keeps its register in the open issues file, under "Doc to Code Gap Analysis". Each entry names the rule, the method that diverges, and which side will change.
-
-It is not a bug list. Each entry is a claim about which of the two artifacts is currently wrong, and several close by changing the document, not the code.
-
-OI-24 shows the whole cycle. In June the client decided the submission window binds edits too, not only first submissions. The update method checked nothing, so a student could rewrite an old evaluation forever. The register held that gap for eighty-two days, until both paths went through one check in September, and the entry closed.
-
-That is what honest looks like: not zero gaps, but every gap written down.
-:::
-
 ## "What will I have in December?"
 
 | UC | Build | Verify | **Release** |
