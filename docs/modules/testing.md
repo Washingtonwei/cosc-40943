@@ -280,7 +280,7 @@ Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittl
 - **One test per extension:** for your proving slice's use case, every extension has a test named after it, in given/when/then form.
 - **Your charter:** add both BDDMockito halves (`given(...).willReturn(...)` and `then(...).should(...)`) and the rule that a failing test is never edited to pass without saying so.
 
-**Individual assignment:** in *Add a use case* (assignment 3, due Fri Oct 30), for each AI-generated test you keep, write one line in the pull request description naming its oracle's source, and break the code once to show it goes red.
+**Individual assignment:** in *Add a use case* (assignment 3, due Fri Nov 6), for each AI-generated test you keep, write one line in the pull request description naming its oracle's source, and break the code once to show it goes red.
 
 ## 8. Summary / key takeaways
 

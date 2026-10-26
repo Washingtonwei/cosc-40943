@@ -162,7 +162,7 @@ Revise the column at every use-case close ([the method, Phase C](../method.md#ph
 - **Release plan:** by Checkpoint 2, every row has a Release value, revised by pull request at every use-case close. At Checkpoint 3, one forecast line under the calibration table.
 - **Impact list:** the next time your client changes a requirement or a rule, the issue for the change carries its impact list (the IDs and files from the matrix, what a search added, and the questions you took to the client), and the pull request's description says which files outside the list it touched and why. Checked at [Checkpoint 2](../project.md#checkpoint-2-checklist).
 
-**Individual assignment:** in *Add a use case* (assignment 3, due Fri Oct 30), the agent's use case gets its row in table 3, and its Verify cell names the tests that make it true.
+**Individual assignment:** in *Add a use case* (assignment 3, due Fri Nov 6), the agent's use case gets its row in table 3, and its Verify cell names the tests that make it true.
 
 ## 8. Summary / key takeaways
 

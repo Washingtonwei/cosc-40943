@@ -165,7 +165,7 @@ Naming the contract changed what the agent read: the second run reviewed the cha
 
 **Team, own project:** every proving-slice pull request gets a review from a teammate who did not write it, with the triage line, each test-list row marked covered or not, and labeled comments. The TA reads two reviews per team.
 
-**Individual assignment:** in *Add a use case* (assignment 3, due Fri Oct 30), you review the agent's pull request before submitting: the triage line, each test-list row marked covered or not, at least one labeled comment on something you changed or rejected, and the findings of one `/code-review` run with what you did about each. Graded on whether the triage is right and the test-list check honest, not on how many comments there are.
+**Individual assignment:** in *Add a use case* (assignment 3, due Fri Nov 6), you review the agent's pull request before submitting: the triage line, each test-list row marked covered or not, at least one labeled comment on something you changed or rejected, and the findings of one `/code-review` run with what you did about each. Graded on whether the triage is right and the test-list check honest, not on how many comments there are.
 
 ## 8. Summary / key takeaways
 

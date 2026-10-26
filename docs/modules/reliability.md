@@ -18,7 +18,7 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Software Architecture, Just Enough](architecture.md), where availability and robustness entered your specification as quality attributes with numbers.
 - **Leads into:** Wednesday's observability lecture, which is how you see whether the objective set here is being met, and [Checkpoint 3](../project.md#checkpoints), where your team shows one objective measured and one dependency failing on purpose.
-- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. The hands-on is announced at Checkpoint 2, so your team starts it ten days before the lecture and shows it at Checkpoint 3.
+- **How it's taught:** Monday of week 12; whatever the lecture does not reach, read here. The hands-on is announced at Checkpoint 2, so your team starts it in week 11, before the lecture, and shows it at Checkpoint 3 on Fri Nov 20.
 - **Course outcome it delivers:** [building, testing, and shipping a working MVP](../syllabus.md#learning-outcomes) (outcome 4). Shipping includes knowing whether it stays up.
 
 ## 3. Motivation
@@ -133,7 +133,7 @@ Every action changes the system. None of them is "be more careful."
 
 - **Goal:** your system's reliability promise is measured, and one of its dependencies fails the way your specification says.
 - **On your own project, out of class:** turn one availability or performance requirement in your specification into an SLO: name its SLI, its window, its target, and its error budget, and write them under the requirement. Then write one automated test that makes an external dependency fail (an email service, a client API, a model) by throwing or timing out, and asserts the degradation your specification requires. If your specification never says what happens when that dependency fails, write that requirement first. Run the test once against code with the handling removed, to see it fail.
-- **Deliverable & assessment:** at [Checkpoint 3](../project.md#checkpoints), show the SLO with its current measured value (the observability you built that week supplies it) and the degradation test, red against the reverted code and green against yours.
+- **Deliverable & assessment:** at [Checkpoint 3](../project.md#checkpoints), show the SLO with its current measured value (the observability you built in week 12 supplies it) and the degradation test, red against the reverted code and green against yours.
 
 **Individual assignment (Project Pulse):** none.
 

@@ -8,7 +8,7 @@ Friday is not a lecture and not a lab on a toy problem. It is the hour your team
 - **Each TA owns four or five teams for the entire semester.** You get the same TA every week, at every checkpoint. They know your project's history, which is the point.
 - Every studio has **one scoped objective**, summarized on the [Schedule](schedule.md) and set out in full [below](#each-studio). It is the move you saw demonstrated on Project Pulse in Wednesday's lecture, now applied to your code.
 - TAs circulate. They are there to unblock and to review, not to lecture.
-- **On four Fridays, studio is your checkpoint presentation** to your TA. That week's objective moves to out-of-class team time, and [the checkpoints](project.md#checkpoints) say what you present.
+- **On three Fridays, studio is your checkpoint presentation** to your TA. That week's objective moves to out-of-class team time, and [the checkpoints](project.md#checkpoints) say what you present. Checkpoint 2 is the exception: you book it with your TA outside class in week 11.
 
 Attendance in studio counts the same as lecture attendance: each absence is a 1% grade reduction.
 
@@ -261,3 +261,57 @@ If everything landed in the issue pile, go around again.
 **What you produce:** one issue per pair on your board, with its sorted list as a comment, and new entries in `OPEN-ISSUES.md`. Close the specification and charter piles by pull request before the agent builds from the issue. Then the use case's owner fills in the Estimate, the refined one, sized from the design's test list ([how](modules/implementation.md#42-where-the-hours-go-now)), still before the agent builds. From then on, every weekly activity report line about that use case starts with its ID.
 
 **How your TA checks it,** on GitHub by Tuesday Oct 20, replying on each issue: the issue cites the use case rather than copying it or listing its rules; the use case it cites exists; the sorted list is posted; not everything is in the issue pile; the Estimate is a range in all three parts, and it was written before the first commit the agent made for this use case.
+
+### Week 10, Oct 28 and 30: catch up on your proving slice
+
+**Wednesday and Friday are both studio this week, and Checkpoint 2 moves to week 11.** Your team demonstrates its slice to your TA in a slot you book outside class, any time from Mon Nov 2 to Fri Nov 6 ([what it checks](project.md#checkpoint-2-checklist)). These two hours are for getting there.
+
+**Objective:** by the end of Friday your proving slice (your riskiest use case) has a merged design-of-record, is built by the agent from that design, is reviewed by a teammate against the design's test list, and is merged. Tag `v0.1.0` by your Checkpoint 2 slot.
+
+#### How `/design` and `/implement` work
+
+[`course-templates`](https://github.com/tcu-cosc-40943/course-templates) now carries two commands, in `.claude/commands/`, that run the method's two build stages ([Phase C](method.md)). Each is a plain Markdown file of instructions the agent follows when you type its name. You give it a use case ID, for example `/design UC-ORD-place-order`.
+
+| | `/design <UC-ID>` | `/implement <UC-ID>` |
+|---|---|---|
+| **What it reads** | The use case (every extension), the business rules and `FR-*` it cites, the glossary, `OPEN-ISSUES.md`, your architecture-of-record with section 8 in full, the design-of-record template, the area's existing design if there is one, the existing code, and your charter | The merged design-of-record for the area, the same use case and rules, the glossary, section 8 of your architecture-of-record in full, your charter, the use case's row in `docs/traceability.md`, and the code the design points at |
+| **What it does** | Drafts every section of the template: the sequence diagram, components, the API contract, key decisions, the data change, and one test row per flow. Lists every point it had to assume, and challenges anything in the specification that looks wrong | Builds on a branch in readable commits: any needed refactor first, then the trunk (shared code), then one commit per leaf. Writes a test for every row of the design's test list, checks the diff against section 8, runs the suites, and updates the traceability row |
+| **Where it stops for you** | After the draft: you answer its assumptions and accept the shape before it writes `docs/design/<area>.md` | Before a refactor the design did not name, and after the trunk commit, so the owner reads it and says what it changed |
+| **What it leaves you** | The design file, the traceability row set to `📐 Designed`, any specification fix, and a pull request description with the questions test | Code and tests on a branch, the traceability row's Build and Verify set honestly, and a pull request description mapping each test-list row to its test |
+| **What it never does** | Write code, or approve its own design. A teammate who did not write it reviews and merges the pull request | Build from an unmerged design, add a dependency nobody checked, or approve its own work. A teammate reviews the pull request |
+
+Run each one in a fresh session (`/clear` first), so the agent reads your documents rather than an earlier conversation. Read both files before you run them; they are short. On Copilot CLI, follow their phases by hand, as a checklist.
+
+**Make them yours.** They are your team's files once they are in your repository, so change them by pull request like any other file the agent reads: point them at the paths your project actually uses, add your stack's test commands and conventions, add a check your reviews keep catching, or drop a step that does not fit your project. Keep the stops for a person (the accepted shape, the trunk read, a teammate's merge), because those are where your judgment goes in. Say in the pull request what you changed and why.
+
+**Before Wednesday:** at least two members bring a laptop with a working agent session in your team repository. Pull `course-templates` (`git pull` in your clone of it, or clone it as in [where your requirements documents live](#where-your-requirements-documents-live)). Know which use case is your slice, and whether its area's design-of-record is merged on `main`.
+
+#### Wednesday Oct 28: install the commands, then the design
+
+| When | What your team does |
+|---|---|
+| 0-10 | **Install the commands by pull request.** One member copies them in, opens the pull request, and a teammate merges it. |
+| 10-45 | **No design merged yet:** the slice's owner and a partner run `/design UC-<AREA>-<slug>`. Read the draft, answer every assumption it lists (a question only your client can answer goes into `OPEN-ISSUES.md`), accept the shape, then run the questions test in a fresh session. **Design already merged:** run the questions test on it in a fresh session and fix what it finds by pull request. Everyone else finishes the build-context issues from [week 8](#week-8-your-first-build-context-in-your-team-meeting) or the Checkpoint 2 items that are not code (the calibration table, the coarse estimates, the release plan). |
+| 45-50 | **Open the design's pull request** and name the teammate who reviews it. It must merge before anyone runs `/implement`, so aim for Thursday. |
+
+```bash
+cd your-team-repo
+git switch -c add-workflow-commands
+mkdir -p .claude/commands
+cp ../course-templates/.claude/commands/design.md ../course-templates/.claude/commands/implement.md .claude/commands/
+git add .claude/commands
+git commit -m "Add the /design and /implement commands"
+git push -u origin add-workflow-commands
+```
+
+#### Friday Oct 30: build, review, merge
+
+| When | What your team does |
+|---|---|
+| 0-5 | Confirm the slice's design is merged on `main`. If not, merge it first; nobody builds from an unmerged design. |
+| 5-35 | **The owner runs `/clear`, then `/implement UC-<AREA>-<slug>`.** It will stop to propose a refactor if one is needed, and it stops after the trunk commit: read that commit and say what it changed and why before letting it go on. The rest of the team runs the fresh-context review on whatever the agent has pushed and starts the calibration table rows from your activity reports. |
+| 35-50 | **A teammate who did not build it reviews the pull request** against the use case and the design's test list, marking each row covered or not ([how](modules/code-review.md)). Apply Monday's testing lecture to each test the agent wrote: what is its oracle, and would it fail if the code were wrong ([how](modules/testing.md)). |
+
+**What you produce:** the commands on `main`, the slice's design merged, and the slice's implementation pull request open or merged by the end of Friday. Your TA is in the room both days to unblock you; this is not a checkpoint, and nothing is graded in the room.
+
+**Before your Checkpoint 2 slot:** the slice merged, `v0.1.0` tagged with release notes, and every item on the [checklist](project.md#checkpoint-2-checklist) ready to show. Book the slot with your TA in your team's Slack channel by the end of Friday's studio.

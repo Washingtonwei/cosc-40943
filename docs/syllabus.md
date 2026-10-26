@@ -166,7 +166,7 @@ Teams of five or six students, assigned by the instructor from a short interest 
 
 Each team also creates a **Google Drive** for the work that does not belong in a repository: team and client meeting minutes, client-facing slides, and shared working drafts. Share it with the instructor and your TA at kickoff. Weekly activity reports and peer evaluations go in neither; you submit them in **Project Pulse**.
 
-**Checkpoints.** Four times in the term (Sep 4, Oct 2, Oct 30, Nov 13) your team presents progress to its TA during the Friday studio hour. What each checkpoint requires is on the [Senior Design Project](project.md) page.
+**Checkpoints.** Four times in the term (Sep 4, Oct 2, week 11 by Nov 6, and Nov 20) your team presents progress to its TA, during the Friday studio hour except for Checkpoint 2, which your team books with its TA outside class. What each checkpoint requires is on the [Senior Design Project](project.md) page.
 
 **Presentation and software demo.** Your team demos the MVP software in the December presentations. **Working software with limited features MUST be available for the client to test at the end of the fall semester. Failing to do so will result in a letter grade reduction for the entire team.**
 

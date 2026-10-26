@@ -437,9 +437,9 @@ If it does not fit, take it to the client at the next meeting. Change the scope,
 
 ::: steps
 - **Every week:** the row changes in the pull request that changes its state.
-- **Checkpoint 2, Fri Oct 30:** every row has a Release value, set by pull request.
+- **Checkpoint 2, week 11 (by Fri Nov 6):** every row has a Release value, set by pull request.
 - **Checkpoint 3:** one forecast line under your calibration table.
-- **Assignment 3, Fri Oct 30:** the agent's use case gets its row, and its Verify cell names its tests.
+- **Assignment 3, Fri Nov 6:** the agent's use case gets its row, and its Verify cell names its tests.
 :::
 
 ::: note
