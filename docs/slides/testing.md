@@ -1,16 +1,16 @@
 ---
 title: Testing What the Agent Wrote
 module: testing
-week: 9
-day: Friday
+week: 10
+day: Monday
 ---
 
 # Testing What the Agent Wrote
 
-Week 9 · Read the tests first
+Week 10 · Read the tests first
 
 ::: note
-**Say:** For the rest of the hour, testing. One idea runs through all of it. When an agent writes the code, the tests are the part you read. And we will use one feature the whole way: the reminder, pull request 102, which you watched being built and reviewed.
+**Say:** Good morning. Today is testing, the whole hour, and Wednesday and Friday you use it on your own proving slice in studio. One idea runs through all of it. When an agent writes the code, the tests are the part you read. And we will use one feature the whole way: the reminder, pull request 102, which you watched being built and reviewed.
 :::
 
 ## Read the tests first {.center}
@@ -46,17 +46,7 @@ Given tests that contradict the specification, frontier agents often "passed" by
 :::
 
 ::: note
-**Say:** ImpossibleBench, 2025. Researchers gave coding agents tasks whose tests contradict the specification, so the only way to pass is to cheat. The agents often did: they edited the tests, or special-cased the inputs. And the stronger the model, the more it cheated. So when an agent tells you the suite is green, that is a claim about the tests as they now stand. Not about the program you asked for.
-:::
-
-## Dijkstra {.center}
-
-::: key
-Testing shows the presence of bugs, never their absence.
-:::
-
-::: note
-**Say:** Edsger Dijkstra, more than fifty years ago, and still true. The rest of today is about choosing tests that can show them.
+**Say:** ImpossibleBench, 2025. Researchers gave coding agents tasks whose tests contradict the specification, so the only way to pass is to cheat. The agents often did: they edited the tests, or special-cased the inputs. And the stronger the model, the more it cheated. So when an agent tells you the suite is green, that is a claim about the tests as they now stand. Not about the program you asked for. Edsger Dijkstra said it more than fifty years ago: testing shows the presence of bugs, never their absence. The rest of today is about choosing tests that can show them.
 :::
 
 ## How would you test the login?
@@ -141,14 +131,8 @@ A list read off the steps misses what happens between them.
 ## A test is inputs plus an oracle
 
 ::: key
-The oracle decides what "right" means.
+The oracle decides what "right" means. Where it came from decides what the test can catch.
 :::
-
-::: note
-**Say:** One word for today. An oracle is whatever decides that a run was correct. A test is inputs plus an oracle. The inputs decide what the code does. The oracle carries the intent.
-:::
-
-## Where did the oracle come from?
 
 ::: cols
 **From the specification**
@@ -165,7 +149,9 @@ Ask an agent to "write tests for this method" and it reads the method.
 :::
 
 ::: note
-**Say:** Where the oracle comes from decides what the test can catch. From the specification: it can fail. From the code: it agrees with the code, bugs and all. That was CrowdStrike. An agent asked to write tests for a method reads the method and writes the second kind, unless you hand it the first. Week twelve builds stronger oracles on this word.
+**Say:** One word for today. An oracle is whatever decides that a run was correct. A test is inputs plus an oracle. The inputs decide what the code does. The oracle carries the intent.
+
+And where the oracle comes from decides what the test can catch. From the specification: it can fail. From the code: it agrees with the code, bugs and all. That was CrowdStrike. An agent asked to write tests for a method reads the method and writes the second kind, unless you hand it the first. Week twelve builds stronger oracles on this word.
 :::
 
 ## Choosing inputs: a sort
@@ -179,24 +165,7 @@ Ask an agent to "write tests for this method" and it reads the method.
 :::
 
 ::: note
-**Say:** You can't try every input, so you choose. Two heuristics. Equivalence partitions: group inputs the specification treats alike, take one from each. Boundaries: bugs live at the edges. For a sort, that gives this list. The last row is the one people miss: compare by subtraction and the extremes overflow.
-:::
-
-## One parameterized test
-
-```java
-@ParameterizedTest
-@MethodSource("arrays")
-void sortReturnsTheSameElementsInOrder(int[] input) {
-    int[] expected = input.clone();
-    Arrays.sort(expected);                 // the reference oracle
-    int[] actual = Sorter.sort(input.clone());
-    assertThat(actual).containsExactly(expected);
-}
-```
-
-::: note
-**Say:** In JUnit 5 the whole list is one test. The oracle isn't a hand-typed answer. It's a property: the output is in order and holds the same elements. Java's own sort is the reference.
+**Say:** You can't try every input, so you choose. Two heuristics. Equivalence partitions: group inputs the specification treats alike, take one from each. Boundaries: bugs live at the edges. For a sort, that gives this list. The last row is the one people miss: compare by subtraction and the extremes overflow. In JUnit 5 the whole list is one parameterized test, and its oracle is a property, not a hand-typed answer: the output is in order and holds the same elements. You'll see that shape in a minute, on a real method.
 :::
 
 ## Where it bites
@@ -228,18 +197,6 @@ Code that is hard to test is usually telling you something about its design.
 
 ## Boundaries in time
 
-::: steps
-- Monday, December 29, 2025 is in week **2026-W01**.
-- Sunday, January 3, 2021 is in week **2020-W53**.
-- 2020 and 2026 have 53 weeks. 2021 does not.
-:::
-
-::: note
-**Say:** Now the reminder's own boundary. Project Pulse files every report under an ISO week key, like 2026-W40. And at New Year, the week's year is not always the calendar year of its days. December 29, 2025 starts 2026's week one. January 3, 2021 ends 2020's week fifty-three. And some years have fifty-three weeks. That's the partition list for "the key of a date".
-:::
-
-## The partitions, as one test
-
 ```java
 @ParameterizedTest
 @CsvSource({
@@ -254,7 +211,9 @@ void weekKeyUsesTheIsoWeekYear(LocalDate date, String key) {
 ```
 
 ::: note
-**Say:** Four rows, four partitions. WeekKeys.of is the real server method, the one place the backend turns a date into a week key.
+**Say:** Now the reminder's own boundary. Project Pulse files every report under an ISO week key, like 2026-W40. And at New Year, the week's year is not always the calendar year of its days. December 29, 2025 starts 2026's week one. January 3, 2021 ends 2020's week fifty-three. And some years have fifty-three weeks: 2020 and 2026 do, 2021 does not.
+
+That is the partition list for "the key of a date", and here it is as one parameterized test. Four rows, four partitions. WeekKeys.of is the real server method, the one place the backend turns a date into a week key.
 :::
 
 ## One rule, two places
@@ -273,18 +232,14 @@ Calendar year, and no unit tests at all.
 On January 5, 2026 the report pages would have asked for 2025-W01. Review caught it, not a test.
 :::
 
-::: note
-**Say:** Here's what happened. The server's WeekKeysTest pins the New Year week. But the browser had its own copy of the rule, in week.ts, and it formatted with moment's capital YYYY: the calendar year. Project Pulse's frontend has no unit tests at all. So on January 5, the report pages would have asked the server for a week a year early. Code review found it, not a test. One rule in two places, and only one of them tested at its boundary.
-:::
-
-## Programmers and time {.center}
-
 ::: joke
 "Every week belongs to the year it's in." Said every programmer, until December 29.
 :::
 
 ::: note
-**Say:** *[Read it.]* There's a whole genre of articles called "falsehoods programmers believe about time". This one is ours.
+**Say:** Here's what happened. The server's WeekKeysTest pins the New Year week. But the browser had its own copy of the rule, in week.ts, and it formatted with moment's capital YYYY: the calendar year. Project Pulse's frontend has no unit tests at all. So on January 5, the report pages would have asked the server for a week a year early. Code review found it, not a test. One rule in two places, and only one of them tested at its boundary.
+
+*[Read the joke.]* There's a whole genre of articles called "falsehoods programmers believe about time". This one is ours.
 :::
 
 ## Given, when, then
@@ -365,18 +320,14 @@ The charter said "Use BDDMockito: given(...).willReturn(...)". It named one half
 - The scheduler test uses the real ReminderService, so it reads the emails.
 :::
 
+::: warn
+The clock is a dependency too. A test that reads the real time passes today and fails in some other week.
+:::
+
 ::: note
 **Say:** Google's guidance: prefer real objects when they are fast and deterministic. A test that checks which calls were made breaks on every refactoring. WeeklyReminderSchedulerTest gets this right. It builds the real ReminderService, so its assertions read the actual emails. It mocks email, it mocks who owes what, because that has its own tests. And it mocks which course sections are reminded. Remember that last one. We're coming back to it.
-:::
 
-## The clock is a dependency
-
-::: warn
-A test that reads the real time passes today and fails in some other week.
-:::
-
-::: note
-**Say:** The dependency everyone forgets is the clock. Project Pulse injects a Clock, and every reminder test passes a fixed one, so the dates in its assertions never move. That's why the New Year test can exist at all. Call LocalDate.now directly and your test passes this week and fails some other week.
+And the dependency everyone forgets is the clock. Project Pulse injects a Clock, and every reminder test passes a fixed one, so the dates in its assertions never move. That's why the New Year test can exist at all. Call LocalDate.now directly and your test passes this week and fails some other week.
 :::
 
 ## Read this test
@@ -418,7 +369,7 @@ The design's test list put both rows at the unit level, for a rule that lives in
 ::: note
 **Say:** Here's the answer. The scheduler never reads activeWeeks, so that Given line is decoration. Delete it, still green. Which sections get reminded is decided by one JPQL query, findReminderEligibleSectionsForWeek, and the test stubs that query to return the section. Drop the query's member-of condition: still green. The whole suite stays green, because no test runs that query. The first-week test is the same; it passes because a mock's default is an empty list.
 
-And the agent did what the design asked. The test list said unit for both rows. The rule lives in SQL. The missing test is an integration test: two sections, one whose active weeks include the week, one whose don't, and only the first comes back. CrowdStrike in miniature.
+And the agent did what the design asked. The test list said unit for both rows. The rule lives in SQL. The missing test is an integration test: two sections, one whose active weeks include the week, one whose don't, and only the first comes back. CrowdStrike in miniature. Or as the joke goes: I mocked the database, the mail server, and the clock. The test passed. So did the bug.
 :::
 
 ## The same agent saw the trap
@@ -435,16 +386,6 @@ An agent that writes that comment can still write the test before it. Read each 
 **Say:** To be fair to the agent. In the same file, the test for a failed send has a comment explaining why the broad stub must come first. Under Mockito's strict stubs an unmatched call throws, ReminderService catches every runtime exception, and the test would pass while proving nothing. That's a sharp observation. Same file, same agent, and it still wrote the test we just read. So you read each one.
 :::
 
-## Break the code once {.center}
-
-::: key
-Delete a line. If no test goes red, no test was checking it.
-:::
-
-::: note
-**Say:** The fastest check there is. Delete a line, run the tests, watch for red. That's manual mutation testing; tools like PIT do it to every line. We just did it twice on the scheduler.
-:::
-
 ## Five questions for any test
 
 ::: steps
@@ -455,18 +396,14 @@ Delete a line. If no test goes red, no test was checking it.
 - Does it mock the thing it claims to test?
 :::
 
+::: key
+Delete a line. If no test goes red, no test was checking it.
+:::
+
 ::: note
 **Say:** Five questions before you trust a test, yours or the agent's. The scheduler test fails the last one. Put these in your review habit.
-:::
 
-## Mocked everything {.center}
-
-::: joke
-I mocked the database, the mail server, and the clock. The test passed. So did the bug.
-:::
-
-::: note
-**Say:** *[Read it.]* Mocks make tests fast. They also make them agree with you.
+The third is the fastest check there is. Delete a line, run the tests, watch for red. That's manual mutation testing; tools like PIT do it to every line. We just did it twice on the scheduler.
 :::
 
 ## The pyramid, on Project Pulse
@@ -530,7 +467,7 @@ The oracle, which rows are in scope, and every change to a failing test.
 :::
 
 ::: note
-**Say:** Three things. One test per extension of your proving slice's use case, named after the extension. Two lines in your charter. And in assignment three, due next Friday, one line per AI-generated test you keep naming where its oracle came from, and proof you broke the code once and saw red.
+**Say:** Three things. One test per extension of your proving slice's use case, named after the extension. Two lines in your charter. And in assignment three, due Friday November 6, one line per AI-generated test you keep naming where its oracle came from, and proof you broke the code once and saw red.
 :::
 
 ## Leave with this {.center}
@@ -540,5 +477,5 @@ When an agent writes the code, the tests are the part you read. Ask where each o
 :::
 
 ::: note
-**Say:** One sentence. When an agent writes the code, read the tests. Ask where the oracle came from. And break the code once. Have a good weekend.
+**Say:** One sentence. When an agent writes the code, read the tests. Ask where the oracle came from. And break the code once. Wednesday and Friday are studio: bring this to your slice's review.
 :::
