@@ -53,7 +53,9 @@ It is a copy of Project Pulse at `b9d21b0`, with the `/design` and `/implement` 
 !!! note "On Copilot CLI or another agent"
     `/design`, `/implement`, and `/code-review` are Claude Code commands. On Copilot CLI you run the same steps by hand ([Working with AI](../ai.md#getting-access)). For Parts 1 to 3, tell the agent to read `.claude/commands/design.md` or `.claude/commands/implement.md` and follow it one phase at a time, stopping where the file says to stop. In place of `/code-review` in Part 6, start a fresh session, give it the pull request's diff, the design, and the use case, and ask it to review the change against them. The deliverables and the grading are the same.
 
-**Start early.** The backend test suite takes several minutes, the build needs the app running as it did in assignment 1, and Part 1 needs thinking time that the agent cannot shorten.
+**Start early.** The backend test suite takes several minutes and needs Docker running (its integration tests start a MySQL container), the build needs the app running as it did in assignment 1, and Part 1 needs thinking time that the agent cannot shorten. This assignment also uses more agent time than the first two; on a metered plan, spread it over several days.
+
+**Leave GitHub Actions off in your fork.** A new fork has them off, and nothing in this assignment needs CI on GitHub: you run the tests on your laptop.
 
 ## What you submit
 
@@ -61,7 +63,7 @@ In **your own fork**:
 
 | | What it is | Merge it? |
 |---|---|---|
-| **One issue** | `UC-STU-deactivate-student` as the build-context, in the shape you practiced in assignment 2: the ID, the files you expect to change, nothing pasted | Not applicable. Both pull requests link to it. |
+| **One issue** | `UC-STU-deactivate-student` as the build-context, in the shape you practiced in assignment 2: the ID, the files you expect to change, nothing pasted | Not applicable. The design pull request says `Refs #N`, so merging it leaves the issue open; the build pull request says `Closes #N`. |
 | **The design pull request** | From `/design`: the firmed use case, any new or changed `BR-*`, `docs/design/stu.md`, and the traceability row at `📐 Designed` | **Yes, you merge it.** That merge is the design gate. |
 | **The build pull request** | From `/implement`: the code, the tests, the row updated, and your review in its description | **No. Leave it open.** |
 
