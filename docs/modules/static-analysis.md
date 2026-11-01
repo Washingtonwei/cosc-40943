@@ -22,7 +22,7 @@ By the end of this module, a student can:
 
 ## 3. Motivation
 
-**Project Pulse ran no analyzer for its first two years.** Its backend build compiled and ran the tests, nothing more. The first SpotBugs run reported 237 findings, and PMD's starter rules 130 more. The frontend has had ESLint, Prettier, and the `vue-tsc` type checker since the repository's first commit in October 2024, and none of them passes: ESLint reports 130 problems, `vue-tsc` 18 type errors, and Prettier 75 unformatted files. `npm run lint` did not even start, because it pointed at a `frontend/.gitignore` that does not exist. Nobody noticed, because nothing ran them. A tool that is installed but not run is decoration.
+**Project Pulse ran no analyzer for its first two years.** Its backend build compiled and ran the tests, nothing more. The first SpotBugs run reported 237 findings, and PMD's starter rules 130 more. The frontend has had ESLint, Prettier, and the `vue-tsc` type checker since its first commit in October 2024, and none of them passes: 130 ESLint problems, 18 type errors, 75 unformatted files. `npm run lint` did not even start, because it pointed at a `.gitignore` that does not exist. Nobody noticed, because nothing ran them. A tool that is installed but not run is decoration.
 
 **One duplicated line turned off a signature check in iOS and macOS.** In February 2014 Apple shipped a fix for CVE-2014-1266, "goto fail". In `SSLVerifySignedServerKeyExchange` the line `goto fail;` appeared twice in a row, so the second one always jumped past the signature verification, and an attacker on the network could impersonate any secure website. The code after the second `goto` could never run, which is exactly what an unreachable-code warning reports. The compiler had the check; the build did not turn it on.
 
@@ -58,8 +58,6 @@ Each rung catches a different class of problem, and each needs its own tool. Low
 
 **SonarQube bundles several rungs in one product** (SonarQube for IDE, formerly SonarLint, in the editor; SonarQube Cloud, free for public repositories, or the self-hosted Community Build on the server). It is common in industry and a reasonable choice for a team. This course uses the separate tools because each one is free, runs in your own build, and needs no account.
 
-**Linters disagree, and that is fine.** SpotBugs reads compiled bytecode and is good at null paths and bad casts; PMD reads source and is good at style and dead code. On Project Pulse both reported the same dead variable in `ActivityController.addActivityComment` ([4.4](#44-triage-real-false-positive-or-not-worth-it)), and each also reported things the other missed.
-
 ### 4.3 The first run, without touching the build
 
 **On a codebase you just joined, look before you change anything.** Maven runs any plugin by its coordinates, so you can see what SpotBugs and PMD think of Project Pulse without editing `pom.xml`:
@@ -89,7 +87,17 @@ npx prettier --check src/
 | `CT_CONSTRUCTOR_THROW` (a constructor can throw, leaving a half-built object) | 3 | Matters for classes a hostile subclass could extend. Read one |
 | `DLS_DEAD_LOCAL_STORE` | 1 | Read it now |
 
-Ninety-two percent of the report is one rule family, and the bug most worth fixing is the single line at the bottom. That shape is typical: most of a first report is a handful of rules that do not fit the codebase, and the findings that matter are few.
+Ninety-two percent of the report is one rule family, and the finding most worth reading is the single line at the bottom. That shape is typical of a first run.
+
+**Why run both SpotBugs and PMD? They barely overlap.** Of Project Pulse's 367 findings, one was reported by both: the dead variable in `ActivityController.addActivityComment` (SpotBugs' `DLS_DEAD_LOCAL_STORE`, PMD's `UnusedLocalVariable`). Every other finding came from one tool, because they read different things:
+
+| | SpotBugs (237 findings) | PMD (130 findings) |
+|---|---|---|
+| **Reads** | Compiled bytecode | Java source |
+| **Strongest at** | How values flow through a method: nulls, casts, comparisons, mutable objects escaping | How the code is written: structure, unused code, risky idioms, style |
+| **Its Project Pulse findings** | `EI_EXPOSE_REP` (219), null dereferences on Spring's `@Nullable` methods (14), constructors that can throw (3) | `toLowerCase()` without a `Locale` (18), `LiteralsFirstInComparisons` (6), `SimplifyBooleanReturns` (5), an unused private method, braces and constructor style |
+
+Bytecode lets SpotBugs follow a value and read the `@Nullable` annotations compiled into Spring's jars; source lets PMD see what compilation erases: braces, the order of `"literal".equals(x)`, a private method nobody calls. The two bugs planted in [4.5](#45-adding-analyzers-to-a-brownfield-project-baseline-then-ratchet) split the same way: SpotBugs caught the `String` compared with `==`, PMD the empty `catch`. The second tool costs a configuration file, a baseline, and part of the minute `verify -DskipTests` takes. When two tools this different agree, as on the dead store, take it seriously. If you had to keep one, keep SpotBugs, which finds more bugs and less style. But PMD's unique findings include real ones (`toLowerCase()` without a `Locale` breaks a search on a server whose default locale is Turkish), so keep PMD too and decide which of its rules fit.
 
 ### 4.4 Triage: real, false positive, or not worth it
 
@@ -122,29 +130,28 @@ Five findings from Project Pulse, one per kind of judgment:
 | ESLint | `// eslint-disable-next-line rule-name -- reason` | `rules: { 'rule-name': 'off' }`, with a comment |
 | NullAway | `@SuppressWarnings("NullAway")`, or `@Nullable` where null is legal | Leave the package out of `@NullMarked` |
 
-**A suppression without a reason is a bug report you deleted.** Review a suppression like code: the reason should be a claim someone can check ("both entities come from one persistence context"), not a feeling ("false positive").
+**A suppression without a reason is a bug report you deleted.** The reason should be a claim someone can check ("both entities come from one persistence context"), not a feeling ("false positive").
 
 ### 4.5 Adding analyzers to a brownfield project: baseline, then ratchet
 
-**You cannot fix 367 findings before you turn the checks on, and you should not wait.** Every day without the gate adds new findings to the pile. The standard way in has three steps:
+**You cannot fix 367 findings before you turn the checks on, and you should not wait,** because every day without the gate adds to the pile. The standard way in:
 
 1. **Record what exists today as a baseline**, untriaged.
 2. **Fail the build only on findings outside the baseline.** New code meets the bar from the first day; old code is not blocked.
 3. **Shrink the baseline**: fix or suppress an old finding, delete its entry. Never add an entry to make a build pass. The file only gets smaller. That is the ratchet.
 
-**Project Pulse's pull request [#104](https://github.com/Washingtonwei/project-pulse/pull/104) does exactly this,** and it is a pattern you can copy to your team's repository:
+**Project Pulse's pull request [#104](https://github.com/Washingtonwei/project-pulse/pull/104) does this,** and you can copy the pattern to your team's repository:
 
 - `pom.xml` binds SpotBugs' and PMD's `check` goals to `mvn verify`.
 - SpotBugs reads an exclude filter, `backend/config/spotbugs-baseline.xml`, with one `<Match>` (class, method, rule) per existing finding: 237 entries.
-- PMD reads `backend/config/pmd-baseline.properties`, one line per class listing the rules it may break: 130 findings in 68 classes.
-- Both files open with a comment saying what they are and that they only shrink.
+- PMD reads `backend/config/pmd-baseline.properties`, one line per class listing the rules it may break: 130 findings in 68 classes. Both files open with a comment saying they only shrink.
 - Decisions live elsewhere: `spotbugs-exclude.xml` and `pmd-ruleset.xml` (PMD's quickstart, unchanged) start empty and hold each rule the team decides not to enforce, with the reason. Keeping them apart from the baseline means "we decided" never hides inside "we have not looked yet".
 
 **Check that the gate works before you trust it.** With the baselines in place, `./mvnw verify` passed. Adding one method that compared a `String` parameter with `==` failed the build at once with SpotBugs' `ES_COMPARING_PARAMETER_STRING_WITH_EQ` (priority High), and an empty `catch` failed PMD's check. A gate you have never seen fail is a gate you are only hoping works.
 
 **Know your baseline's grain.** SpotBugs' entries name the method, so a new finding in an old method's neighbor still fails. PMD's name only the class and rule, so a *new* empty catch in a class that already had one passes. Coarser baselines are easier to keep and leak more; say which you have.
 
-**Warn first, then block.** The frontend checks fail on so much existing code that #104 runs them in CI as report only (`continue-on-error: true`): every pull request shows the count, nothing is blocked yet. Each check becomes blocking once its findings are fixed or baselined. Report-only is a step on the way, not a place to stay; a warning nobody must act on is soon a warning nobody reads.
+**Warn first, then block.** The frontend checks fail on so much existing code that #104 runs them as report only (`continue-on-error: true`): every pull request shows the count, nothing is blocked yet. Each check becomes blocking once its findings are fixed or baselined. Do not stay there; a warning nobody must act on is soon a warning nobody reads.
 
 **Upgrading a tool can break its baseline.** The PMD plugin bundles PMD 7.17.0, and #104 pins the current 7.29.0. The findings were the same 130, but one rule had been renamed (`UseUtilityClass` became `InstantiableUtilityClass`), so 12 baselined findings came back as new and failed the build until the baseline was regenerated. Treat an analyzer upgrade as its own pull request, and compare the counts by rule before and after.
 
@@ -176,13 +183,13 @@ Five findings from Project Pulse, one per kind of judgment:
 
 ### 4.8 Security: dataflow, dependencies, containers, secrets
 
-**CodeQL follows untrusted data through the program.** It treats the code as a database and asks whether data from a **source** (a request parameter, a header) reaches a **sink** (a SQL string, an HTML response, a shell command) without passing a **sanitizer** (a parameterized query, an encoder). That is the shape of SQL injection, cross-site scripting, and command injection. On a public GitHub repository, turning on code scanning's *default setup* (Settings, Code security) scans Java and TypeScript on every pull request; Java needs no build step. Project Pulse's search code, such as `StudentSpecs`, builds its queries through the JPA Criteria API, and Hibernate binds the user's text as a query parameter, so no SQL string is ever built from input. Parameterized queries are the sanitizer CodeQL looks for, and the reason to prefer them over concatenating a query.
+**CodeQL follows untrusted data through the program.** It treats the code as a database and asks whether data from a **source** (a request parameter, a header) reaches a **sink** (a SQL string, an HTML response, a shell command) without passing a **sanitizer** (a parameterized query, an encoder). That is the shape of SQL injection, cross-site scripting, and command injection. On a public GitHub repository, turning on code scanning's *default setup* (Settings, Code security) scans Java and TypeScript on every pull request; Java needs no build step. Project Pulse's search code, such as `StudentSpecs`, builds queries through the JPA Criteria API, so Hibernate binds the user's text as a parameter and no SQL string is built from input: the sanitizer CodeQL looks for.
 
-**CodeQL's first run on Project Pulse found one thing, and it is a false positive in context.** On `main` after #104, the scan of Actions, TypeScript, and Java opened a single alert, rated high: `java/spring-disabled-csrf-protection`, at `.csrf(csrf -> csrf.disable())` in [`SecurityConfiguration`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/security/SecurityConfiguration.java). Cross-site request forgery works by getting a victim's browser to send a request that carries the credentials the browser attaches by itself, usually a session cookie. Project Pulse has none to borrow: the frontend sends its token in an `Authorization: Bearer` header ([`request.ts`](https://github.com/Washingtonwei/project-pulse/blob/main/frontend/src/utils/request.ts)), and the server keeps no session (`SessionCreationPolicy.STATELESS`). Disabling CSRF protection is the standard setup for a stateless token API, so the alert is dismissed as a false positive with that reason. The reason is also the condition to recheck: the day the token moves into a cookie, the alert becomes true.
+**CodeQL's first run on Project Pulse found one thing, and it is a false positive in context.** On `main` after #104, the scan of Actions, TypeScript, and Java opened a single alert, rated high: `java/spring-disabled-csrf-protection`, at `.csrf(csrf -> csrf.disable())` in [`SecurityConfiguration`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/security/SecurityConfiguration.java). Cross-site request forgery gets a victim's browser to send a request carrying credentials the browser attaches by itself, usually a session cookie. Project Pulse has none to borrow: the frontend sends its token in an `Authorization: Bearer` header ([`request.ts`](https://github.com/Washingtonwei/project-pulse/blob/main/frontend/src/utils/request.ts)), and the server keeps no session (`SessionCreationPolicy.STATELESS`). That is the standard setup for a stateless token API, so the alert is dismissed with that reason, which is also the condition to recheck: the day the token moves into a cookie, the alert becomes true.
 
-**Most of your code is other people's.** Project Pulse's backend declares 26 dependencies, and Maven resolves 263 once their own dependencies are counted. When Log4Shell (CVE-2021-44228) was published in December 2021, the vulnerable code was in nobody's own repository; it was in a logging library under almost every Java application. Dependabot reads `pom.xml` and `package-lock.json`, alerts on known vulnerabilities, and opens pull requests that update them. Turn it on once CI can catch a broken update. Project Pulse waits until its frontend job builds the app and blocks, because today an update that broke the frontend would still show a green check, and a bot that opens pull requests nobody can verify only moves the risk.
+**Most of your code is other people's.** Project Pulse's backend declares 26 dependencies, and Maven resolves 263 once their own dependencies are counted. When Log4Shell (CVE-2021-44228) was published in December 2021, the vulnerable code was in nobody's own repository; it was in a logging library under almost every Java application. Dependabot reads `pom.xml` and `package-lock.json`, alerts on known vulnerabilities, and opens pull requests that update them. Turn it on once CI can catch a broken update. Project Pulse waits until its frontend job builds the app and blocks, because today an update that broke the frontend would still show a green check.
 
-**A clean report can still miss the point.** Hadolint passes Project Pulse's [`Dockerfile`](https://github.com/Washingtonwei/project-pulse/blob/main/Dockerfile) with no findings, yet the runtime image has no `USER` line, so the application runs as root inside its container. Hadolint checks the instructions that are written; a missing one is invisible to it. Image scanners such as Trivy check the built image's packages and configuration, including the user. Every tool has a blind spot; know which rung covers what.
+**A clean report can still miss the point.** Hadolint passes Project Pulse's [`Dockerfile`](https://github.com/Washingtonwei/project-pulse/blob/main/Dockerfile) with no findings, yet the runtime image has no `USER` line, so the application runs as root inside its container. Hadolint checks the instructions that are written; a missing one is invisible to it. Image scanners such as Trivy check the built image's packages and configuration, including the user.
 
 **Your security tools are part of your supply chain.** A line such as `uses: aquasecurity/trivy-action@0.28.0` downloads someone else's code and runs it inside your CI job, with the job's secrets. The part after `@` decides which code:
 
@@ -191,15 +198,15 @@ Five findings from Project Pulse, one per kind of judgment:
 | **Tag** | `@v4` | Whatever commit the action's owner points `v4` at today. The owner, or anyone holding the owner's credentials, can move it, and your workflow file does not change. |
 | **Commit SHA** | `@11d5960a326750d5838078e36cf38b85af677262` | A fingerprint of the exact code. Change one byte and the SHA changes, so nobody can make it mean different code. |
 
-**On 19 March 2026, the scan was the attack.** Attackers holding credentials stolen from Trivy's project in an earlier breach moved 75 of the 76 version tags of `aquasecurity/trivy-action`, the official GitHub Action for the Trivy scanner, to code of their own. They edited nobody's workflow. Every pipeline that named the action by a tag ran their code on its next run, and that code collected the secrets the job could reach: deploy keys, cloud credentials, registry tokens. The window was about twelve hours (Microsoft and Wiz both published analyses). Pipelines that had pinned the action to a commit SHA ran the same code as the day before. The step teams added to be more secure was the way in.
+**On 19 March 2026, the scan was the attack.** Attackers holding credentials stolen from Trivy's project in an earlier breach moved 75 of the 76 version tags of `aquasecurity/trivy-action`, the official GitHub Action for the Trivy scanner, to code of their own. They edited nobody's workflow. Every pipeline that named the action by a tag ran their code on its next run, and that code collected the secrets the job could reach: deploy keys, cloud credentials, registry tokens. The window was about twelve hours (Microsoft and Wiz both published analyses). Pipelines pinned to a commit SHA ran the same code as the day before. The step teams added to be more secure was the way in.
 
-**Pin the fact, and let a bot propose new ones.** Name every Action by its full commit SHA, with the version in a comment so a person can read it, as #104's workflow does:
+**Pin the fact, and let a bot propose new ones.** Name every Action by its full commit SHA, with the version in a comment, as #104's workflow does:
 
 ```yaml
 uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 ```
 
-A pinned SHA never updates itself, so you would also miss the action's fixes. Dependabot's `github-actions` ecosystem reads the version in the comment and opens a pull request that changes the SHA and the comment together, so updates still come, as a change someone reviews. The stakes on Project Pulse are concrete: its deploy workflow holds the publish profile for the production app, so a moved tag there could hand someone the application.
+A pinned SHA never updates itself, so you would also miss the action's fixes. Dependabot's `github-actions` ecosystem opens a pull request that changes the SHA and the comment together, so updates still come, as a change someone reviews. On Project Pulse the stakes are the deploy workflow: it holds the Azure publish profile, so a moved tag there could deploy code of the attacker's choosing.
 
 **Pinning has two limits.** A SHA pinned while a tag pointed at malicious code pins the malicious code, which is why an action update is read, not auto-merged. And an action can fetch other code by tag inside itself; `hadolint-action` at #104's pinned commit pulls its image by digest (`@sha256:…`), the image equivalent of a SHA, so that path is pinned all the way down.
 
@@ -209,9 +216,9 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 **ESLint 8 reached end of life on 5 October 2024,** and Project Pulse still runs it with the old `.eslintrc.cjs` format. ESLint 9 made the flat configuration file (`eslint.config.js`) the default, and `eslint-plugin-vue` ships flat presets. Upgrading is a pull request of its own: config migration, then the rule changes it brings. An outdated analyzer is a finding too.
 
-**`vue-tsc` is the frontend's compiler, and Project Pulse ships around it.** Its 18 type errors include passing a `string | undefined` where a `string` is required, in `UserRegistration.vue`. `npm run build` runs `vue-tsc`, but the deploy workflow calls `npm run build-only`, which skips it, so type errors reach production. The cheapest null check on the frontend is the one TypeScript already does.
+**`vue-tsc` is the frontend's compiler, and Project Pulse ships around it.** Its 18 type errors include passing a `string | undefined` where a `string` is required, in `UserRegistration.vue`. `npm run build` runs `vue-tsc`, but the deploy workflow calls `npm run build-only`, which skips it, so type errors reach production.
 
-**Formatting is a decision, made once.** Prettier's job is to end arguments about layout. Pick the configuration (Project Pulse's is in `.prettierrc.json`), reformat everything in one commit, then make `prettier --check` part of the gate. Run the fixing variants (`eslint --fix`, `prettier --write`) on your machine; in CI run the checking variants, because a CI job that fixes code changes what it was asked to check.
+**Formatting is a decision, made once.** Prettier ends arguments about layout. Pick the configuration (Project Pulse's is in `.prettierrc.json`), reformat in one commit ([4.5](#45-adding-analyzers-to-a-brownfield-project-baseline-then-ratchet)), then make `prettier --check` part of the gate. Run the fixing variants (`eslint --fix`, `prettier --write`) on your machine; in CI run the checking variants, because a CI job that fixes code changes what it was asked to check.
 
 ## 5. The AI-native lens
 

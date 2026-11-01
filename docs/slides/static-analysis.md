@@ -150,6 +150,28 @@ An analyzer that flags every line has zero false negatives.
 **Say:** 237 findings is a wall. Grouped by rule it's four lines. 219 say "this getter returns a mutable object". In JPA entities and Spring beans that's by design, so that's probably one decision for the whole rule, not 219 fixes. The single dead store at the bottom is the one to read first. That shape is typical of a first run.
 :::
 
+## Two tools, one overlap
+
+::: cols
+**SpotBugs reads bytecode: 237**
+
+Null paths, casts, comparisons, mutable objects escaping
+|||
+**PMD reads source: 130**
+
+Locale bugs, unused code, risky idioms, style
+:::
+
+::: key
+Found by both: 1 of 367, the dead store.
+:::
+
+::: note
+**Say:** Why two tools? Isn't that duplication? Look at the numbers: of 367 findings, exactly one came from both, the dead store we'll read in a minute. SpotBugs works on compiled bytecode, so it can follow a value through a method and read Spring's @Nullable annotations; that's how it found the null paths. PMD works on source, so it sees what compilation throws away: braces, a private method nobody calls, `toLowerCase()` without a locale, which breaks search on a server whose default locale is Turkish.
+
+The cost is one more config file and part of a minute of build time. And when two tools that work this differently flag the same line, believe it. If you could keep only one, keep SpotBugs; but the better answer is to keep PMD and turn off the rules that don't fit, which is part of assignment 4.
+:::
+
 ## Three verdicts
 
 | Verdict | Record it as |
@@ -503,7 +525,7 @@ The best way into a secure pipeline is through its security scanner.
 :::
 
 ::: note
-**Say:** A tag is a label pointing at a commit, and whoever controls the repository can move it. A SHA is a fingerprint of the exact code; change a byte and it's a different SHA. So pin the SHA, keep the version in a comment for humans, and let Dependabot open the pull request when there's a new version. #104 does this for every Action. On Project Pulse it matters: the deploy workflow holds the publish profile for production.
+**Say:** A tag is a label pointing at a commit, and whoever controls the repository can move it. A SHA is a fingerprint of the exact code; change a byte and it's a different SHA. So pin the SHA, keep the version in a comment for humans, and let Dependabot open the pull request when there's a new version. #104 does this for every Action. On Project Pulse it matters: the deploy workflow holds the Azure publish profile.
 
 Two limits, if there's time: a SHA pinned during the attack pins the attack, so read action updates, never auto-merge them; and an action can fetch other code by tag inside itself.
 :::
