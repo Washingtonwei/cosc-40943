@@ -202,7 +202,7 @@ Behind the security filter chain it's never null. Is every caller behind it?
 :::
 
 ::: note
-**Say:** Fourteen of these. Spring Boot 4 annotates `getAuthentication()` as nullable, and SpotBugs reads the annotation. Inside an authenticated request it's never null. But a scheduled job or a test calling the same method has no authentication. The honest suppression names the assumption: "only called on authenticated routes". That's a sentence a reviewer can check.
+**Say:** Twelve of these. Spring Boot 4 annotates `getAuthentication()` as nullable, and SpotBugs reads the annotation. Inside an authenticated request it's never null. But a scheduled job or a test calling the same method has no authentication. The honest suppression names the assumption: "only called on authenticated routes". That's a sentence a reviewer can check.
 :::
 
 ## Deliberate, and the rule can't know

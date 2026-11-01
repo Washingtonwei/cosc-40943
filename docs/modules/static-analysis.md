@@ -105,7 +105,7 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **A real finding whose fix needs a decision.** SpotBugs and PMD both flag [`ActivityController.addActivityComment`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/activity/ActivityController.java): it converts the updated activity to a DTO, then returns `null` as the data. The conversion is wasted work, but which fix is right? The frontend's type for this response declares `data: null`, and the use case would say whether the caller needs the updated activity. Delete the line, or return the DTO: the tool found the inconsistency, and the specification settles it.
 
-**True by the contract, false in context.** Fourteen `NP` findings, such as in [`UserUtils.getUserCourseId`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/UserUtils.java), dereference `SecurityContextHolder.getContext().getAuthentication()`. Spring Security 7 annotates that method `@Nullable`, and SpotBugs reads the annotation. Inside a request that passed the security filter chain, the authentication is never null. So is it a false positive? Only if every caller is behind that chain. A scheduled job or a test calling the same method has no authentication. The honest suppression names the assumption ("only called on authenticated routes"), which is also the sentence a reviewer can check.
+**True by the contract, false in context.** Twelve of the fourteen `NP` findings, such as in [`UserUtils.getUserCourseId`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/system/UserUtils.java), dereference `SecurityContextHolder.getContext().getAuthentication()` or the `getAuthority()` of what it returns. Spring Security 7 annotates both methods `@Nullable`, and SpotBugs reads the annotation. Inside a request that passed the security filter chain, the authentication is never null. So is it a false positive? Only if every caller is behind that chain. A scheduled job or a test calling the same method has no authentication. The honest suppression names the assumption ("only called on authenticated routes"), which is also the sentence a reviewer can check.
 
 **Deliberate, and the rule cannot know it.** PMD's `CompareObjectsWithEquals` flags `team.getSection() != from` in [`TeamService.transferTeam`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/java/team/projectpulse/team/TeamService.java). In general `==` on objects is a bug. Here both are JPA entities from the same persistence context, which guarantees one Java object per database row, so identity is the intended comparison. Suppress it and say so, or the next agent will "fix" it to `.equals()` and change the meaning.
 
@@ -117,8 +117,8 @@ Five findings from Project Pulse, one per kind of judgment:
 
 | Tool | At one site | For the whole project |
 |---|---|---|
-| SpotBugs | `@SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "...")` (from `spotbugs-annotations`) | An exclude filter file, one `<Match>` per decision, with an XML comment |
-| PMD | `// NOPMD - reason` on the line, or `@SuppressWarnings("PMD.RuleName")` | Exclude or reconfigure the rule in your own ruleset file |
+| SpotBugs | `@SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "...")` (from `spotbugs-annotations`) | An exclude filter file, one `<Match>` per decision, with an XML comment (Project Pulse: `backend/config/spotbugs-exclude.xml`) |
+| PMD | `// NOPMD - reason` on the line, or `@SuppressWarnings("PMD.RuleName")` | An `<exclude>` in your own ruleset file, with a comment (Project Pulse: `backend/config/pmd-ruleset.xml`) |
 | ESLint | `// eslint-disable-next-line rule-name -- reason` | `rules: { 'rule-name': 'off' }`, with a comment |
 | NullAway | `@SuppressWarnings("NullAway")`, or `@Nullable` where null is legal | Leave the package out of `@NullMarked` |
 
@@ -138,6 +138,7 @@ Five findings from Project Pulse, one per kind of judgment:
 - SpotBugs reads an exclude filter, `backend/config/spotbugs-baseline.xml`, with one `<Match>` (class, method, rule) per existing finding: 237 entries.
 - PMD reads `backend/config/pmd-baseline.properties`, one line per class listing the rules it may break: 130 findings in 68 classes.
 - Both files open with a comment saying what they are and that they only shrink.
+- Decisions live elsewhere: `spotbugs-exclude.xml` and `pmd-ruleset.xml` (PMD's quickstart, unchanged) start empty and hold each rule the team decides not to enforce, with the reason. Keeping them apart from the baseline means "we decided" never hides inside "we have not looked yet".
 
 **Check that the gate works before you trust it.** With the baselines in place, `./mvnw verify` passed. Adding one method that compared a `String` parameter with `==` failed the build at once with SpotBugs' `ES_COMPARING_PARAMETER_STRING_WITH_EQ` (priority High), and an empty `catch` failed PMD's check. A gate you have never seen fail is a gate you are only hoping works.
 
@@ -221,7 +222,7 @@ Five findings from Project Pulse, one per kind of judgment:
 - **Baseline and gate:** baseline what remains and make the checks fail your pull request build on anything new. Plant one bug and watch it fail.
 - **Your charter:** the gate command, and the rule that baselines only shrink and suppressions carry reasons.
 
-**Individual assignment:** *Triage the analyzers* (assignment 4, due Fri Nov 13). Start from a copy of Project Pulse with the analyzers and baselines of #104, take a slice of the baseline, triage each finding, fix the real ones with a test where the bug can be shown, suppress the rest with reasons, and shrink the baseline, with the pipeline green. The triage is the assignment.
+**Individual assignment:** [*Triage the analyzers*](../assignments/triage-the-analyzers.md) (assignment 4, due Fri Nov 13). Start from a copy of Project Pulse with the analyzers and baselines of #104, make four project-wide rule decisions, triage your slice of the baseline, fix the real findings (one shown by a test), suppress the rest with reasons, and shrink the baseline, with the pipeline green. The triage is the assignment.
 
 ## 8. Summary / key takeaways
 
@@ -259,4 +260,4 @@ Five findings from Project Pulse, one per kind of judgment:
 - [Code Review](code-review.md): what a human reviewer checks that no analyzer can.
 - [AI-Assisted Implementation](implementation.md): the agent charter, where the gate command and the baseline rule go.
 - [Schedule](../schedule.md): week 11, static analysis on Monday and CI/CD on Wednesday.
-- [Assignments](../assignments.md): *Triage the analyzers*.
+- [Triage the analyzers](../assignments/triage-the-analyzers.md): assignment 4, this module on Project Pulse.

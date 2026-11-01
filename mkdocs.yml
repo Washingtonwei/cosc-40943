@@ -114,6 +114,7 @@ nav:
       - 1. Hello, Project Pulse: assignments/hello-project-pulse.md
       - 2. Spec a feature: assignments/spec-a-feature.md
       - 3. Add a use case: assignments/add-a-use-case.md
+      - 4. Triage the analyzers: assignments/triage-the-analyzers.md
   - Exams:
       - Midterm Study Guide: midterm.md
   - Modules: modules.md
