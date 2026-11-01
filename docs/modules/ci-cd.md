@@ -71,6 +71,10 @@ A **feature flag** ships code switched off, so turning a feature on and off is a
 
 An agent asked to add a column writes the migration and the code that reads it in one change, which is the one shape that cannot be rolled back. An agent asked to fix a failing install deletes the lockfile and regenerates it. Neither is visible unless the reviewer asks two questions of every pull request that touches the schema or a lockfile: can the previous build run against this, and did the dependency set change on purpose?
 
+#### Pinning Actions (link, do not retell)
+
+Pinning every Action to a commit SHA, with Dependabot proposing updates, is a pipeline habit this module should require of the team's workflows. The Trivy story and the tag versus SHA explanation live in [Static Analysis 4.8](static-analysis.md#48-security-dataflow-dependencies-containers-secrets); cite it. The deploy workflow (`azure-webapps-deploy.yml`, which holds the publish profile) is the Project Pulse example: pin it in the same pull request that changes `npm install` to `npm ci`.
+
 #### Sources for these sections
 
 - IEEE 828-2012, *Standard for Configuration Management in Systems and Software Engineering*.

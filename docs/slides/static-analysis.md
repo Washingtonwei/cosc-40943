@@ -423,6 +423,26 @@ CodeQL default setup: free on public repositories, Java needs no build.
 **Say:** CodeQL follows untrusted data. From a source, like a request parameter, to a sink, like a SQL string, and asks whether it passed a sanitizer. Project Pulse's search code goes through the JPA Criteria API, and Hibernate binds the text as a parameter, so no SQL string is built from input. That's the sanitizer CodeQL looks for. Turning it on is a checkbox in Settings, Code security.
 :::
 
+## CodeQL's one finding
+
+```java
+.csrf(csrf -> csrf.disable())
+```
+
+java/spring-disabled-csrf-protection · High · SecurityConfiguration
+
+::: ask
+Is Project Pulse open to cross-site request forgery?
+:::
+
+::: note
+**Say:** I turned CodeQL on this weekend. One alert, rated high: we disabled CSRF protection. CSRF works by tricking your browser into sending a request with credentials the browser attaches by itself, usually a session cookie.
+
+*[Take answers. Then:]* Project Pulse has no cookie to borrow. The token travels in an Authorization header that our own code sets, and the server keeps no session at all: it's stateless. So this is the standard setup for a token API, and the alert is a false positive in context. Same lesson as getAuthentication: the tool is right about the code and wrong about the system.
+
+*[Dismiss it live, as "false positive", typing the reason.]* And the reason is a condition to recheck: the day someone moves the token into a cookie, this alert becomes true.
+:::
+
 ## Most of your code is other people's
 
 ::: steps
@@ -432,7 +452,7 @@ CodeQL default setup: free on public repositories, Java needs no build.
 :::
 
 ::: note
-**Say:** 26 in the pom, 263 on the classpath. When Log4Shell hit, almost every Java application was vulnerable through a logging library nobody had chosen directly. Dependabot reads your pom and lockfile and tells you. #104 turns it on for Maven, npm, Actions, and Docker.
+**Say:** 26 in the pom, 263 on the classpath. When Log4Shell hit, almost every Java application was vulnerable through a logging library nobody had chosen directly. Dependabot reads your pom and lockfile and tells you. Project Pulse holds off for now: its frontend job doesn't build the app yet, so a broken update would still show green. Turn it on when CI can catch the break.
 :::
 
 ## A clean report can miss the point
@@ -453,13 +473,39 @@ Hadolint: no findings. The app runs as root.
 ## Your scanner is in your supply chain
 
 ::: warn
-March 2026: 75 of 76 trivy-action tags rewritten to steal pipeline secrets.
+March 2026: 75 of 76 trivy-action tags moved to code that stole pipeline secrets.
 :::
 
-`uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0`
+Nobody's workflow file changed. About twelve hours.
 
 ::: note
-**Say:** The security scan became the attack. Attackers rewrote the version tags of the official Trivy GitHub Action, so every pipeline that said "use v-something" ran their code with its secrets. A tag is a pointer anyone with access can move. A commit SHA can't be moved. Pin it, keep the version in a comment, and let Dependabot propose updates. #104 pins every Action this way.
+**Say:** Trivy is one of the most popular security scanners, and this is its official GitHub Action. Attackers had credentials from an earlier breach of the project. They didn't touch anyone's workflow. They moved the version tags to their own code, so every pipeline that said "use Trivy, version such-and-such" ran the attackers' code on its next run, inside the CI job, with the job's secrets: deploy keys, cloud credentials. The step teams added to be more secure was the way in.
+
+*[Ask: which pipelines were safe?]* The ones that didn't name a tag. Next slide.
+:::
+
+## A tag is a promise, a SHA is a fact
+
+::: cols
+**Tag: the owner can move it**
+
+`uses: actions/checkout@v4`
+|||
+**SHA: nobody can**
+
+`uses: actions/checkout@11d5960a... # v4.4.0`
+:::
+
+Dependabot proposes the next SHA; a person reviews it.
+
+::: joke
+The best way into a secure pipeline is through its security scanner.
+:::
+
+::: note
+**Say:** A tag is a label pointing at a commit, and whoever controls the repository can move it. A SHA is a fingerprint of the exact code; change a byte and it's a different SHA. So pin the SHA, keep the version in a comment for humans, and let Dependabot open the pull request when there's a new version. #104 does this for every Action. On Project Pulse it matters: the deploy workflow holds the publish profile for production.
+
+Two limits, if there's time: a SHA pinned during the attack pins the attack, so read action updates, never auto-merge them; and an action can fetch other code by tag inside itself.
 :::
 
 ## The frontend
