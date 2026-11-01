@@ -43,3 +43,6 @@ Modules go up as they are written, in the order the course teaches them, so this
 
 [**Testing**](modules/testing.md) · [slides](slides/testing.html)
 : Write the test list before the code, and read every test, yours or the agent's, for what it actually checks. A test as inputs plus an oracle; partitions and boundaries; JUnit 5 and given/when/then straight from a use case extension; Mockito, and when a real object beats a mock; breaking the code once; which layer (unit, integration, end to end) a rule belongs on; and what coverage does not tell you.
+
+[**Static Analysis**](modules/static-analysis.md) · [slides](slides/static-analysis.html)
+: Add analyzers to a codebase you did not write, triage what they report, and make them a gate for new code, the agent's included. The ladder from compiler to container scan; SpotBugs, PMD, and ESLint read by rule; real, false positive, or not worth it, each recorded with a reason; a baseline that only shrinks; JSpecify and NullAway; CodeQL, Dependabot, and pinning the tools you trust.
