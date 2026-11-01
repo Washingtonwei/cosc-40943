@@ -370,6 +370,39 @@ Upgrading PMD renamed a rule: 12 baselined findings came back as new.
 **Say:** Two lessons from my own pull request. Coarse baselines leak: PMD's only names the class and the rule. And when I upgraded PMD to the current release, the findings were identical, but one rule had been renamed, so 12 old findings failed the build as if new. Upgrade an analyzer in its own pull request and compare counts.
 :::
 
+## Your project: gate first
+
+::: steps
+- Turn the gate on before the first feature
+- Triage the handful of findings a skeleton has
+- From then on, every finding is new, and fails
+:::
+
+::: key
+On new code, the best baseline is the one you never need.
+:::
+
+::: note
+**Say:** Project Pulse had 367 findings before it had a gate, so it needed a baseline. Your repository is weeks old. Turn the gate on now, triage the few findings you have, and you never carry a baseline at all. In the method this belongs with the proving slice, the first code your agent writes. The team that waits until the tenth feature ends up doing what I just did on Project Pulse.
+:::
+
+## Write it down where it lives
+
+| What you decided | Where |
+|---|---|
+| Tools, gate command, how findings are settled | Architecture-of-record, section 8.2 |
+| The rule the agent obeys | Your charter, one line citing 8.2 |
+| A rule turned off, and why | The tool's config, as a comment |
+| A baseline | Section 11, as debt |
+
+::: warn
+Not the specification, and not a key decision.
+:::
+
+::: note
+**Say:** No new document. Setting up analyzers is a convention every component follows, so it goes where your other conventions live: section 8.2. The charter carries the one-liner, because the charter is what your agent always reads. A rule you turn off goes in the tool's configuration, next to the exclusion, because that's where the tool enforces it. Why not the specification? The spec says what the product does for your client, and your client did not ask for SpotBugs. Why not a key decision? You can swap an analyzer in an afternoon. Project Pulse's entry is in its architecture-of-record now, pull request 107.
+:::
+
 ## Where the checks run
 
 | Where | What | Why |
@@ -567,7 +600,7 @@ Charter: run ./mvnw verify; baselines only shrink; no suppression without a reas
 
 ::: steps
 - Wednesday: CI/CD, these checks in the pipeline
-- Friday studio: first run on your repository, baseline, gate, plant one bug
+- Friday studio: first run on your repository, gate, plant one bug, write it in 8.2
 - Assignment 4, Triage the analyzers: due Fri Nov 13, released Wednesday
 :::
 
@@ -576,5 +609,5 @@ Fix it, suppress it with a reason, or turn the rule off with a reason. Never jus
 :::
 
 ::: note
-**Say:** Friday you do on your own repository what we did on Project Pulse today. Assignment 4 starts from Project Pulse with #104's baselines: take a slice, triage each finding, fix the real ones with a test, suppress the rest with reasons, and shrink the baseline. The triage is the assignment, not the tool setup. The page goes up Wednesday.
+**Say:** Friday you do on your own repository what we did on Project Pulse today, gate first, and write it down in section 8.2 and your charter. Assignment 4 starts from Project Pulse with #104's baselines: take a slice, triage each finding, fix the real ones with a test, suppress the rest with reasons, and shrink the baseline. The triage is the assignment, not the tool setup. The page goes up Wednesday.
 :::

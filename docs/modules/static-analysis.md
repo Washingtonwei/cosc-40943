@@ -10,8 +10,7 @@ By the end of this module, a student can:
 2. Run SpotBugs, PMD, and ESLint on an unfamiliar codebase without changing its build, and read the results by rule before reading them by file.
 3. Triage a finding as real, false positive, or not worth fixing, and record the verdict where the next reader will see it: a fix, a suppression with a written reason, or a rule turned off for the whole project.
 4. Adopt analyzers on a brownfield project with a baseline, so the build fails only on new findings, and shrink that baseline over time.
-5. Explain how JSpecify annotations and NullAway turn a null pointer exception into a compile error, and what Spring Boot 4 already annotates.
-6. Use analyzers as the deterministic gate on agent-written code, and say what an agent may and may not decide about a finding.
+5. Use analyzers as the deterministic gate on agent-written code, and say what an agent may and may not decide about a finding.
 
 ## 2. Where it fits
 
@@ -157,7 +156,23 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **Format in one commit.** Formatting a whole codebase is one commit that touches every file. Do it alone, early, and list it in a `.git-blame-ignore-revs` file so `git blame` skips it.
 
-### 4.6 Where the checks run
+### 4.6 On a new project: the gate comes first
+
+**On new code, turn the gate on before the first feature, and no baseline is ever needed.** A walking skeleton has a handful of findings: triage them in an afternoon, and from then on every finding is new and every one fails the build. In the method this is part of the proving slice ([Phase B](../method.md#phase-b-prove-the-architecture-with-one-vertical-slice)), the first code your agent writes. A team that adds the gate at its tenth feature is back in [4.5](#45-adding-analyzers-to-a-brownfield-project-baseline-then-ratchet), carrying a baseline.
+
+**Setting up the tools is a set of decisions, and each already has a home.** No new document:
+
+| What you decided | Where it is recorded |
+|---|---|
+| Which analyzers and formatter run, the gate command, and how a finding is settled | A "Static analysis" subsection in section 8.2 of your architecture-of-record, because every component follows it; cite the `SEC-*` or `MNT-*` attribute that asked for it, if one did |
+| The rule the agent obeys | One line in your charter, citing that subsection |
+| A rule turned off, and why | The tool's configuration file, as a comment beside the exclusion, where the tool enforces it |
+| Where each check runs | Section 7 of the architecture-of-record, "how a change gets there" |
+| A baseline, if you have one | Section 11, as a debt row with the counts |
+
+Two places it does not go. The specification says what the product must do for your client, and SpotBugs is not a client requirement. Nor is it a `KD-*`: an analyzer can be swapped in an afternoon, and key decisions are for what is hard to reverse. Project Pulse shows the shape: a "Static analysis" bullet in its [Architectural conventions](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#architectural-conventions), `TD-analyzer-baselines` among its debts, and a short reminder in `CLAUDE.md` that links to both ([#107](https://github.com/Washingtonwei/project-pulse/pull/107)).
+
+### 4.7 Where the checks run
 
 **Shift left: the earlier a check runs, the cheaper the fix.** A warning in the editor costs seconds; the same bug found in review costs a conversation, and in production an incident.
 
@@ -170,7 +185,7 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **Keep the gate fast and the rule set small.** A check that adds ten minutes to every pull request gets skipped, and a rule that fires on code the team considers fine gets turned off in anger. Start with the defaults of a few good tools, add a rule when a real bug gets past, and remove one when its findings are never acted on. Wednesday's [CI/CD](../schedule.md) lecture wires these checks into the pipeline.
 
-### 4.7 Null safety: JSpecify and NullAway
+### 4.8 Null safety: JSpecify and NullAway
 
 **The null pointer exception is among the most common crashes in Java, and a type checker can prevent most of them.** The approach the Spring team chose for Spring Framework 7 and Spring Boot 4 has two parts:
 
@@ -181,7 +196,7 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **Adopt it a package at a time.** Add `@NullMarked` to one package, fix or annotate what NullAway reports, and move on; unmarked packages are not checked. Two setup facts: Error Prone needs extra `javac` flags in `.mvn/jvm.config`, and its current releases need a recent JDK (JDK 22, or a JDK 21 update with type-annotation support; an early JDK 21.0.2 fails). Check the NullAway wiki for the pair of versions that matches your JDK.
 
-### 4.8 Security: dataflow, dependencies, containers, secrets
+### 4.9 Security: dataflow, dependencies, containers, secrets
 
 **CodeQL follows untrusted data through the program.** It treats the code as a database and asks whether data from a **source** (a request parameter, a header) reaches a **sink** (a SQL string, an HTML response, a shell command) without passing a **sanitizer** (a parameterized query, an encoder). That is the shape of SQL injection, cross-site scripting, and command injection. On a public GitHub repository, turning on code scanning's *default setup* (Settings, Code security) scans Java and TypeScript on every pull request; Java needs no build step. Project Pulse's search code, such as `StudentSpecs`, builds queries through the JPA Criteria API, so Hibernate binds the user's text as a parameter and no SQL string is built from input: the sanitizer CodeQL looks for.
 
@@ -212,7 +227,7 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 **Secrets never belong in the repository.** GitHub's secret scanning finds committed keys, and push protection rejects a push that contains one. Turn both on (free for public repositories). A secret that reached a public repository is compromised even if you delete the commit: rotate it.
 
-### 4.9 The frontend: ESLint, types, and formatting
+### 4.10 The frontend: ESLint, types, and formatting
 
 **ESLint 8 reached end of life on 5 October 2024,** and Project Pulse still runs it with the old `.eslintrc.cjs` format. ESLint 9 made the flat configuration file (`eslint.config.js`) the default, and `eslint-plugin-vue` ships flat presets. Upgrading is a pull request of its own: config migration, then the rule changes it brings. An outdated analyzer is a finding too.
 
@@ -245,8 +260,8 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 **Team, own project (Friday's studio):**
 
 - **First run:** run the analyzers for your stack, record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
-- **Baseline and gate:** baseline what remains and make the checks fail your pull request build on anything new. Plant one bug and watch it fail.
-- **Your charter:** the gate command, and the rule that baselines only shrink and suppressions carry reasons.
+- **Gate:** make the checks fail your pull request build. Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch it fail.
+- **Write it down** ([4.6](#46-on-a-new-project-the-gate-comes-first)): a "Static analysis" subsection in section 8.2 of your architecture-of-record, and a charter line citing it: the gate command, suppressions carry reasons, and a baseline only shrinks.
 
 **Individual assignment:** [*Triage the analyzers*](../assignments/triage-the-analyzers.md) (assignment 4, due Fri Nov 13). Start from a copy of Project Pulse with the analyzers and baselines of #104, make four project-wide rule decisions, triage your slice of the baseline, fix the real findings (one shown by a test), suppress the rest with reasons, and shrink the baseline, with the pipeline green. The triage is the assignment.
 
@@ -256,7 +271,8 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 - Read a report by rule first. Most of it is a few rules that do not fit; the bugs are few.
 - Every finding ends as a fix, a suppression with a checkable reason, or a rule turned off with its reason.
 - On an existing codebase, baseline what exists and fail only on what is new. The baseline only shrinks.
-- JSpecify and NullAway turn null pointer exceptions into compile errors; adopt them a package at a time.
+- On a new project, turn the gate on before the first feature, and there is nothing to baseline. Record the setup in section 8.2 of the architecture-of-record, the rule in the charter, and each rule turned off in the tool's configuration.
+- A null-aware type checker turns null dereferences into compile errors (NullAway in Java, `strictNullChecks` in TypeScript); adopt it a package at a time.
 - The analyzer is the reviewer that reads all of the agent's code. The verdicts stay with you.
 
 ## 9. Key papers & further reading
@@ -276,9 +292,10 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 3. `@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "false positive")`. What is wrong with it, and what would a good justification say for `UserUtils.getUserCourseId`?
 4. Your PMD baseline lists `TeamService=CompareObjectsWithEquals`. A teammate adds a new `==` comparison to `TeamService`. Does the build fail? What does that tell you about the baseline?
 5. An agent's pull request turns the build green by adding twelve entries to the SpotBugs baseline. What do you ask for in review?
-6. Why can NullAway catch the `null` that `UserUtils.getUserId()` returns when no test does?
-7. Hadolint reports no findings on a Dockerfile whose image runs as root. Which rung of the ladder covers that, and with what tool?
-8. Your workflow uses `actions/checkout@v4`. What changes if you write the commit SHA instead, and what keeps it up to date?
+6. Your team starts a new repository. Where do you record which analyzers run, the gate command, and a PMD rule you turned off? Why not in the specification?
+7. Why can NullAway catch the `null` that `UserUtils.getUserId()` returns when no test does?
+8. Hadolint reports no findings on a Dockerfile whose image runs as root. Which rung of the ladder covers that, and with what tool?
+9. Your workflow uses `actions/checkout@v4`. What changes if you write the commit SHA instead, and what keeps it up to date?
 
 ## Related
 
