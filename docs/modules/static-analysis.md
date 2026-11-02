@@ -482,9 +482,9 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 ## 5. The AI-native lens
 
-- **Delegate to AI:** explaining an unfamiliar rule and why it fired; fixing findings with an obvious fix (an unused import, braces, a `Locale` argument); grouping a report by rule; drafting the baseline and the configuration; writing the test that shows a real finding is a bug; drafting a custom rule from a written convention.
+- **Delegate to AI:** explaining an unfamiliar rule and why it fired; fixing findings with an obvious fix (an unused import, a `Locale` argument, and the style rules once the team has chosen them); grouping a report by rule; drafting the baseline and the configuration; writing the test that shows a real finding is a bug; drafting a custom rule from a written convention.
 - **Keep human:** every verdict that is not "fix it". A suppression, a rule turned off, and an entry kept in the baseline are claims about the codebase that someone must be able to defend. An agent may not add to a baseline or suppress a finding to make a build pass without saying so in the pull request. Which conventions deserve a custom rule, and the two examples that test it, are yours too.
-- **Context to supply:** the command that is the gate (`./mvnw verify` in Project Pulse's `CLAUDE.md`), the rule that baselines only shrink, and the facts the tool cannot see: which methods run only behind authentication, which comparisons are entity identity, which errors the interceptor already shows.
+- **Context to supply:** the command that is the gate (`./mvnw verify` in Project Pulse's `CLAUDE.md`) and the instruction to run it before saying it is done (the loop in [4.1](#41-what-a-static-analyzer-can-and-cannot-tell-you)), the rule that baselines only shrink, and the facts the tool cannot see: which methods run only behind authentication, which comparisons are entity identity, which errors the interceptor already shows.
 - **How to verify:** run the gate yourself; read every suppression in the diff as you would read code; and for each "fixed" finding, check the fix is the right one and not the quietest one. An agent that silences `CompareObjectsWithEquals` by switching `==` to `.equals()` on an entity has changed behavior to quiet a warning.
 
 ## 6. Risks & mitigations
@@ -492,21 +492,25 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Classic:** alert fatigue: hundreds of warnings, so nobody reads any | Reading the report by rule and asking which rules fit this codebase | Few good rules, a baseline for the rest, remove rules nobody acts on |
-| **Classic:** tools installed but never run | Asking "what fails the build?" rather than "what is installed?" | Put every check in the pull request gate |
+| **Classic:** tools installed but never run | Asking "what fails the build?" rather than "what is installed?" | Put every check in the pull request gate, and make the check required on `main` |
+| **Classic:** green tests read as a green gate | Asking "did I run `verify`, or only `test`?" | Run the gate command before you push |
+| **Classic:** a default ruleset read as coverage (PMD's 5 findings against quickstart's 130) | Asking which rules actually ran | Choose the ruleset on purpose, in the configuration |
 | **AI-introduced:** the agent quiets findings instead of fixing them (a suppression, a baseline entry, a changed comparison) | Reading suppressions and baseline diffs in review | Charter rule: baselines only shrink; every suppression carries a checkable reason |
 | **AI-introduced:** the agent "fixes" a false positive and changes behavior | Asking what the code meant before the fix | Suppress deliberate code with its reason, so the next agent sees it |
 | **Classic:** a clean report read as "secure" | Knowing each tool's blind spot (Hadolint and the missing `USER`) | Cover each rung with a tool; test what matters |
+| **AI-introduced:** an AI reviewer used instead of the analyzer | Asking whether the check gives the same answer every time | The analyzer is the gate; the model reviews beside it ([4.1](#41-what-a-static-analyzer-can-and-cannot-tell-you)) |
 | **AI-introduced:** an agent-written custom rule that matches nothing, or everything | Asking to see it flag one bad example and pass one good one | Keep both examples as the rule's test |
 | **Classic:** a compromised or upgraded tool changes what runs | Comparing finding counts across a tool upgrade; pinning versions | Pin Actions to commit SHAs; review tool updates like code |
 
 ## 7. Hands-on (studio + optional individual assignment)
 
-**In class (Monday):** SpotBugs and PMD on Project Pulse from the command line, the report read by rule, three findings triaged live, a planted bug failing the gate, the custom logging rule run both ways, and NullAway on one package.
+**In class (Monday):** SpotBugs and PMD on Project Pulse from the command line, the report read by rule with an example of each rule, five findings triaged, a planted bug failing the gate, the custom logging rule run both ways, and NullAway on one package.
 
 **Team, own project (Friday's studio):**
 
-- **First run:** run the analyzers for your stack, record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
-- **Gate:** make the checks fail your pull request build, and make them required on `main`. Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch it fail.
+- **First run:** run the analyzers for your stack with the commands in [4.3](#43-the-first-run-without-touching-the-build) (SpotBugs and PMD by their coordinates, `npx eslint .`, `npm run type-check`), record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
+- **Gate:** copy the SpotBugs and PMD plugin blocks from [Project Pulse's `pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237) (point PMD at your own ruleset file) and the jobs from its pull request workflow, [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml). Then in GitHub: Settings, Rules, Rulesets, a new branch ruleset targeting `main`, "Require status checks to pass", and add each check. Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch the pull request go red and the merge button lock.
+- **Before you push, from now on:** `./mvnw verify`, not `./mvnw test`, plus the frontend checks ([4.5](#45-make-it-a-gate)).
 - **Write it down** ([4.7](#47-a-new-project-the-gate-comes-first)): a "Static analysis" subsection in section 8.2 of your architecture-of-record, and a charter line citing it: the gate command, suppressions carry reasons, and a baseline only shrinks.
 - **Your own rule** (optional, [4.8](#48-your-own-rules-turn-a-repeated-review-comment-into-a-check)): pick one convention from your section 8.2, have your agent draft a rule for it, and commit it with one example it flags and one it passes.
 
@@ -514,10 +518,11 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 ## 8. Summary / key takeaways
 
-- A tool that does not fail the build is decoration. Put every check in the pull request gate.
+- A tool that does not fail the build is decoration. Put every check in the pull request gate, and make it required on `main`, or red is only advice.
+- Run the gate before you push: `./mvnw verify`, not `./mvnw test`. Green tests are not a green gate.
 - Analyzers catch the boring, mechanical defects on every path; tests catch wrong behavior on the paths you run; review catches what the code is for. Run the machines before the reviewer.
 - Every analyzer approximates (Rice's theorem), so every report has false positives or false negatives. A clean report is not a proof, and trust is spent one useless warning at a time.
-- Read a report by rule first. Most of it is a few rules that do not fit; the bugs are few.
+- Read a report by rule first. The big rules are decisions a team makes once; the bugs hide in the small ones.
 - Every finding ends as a fix, a suppression with a checkable reason, or a rule turned off with its reason.
 - On an existing codebase, baseline what exists and fail only on what is new. The baseline only shrinks.
 - On a new project, turn the gate on before the first feature, and there is nothing to baseline. Record the setup in section 8.2 of the architecture-of-record, the rule in the charter, and each rule turned off in the tool's configuration.
@@ -535,6 +540,7 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 - Langley, A. "[Apple's SSL/TLS bug](https://www.imperialviolet.org/2014/02/22/applebug.html)." ImperialViolet, 22 February 2014.
 - Rice, H. G. "Classes of Recursively Enumerable Sets and Their Decision Problems." *Transactions of the American Mathematical Society* 74(2), 1953.
 - Banerjee, S., Clapp, L., and Sridharan, M. "NullAway: Practical Type-Based Null Safety for Java." ESEC/FSE 2019.
+- SEI CERT Oracle Coding Standard for Java, [OBJ11-J: Be wary of letting constructors throw exceptions](https://wiki.sei.cmu.edu/confluence/display/java/OBJ11-J.+Be+wary+of+letting+constructors+throw+exceptions), the source of `CT_CONSTRUCTOR_THROW`.
 - Winters, T., Manshreck, T., and Wright, H. *Software Engineering at Google*. O'Reilly, 2020. Chapter 20, Static Analysis.
 - Tool documentation: [SpotBugs](https://spotbugs.readthedocs.io/), [PMD](https://docs.pmd-code.org/latest/) and [its XPath rules](https://docs.pmd-code.org/latest/pmd_userdocs_extending_writing_xpath_rules.html), [Semgrep](https://semgrep.dev/docs/), [ArchUnit](https://www.archunit.org/), [NullAway](https://github.com/uber/NullAway/wiki), [JSpecify](https://jspecify.dev/), [Spring null safety](https://docs.spring.io/spring-framework/reference/core/null-safety.html), [CodeQL](https://codeql.github.com/docs/), [ESLint](https://eslint.org/docs/latest/), [Dependabot](https://docs.github.com/en/code-security/dependabot).
 
@@ -551,6 +557,9 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 9. Why can NullAway catch the `null` that `UserUtils.getUserId()` returns when no test does?
 10. Hadolint reports no findings on a Dockerfile whose image runs as root. Which rung of the ladder covers that, and with what tool?
 11. Your workflow uses `actions/checkout@v4`. What changes if you write the commit SHA instead, and what keeps it up to date?
+12. Your tests pass locally. You push, and the pull request goes red on PMD. What did you run, and what should you have run?
+13. Your pull request check is red, but the merge button still works. Why, and what do you change?
+14. A teammate says, "Our coding agent reviews every pull request, so we don't need SpotBugs." Answer them.
 
 ## Related
 

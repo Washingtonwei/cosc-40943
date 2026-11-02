@@ -1086,7 +1086,7 @@ Two limits, if there's time: a SHA pinned during the attack pins the attack, so 
 ::: cols
 **Delegate**
 
-Explain a rule. Fix the obvious ones. Group the report. Write the test for a real one. Draft a custom rule.
+Explain a rule. Fix the obvious ones and the style the team chose. Group the report. Write the test for a real one. Draft a custom rule.
 |||
 **Keep**
 
@@ -1094,7 +1094,7 @@ Every suppression, every rule turned off, every baseline entry kept. Which conve
 :::
 
 ::: ai
-Charter: run ./mvnw verify; baselines only shrink; no suppression without a reason in the pull request.
+Charter: run ./mvnw verify before you say done; baselines only shrink; no suppression without a reason in the pull request.
 :::
 
 ::: note
@@ -1105,7 +1105,8 @@ Charter: run ./mvnw verify; baselines only shrink; no suppression without a reas
 
 ::: steps
 - Wednesday: CI/CD, these checks in the pipeline
-- Friday studio: first run on your repository, gate, plant one bug, write it in 8.2; optional: one rule of your own
+- Friday studio: first run on your repository, gate required on main, plant one bug, write it in 8.2; optional: one rule of your own
+- From now on, before every push: ./mvnw verify, not ./mvnw test
 - Assignment 4, Triage the analyzers: released Wednesday, due date on the schedule
 :::
 
