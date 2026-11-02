@@ -21,7 +21,7 @@ By the end of this module, a student can:
 ## 2. Where it fits
 
 - **Prerequisites:** [AI-Assisted Implementation](implementation.md), which produces the trunk and leaf commits read here, and [Design-of-Record](design-of-record.md), whose test list is the reviewer's checklist.
-- **Leads into:** testing in week 9 (whether a test checks the contract), static analysis in week 10 (handing style to linters), and CI/CD in week 11 (review as one of the gates).
+- **Leads into:** testing in week 10 (whether a test checks the contract), static analysis in week 11 (the mechanical defects, caught before you review), and CI/CD in week 11 (review as one of the gates).
 - **How it's taught:** the Wednesday of week 8, on Project Pulse's reminder: the room reads the trunk commit from Monday's build, then reviews a seeded pull request, then watches the agent review the same pull request twice. Practiced in every later studio and in assignment 3.
 - **Course outcome it delivers:** [conducting effective code and design reviews, and giving and receiving engineering feedback](../syllabus.md#learning-outcomes) (outcome 7).
 
@@ -44,13 +44,13 @@ Review began as **formal inspection**: planned meetings, prepared reviewers, a m
 | Finding | Source | What you do with it |
 |---|---|---|
 | Developers expect review to find defects; it finds fewer than they expect. Knowledge transfer and team awareness are major outcomes, and understanding the change is the reviewer's hardest part. | Bacchelli and Bird 2013 | Review your teammates' code even where a bot reviews it too: on a team of six, review is how anyone learns the parts they did not write. |
-| About 75% of the defects reviews find are evolvability defects (readability, structure), not functional ones. | Mäntylä and Lassenius 2009 | Hand style to linters (week 10) and aim your attention at behavior and the contract. |
+| About 75% of the defects reviews find are evolvability defects (readability, structure), not functional ones. | Mäntylä and Lassenius 2009 | Hand style to linters (week 11) and aim your attention at behavior and the contract. |
 | Low review coverage and low participation are linked to up to two and five additional post-release defects per component. | McIntosh et al. 2014 | The rubber stamp has a measured cost. A review counts only if the reviewer took part. |
 | At Google, the median change is 24 lines with one reviewer, reviewed in under four hours. | Sadowski et al. 2018 | Keep pull requests small; review the same day. |
 | Effectiveness drops past about 400 lines in a session, above 500 lines an hour, and after 60 to 90 minutes. | Cohen 2006, a vendor study of Cisco, not peer reviewed | An 884-line agent pull request is not one sitting. Review it commit by commit. |
 | Participants with an AI assistant wrote less secure code and were more likely to believe it was secure. | Perry et al. 2023 | The author's confidence is not evidence, and the agent's even less. |
 
-**Review is one layer.** In Reason's Swiss cheese model, every defense has holes, and an accident happens when the holes line up. The agent, its tests, the linters, CI, and the human reviewer are separate slices; the reviewer's slice is the one that holds the contract, so that is where to look.
+**Review is one layer.** In Reason's Swiss cheese model, every defense has holes, and an accident happens when the holes line up. The agent, its tests, the linters, CI, and the human reviewer are separate slices; the reviewer's slice is the one that holds the contract, so that is where to look. The holes are real: Heartbleed got past its reviewer, and when it was disclosed it got past Coverity, one of the best commercial analyzers, too; Coverity shipped a heuristic for it weeks later ([Regehr](https://blog.regehr.org/?p=1128), [Synopsys](https://www.blackduck.com/blog/detecting-heartbleed-with-static-analysis.html)).
 
 ![Five slices of Swiss cheese: the agent, its tests, the linters, and CI check the code against itself and let a missing extension through holes that line up; the reviewer, checking against the use case, stops it](../slides/img/swiss-cheese-review.svg)
 
@@ -98,7 +98,9 @@ Checklists work when they are short and name what experts skip under pressure. W
 5. **Each extension's error path.** What happens when it fails, and does every `catch` that does not rethrow log the exception ([AI-Assisted Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need))?
 6. **The tests check the contract.** An expected value taken from the use case, not echoed from a mock.
 
-Style, formatting, unused variables, and duplication are real, and they are the linter's job from week 10. Leave them to a "Nit:" comment until then.
+**Start only when the gate is green.** Do not begin reading until the analyzers and tests pass ([Static Analysis 4.1](static-analysis.md#41-what-a-static-analyzer-can-and-cannot-tell-you)); a reviewer who spends attention on a missing brace is a person the pipeline wasted.
+
+Style, formatting, unused variables, and duplication are the linter's job from week 11; leave them to a "Nit:" comment until then. One exception: an unused result can mean a missing behavior ([Static Analysis](static-analysis.md#3-motivation) opens on one), so ask before you nit it.
 
 ### 4.5 Writing the review
 
@@ -205,6 +207,7 @@ Naming the contract changed what the agent read: the second run reviewed the cha
 - [AI-Assisted Implementation](implementation.md): where the trunk and leaf commits come from.
 - [Design-of-Record](design-of-record.md#412-the-design-gate): reviewing a design, and the test list.
 - [The Method](../method.md#phase-c-fan-out-per-use-case): Phase C, where every use case passes this review.
+- [Static Analysis](static-analysis.md#41-what-a-static-analyzer-can-and-cannot-tell-you): the mechanical defects, caught before the reviewer opens the pull request.
 - [Schedule](../schedule.md): when this is taught.
 
 <!--
@@ -228,5 +231,5 @@ Naming the contract changed what the agent read: the second run reviewed the cha
 ### Hand-offs
 
 - `MODULE-testing` (Fri Oct 23): the seeded pull request's test that cannot fail is a candidate opening example of a test without an oracle.
-- `MODULE-static-analysis` (week 10): the checklist's style items move to linters.
+- `MODULE-static-analysis` (week 11): the checklist's style items move to linters.
 -->

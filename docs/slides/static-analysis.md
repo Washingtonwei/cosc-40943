@@ -10,25 +10,58 @@ day: Monday
 Week 11 · Adding analyzers to Project Pulse, a codebase that never had them
 
 ::: note
-**Say:** Good morning. Two weeks ago we tested code by running it. Today a tool reads the code without running it, every line, every time, the same way. I added these tools to Project Pulse this weekend, so everything you see today is real output from my own code, warts included. Wednesday we put these checks in a pipeline, and Friday you add them to your own repository.
+**Say:** Good morning. Two weeks ago we tested code by running it. Today a tool reads the code without running it, every line, every time, the same way. I added these tools to Project Pulse in fall 2026, so everything you see today is real output from my own code as it stood then, warts included. Wednesday we put these checks in a pipeline, and Friday you add them to your own repository.
 :::
 
-## Installed is not running
+## One method from Project Pulse
 
-::: steps
-- ESLint, Prettier, vue-tsc: in Project Pulse since its first commit, October 2024
-- ESLint: 130 problems. vue-tsc: 18 type errors. Prettier: 75 files
-- npm run lint did not even start
-:::
+```java
+public Result addActivityComment(...) {
+    String comment = commentMap.get("comment");
+    Activity updatedActivity = this.activityService.addActivityComment(activityId, comment);
+    ActivityDto updatedActivityDto = this.activityToActivityDtoConverter.convert(updatedActivity);
+    return new Result(true, StatusCode.SUCCESS, "Add comment successfully", null);
+}
+```
 
-::: key
-A tool that does not fail the build is decoration.
+::: ask
+It compiled, and it sat on main from 2024 into 2026. What's wrong with it?
 :::
 
 ::: note
-**Say:** Confession first. The frontend has had a linter, a formatter, and a type checker for two years. None of them passes. The lint script points at a file that does not exist, so it crashed on start, and nobody noticed for two years, including me. Why? Because nothing ran them. No pipeline step, no gate. The backend was simpler: no analyzer at all.
+**Say:** Real code from my own project, on main from its first commit in 2024 into fall 2026. Take thirty seconds. *[Wait for "updatedActivityDto is never used".]* Right: it builds a DTO and throws it away, then returns null. Two tools found that in a few seconds, without running a single test. SpotBugs called it a dead store; PMD called it an unused local variable. Keep the question "should it have returned the DTO?" in your pocket; we come back to it.
+:::
 
-*[Ask: does your team's repository have a linter installed? Does anything fail when it complains?]*
+## You've seen one already
+
+| Where you saw it | The analyzer |
+|---|---|
+| Gray "variable is never used" | IntelliJ, VS Code |
+| Red squiggle in a .js file | ESLint |
+| "Object is possibly 'undefined'" | TypeScript |
+| GitHub email: vulnerable library | Dependabot, CodeQL |
+| "Quality gate failed" at your internship | SonarQube |
+
+::: key
+Static analysis: a program that reads your code without running it.
+:::
+
+::: note
+**Say:** That's static analysis: a program reads your code, never runs it, and points at likely mistakes. You've met them without the name. Who has seen a SonarQube quality gate at an internship? *[Hands.]* The unused variable is the small end. The same idea finds user input flowing into a SQL query, a password pushed to GitHub, a library with a known hole.
+:::
+
+## So why doesn't everyone run them?
+
+::: steps
+- They add no feature
+- An afternoon to set up
+- First run: hundreds of warnings, most on code that works
+:::
+
+Developers give up on them over the noise. Johnson et al., ICSE 2013
+
+::: note
+**Say:** Let me make the case against today's topic, because some of you are already making it. No feature for the client, an afternoon of setup, and a first run that is a wall of warnings. Plenty of developers try them and quit. So why bother?
 :::
 
 ## goto fail
@@ -43,20 +76,98 @@ if ((err = SSLHashSHA1.final(&hashCtx, &hashOut)) != 0)
 
 CVE-2014-1266, iOS and macOS, February 2014
 
-::: note
-**Say:** Apple, 2014. One line copied twice. The second goto always runs, so the function jumps past the signature check, and anyone on your coffee-shop Wi-Fi could impersonate your bank. The lines after the second goto can never run. That is exactly what an unreachable-code warning reports. The compiler had the warning. The build did not turn it on.
+::: key
+Some mistakes are too boring for people to catch. A tool does not get bored.
 :::
 
-## Agents write the same bugs, faster
+::: note
+**Say:** Apple, 2014. One line copied twice. The second goto always runs, so the code jumps past the security check, and anyone on your coffee-shop Wi-Fi could pretend to be your bank. In plain sight, in security code, shipped on millions of iPhones and Macs. Your eyes slide right over it. Clang even had a warning for this, unreachable code, but it is not in `-Wall`, so a build with "all" warnings on said nothing.
+:::
+
+## Project Pulse shipped type errors
+
+::: steps
+- vue-tsc: in Project Pulse since its first commit, October 2024
+- Fall 2026: 18 type errors on every deploy
+- The deploy ran build-only, which skips the checker
+:::
+
+::: key
+A tool that does not fail the build is decoration.
+:::
+
+::: note
+**Say:** Not only Apple. Confession: my frontend had a type checker from its first commit, and in fall 2026 every deploy shipped 18 type errors, because the deploy called the script that skips it. Nothing failed, so nobody looked, including me. The linter and formatter were the same story; the lint script didn't even start.
+
+*[Ask: does your team's repository have a linter installed? Does anything fail when it complains?]*
+:::
+
+## AI: more need, less cost
+
+::: cols
+**The need went up**
+
+The agent writes faster than you can read, and makes these mistakes too.
+|||
+**The cost went down**
+
+The tool flags it; the agent fixes it and runs the check again.
+:::
 
 ::: ai
-Copilot completed 89 security scenarios: 1,689 programs, about 40% vulnerable.
+Veracode, 2025: 100+ AI models, 45% of their code failed security tests.
 :::
 
-Pearce et al., IEEE S&P 2022. Found with CodeQL.
+::: note
+**Say:** AI makes this matter more. An agent writes in ten minutes what you'd read in an hour, and in Veracode's test nearly half of what the models wrote failed security checks. The good news: the tedious part of static analysis was always fixing hundreds of small findings, and that's what an agent is good at. It reads the warning, fixes the line, runs the check again, without you.
+:::
+
+## Fail fast
+
+::: steps
+- Static analysis: seconds, and the program never runs
+- Tests: minutes
+- A reviewer: an hour
+:::
+
+::: key
+If a cheap check can reject the change, don't spend the expensive one.
+:::
 
 ::: note
-**Say:** This study checked Copilot's code with CodeQL, the same tool you will turn on this week. An agent writes your feature in ten minutes, and it writes the null dereference and the unescaped query in the same ten minutes, then tells you it's done. The analyzer is the reviewer that reads all of it.
+**Say:** So the tool goes first. Why first? Because it's cheap and fast, and it doesn't need the program running. If a few seconds of analysis can reject a change, there's no reason to spend ten minutes on tests or an hour of a reviewer's time. That's "fail fast." Notice it's an order of cost, not of importance. The most important question, does this do what the client needs, goes last, so a person gets to ask it with nothing boring in the way.
+:::
+
+## Three checks, three kinds of problem
+
+| | Asks | Cannot see | The story |
+|---|---|---|---|
+| **Static analysis** | Does any path break a known rule? | What the code is for | goto fail |
+| **Testing** | Does it do what we checked, on the inputs we ran? | Cases nobody wrote | CrowdStrike |
+| **Code review** | Is this what the use case asks for? | Line 600 of a tired afternoon | Heartbleed |
+
+::: key
+The gate lets you read an agent's 800-line pull request for intent, not for null checks.
+:::
+
+::: note
+**Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace.
+:::
+
+## Why every analyzer guesses
+
+::: steps
+- Can this line ever run? Undecidable: the halting problem reduces to it
+- Rice's theorem: every nontrivial question about what a program does is undecidable
+- So an analyzer that always finishes must approximate
+:::
+
+::: key
+No analyzer is both sound and complete. One that claims to be is claiming to solve the halting problem.
+:::
+
+::: note
+**Say:** Theory of computation, cashing in. Can this null ever be dereferenced? Can this input ever reach that query? Those are questions about what the program does, and Rice's theorem says every nontrivial one is undecidable. So a tool that finishes in seconds has to guess. Sound means it never misses a real bug; complete means it never cries wolf. You can't have both. Every tool you use today picks a trade-off, usually leaning toward fewer false alarms.
 :::
 
 ## Two ways to be wrong
@@ -65,10 +176,16 @@ Pearce et al., IEEE S&P 2022. Found with CodeQL.
 **False positive**
 
 A warning on code that is fine. Costs trust.
+
+Not complete.
 |||
 **False negative**
 
 A bug the tool never mentions. A clean report is not proof.
+
+Not sound.
+
+Heartbleed: Coverity missed it too.
 :::
 
 ::: key
@@ -76,7 +193,7 @@ Google's target: under 10% of warnings ignored by developers.
 :::
 
 ::: note
-**Say:** The tool reasons about every path without running any, so it approximates, and approximations err both ways. The expensive error is the false positive, because it spends trust. Google found developers act on a tool only if most of what it says is worth acting on. Their bar: fewer than one in ten warnings ignored. Every rule you turn on spends some of that trust.
+**Say:** So the guesses go wrong in two directions. Remember Heartbleed from code review? The reviewer missed it, and so did Coverity, one of the best commercial analyzers; they added a heuristic for it weeks later. The holes lined up. The expensive error day to day, though, is the false positive, because it spends trust. Google found developers act on a tool only if most of what it says is worth acting on. Their bar: fewer than one in ten warnings ignored. Every rule you turn on spends some of that trust.
 :::
 
 ## {.center}
@@ -91,18 +208,18 @@ An analyzer that flags every line has zero false negatives.
 
 ## The ladder
 
-| Rung | Catches | Java | Vue |
-|---|---|---|---|
-| Compiler | types, unreachable code | javac | vue-tsc |
-| Formatter | layout | Spotless | Prettier |
-| Linter | known bug patterns | SpotBugs, PMD | ESLint |
-| Null types | null dereferences | NullAway | strictNullChecks |
-| Dataflow | input reaching SQL, HTML | CodeQL | CodeQL |
-| Dependencies | known CVEs | Dependabot | Dependabot |
-| Containers | root user, bad images | Hadolint, Trivy | |
+| Rung | Catches | Reads | Java | Vue |
+|---|---|---|---|---|
+| Compiler | types, unreachable code | parse, types | javac | vue-tsc |
+| Formatter | layout | syntax tree | Spotless | Prettier |
+| Linter | known bug patterns | syntax tree, bytecode | SpotBugs, PMD | ESLint |
+| Null types | null dereferences | a type system | NullAway | strictNullChecks |
+| Dataflow | input reaching SQL, HTML | values across methods | CodeQL | CodeQL |
+| Dependencies | known CVEs | lockfile vs. database | Dependabot | Dependabot |
+| Containers | root user, bad images | Dockerfile, image | Hadolint, Trivy | |
 
 ::: note
-**Say:** Each rung catches a different class of problem and needs its own tool. Cheap rungs at the top run first. SonarQube bundles several rungs in one product and is common in industry; we use separate free tools that run in your own build with no account. Today we climb this ladder on Project Pulse.
+**Say:** Each rung catches a different class of problem and needs its own tool. Cheap rungs at the top run first. SonarQube bundles several rungs in one product and is common in industry; we use separate free tools that run in your own build with no account. Look at the Reads column: each rung is a course you took. Parsing and the syntax tree from compilers, type systems from programming languages, dataflow from compilers again. Today we start on the linter rung, where the findings are, then climb.
 :::
 
 ## Demo: the first run {.center}
@@ -205,7 +322,7 @@ Delete the line, or return the DTO? Who decides?
 :::
 
 ::: note
-**Say:** SpotBugs and PMD both flag this: a DTO is built and thrown away, and the response carries null. Wasted work for sure. But the fix? The frontend's type for this response says `data: null`. The use case says whether the caller needs the updated activity. The tool found the inconsistency; the specification settles it.
+**Say:** Our first slide, back again. The DTO is built and thrown away, and the response carries null. Wasted work for sure. But the fix? The frontend's type for this response says `data: null`. The use case says whether the caller needs the updated activity. The tool found the inconsistency; the specification settles it.
 
 *[Take two answers. Point out that both are defensible and the spec is the tiebreaker.]*
 :::
@@ -291,6 +408,38 @@ A suppression without a reason is a bug report you deleted.
 **Say:** Each tool has a site-level suppression; PMD's is `// NOPMD - reason`. Review suppressions like code. "False positive" is not a reason. "Both entities come from one persistence context" is a reason, because someone can check it.
 :::
 
+## Make it a gate: where the checks run
+
+| Where | What | Why |
+|---|---|---|
+| Editor | IntelliJ, SonarQube for IDE, ESLint | Seconds |
+| Pull request | mvn verify, ESLint, Hadolint, CodeQL | The gate |
+| Schedule | Dependabot, CodeQL on main | New CVEs, old code |
+
+::: key
+Shift left: the earlier the check, the cheaper the fix.
+:::
+
+::: note
+**Say:** Editor is fastest. A pre-commit hook is optional and skippable, so never your only gate. The pull request is the gate: nothing merges red. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
+:::
+
+## Check in CI, fix on your machine
+
+::: steps
+- Locally: eslint --fix, prettier --write
+- In CI: eslint, prettier --check, npm run type-check
+- Deploy with the checks too: build, never build-only
+:::
+
+::: key
+A CI job that fixes the code changes what it was asked to check.
+:::
+
+::: note
+**Say:** Fixing variants on your laptop, checking variants in the gate. And the deploy has to run the same checks: Project Pulse deployed with build-only, which skips the type checker, and that's how 18 type errors reached production. Keep the gate fast and the rules few; a ten-minute check gets skipped. And watch it fail once before you trust it.
+:::
+
 ## {.center}
 
 ::: joke
@@ -331,7 +480,7 @@ SpotBugs and PMD `check` in `mvn verify`
 Frontend checks: report only, for now. Actions pinned to commit SHAs.
 
 ::: note
-**Say:** This is the pull request I opened this weekend. Two plugins in the pom, two baseline files, a workflow that runs verify on every pull request. The frontend checks run but don't block yet, because none of them passes; each becomes blocking once its findings are fixed or baselined. Warn first, then block, and don't stay at warn.
+**Say:** This is the pull request that added them, #104. Two plugins in the pom, two baseline files, a workflow that runs verify on every pull request. The frontend checks run but don't block yet, because none of them passes; each becomes blocking once its findings are fixed or baselined. Warn first, then block, and don't stay at warn.
 :::
 
 ## Demo: watch the gate fail {.center}
@@ -370,6 +519,19 @@ Upgrading PMD renamed a rule: 12 baselined findings came back as new.
 **Say:** Two lessons from my own pull request. Coarse baselines leak: PMD's only names the class and the rule. And when I upgraded PMD to the current release, the findings were identical, but one rule had been renamed, so 12 old findings failed the build as if new. Upgrade an analyzer in its own pull request and compare counts.
 :::
 
+## Upgrade, and format once
+
+::: steps
+- ESLint 8: end of life October 2024. An outdated analyzer is a finding too
+- Upgrade an analyzer in its own pull request; compare counts by rule
+- Format the whole codebase in one commit, alone, early
+- List that commit in .git-blame-ignore-revs, then gate prettier --check
+:::
+
+::: note
+**Say:** Analyzers age like any dependency. Project Pulse still ran ESLint 8 in fall 2026, two years past end of life. Upgrade it on its own pull request, because, as you just saw with PMD, an upgrade can change what the baseline means. Formatting is a decision made once: one big commit, listed in .git-blame-ignore-revs so blame skips it, and from then on the formatter is part of the gate.
+:::
+
 ## Your project: gate first
 
 ::: steps
@@ -403,20 +565,113 @@ Not the specification, and not a key decision.
 **Say:** No new document. Setting up analyzers is a convention every component follows, so it goes where your other conventions live: section 8.2. The charter carries the one-liner, because the charter is what your agent always reads. A rule you turn off goes in the tool's configuration, next to the exclusion, because that's where the tool enforces it. Why not the specification? The spec says what the product does for your client, and your client did not ask for SpotBugs. Why not a key decision? You can swap an analyzer in an afternoon. Project Pulse's entry is in its architecture-of-record now, pull request 107.
 :::
 
-## Where the checks run
+## A convention no tool ships
 
-| Where | What | Why |
-|---|---|---|
-| Editor | IntelliJ, SonarQube for IDE, ESLint | Seconds |
-| Pull request | mvn verify, ESLint, Hadolint, CodeQL | The gate |
-| Schedule | Dependabot, CodeQL on main | New CVEs, old code |
+```java
+@ExceptionHandler(Exception.class)
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+Result handleOtherException(Exception ex) {
+    return new Result(false, StatusCode.INTERNAL_SERVER_ERROR,
+        "A server internal error occurs.", ex.getMessage());
+}
+```
 
-::: key
-Shift left: the earlier the check, the cheaper the fix.
+::: ask
+Every unexpected exception ends here. What's missing?
 :::
 
 ::: note
-**Say:** Editor is fastest. A pre-commit hook is optional and skippable, so never your only gate. The pull request is the gate: nothing merges red. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. Wednesday we wire all this into the pipeline.
+**Say:** Every rule so far was written by strangers: the SpotBugs and PMD authors. They know Java's common mistakes; they don't know your conventions. Project Pulse's last-resort handler turns any unexpected exception into a 500, and logs nothing. *[Wait for "no log".]* Right: at 2 a.m. there's no stack trace anywhere. Nothing here is wrong as Java. It's wrong as Project Pulse. And code review's checklist asks about it on every error path, so reviewers keep writing the same comment.
+:::
+
+## The rule: a query over the syntax tree
+
+```xpath
+//MethodDeclaration
+  [ModifierList/Annotation[@SimpleName = 'ExceptionHandler']]
+  [ModifierList/Annotation[@SimpleName = 'ResponseStatus']
+     //FieldAccess[@Name = 'INTERNAL_SERVER_ERROR']]
+  [not(.//MethodCall[@MethodName = ('error', 'warn')]
+                    [*[1][matches(@Name, '^(log|logger|LOG|LOGGER)$')]])]
+```
+
+PMD custom rule, in backend/config/pmd-ruleset.xml
+
+::: note
+**Say:** PMD parses every file into an abstract syntax tree, the tree you built in compilers. A custom rule is an XPath query over that tree; every node it returns is a finding. Read it aloud: a method that handles an exception, answers 500, and never calls error or warn on a logger. It goes in the team's ruleset, so mvn verify runs it with everything else. On Project Pulse it finds exactly one method.
+:::
+
+## Demo: the rule, both ways {.center}
+
+`./mvnw verify -DskipTests`: fails on handleOtherException
+
+Add a logger and `LOGGER.error("Unhandled exception", ex);`: passes
+
+::: key
+A rule is code. Test it with one example it must flag and one it must pass.
+:::
+
+::: note
+**Say:** *[Run state 4 from the plan.]* Red, one finding, the handler. Now I add the log line. Green. Without the passing example I can't tell a rule that works from one that matches everything; without the failing one, from one that matches nothing. Keep both as the rule's test.
+:::
+
+## {.center}
+
+::: joke
+A reviewer who writes the same comment three times is a linter with feelings.
+:::
+
+::: note
+**Say:** Third time you type "this swallows the exception", stop typing it. Write the rule.
+:::
+
+## Your own rules need triage too
+
+::: steps
+- First draft: "every catch that does not rethrow must log"
+- It flagged 1 of Project Pulse's 11 catch blocks: PathVariables.readId
+- That catch returns null on purpose: unresolvable means access denied
+:::
+
+::: key
+Narrow the rule, or suppress that site with its reason.
+:::
+
+::: note
+**Say:** My first draft was broader, and it fired on a catch that is correct by design. Same three verdicts as any shipped rule. Your own rules are approximations too; Rice's theorem doesn't exempt you.
+:::
+
+## Same idea, other tools
+
+| Tool | The rule is | Good for |
+|---|---|---|
+| PMD | XPath over the Java syntax tree | Conventions, in your build |
+| Semgrep | A pattern that looks like the code | Many languages |
+| ArchUnit | A JUnit test over packages | "No controller calls a repository" |
+| ESLint | An AST selector in the config | Frontend conventions |
+
+::: note
+**Say:** Semgrep is the friendliest: the rule looks like the code, with placeholders. ArchUnit writes architecture rules as ordinary tests. ESLint's no-restricted-syntax takes a selector over the tree, no plugin needed. Same idea everywhere: a convention, written as a query, run on every pull request.
+:::
+
+## The agent drafts, you specify
+
+::: cols
+**The agent**
+
+Drafts the XPath or Semgrep rule in a minute.
+|||
+**You**
+
+Choose the convention. Write the two examples.
+:::
+
+::: ai
+Writing a rule used to cost more than repeating the comment. Now it doesn't.
+:::
+
+::: note
+**Say:** This is where agents change the economics. Teams used to repeat the review comment because writing a rule took an afternoon. An agent drafts it in a minute. The two examples are the rule's specification, so they're yours, and so is the choice of which convention deserves a rule. Then the rule holds the agent's next thousand lines to it, without anyone repeating the comment. Pattern rules see one method at a time, though. Some bugs travel.
 :::
 
 ## Null safety: JSpecify and NullAway
@@ -475,7 +730,7 @@ flowchart LR
 CodeQL default setup: free on public repositories, Java needs no build.
 
 ::: note
-**Say:** CodeQL follows untrusted data. From a source, like a request parameter, to a sink, like a SQL string, and asks whether it passed a sanitizer. Project Pulse's search code goes through the JPA Criteria API, and Hibernate binds the text as a parameter, so no SQL string is built from input. That's the sanitizer CodeQL looks for. Turning it on is a checkbox in Settings, Code security.
+**Say:** CodeQL turns your code into a database and queries it in QL, a Datalog-style language: databases, applied to programs. The query is a dataflow analysis, from compilers. CodeQL follows untrusted data. From a source, like a request parameter, to a sink, like a SQL string, and asks whether it passed a sanitizer. Project Pulse's search code goes through the JPA Criteria API, and Hibernate binds the text as a parameter, so no SQL string is built from input. That's the sanitizer CodeQL looks for. Turning it on is a checkbox in Settings, Code security.
 :::
 
 ## CodeQL's one finding
@@ -491,7 +746,7 @@ Is Project Pulse open to cross-site request forgery?
 :::
 
 ::: note
-**Say:** I turned CodeQL on this weekend. One alert, rated high: we disabled CSRF protection. CSRF works by tricking your browser into sending a request with credentials the browser attaches by itself, usually a session cookie.
+**Say:** I turned CodeQL on in fall 2026. One alert, rated high, and the same triage as this morning: we disabled CSRF protection. CSRF works by tricking your browser into sending a request with credentials the browser attaches by itself, usually a session cookie.
 
 *[Take answers. Then:]* Project Pulse has no cookie to borrow. The token travels in an Authorization header that our own code sets, and the server keeps no session at all: it's stateless. So this is the standard setup for a token API, and the alert is a false positive in context. Same lesson as getAuthentication: the tool is right about the code and wrong about the system.
 
@@ -519,7 +774,7 @@ COPY --from=builder /builder/extracted/application/ ./
 ENTRYPOINT ["java", "-jar", "application.jar"]
 ```
 
-Hadolint: no findings. The app runs as root.
+Hadolint: no findings. The app ran as root (fall 2026).
 
 ::: note
 **Say:** Hadolint checks the instructions you wrote. A missing USER line isn't an instruction, so it's invisible. An image scanner like Trivy checks the built image, user included. Every tool has a blind spot; know which rung covers what.
@@ -563,29 +818,16 @@ The best way into a secure pipeline is through its security scanner.
 Two limits, if there's time: a SHA pinned during the attack pins the attack, so read action updates, never auto-merge them; and an action can fetch other code by tag inside itself.
 :::
 
-## The frontend
-
-::: steps
-- ESLint 8: end of life since October 2024. Flat config in ESLint 9
-- vue-tsc: 18 errors, and the deploy runs build-only, which skips it
-- Prettier: format everything once, in one commit, then gate it
-- CI runs the checking flags, never --fix
-:::
-
-::: note
-**Say:** An outdated analyzer is a finding too; the upgrade is its own pull request. The type checker is the frontend's compiler, and the deploy skips it, so type errors ship. Formatting is a decision made once; list that big reformat commit in `.git-blame-ignore-revs`. And in CI, check, don't fix: a job that changes the code isn't checking it.
-:::
-
 ## The agent and the analyzer
 
 ::: cols
 **Delegate**
 
-Explain a rule. Fix the obvious ones. Group the report. Write the test for a real one.
+Explain a rule. Fix the obvious ones. Group the report. Write the test for a real one. Draft a custom rule.
 |||
 **Keep**
 
-Every suppression, every rule turned off, every baseline entry kept.
+Every suppression, every rule turned off, every baseline entry kept. Which conventions get a rule.
 :::
 
 ::: ai
@@ -600,8 +842,8 @@ Charter: run ./mvnw verify; baselines only shrink; no suppression without a reas
 
 ::: steps
 - Wednesday: CI/CD, these checks in the pipeline
-- Friday studio: first run on your repository, gate, plant one bug, write it in 8.2
-- Assignment 4, Triage the analyzers: due Fri Nov 13, released Wednesday
+- Friday studio: first run on your repository, gate, plant one bug, write it in 8.2; optional: one rule of your own
+- Assignment 4, Triage the analyzers: released Wednesday, due date on the schedule
 :::
 
 ::: key

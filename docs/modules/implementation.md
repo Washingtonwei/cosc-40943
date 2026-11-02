@@ -176,6 +176,8 @@ The agent imitates the code around it, so the logging rule has to be written whe
  }
 ```
 
+A reviewer should not have to catch this twice: [Static Analysis 4.8](static-analysis.md#48-your-own-rules-turn-a-repeated-review-comment-into-a-check) turns it into a rule the build enforces.
+
 **Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's `WeeklyReminderScheduler` gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log. That breaks the rule: an operator who needs the address can look it up from the ID, and a log is copied to more places than the database is (`CO-ferpa`). The fix is one argument, `student.getId()`. An agent asked to "add logging" will not make that call for you; the reviewer has to ask.
 
 ### 4.10 One engineer, several agents
@@ -311,9 +313,9 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 
 ### Hand-offs
 
-- Security beyond 4.7 (the old `MODULE-security`, folded in 2026-10-11, `DECISION-security-folded`): a model inside the team's own product (Project Pulse's `CO-server-side-llm-proxy`, `FR-AI-source-material-context`, `SI-llm-json`) goes to whichever week first builds one; taint to `MODULE-static-analysis` (week 10); secrets and known-vulnerable dependencies in the pipeline to `MODULE-ci-cd` (week 11). The deleted page's text is in the website repository's history.
+- Security beyond 4.7 (the old `MODULE-security`, folded in 2026-10-11, `DECISION-security-folded`): a model inside the team's own product (Project Pulse's `CO-server-side-llm-proxy`, `FR-AI-source-material-context`, `SI-llm-json`) goes to whichever week first builds one; taint to `MODULE-static-analysis` (week 11); secrets and known-vulnerable dependencies in the pipeline to `MODULE-ci-cd` (week 11). The deleted page's text is in the website repository's history.
 - The first test, given/when/then read off a use case, moved to `MODULE-testing`'s drafting notes on 2026-10-11, taught Fri Oct 23.
-- `MODULE-static-analysis` (week 10): PMD's `SystemPrintln` and `AvoidPrintStackTrace`. No analyzer flags missing logging, so that stays a review item for `MODULE-code-review`.
+- `MODULE-static-analysis` (week 11): PMD's `SystemPrintln` and `AvoidPrintStackTrace`. The silent catch-all is the worked example of a custom rule (`ServerErrorHandlerMustLog`, static analysis 4.8).
 - `MODULE-observability` (week 12): reading logs, Actuator `/loggers`, correlation IDs with MDC, structured output, handing the log to the agent when debugging.
 - Assignment 5 (*Hunt the bug*, Fri Nov 20): plant the bug so it surfaces as a 500 through the silent catch-all; the student fixes it and adds the regression test and the log line that would have localized it. **Blocking:** fix logging in Project Pulse `main` before that upstream is stamped. Course status open item 17 still applies.
 - Assignment 3 (*Add a use case*, Fri Nov 6) requires trunk-first commits, ungraded this term; grading them is in `course-design/next-offering.md`. Optionally graded against the logging rule.

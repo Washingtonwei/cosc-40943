@@ -35,7 +35,7 @@ By the end of this module, a student can:
 
 ## 2. Where it fits
 
-- **Prerequisites:** testing (the pyramid, and the oracle named there), static analysis in week 10 (the half that never runs the program), and AI-assisted implementation.
+- **Prerequisites:** testing (the pyramid, and the oracle named there), static analysis in week 11 (the half that never runs the program), and AI-assisted implementation.
 - **Leads into:** observability and debugging, which shares this week, then maintainability and software metrics in week 13.
 - **How it's taught:** part of week 12, sharing Monday and Wednesday with observability and debugging; Friday studio applies it to your own repository. These notes go further than class time does, so read them if the topic interests you.
 - **Course outcome it delivers:** [applying static and dynamic analysis to reason about quality, maintainability, and technical debt](../syllabus.md#learning-outcomes) (outcome 5).
@@ -52,7 +52,7 @@ By the end of this module, a student can:
 
 Static analysis reads the blueprint. Dynamic analysis drives the car.
 
-| | Static analysis (week 10) | Dynamic analysis (this week) |
+| | Static analysis (week 11) | Dynamic analysis (this week) |
 |---|---|---|
 | Runs the program | no | yes |
 | Examples | compiler, SpotBugs, ESLint, SonarQube | unit tests, fuzzers, profilers, sanitizers |

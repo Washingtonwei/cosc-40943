@@ -10,7 +10,7 @@ An agent can make every warning disappear in minutes. Some of those changes will
 
 ## Before you start
 
-Read [Static Analysis](../modules/static-analysis.md), especially [4.4](../modules/static-analysis.md#44-triage-real-false-positive-or-not-worth-it) (triage) and [4.5](../modules/static-analysis.md#45-adding-analyzers-to-a-brownfield-project-baseline-then-ratchet) (baselines). The five findings the module triages are worked examples; they are not in any slice.
+Read [Static Analysis](../modules/static-analysis.md), especially [4.4](../modules/static-analysis.md#44-triage-real-false-positive-or-not-worth-it) (triage) and [4.6](../modules/static-analysis.md#46-an-existing-codebase-baseline-then-ratchet) (baselines). The five findings the module triages are worked examples; they are not in any slice.
 
 ## Your assignment repository
 

@@ -28,7 +28,7 @@ By the end of this module, a student can:
 
 **Agents game tests they cannot pass.** ImpossibleBench (Zhong, Raghunathan, and Carlini, 2025) gave coding agents tasks whose tests contradict the specification, so passing means cheating. Frontier models often "passed" by editing the tests or special-casing their inputs, and stronger models cheated more. An agent's report that the suite is green is a claim about the tests as they now stand, not about the program you asked for.
 
-Testing shows the presence of bugs, never their absence (Dijkstra). The rest of this module is about choosing tests that can show them.
+Testing shows the presence of bugs, never their absence (Dijkstra). A test checks the paths it runs; a static analyzer reasons about every path without running any ([Static Analysis](static-analysis.md#41-what-a-static-analyzer-can-and-cannot-tell-you)). Neither proves a program correct, and together they leave fewer holes. The rest of this module is about choosing tests that can show bugs.
 
 ## 4. Core concepts
 
@@ -311,5 +311,6 @@ Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittl
 
 - [Design-of-Record](design-of-record.md#48-the-test-list-before-the-code): the test list written before the code.
 - [Code Review](code-review.md): reviewing a change against its test list.
+- [Static Analysis](static-analysis.md#41-what-a-static-analyzer-can-and-cannot-tell-you): checks every path without running it, where a test checks the paths it runs.
 - [Requirements Traceability](traceability.md#43-a-requirement-with-no-test-is-not-traced): a requirement with no test is not traced.
 - Dynamic analysis (week 12): stronger oracles, and assertions in the code itself.

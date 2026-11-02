@@ -109,7 +109,7 @@ Here is a picture from safety engineering, James Reason's Swiss cheese model. Ev
 
 Count the slices on your pull request. The agent. Its tests. The linters. Continuous integration. Notice what they all have in common. They check the code against itself. The agent wrote the tests from the code it wrote.
 
-Point at the red line. That is a missing extension, like Heartbleed's missing check. It goes straight through all four, because their holes line up: none of them knows the extension was supposed to exist.
+Point at the red line. That is a missing extension, like Heartbleed's missing check. It goes straight through all four, because their holes line up: none of them knows the extension was supposed to exist. And the holes are real: when Heartbleed was disclosed, Coverity, one of the best commercial analyzers, missed it too.
 
 There is one slice that checks the code against what the client actually asked for. The purple one. That slice is you.
 
@@ -243,6 +243,8 @@ That is what a review checklist is for. Not to teach you something. To catch wha
 
 ## The review checklist
 
+First: the gate is green. Analyzers and tests pass before you read.
+
 ::: steps
 - Each test-list row: covered, or named as missing.
 - Trunk and security commits read in full.
@@ -252,7 +254,7 @@ That is what a review checklist is for. Not to teach you something. To catch wha
 :::
 
 ::: note
-So here is ours. Five items.
+So here is ours. Before any of it, the gate is green: the analyzers and tests pass, so you never spend your attention on a missing brace. Then five items.
 
 Each test-list row: covered by a test, or named as missing. The trunk and security commits read in full. The logic matches the description and the use case. Each extension's error path, and whether it logs. And the tests check the contract, not a mock's echo. If a test only checks the value a mock was told to return, it cannot fail. It is a test of the mock.
 
