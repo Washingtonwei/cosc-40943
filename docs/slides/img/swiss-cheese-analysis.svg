@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">Each slice stops something: the Swiss cheese model with static analysis, tests, and review</title>
+<desc id="d">Three slices of cheese in a row: static analysis, tests, and you the reviewer. A duplicated goto fail line hits the static analysis slice where it has no hole and is stopped there. A missing extension passes through aligned holes in static analysis and tests, because neither knows what the code is for, and is stopped by the reviewer, who checks against the use case. After James Reason, 2000.</desc>
+<rect width="1000" height="400" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">SWISS CHEESE, AGAIN</text>
+<text x="972" y="36" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">after James Reason, 2000</text>
+<path d="M300,74 v-10 H572 v10" fill="none" stroke="#5BE0E6" stroke-width="2"/>
+<text x="436" y="56" text-anchor="middle" fill="#5BE0E6" font-size="18" font-weight="700">against rules and runs</text>
+<path d="M740,74 v-10 H812 v10" fill="none" stroke="#9B6BD6" stroke-width="2"/>
+<text x="776" y="56" text-anchor="middle" fill="#C9A8F0" font-size="18" font-weight="700">against the use case</text>
+<line x1="40" y1="150" x2="288" y2="150" stroke="#FF4D4D" stroke-width="5" stroke-linecap="round"/>
+<text x="40" y="136" fill="#FF8080" font-size="16" font-weight="700">goto fail;</text>
+<text x="40" y="178" fill="#FF8080" font-size="16" font-weight="700">copied twice</text>
+<line x1="40" y1="250" x2="728" y2="250" stroke="#FF4D4D" stroke-width="5" stroke-linecap="round"/>
+<text x="40" y="236" fill="#FF8080" font-size="16" font-weight="700">a missing</text>
+<text x="40" y="278" fill="#FF8080" font-size="16" font-weight="700">extension</text>
+<polygon points="300,110 360,80 372,86 312,116" fill="#FFD08A"/>
+<polygon points="360,80 372,86 372,306 360,300" fill="#C98A2E"/>
+<path d="M300,110 L360,80 L360,300 L300,330 Z M326,120 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M308,300 a8,10 0 1,0 16,0 a8,10 0 1,0 -16,0 Z M317,250 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="336" y="362" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="700">Static analysis</text>
+<text x="336" y="384" text-anchor="middle" fill="#9AA3B5" font-size="15">every path, run or not</text>
+<polygon points="500,110 560,80 572,86 512,116" fill="#FFD08A"/>
+<polygon points="560,80 572,86 572,306 560,300" fill="#C98A2E"/>
+<path d="M500,110 L560,80 L560,300 L500,330 Z M512,135 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z M534,190 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M517,250 a13,19 0 1,0 26,0 a13,19 0 1,0 -26,0 Z" fill="#FFB443" fill-rule="evenodd"/>
+<text x="536" y="362" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="600">Tests</text>
+<text x="536" y="384" text-anchor="middle" fill="#9AA3B5" font-size="15">the paths you ran</text>
+<polygon points="740,110 800,80 812,86 752,116" fill="#B58BE6"/>
+<polygon points="800,80 812,86 812,306 800,300" fill="#6E46A3"/>
+<path d="M740,110 L800,80 L800,300 L740,330 Z M754,135 a8,11 0 1,0 16,0 a8,11 0 1,0 -16,0 Z M771,190 a9,12 0 1,0 18,0 a9,12 0 1,0 -18,0 Z" fill="#9B6BD6" fill-rule="evenodd"/>
+<text x="776" y="362" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="800">You</text>
+<text x="776" y="384" text-anchor="middle" fill="#9AA3B5" font-size="15">what the code is for</text>
+<g stroke="#FF4D4D" stroke-width="4" stroke-linecap="round"><line x1="276" y1="138" x2="292" y2="162"/><line x1="292" y1="138" x2="276" y2="162"/></g>
+<text x="388" y="156" fill="#F2EDE3" font-size="17" font-weight="700">stopped</text>
+<g stroke="#FF4D4D" stroke-width="4" stroke-linecap="round"><line x1="716" y1="238" x2="732" y2="262"/><line x1="732" y1="238" x2="716" y2="262"/></g>
+<text x="828" y="256" fill="#F2EDE3" font-size="17" font-weight="700">stopped</text>
+</svg>

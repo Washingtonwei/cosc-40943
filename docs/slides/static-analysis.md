@@ -134,6 +134,18 @@ Each one is blind where another looks.
 **Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace.
 :::
 
+## Each slice stops something {.center}
+
+![Three slices of Swiss cheese: static analysis stops goto fail where it has no hole; a missing extension passes through aligned holes in static analysis and tests, and you, checking against the use case, stop it](img/swiss-cheese-analysis.svg)
+
+::: key
+Each slice stops what the others let through.
+:::
+
+::: note
+**Say:** Remember the Swiss cheese from code review? Same picture, fewer slices, and today we look at the first one. Top line: goto fail, the copied line. Tests can miss it, the reviewer's eyes slide over it, but the analyzer checks every path and has no hole there. Stopped, before anyone spends a minute on it. Bottom line: a missing extension. The analyzer has a hole there, because it doesn't know what the code is for, and the tests have the same hole, because nobody wrote that case. The holes line up. The purple slice stops it: you, reading against the use case. That's why we run all three, and why the cheap one goes first.
+:::
+
 ## Why not just ask your coding agent?
 
 ::: cols
