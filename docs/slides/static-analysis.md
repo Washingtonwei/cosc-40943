@@ -288,19 +288,112 @@ An analyzer that flags every line has zero false negatives.
 
 ## Read by rule, not by file
 
-| Rule | Findings |
-|---|---|
-| EI_EXPOSE_REP, EI_EXPOSE_REP2 | 219 |
-| NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE | 14 |
-| CT_CONSTRUCTOR_THROW | 3 |
-| DLS_DEAD_LOCAL_STORE | 1 |
+| Rule | What it means | Findings |
+|---|---|---|
+| EI_EXPOSE_REP2 | a setter keeps a mutable object, not a copy | 117 |
+| EI_EXPOSE_REP | a getter hands out a mutable object | 102 |
+| NP_NULL_ON_SOME_PATH... | uses a result that may be null | 14 |
+| CT_CONSTRUCTOR_THROW | a constructor can throw halfway | 3 |
+| DLS_DEAD_LOCAL_STORE | a value stored, never used | 1 |
 
 ::: key
-92% is one rule family. The bug is the one line at the bottom.
+The big rules are one decision. The bug is the one line at the bottom.
 :::
 
 ::: note
-**Say:** 237 findings is a wall. Grouped by rule it's four lines. 219 say "this getter returns a mutable object". In JPA entities and Spring beans that's by design, so that's probably one decision for the whole rule, not 219 fixes. The single dead store at the bottom is the one to read first. That shape is typical of a first run.
+**Say:** A report comes in file order, 237 lines, and you'd judge the same warning over and over. But every finding names its rule. Count by rule and it's five lines. The top two are 219 findings about one design: JPA entities and Spring beans share objects on purpose. That's one team decision, not 219 fixes. Now look at the bottom: one dead store. That's the `addActivityComment` bug from the start of class. Read by file, you'd have met it after 200 warnings about getters, if you hadn't given up. That shape is typical: the big rules are decisions, the small ones hide the bugs.
+:::
+
+## EI_EXPOSE_REP: sharing a mutable list
+
+```java
+public List<Rating> getRatings() {
+    return ratings;            // REP: hands out its own list
+}
+
+public void setRatings(List<Rating> ratings) {
+    this.ratings = ratings;    // REP2: keeps the caller's list
+    ...
+    calculateTotalScore();
+}
+```
+
+::: key
+The caller adds a rating to the list. The total never changes.
+:::
+
+::: note
+**Say:** Here's what 219 of those findings mean, on real code: `PeerEvaluation`. The setter keeps the very list you hand it; the getter hands out its own list. Anyone holding that list can change it. And here's why it's not just pedantry: the setter computes the total score once. Add a rating to the list later, or call `getRatings().clear()`, and the ratings change but the total doesn't. The textbook fix is a copy. But Hibernate tracks changes through the entity's own collection, and our code edits entities through getters, so copying everywhere would break things. About 27 of the 219 are just Spring injecting a service into a controller. So: one decision about the rule, not 219 edits. Which decision is your assignment.
+:::
+
+## CT_CONSTRUCTOR_THROW: a half-built object
+
+```java
+public class Account {
+    private final long balance;
+
+    public Account(long balance) {
+        if (balance < 0) throw new IllegalArgumentException();
+        this.balance = balance;
+    }
+}
+```
+
+::: key
+A subclass can rescue the half-built object. `final` closes the hole.
+:::
+
+::: note
+**Say:** A made-up example, because Project Pulse's three are in your assignment. When the check throws, the object already exists; the constructor just didn't finish. And Java calls `finalize()` before garbage-collecting it, even then. So an attacker subclasses Account, overrides `finalize()` to stash `this` in a static field, and now holds an Account whose check never passed. That only matters for a class untrusted code can extend, like a library's public class. Declare it final and the hole closes. Finalizers are deprecated since Java 18, but they still run in 21. The other two rules you've met: the null one is coming in triage, and the dead store was our opening slide.
+:::
+
+## PMD, read the same way
+
+| Rule | What it means | Findings |
+|---|---|---|
+| UncommentedEmptyConstructor | empty constructor, no comment why | 30 |
+| ControlStatementBraces | an if with no braces | 30 |
+| UseLocaleWithCaseConversions | toLowerCase() without a Locale | 18 |
+| InstantiableUtilityClass | static-only class you can new | 12 |
+| UnnecessaryConstructor | a constructor Java writes anyway | 10 |
+| 10 more rules | literals first, == on objects, style... | 30 |
+
+::: key
+74 of 130 are four project decisions. The bugs are in the small rules.
+:::
+
+::: note
+**Say:** Same trick on PMD, with the quickstart rules #104 turns on: 130 findings, fifteen rules. The top of the list is style and constructors: whether an empty constructor needs a comment, whether every if needs braces. Those are team decisions, and four of them are Part 1 of your assignment. The bugs hide below: toLowerCase without a Locale, a comparison that throws on null, == on objects, a private method nobody calls. The module walks every one of the fifteen with its line in Project Pulse.
+:::
+
+## Braces: goto fail, waiting
+
+```java
+if (!this.enabled) return; // Reminders are disabled
+```
+
+::: key
+Correct today. The next person adds a second line under it.
+:::
+
+::: note
+**Say:** This is from the reminder scheduler, and it's correct. PMD flags it anyway. Why? Because of the next edit: someone adds a line under the if, indents it, and it runs every single time. That's goto fail, from the start of class. Whether your team wants braces everywhere is a decision you make once.
+:::
+
+## toLowerCase and the Turkish i
+
+```java
+"%" + providedFirstName.toLowerCase() + "%"
+```
+
+::: steps
+- In Turkish, uppercase I lowercases to a dotless ı
+- A search for "Ivan" becomes "ıvan"; the database says "ivan"
+- No match. toLowerCase(Locale.ROOT) fixes it
+:::
+
+::: note
+**Say:** The student search lowercases what you type with the server's default language. Put that server in Turkey and capital I becomes a dotless i, so "Ivan" never matches. Eighteen of PMD's findings are this. It's the kind of bug nobody finds in testing, because every test machine speaks English.
 :::
 
 ## Two tools, one overlap

@@ -128,16 +128,153 @@ npm run type-check
 npx prettier --check src/
 ```
 
-**Read the result by rule before you read it by file.** A wall of 237 findings is unreadable; grouped by rule, Project Pulse's SpotBugs report is four lines:
+**Read the result by rule before you read it by file.** A report lists findings in file order, so you judge the same kind of warning again and again and never see the pattern. But every finding names the rule that fired it. Count the findings per rule (the `spotbugs:gui` view groups them, or ask your agent), and Project Pulse's 237 SpotBugs findings come down to five rules:
 
-| Rule | Findings | First read |
-|---|---|---|
-| `EI_EXPOSE_REP`, `EI_EXPOSE_REP2` (a getter returns, or a setter stores, a mutable object) | 219 | JPA entities and Spring beans share objects by design. Probably one decision for the whole rule, not 219 |
-| `NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE` | 14 | Every one is a call to a method Spring marks `@Nullable`. Read them |
-| `CT_CONSTRUCTOR_THROW` (a constructor can throw, leaving a half-built object) | 3 | Matters for classes a hostile subclass could extend. Read one |
-| `DLS_DEAD_LOCAL_STORE` | 1 | Read it now |
+| Rule | What it means | Findings | First move |
+|---|---|---|---|
+| `EI_EXPOSE_REP2` | A setter or constructor keeps a mutable object it was handed (a `List`, a `Date`), not a copy | 117 | Both rules object to one design: JPA entities and Spring beans share these objects on purpose. One team decision covers all 219 |
+| `EI_EXPOSE_REP` | A getter hands out its own mutable object, not a copy | 102 | The same decision |
+| `NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE` | Code uses a method's result without checking for `null`, and the method may return `null` | 14 | Every one is a call to a Spring method marked `@Nullable`. Read them; [4.4](#44-triage-real-false-positive-or-not-worth-it) triages one |
+| `CT_CONSTRUCTOR_THROW` | A constructor can throw, leaving a half-built object that a subclass could misuse | 3 | Matters only for classes someone outside the team could extend. Read one |
+| `DLS_DEAD_LOCAL_STORE` | A value is computed and stored, then never used | 1 | Read it now: it is `addActivityComment` from [section 3](#3-motivation) |
 
-Ninety-two percent of the report is one rule family, and the finding most worth reading is the single line at the bottom. That shape is typical of a first run.
+**What each rule objects to.**
+
+*`EI_EXPOSE_REP2` and `EI_EXPOSE_REP`: sharing a mutable object.* Anyone holding a reference to a `List` can change it. [`PeerEvaluation`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/evaluation/PeerEvaluation.java#L82-L90) keeps the ratings list it is handed, and hands out that same list:
+
+```java
+public List<Rating> getRatings() {
+    return ratings;            // EI_EXPOSE_REP: the caller gets the entity's own list
+}
+
+public void setRatings(List<Rating> ratings) {
+    this.ratings = ratings;    // EI_EXPOSE_REP2: the entity keeps the caller's list
+    this.ratings.forEach(rating -> rating.setPeerEvaluation(this));
+    calculateTotalScore();
+}
+```
+
+The risk is real: `setRatings` computes `totalScore` once, so if the caller later adds a rating to the list it passed in, or some code calls `getRatings().clear()`, the ratings change and the total does not. The textbook fix is a copy (`new ArrayList<>(ratings)` in, `List.copyOf(ratings)` out). But Hibernate tracks changes through the collection the entity holds, and code across Project Pulse edits entities through their getters, so copies everywhere would change behavior. About 27 of the 219 are not entities at all: they are controllers and services keeping the bean Spring injects into their constructor, such as `ActivityController` and its `ActivityService`, which is how dependency injection works. Hence one decision about the rule, not 219 edits.
+
+*`NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE`: using a result that may be `null`.* [`UserUtils.getUserCourseId`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/system/UserUtils.java#L42-L46) uses what `getAuthentication()` returns without a check, and Spring marks that method `@Nullable`:
+
+```java
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+boolean hasInstructorRole = authentication.getAuthorities().stream()   // throws if authentication is null
+```
+
+Whether that `null` can happen here is the triage question in [4.4](#44-triage-real-false-positive-or-not-worth-it).
+
+*`CT_CONSTRUCTOR_THROW`: a constructor that can throw.* A made-up example, since Project Pulse's three are part of assignment 4:
+
+```java
+public class Account {
+    private final long balance;
+
+    public Account(long balance) {
+        if (balance < 0) throw new IllegalArgumentException("negative balance");
+        this.balance = balance;
+    }
+}
+```
+
+When the check throws, the object has already been allocated; the constructor just did not finish. Java calls an object's `finalize()` method before garbage-collecting it, even then. So an attacker can subclass `Account`, override `finalize()` to save `this` in a static field, and end up holding an `Account` whose check never passed. That matters only for a class untrusted code can extend, such as a library's public class. Declaring the class `final` closes the hole. (Finalizers are deprecated for removal since Java 18, but still run in Java 21.)
+
+*`DLS_DEAD_LOCAL_STORE`: a value computed and never used.* The `ActivityDto` in `addActivityComment`, from [section 3](#3-motivation).
+
+Two rules make up 92% of the report, and both are about one design choice. The finding most worth reading is the single line at the bottom. That shape is typical: the big rules are usually decisions the team makes once, and the bugs hide in the small ones. Read by file, the dead store would have come somewhere after 200 warnings about getters.
+
+**PMD, read the same way.** With PMD's quickstart ruleset, which #104 configures, its 130 findings come down to fifteen rules:
+
+| Rule | What it means | Findings | First move |
+|---|---|---|---|
+| `UncommentedEmptyConstructor` | A constructor with an empty body and no comment saying why it is empty | 30 | A project decision (assignment 4, Part 1) |
+| `ControlStatementBraces` | An `if`, `for`, or `while` whose body has no `{ }` | 30 | A project decision (assignment 4, Part 1) |
+| `UseLocaleWithCaseConversions` | `toLowerCase()` or `toUpperCase()` without a `Locale`, so the server's language decides the result | 18 | Read them: this one breaks search |
+| `InstantiableUtilityClass` | A class with only static methods that can still be created with `new` | 12 | Read one; the fix is one line |
+| `UnnecessaryConstructor` | A constructor the compiler would have written anyway | 10 | A project decision (assignment 4, Part 1) |
+| `LiteralsFirstInComparisons` | `x.equals("text")`, which throws when `x` is `null`; `"text".equals(x)` does not | 6 | Read them, beside SpotBugs' null findings |
+| `CompareObjectsWithEquals` | Two objects compared with `==`, which asks "same object?", not "equal?" | 6 | Read each; [4.4](#44-triage-real-false-positive-or-not-worth-it) triages one |
+| `SimplifyBooleanReturns` | An `if` that returns `true` or `false` where one `return` expression would do | 5 | Style: read one |
+| `GuardLogStatement` | A log call that builds its message even when that log level is off | 4 | A project decision (assignment 4, Part 1) |
+| `LambdaCanBeMethodReference` | `x -> x.getName()` where `X::getName` says the same | 3 | Style |
+| `UnnecessaryImport` | An `import` nothing uses | 2 | Delete it |
+| `UnusedLocalVariable` | A variable assigned and never read | 1 | The dead store from [section 3](#3-motivation) |
+| `DanglingJavadoc` | A `/** */` comment attached to nothing, so no tool will ever show it | 1 | Read it |
+| `UnusedPrivateMethod` | A private method nobody calls | 1 | Read it: dead code, or a call someone forgot |
+| `UselessParentheses` | Parentheses that change nothing | 1 | Style |
+
+Seventy-four findings come from four rules that are one decision each. The rest are small, and that is where the bugs are.
+
+**What each PMD rule objects to.**
+
+*`UncommentedEmptyConstructor` and `UnnecessaryConstructor`: empty constructors.* JPA needs every entity to have a no-argument constructor, so [`Activity`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/activity/Activity.java#L39) has one, beside its real constructors:
+
+```java
+public Activity() {
+}
+```
+
+The first rule wants a comment saying why it is empty (`// required by JPA`). The second fires when an empty constructor is a class's only one, as in [`WeeklyPeerEvaluationReport`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/evaluation/WeeklyPeerEvaluationReport.java#L13), because Java writes that constructor for you when you write none.
+
+*`ControlStatementBraces`: a body without braces.* From [`WeeklyReminderScheduler`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/notification/WeeklyReminderScheduler.java#L55):
+
+```java
+if (!this.enabled) return; // Reminders are disabled
+```
+
+It is correct today. The rule exists because of the next edit: someone adds a second line under the `if`, indents it, and it runs every time. That is how goto fail happened ([section 3](#3-motivation)).
+
+*`UseLocaleWithCaseConversions`: case conversion that depends on the server's language.* The student search in [`StudentSpecs`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/student/StudentSpecs.java#L7-L10) lowercases the search text with the server's default locale:
+
+```java
+criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")), "%" + providedFirstName.toLowerCase() + "%");
+```
+
+In Turkish, uppercase `I` lowercases to a dotless `ı`. On a server set to Turkish, a search for "Ivan" becomes "ıvan", while the database lowercases the stored name to "ivan", and the search finds nothing. `toLowerCase(Locale.ROOT)` gives the same answer everywhere.
+
+*`InstantiableUtilityClass`: a static-only class you can still `new`.* `StudentSpecs` has only static methods, yet `new StudentSpecs()` compiles. A private constructor (`private StudentSpecs() {}`) says the class is not meant to be created.
+
+*`LiteralsFirstInComparisons`: the comparison that throws on `null`.* [`UserUtils.getUserCourseId`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/system/UserUtils.java#L46):
+
+```java
+.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_instructor"));
+```
+
+If `getAuthority()` returns `null`, this throws. `"ROLE_instructor".equals(grantedAuthority.getAuthority())` just returns `false`. This is the same line where SpotBugs reported a possible `null`: two tools, one worry, from different directions.
+
+*`CompareObjectsWithEquals`: `==` on objects.* `team.getSection() != from` in `TeamService.transferTeam`, triaged in [4.4](#44-triage-real-false-positive-or-not-worth-it).
+
+*`SimplifyBooleanReturns`: an `if` that only picks `true` or `false`.* [`InstructorSecurityService`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/instructor/InstructorSecurityService.java#L43-L47):
+
+```java
+if (instructor == null) {
+    return false;
+}
+return instructor.getCourses().stream().anyMatch(...);
+```
+
+PMD suggests `return instructor != null && instructor.getCourses().stream().anyMatch(...);`. Shorter is not always clearer, which is why it is style.
+
+*`GuardLogStatement`: a log message built for nobody.* [`ReminderService`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/notification/ReminderService.java#L72) logs a failed reminder:
+
+```java
+LOGGER.error("Could not send a submission reminder to {} in section {}", student.getEmail(), section.getSectionName(), e);
+```
+
+The arguments (`student.getEmail()`, `section.getSectionName()`) are evaluated before the logger checks whether error logging is on. The rule wants `if (LOGGER.isErrorEnabled())` around it. With SLF4J's `{}` placeholders, the message itself is only built when the level is on, so the remaining cost is the arguments.
+
+*`LambdaCanBeMethodReference`: a lambda that only calls one method.* [`JwtProvider`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/security/JwtProvider.java#L30) has `.map(grantedAuthority -> grantedAuthority.getAuthority())`; `.map(GrantedAuthority::getAuthority)` says the same.
+
+*`UnnecessaryImport`: an import nothing uses.* [`UserController`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/user/UserController.java#L3) imports `UserDetails` and never mentions it.
+
+*`UnusedLocalVariable`: the dead store.* The `ActivityDto` in `addActivityComment` again ([section 3](#3-motivation)), the one finding both tools reported.
+
+*`DanglingJavadoc`: a comment no tool will show.* Inside [`UseCaseController.findUseCaseById`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseController.java#L33-L36), a `/** ... */` comment sits between two statements. Javadoc attaches only to a class, method, or field, so this one is documentation for nothing; a plain `//` comment says the same and claims less.
+
+*`UnusedPrivateMethod`: code nobody calls.* [`UseCaseService.updateCollection`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseService.java#L251) is private and never called. Either it is dead and can go, or some method was supposed to call it and does not. The second is a bug; reading the history tells you which.
+
+*`UselessParentheses`: parentheses that change nothing.* [`JwtProvider`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/security/JwtProvider.java#L38) has `((MyUserPrincipal) (authentication.getPrincipal()))`; the parentheses around `authentication.getPrincipal()` do nothing.
 
 **Why run both SpotBugs and PMD? They barely overlap.** Of Project Pulse's 367 findings, one was reported by both: the dead variable in `ActivityController.addActivityComment` (SpotBugs' `DLS_DEAD_LOCAL_STORE`, PMD's `UnusedLocalVariable`). Every other finding came from one tool, because they read different things:
 
@@ -147,7 +284,7 @@ Ninety-two percent of the report is one rule family, and the finding most worth 
 | **Strongest at** | How values flow through a method: nulls, casts, comparisons, mutable objects escaping | How the code is written: structure, unused code, risky idioms, style |
 | **Its Project Pulse findings** | `EI_EXPOSE_REP` (219), null dereferences on Spring's `@Nullable` methods (14), constructors that can throw (3) | `toLowerCase()` without a `Locale` (18), `LiteralsFirstInComparisons` (6), `SimplifyBooleanReturns` (5), an unused private method, braces and constructor style |
 
-Bytecode lets SpotBugs follow a value and read the `@Nullable` annotations compiled into Spring's jars; source lets PMD see what compilation erases: braces, the order of `"literal".equals(x)`, a private method nobody calls. The two bugs planted in [4.6](#46-an-existing-codebase-baseline-then-ratchet) split the same way: SpotBugs caught the `String` compared with `==`, PMD the empty `catch`. The second tool costs a configuration file, a baseline, and part of the minute `verify -DskipTests` takes. When two tools this different agree, as on the dead store, take it seriously. If you had to keep one, keep SpotBugs, which finds more bugs and less style. But PMD's unique findings include real ones (`toLowerCase()` without a `Locale` breaks a search on a server whose default locale is Turkish), so keep PMD too and decide which of its rules fit.
+Bytecode lets SpotBugs follow a value and read the `@Nullable` annotations compiled into Spring's jars; source lets PMD see what compilation erases: braces, the order of `"literal".equals(x)`, a private method nobody calls. The two bugs planted in [4.6](#46-an-existing-codebase-baseline-then-ratchet) split the same way: SpotBugs caught the `String` compared with `==`, PMD the empty `catch`. The second tool costs a configuration file, a baseline, and part of the minute `verify -DskipTests` takes. When two tools this different agree, as on the dead store, take it seriously. If you had to keep one, keep SpotBugs, which finds more bugs and less style. But PMD's unique findings include real ones (the Turkish *i* above), so keep PMD too and decide which of its rules fit.
 
 ### 4.4 Triage: real, false positive, or not worth it
 
