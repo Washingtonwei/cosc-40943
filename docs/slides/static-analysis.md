@@ -195,7 +195,7 @@ No analyzer is both sound and complete. One that claims to be is claiming to sol
 :::
 
 ::: note
-**Say:** Theory of computation, cashing in. Can this null ever be dereferenced? Can this input ever reach that query? Those are questions about what the program does, and Rice's theorem says every nontrivial one is undecidable. So a tool that finishes in seconds has to guess. Sound means it never misses a real bug; complete means it never cries wolf. You can't have both. Every tool you use today picks a trade-off. SpotBugs, PMD, and ESLint lean toward complete: they would rather miss a bug than cry wolf.
+**Say:** Theory of computation, cashing in. Can this null ever be dereferenced? Can this input ever reach that query? Those are questions about what the program does, and Rice's theorem says every nontrivial one is undecidable. So a tool that finishes in seconds has to guess. Sound means it never misses a real bug; complete means it never cries wolf. You can't have both. Think airport security: a sound scanner flags every bag that might hold a knife, so umbrellas set it off; a complete one flags only bags that certainly do, so a well-hidden knife gets through. Every tool you use today picks a trade-off. SpotBugs, PMD, and ESLint lean toward complete: they would rather miss a bug than cry wolf.
 :::
 
 ## Two ways to be wrong
