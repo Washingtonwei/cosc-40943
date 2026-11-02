@@ -398,6 +398,105 @@ Correct today. The next person adds a second line under it.
 **Say:** The student search lowercases what you type with the server's default language. Put that server in Turkey and capital I becomes a dotless i, so "Ivan" never matches. Eighteen of PMD's findings are this. It's the kind of bug nobody finds in testing, because every test machine speaks English.
 :::
 
+## Empty constructors: JPA needs them
+
+```java
+public Activity() {
+}
+```
+
+::: steps
+- JPA builds every entity through a no-argument constructor
+- UncommentedEmptyConstructor: say why it is empty (30)
+- UnnecessaryConstructor: Java writes it for you if it is the only one (10)
+:::
+
+::: note
+**Say:** Here's 40 of PMD's 130. Every JPA entity needs a constructor with no arguments, because Hibernate creates the object first and fills in the fields after. So Activity has this empty one next to its real constructors. One rule wants a comment saying why it's empty. The other fires when the empty one is the only constructor, because Java would have written it for you. Should Project Pulse enforce either? That's one of the four decisions in your assignment, so I'm not answering it.
+:::
+
+## Two tools, one worry
+
+```java
+.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_instructor"));
+```
+
+::: cols
+**PMD: LiteralsFirstInComparisons**
+
+Write `"ROLE_instructor".equals(...)`: it returns false on null instead of throwing.
+|||
+**SpotBugs: NP_NULL_ON_SOME_PATH**
+
+`getAuthority()` is marked `@Nullable`, and nothing checks it.
+:::
+
+::: key
+Same line, two tools, two directions. When they agree, look.
+:::
+
+::: note
+**Say:** This is UserUtils, the method that works out your course. PMD reads the source and says: put the literal first, so a null just gives you false. SpotBugs reads the bytecode and says: this method may return null and you never check. Two tools that read code completely differently, pointing at the same line. Whether that null can actually happen is the triage question we'll do in a few minutes.
+:::
+
+## A private method nobody calls
+
+```java
+private <T> void updateCollection(Set<T> oldCollection, Set<T> newCollection) {
+    oldCollection.clear();
+    ...
+}
+```
+
+::: steps
+- UseCaseService.updateCollection: private, and no caller anywhere
+- Dead code? Delete it
+- Or a call someone forgot? That is a bug
+:::
+
+::: key
+The tool sees the method is unused. Only the history says why.
+:::
+
+::: note
+**Say:** PMD found one private method nobody calls. Two stories fit. Maybe it was used once, the caller changed, and it's dead: delete it. Or someone wrote it for an update and then forgot to call it, and use cases have been saved wrong ever since. The tool can't tell those apart. git log and git blame can. Who wants to be the detective on this one?
+:::
+
+## A log message built for nobody
+
+```java
+LOGGER.error("Could not send a submission reminder to {} in section {}",
+        student.getEmail(), section.getSectionName(), e);
+```
+
+::: steps
+- The arguments are evaluated before the logger checks its level
+- GuardLogStatement wants `if (LOGGER.isErrorEnabled())` around it
+- SLF4J's `{}` already skips building the message when the level is off
+:::
+
+::: note
+**Say:** ReminderService logs a reminder that failed to send. Java evaluates `student.getEmail()` and `section.getSectionName()` before the logger even looks at whether error logging is on. PMD wants a guard. But with SLF4J's curly-brace placeholders, the expensive part, building the string, already only happens when the level is on, so what's left is two getters. Worth a rule? Another one of your four assignment decisions.
+:::
+
+## Style, in one slide
+
+| Rule | Before | After |
+|---|---|---|
+| SimplifyBooleanReturns | `if (x == null) { return false; } return ok(x);` | `return x != null && ok(x);` |
+| LambdaCanBeMethodReference | `a -> a.getAuthority()` | `GrantedAuthority::getAuthority` |
+| UselessParentheses | `(MyUserPrincipal) (auth.getPrincipal())` | `(MyUserPrincipal) auth.getPrincipal()` |
+| UnnecessaryImport | `import ...UserDetails;` (unused) | delete it |
+| InstantiableUtilityClass | `new StudentSpecs()` compiles | `private StudentSpecs() {}` |
+
+::: key
+All true, all harmless. A team decides once, then a formatter or the agent does the rest.
+:::
+
+::: note
+**Say:** The rest of PMD's list is style, all from real Project Pulse lines. Every one is technically right and none of them is a bug. Is the "after" always clearer? Not always: the one-line boolean return is shorter, but some people read the if faster. That's the point of style rules: the team picks once, writes it in the configuration, and then nobody argues in code review again. And this is exactly the kind of fix an agent should make for you.
+:::
+
 ## Two tools, one overlap
 
 ::: cols
