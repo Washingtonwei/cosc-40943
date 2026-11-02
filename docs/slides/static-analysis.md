@@ -226,6 +226,21 @@ An analyzer that flags every line has zero false negatives.
 **Say:** Here's the whole climb on one picture. Bottom rungs are cheap and run first; you probably already have the compiler and maybe a formatter. Today we start on the linter rung, where the findings are. Then we climb: null types and dataflow follow values across methods, and the top three look past your own code, at your libraries, your container, and your secrets. Each rung needs its own tool; the module has the table. SonarQube bundles several rungs in one product and is common in industry; we use separate free tools that run in your own build with no account. And each rung is a course you took: parsing and the syntax tree from compilers, type systems from programming languages, dataflow from compilers again.
 :::
 
+## What's a linter?
+
+A static analyzer that checks code against a catalog of rules, and reports each match by rule, file, and line
+
+- Frontend: ESLint
+- Backend: PMD (source), SpotBugs (bytecode)
+
+::: joke
+Named after `lint` (Bell Labs, 1978): the fluff a lint brush picks off your sweater.
+:::
+
+::: note
+**Say:** We're on the linter rung, so let's define it. A linter checks your code against a catalog of rules, each one a known mistake or a risky habit, and reports every match with the rule's name, the file, and the line. The name comes from Stephen Johnson's `lint` for C at Bell Labs in 1978, named for the fluff on a sweater: small stuff, easy to miss, cheap to remove. It matches patterns, it doesn't prove anything, so every finding is a suspect we triage, which is the second half of today. Our linters: ESLint on the frontend, PMD and SpotBugs on the backend. SpotBugs reads the compiled bytecode instead of the source, but it does the same job.
+:::
+
 ## Demo: the first run {.center}
 
 ::: cols

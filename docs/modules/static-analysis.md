@@ -105,6 +105,8 @@ Each tool approximates a different kind of problem, by reading the code in a dif
 
 **SonarQube bundles several rungs in one product** (SonarQube for IDE, formerly SonarLint, in the editor; SonarQube Cloud, free for public repositories, or the self-hosted Community Build on the server). It is common in industry and a reasonable choice for a team. This course uses the separate tools because each one is free, runs in your own build, and needs no account.
 
+**A linter** is a static analyzer that checks code against a catalog of rules, each one a known mistake or a risky habit, and reports every match by rule name, file, and line. The name comes from `lint`, Stephen C. Johnson's 1978 checker for C at Bell Labs, named for the fluff a lint brush picks off a sweater: small, easy to miss, cheap to remove. A linter matches patterns; it does not prove anything, so its findings are suspects to triage ([4.4](#44-triage-real-false-positive-or-not-worth-it)). ESLint is Project Pulse's frontend linter, and PMD and SpotBugs are its backend linters (SpotBugs reads the compiled bytecode instead of the source, but it does the same job).
+
 This module works the linter rung first (4.3 to 4.8), because that is where the findings are and where every habit is learned. Then it climbs: null types and dataflow in [4.9](#49-the-higher-rungs-null-types-and-dataflow), and the rungs outside your own code in [4.10](#410-beyond-your-code-dependencies-containers-secrets-and-your-own-tools).
 
 ### 4.3 The first run, without touching the build
