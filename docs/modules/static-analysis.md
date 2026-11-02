@@ -88,7 +88,7 @@ No useful analyzer is both sound and complete; most are neither, and tune the ba
 
 **Heartbleed beat the analyzers too.** Coverity, one of the best commercial analyzers, did not flag it ([Code Review](code-review.md#3-motivation)). The reviewer's hole and the analyzer's hole lined up, which is the Swiss cheese model in one bug.
 
-**Trust is the scarce resource.** Google's static analysis team found that developers act on a tool only if most of what it says is worth acting on, and set a target of under 10% *effective* false positives: warnings the developer does not act on, whatever the tool thinks (Sadowski et al., 2018). Interviews at other companies give the same reason for unused tools (Johnson et al., 2013). Every rule you turn on spends some of that trust. Turn on the ones that pay.
+**Trust is the scarce resource.** Google's static analysis team found that developers act on a tool only if most of what it says is worth acting on. So they hold every check to one rule: if developers ignore more than 1 in 10 of its warnings, the check is fixed or turned off (Sadowski et al., 2018). "Ignored" counts even when the tool is technically right. A correct warning that nobody acts on, say "slow string concatenation" in a loop that runs three times, costs attention and buys nothing, so Google calls it an *effective* false positive. Interviews at other companies give the same reason for unused tools (Johnson et al., 2013). Every rule you turn on spends some of that trust. Turn on the ones that pay.
 
 ### 4.2 The ladder, on Project Pulse
 

@@ -213,11 +213,11 @@ Heartbleed: Coverity missed it too.
 :::
 
 ::: key
-Google's target: under 10% of warnings ignored by developers.
+Google's rule: if developers ignore more than 1 in 10 of a check's warnings, the check is fixed or turned off.
 :::
 
 ::: note
-**Say:** So the guesses go wrong in two directions. Remember Heartbleed from code review? The reviewer missed it, and so did Coverity, one of the best commercial analyzers; they added a heuristic for it weeks later. The holes lined up. The expensive error day to day, though, is the false positive, because it spends trust. Google found developers act on a tool only if most of what it says is worth acting on. Their bar: fewer than one in ten warnings ignored. Every rule you turn on spends some of that trust.
+**Say:** So the guesses go wrong in two directions. Remember Heartbleed from code review? The reviewer missed it, and so did Coverity, one of the best commercial analyzers; they added a heuristic for it weeks later. The holes lined up. The expensive error day to day, though, is the false positive, because it spends trust. Google found developers act on a tool only if most of what it says is worth acting on. So their rule is about each check: if developers ignore more than one in ten of its warnings, the check gets fixed or turned off. And "ignored" counts even when the tool was technically right: a correct warning nobody acts on is still noise. Every rule you turn on spends some of that trust.
 :::
 
 ## {.center}
