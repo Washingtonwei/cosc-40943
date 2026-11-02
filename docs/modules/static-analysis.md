@@ -71,7 +71,7 @@ So let the tool catch the boring mistakes before any person looks at the code. S
 | **Testing** | Does it do what we checked, on the inputs we ran? | Wrong behavior on the paths you exercise | Cases nobody wrote | CrowdStrike: every test passed ([Testing](testing.md#3-motivation)) |
 | **Code review** | Is this what the use case asks for, built the way we agreed? | Missing behavior, design, the contract | Line 600 of a tired afternoon | Heartbleed: reviewed and merged ([Code Review](code-review.md#3-motivation)) |
 
-The machines run first, because they are cheapest ([section 3](#3-motivation)), and that is what makes the gate a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks.
+The machines run first, because they are cheapest ([section 3](#3-motivation)). The automated checks a change must pass before it can merge are called the **gate**; [4.5](#45-make-it-a-gate) covers it in detail. The gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks.
 
 **An analyzer never changes its mind.** Same code, same findings, on every run. An AI reviewer is a model: ask it twice and it can answer differently, and an agent that disagrees with it can talk its way past. Nobody talks an analyzer out of a finding; the code changes or a person writes down why. That is why the gate on agent-written code is a deterministic tool, not another model.
 
