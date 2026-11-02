@@ -956,6 +956,28 @@ NullAway: 14 errors in team.projectpulse.system
 Adopt it one package at a time. Error Prone needs a recent JDK; my early JDK 21 build needed older versions of the tools.
 :::
 
+## Undecidable becomes a type check
+
+```java
+// CourseService
+public @Nullable Course findCourseById(Integer courseId) {
+    return this.courseRepository.findById(courseId).orElse(null);
+}
+// CourseController
+Course course = this.courseService.findCourseById(courseId);
+CourseDto courseDto = this.courseToCourseDtoConverter.convert(course);
+```
+
+`CourseController.java:[46,71] passing @Nullable parameter 'course' where @NonNull is required`
+
+::: key
+"Can this be null?" is undecidable. "Did you check the @Nullable value?" is not.
+:::
+
+::: note
+**Say:** Remember Rice's theorem? "Can this reference be null here?" is undecidable in general. So we change the question. Ask for a course that doesn't exist: `orElse(null)` hands back null, the controller passes it on, and the converter calls `getCourseId()` on it. NullPointerException, and the user gets a 500 instead of a 404. No test asks for a missing course. Without the annotation, NullAway already rejects the return line, because `orElse(null)` can be null and the signature says it can't. Write the truth, `@Nullable`, and the error moves to the controller, the one place that has to decide what a missing course means. The fix is ten lines down the same class: `updateCourse` already uses `orElseThrow` with `ObjectNotFoundException`, which the handler answers with a 404. You supplied one fact the tool couldn't infer, and an undecidable question became a type check.
+:::
+
 ## {.center}
 
 ::: joke

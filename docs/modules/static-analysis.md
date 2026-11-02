@@ -146,7 +146,7 @@ npx prettier --check src/
 
 **What each rule objects to.**
 
-*`EI_EXPOSE_REP2` and `EI_EXPOSE_REP`: sharing a mutable object.* Anyone holding a reference to a `List` can change it. [`PeerEvaluation`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/evaluation/PeerEvaluation.java#L82-L90) keeps the ratings list it is handed, and hands out that same list:
+*`EI_EXPOSE_REP2` and `EI_EXPOSE_REP`: sharing a mutable object.* "EI" is short for *exposes internal*: SpotBugs titles the rules "May expose internal representation by incorporating reference to mutable object" and "... by returning reference to mutable object". Code outside the object can then change the object's fields without going through its methods. Anyone holding a reference to a `List` can change it. [`PeerEvaluation`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/evaluation/PeerEvaluation.java#L82-L90) keeps the ratings list it is handed, and hands out that same list:
 
 ```java
 public List<Rating> getRatings() {
@@ -481,6 +481,20 @@ Pattern rules, the shipped ones and your own, look at one method's syntax at a t
 ### 4.9 The higher rungs: null types and dataflow
 
 **Make null part of the type.** Tony Hoare called the null reference his "billion-dollar mistake". A type system can track it, the way it already tracks `int` against `String`: TypeScript does with `strictNullChecks`, and Java can with **JSpecify** annotations (`@Nullable` where null is legal, `@NullMarked` to make a package non-null by default) checked at compile time by **NullAway**, a plugin for Google's Error Prone compiler. Spring Boot 4's own APIs are annotated this way, which is why SpotBugs could flag `getAuthentication()` in [4.4](#44-triage-real-false-positive-or-not-worth-it). Marking a single Project Pulse package `@NullMarked` produced 14 compile errors. One was [`UserUtils.getUserId()`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/system/UserUtils.java), which returns `null` on four paths while its signature promises an `Integer`; `ActivitySecurityService.canAccessActivity` passes the result straight to `findById`, which throws on `null`. No test had taken those paths; the type checker found all four without running any. Adopt it one package at a time; unmarked packages are not checked.
+
+**The annotation turns an undecidable question into a type check.** "Can this reference be null here?" is undecidable in general ([4.1](#41-what-a-static-analyzer-can-and-cannot-tell-you)); "is every value marked `@Nullable` checked before use?" is not, and that is the question NullAway answers. [`CourseService.findCourseById`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/course/CourseService.java#L50-L52) returns `courseRepository.findById(courseId).orElse(null)`, and [`CourseController.findCourseById`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/java/team/projectpulse/course/CourseController.java#L43-L48) passes the result to `CourseToCourseDtoConverter.convert`, which calls `course.getCourseId()`. Ask for a course that does not exist and that is a `NullPointerException`, which the catch-all handler turns into a 500 where a 404 belongs; the tests only ask for courses that exist. With the two `course` packages marked `@NullMarked`, NullAway rejects the `return` line:
+
+```text
+CourseService.java:[51,9] [NullAway] returning @Nullable expression from method with @NonNull return type
+```
+
+Declare the truth, `public @Nullable Course findCourseById(...)`, and the error moves to the caller that has to deal with it:
+
+```text
+CourseController.java:[46,71] [NullAway] passing @Nullable parameter 'course' where @NonNull is required
+```
+
+The fix is ten lines further down the same class: `updateCourse` already ends in `.orElseThrow(() -> new ObjectNotFoundException("course", courseId))`, which the exception handler answers with a 404.
 
 **CodeQL follows untrusted data through the program.** It turns the code into a relational database and runs queries over it, written in QL, a Datalog-style logic language: the databases course, applied to programs. A security query asks whether data from a **source** (a request parameter, a header) reaches a **sink** (a SQL string, an HTML response, a shell command) without passing a **sanitizer** (a parameterized query, an encoder). That is the dataflow analysis of your compilers course, and the shape of SQL injection, cross-site scripting, and command injection. On a public GitHub repository, turning on code scanning's *default setup* (Settings, Code security) scans Java and TypeScript on every pull request; Java needs no build step. Project Pulse's search code, such as `StudentSpecs`, builds queries through the JPA Criteria API, so Hibernate binds the user's text as a parameter and no SQL string is built from input: the sanitizer CodeQL looks for.
 
