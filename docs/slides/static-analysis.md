@@ -102,26 +102,6 @@ A tool that does not fail the build is decoration.
 *[Ask: does your team's repository have a linter installed? Does anything fail when it complains?]*
 :::
 
-## AI: more need, less cost
-
-::: cols
-**The need went up**
-
-The agent writes faster than you can read, and makes these mistakes too.
-|||
-**The cost went down**
-
-The tool flags it; the agent fixes it and runs the check again.
-:::
-
-::: ai
-Veracode, 2025: 100+ AI models, 45% of their code failed security tests.
-:::
-
-::: note
-**Say:** AI makes this matter more. An agent writes in ten minutes what you'd read in an hour, and in Veracode's test nearly half of what the models wrote failed security checks. The good news: the tedious part of static analysis was always fixing hundreds of small findings, and that's what an agent is good at. It reads the warning, fixes the line, runs the check again, without you.
-:::
-
 ## Fail fast
 
 ::: steps
@@ -174,12 +154,16 @@ Reads what fits in context, paid per run.
 Can judge intent.
 :::
 
+::: ai
+Veracode, 2025: 100+ AI models, 45% of their code failed security tests.
+:::
+
 ::: key
 One loop: the analyzer finds, the agent fixes, the analyzer checks again.
 :::
 
 ::: note
-**Say:** Ask first: "We have a coding agent, Claude Code or Codex. Why bother with an analyzer?" Let someone make the case; it's half right. A model can find these bugs, and it can judge things no analyzer can. But run SpotBugs a hundred times and you get the same report a hundred times, in seconds, for free, on every file. Ask a model twice and you may get two reviews, and an agent can argue its way past a model reviewer. Nobody argues with an analyzer. So don't pick one. The automated checks a change must pass before it can merge are called the gate; more on it later today. The analyzer belongs in the gate, the agent reads its report and fixes, the analyzer checks again, and you decide only what needs judgment.
+**Say:** AI makes this matter more. An agent writes in ten minutes what you'd read in an hour, and in Veracode's test nearly half of what the models wrote failed security checks. So ask first: "We have a coding agent, Claude Code or Codex. Why bother with an analyzer?" Let someone make the case; it's half right. A model can find these bugs, and it can judge things no analyzer can. But run SpotBugs a hundred times and you get the same report a hundred times, in seconds, for free, on every file. Ask a model twice and you may get two reviews, and an agent can argue its way past a model reviewer. Nobody argues with an analyzer. So don't pick one. The automated checks a change must pass before it can merge are called the gate; more on it later today. The analyzer belongs in the gate, the agent reads its report and fixes, the analyzer checks again, and you decide only what needs judgment. That's the good news: the tedious part of static analysis was always fixing hundreds of small findings, and that's what an agent is good at.
 :::
 
 ## Why every analyzer guesses
@@ -239,23 +223,7 @@ An analyzer that flags every line has zero false negatives.
 ![A ladder of eight rungs, cheapest at the bottom: compiler and IDE, formatter, linter (where this module starts), null types and dataflow (4.9), then dependencies, containers, and secrets, beyond your own code (4.10)](img/static-analysis-ladder.svg)
 
 ::: note
-**Say:** Here's the whole climb on one picture. Bottom rungs are cheap and run first; you probably already have the compiler and maybe a formatter. Today we start on the linter rung, where the findings are. Then we climb: null types and dataflow follow values across methods, and the top three look past your own code, at your libraries, your container, and your secrets. Next slide has the tools for each rung.
-:::
-
-## The ladder
-
-| Rung | Catches | Reads | Java | Vue |
-|---|---|---|---|---|
-| Compiler | types, unreachable code | parse, types | javac | vue-tsc |
-| Formatter | layout | syntax tree | Spotless | Prettier |
-| Linter | known bug patterns | syntax tree, bytecode | SpotBugs, PMD | ESLint |
-| Null types | null dereferences | a type system | NullAway | strictNullChecks |
-| Dataflow | input reaching SQL, HTML | values across methods | CodeQL | CodeQL |
-| Dependencies | known CVEs | lockfile vs. database | Dependabot | Dependabot |
-| Containers | root user, bad images | Dockerfile, image | Hadolint, Trivy | |
-
-::: note
-**Say:** Each rung catches a different class of problem and needs its own tool. Cheap rungs at the top run first. SonarQube bundles several rungs in one product and is common in industry; we use separate free tools that run in your own build with no account. Look at the Reads column: each rung is a course you took. Parsing and the syntax tree from compilers, type systems from programming languages, dataflow from compilers again. Today we start on the linter rung, where the findings are, then climb.
+**Say:** Here's the whole climb on one picture. Bottom rungs are cheap and run first; you probably already have the compiler and maybe a formatter. Today we start on the linter rung, where the findings are. Then we climb: null types and dataflow follow values across methods, and the top three look past your own code, at your libraries, your container, and your secrets. Each rung needs its own tool; the module has the table. SonarQube bundles several rungs in one product and is common in industry; we use separate free tools that run in your own build with no account. And each rung is a course you took: parsing and the syntax tree from compilers, type systems from programming languages, dataflow from compilers again.
 :::
 
 ## Demo: the first run {.center}
@@ -398,45 +366,30 @@ Correct today. The next person adds a second line under it.
 **Say:** The student search lowercases what you type with the server's default language. Put that server in Turkey and capital I becomes a dotless i, so "Ivan" never matches. Eighteen of PMD's findings are this. It's the kind of bug nobody finds in testing, because every test machine speaks English.
 :::
 
-## Empty constructors: JPA needs them
+## Two decisions, yours to make
+
+::: cols
+**Empty constructors (40)**
 
 ```java
 public Activity() {
 }
 ```
 
-::: steps
-- JPA builds every entity through a no-argument constructor
-- UncommentedEmptyConstructor: say why it is empty (30)
-- UnnecessaryConstructor: Java writes it for you if it is the only one (10)
-:::
-
-::: note
-**Say:** Here's 40 of PMD's 130. Every JPA entity needs a constructor with no arguments, because Hibernate creates the object first and fills in the fields after. So Activity has this empty one next to its real constructors. One rule wants a comment saying why it's empty. The other fires when the empty one is the only constructor, because Java would have written it for you. Should Project Pulse enforce either? That's one of the four decisions in your assignment, so I'm not answering it.
-:::
-
-## Two tools, one worry
+JPA needs it. Comment it, or drop the rule?
+|||
+**GuardLogStatement (part of 30)**
 
 ```java
-.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_instructor"));
+LOGGER.error("Could not send ... {} in section {}",
+        student.getEmail(), section.getSectionName(), e);
 ```
 
-::: cols
-**PMD: LiteralsFirstInComparisons**
-
-Write `"ROLE_instructor".equals(...)`: it returns false on null instead of throwing.
-|||
-**SpotBugs: NP_NULL_ON_SOME_PATH**
-
-`getAuthority()` is marked `@Nullable`, and nothing checks it.
-:::
-
-::: key
-Same line, two tools, two directions. When they agree, look.
+SLF4J's `{}` already defers the string. Guard it anyway?
 :::
 
 ::: note
-**Say:** This is UserUtils, the method that works out your course. PMD reads the source and says: put the literal first, so a null just gives you false. SpotBugs reads the bytecode and says: this method may return null and you never check. Two tools that read code completely differently, pointing at the same line. Whether that null can actually happen is the triage question we'll do in a few minutes.
+**Say:** Two of the four decisions in your assignment, so I'm not answering them. Left: every JPA entity needs a constructor with no arguments, because Hibernate creates the object first and fills in the fields after. UncommentedEmptyConstructor wants a comment saying why it's empty (30); UnnecessaryConstructor fires when it's the only constructor, because Java would have written it for you (10). Right: Java evaluates the two getters before the logger checks its level, so PMD wants an `isErrorEnabled()` guard. But SLF4J's placeholders already build the string only when the level is on, so what's left is two getters. Worth a rule? You decide.
 :::
 
 ## A private method nobody calls
@@ -460,23 +413,6 @@ The tool sees the method is unused. Only the history says why.
 
 ::: note
 **Say:** PMD found one private method nobody calls. Two stories fit. Maybe it was used once, the caller changed, and it's dead: delete it. Or someone wrote it for an update and then forgot to call it, and use cases have been saved wrong ever since. The tool can't tell those apart. git log and git blame can. Who wants to be the detective on this one?
-:::
-
-## A log message built for nobody
-
-```java
-LOGGER.error("Could not send a submission reminder to {} in section {}",
-        student.getEmail(), section.getSectionName(), e);
-```
-
-::: steps
-- The arguments are evaluated before the logger checks its level
-- GuardLogStatement wants `if (LOGGER.isErrorEnabled())` around it
-- SLF4J's `{}` already skips building the message when the level is off
-:::
-
-::: note
-**Say:** ReminderService logs a reminder that failed to send. Java evaluates `student.getEmail()` and `section.getSectionName()` before the logger even looks at whether error logging is on. PMD wants a guard. But with SLF4J's curly-brace placeholders, the expensive part, building the string, already only happens when the level is on, so what's left is two getters. Worth a rule? Another one of your four assignment decisions.
 :::
 
 ## Style, in one slide
@@ -509,12 +445,18 @@ Null paths, casts, comparisons, mutable objects escaping
 Locale bugs, unused code, risky idioms, style
 :::
 
+```java
+.anyMatch(a -> a.getAuthority().equals("ROLE_instructor"));
+```
+
+PMD: put the literal first. SpotBugs: `getAuthority()` may be null. Two rules, one worry: when both point at a line, look.
+
 ::: key
 Found by both: 1 of 367, the dead store.
 :::
 
 ::: note
-**Say:** Why two tools? Isn't that duplication? Look at the numbers: of 367 findings, exactly one came from both, the dead store we'll read in a minute. SpotBugs works on compiled bytecode, so it can follow a value through a method and read Spring's @Nullable annotations; that's how it found the null paths. PMD works on source, so it sees what compilation throws away: braces, a private method nobody calls, `toLowerCase()` without a locale, which breaks search on a server whose default locale is Turkish.
+**Say:** Why two tools? Isn't that duplication? Look at the numbers: of 367 findings, exactly one came from both, the dead store we'll read in a minute. SpotBugs works on compiled bytecode, so it can follow a value through a method and read Spring's @Nullable annotations; that's how it found the null paths. PMD works on source, so it sees what compilation throws away: braces, a private method nobody calls, `toLowerCase()` without a locale. And look at this line from UserUtils: PMD says put the literal first, so a null gives you false; SpotBugs says `getAuthority()` is marked nullable and nobody checks. Different rules, same worry, and whether that null can happen is a triage question.
 
 The cost is one more config file and part of a minute of build time. And when two tools that work this differently flag the same line, believe it. If you could keep only one, keep SpotBugs; but the better answer is to keep PMD and turn off the rules that don't fit, which is part of assignment 4.
 :::
@@ -668,7 +610,7 @@ Shift left: the earlier the check, the cheaper the fix.
 :::
 
 ::: note
-**Say:** Editor is fastest. Before you push, run the gate yourself (a Git hook can run the fast checks on every commit, but anyone can skip a hook, so it's never the gate): `./mvnw verify`, not `./mvnw test`. The analyzers run in `verify`, after the tests, so green tests are not a green gate. Finding it on your laptop costs a minute; finding it in the pull request costs a red check your whole team sees. CI enforces the gate; it shouldn't be where you first meet a finding. The pull request is the gate: nothing merges red. And the gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
+**Say:** Editor is fastest. Before you push, run the gate yourself (a Git hook can run the fast checks on every commit, but anyone can skip a hook, so it's never the gate): `./mvnw verify`, not `./mvnw test`. The analyzers run in `verify`, after the tests, so green tests are not a green gate. Finding it on your laptop costs a minute; finding it in the pull request costs a red check your whole team sees. CI enforces the gate; it shouldn't be where you first meet a finding. The pull request is the gate: nothing merges red. Wednesday we wire it into the pipeline.
 :::
 
 ## Check in CI, fix on your machine
@@ -726,27 +668,7 @@ A red check nobody is required to fix is advice.
 **Say:** You can't fix 367 findings before turning the checks on, and every day you wait adds more. So: baseline everything that exists, gate everything new. New code meets the bar from day one, and old code isn't blocked. The baseline only ever gets smaller. That's the ratchet. Most teams you join will already have one.
 :::
 
-## Project Pulse #104
-
-::: cols
-**backend/pom.xml**
-
-SpotBugs and PMD `check` in `mvn verify`
-|||
-**backend/config/**
-
-`spotbugs-baseline.xml`: 237 matches
-
-`pmd-baseline.properties`: 130 findings, 68 classes
-:::
-
-Frontend checks: report only, for now. Actions pinned to commit SHAs.
-
-::: note
-**Say:** This is the pull request that added them, #104. Two plugins in the pom, two baseline files, a workflow that runs verify on every pull request. The frontend checks run but don't block yet, because none of them passes; each becomes blocking once its findings are fixed or baselined. Warn first, then block, and don't stay at warn.
-:::
-
-## The gate, in pom.xml
+## Project Pulse #104: the gate in pom.xml
 
 ```xml
 <plugin>
@@ -775,12 +697,14 @@ Frontend checks: report only, for now. Actions pinned to commit SHAs.
 </plugin>
 ```
 
+Baselines: 237 SpotBugs matches, 130 PMD findings in 68 classes. Frontend checks report only, for now; Actions pinned to SHAs.
+
 ::: key
 `check` runs in `verify`, not `test`. New project? Drop the two baseline lines.
 :::
 
 ::: note
-**Say:** This is all it takes. Each plugin gets a `check` goal, which Maven runs in `verify` by default, after the tests. That's why green tests aren't a green gate. SpotBugs reads two exclude files: the team's decisions and the baseline. PMD reads the team's ruleset and its baseline. Starting a new project? Delete the two baseline lines and every finding fails from day one. Copy this into your team's pom on Friday.
+**Say:** This is the pull request that added them, #104, and this is all it takes. Each plugin gets a `check` goal, which Maven runs in `verify` by default, after the tests. That's why green tests aren't a green gate. SpotBugs reads two exclude files: the team's decisions and the baseline. PMD reads the team's ruleset and its baseline. Starting a new project? Delete the two baseline lines and every finding fails from day one. Copy this into your team's pom on Friday. The frontend checks run but don't block yet, because none of them passes; each becomes blocking once its findings are fixed or baselined. Warn first, then block, and don't stay at warn.
 :::
 
 ## Demo: watch the gate fail {.center}
@@ -811,12 +735,8 @@ Class, method, rule. A new finding in another method fails.
 Class and rule. A new empty catch in a class that had one passes.
 :::
 
-::: warn
-Upgrading PMD renamed a rule: 12 baselined findings came back as new.
-:::
-
 ::: note
-**Say:** Two lessons from my own pull request. Coarse baselines leak: PMD's only names the class and the rule. And when I upgraded PMD to the current release, the findings were identical, but one rule had been renamed, so 12 old findings failed the build as if new. Upgrade an analyzer in its own pull request and compare counts.
+**Say:** Coarse baselines leak: PMD's only names the class and the rule. Easier to keep, but a new finding can hide behind an old one. Say which grain you have.
 :::
 
 ## Upgrade, and format once
@@ -824,12 +744,13 @@ Upgrading PMD renamed a rule: 12 baselined findings came back as new.
 ::: steps
 - ESLint 8: end of life October 2024. An outdated analyzer is a finding too
 - Upgrade an analyzer in its own pull request; compare counts by rule
+- Upgrading PMD renamed a rule: 12 baselined findings came back as new
 - Format the whole codebase in one commit, alone, early
 - List that commit in .git-blame-ignore-revs, then gate prettier --check
 :::
 
 ::: note
-**Say:** Analyzers age like any dependency. Project Pulse still ran ESLint 8 in fall 2026, two years past end of life. Upgrade it on its own pull request, because, as you just saw with PMD, an upgrade can change what the baseline means. Formatting is a decision made once: one big commit, listed in .git-blame-ignore-revs so blame skips it, and from then on the formatter is part of the gate.
+**Say:** Analyzers age like any dependency. Project Pulse still ran ESLint 8 in fall 2026, two years past end of life. Upgrade it on its own pull request, because an upgrade can change what the baseline means: when I upgraded PMD, the findings were identical, but one rule had been renamed, so 12 old findings failed the build as if new. Formatting is a decision made once: one big commit, listed in .git-blame-ignore-revs so blame skips it, and from then on the formatter is part of the gate.
 :::
 
 ## Your project: gate first
