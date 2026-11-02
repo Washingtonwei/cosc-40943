@@ -339,7 +339,7 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **Keep the gate fast and the rule set small.** A check that adds ten minutes to every pull request gets skipped, and a rule that fires on code the team considers fine gets turned off in anger. Start with the defaults of a few good tools, add a rule when a real bug gets past, and remove one when its findings are never acted on.
 
-**Red has to block.** On GitHub, a failing check stops a merge only when a ruleset (or branch protection rule) on `main` lists it as a required status check. Without that, the merge button stays enabled and a red check is advice.
+**Red has to block.** On GitHub, a failing check stops a merge only when a ruleset (or branch protection rule) on `main` lists it as a required status check. Without that, the merge button stays enabled and a red check is advice. In Maven, a check is in the gate when the plugin's `check` goal is in the build; Project Pulse's plugin blocks are in [4.6](#46-an-existing-codebase-baseline-then-ratchet).
 
 **Watch the gate fail before you trust it.** Plant one bug the tools should catch and confirm the build goes red. A gate you have never seen fail is a gate you are only hoping works. Wednesday's [CI/CD](../schedule.md) lecture wires these checks into the pipeline.
 
@@ -355,7 +355,36 @@ How you turn the gate on depends on one question: does the codebase already have
 
 **Project Pulse's pull request [#104](https://github.com/Washingtonwei/project-pulse/pull/104) does this,** and you can copy the pattern to your team's repository:
 
-- `pom.xml` binds SpotBugs' and PMD's `check` goals to `mvn verify`.
+- `pom.xml` binds SpotBugs' and PMD's `check` goals to `mvn verify`. Trimmed from [`backend/pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237), which also pins PMD 7.29.0 and sets `targetJdk`:
+
+    ```xml
+    <plugin>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-maven-plugin</artifactId>
+      <version>4.10.5.0</version>
+      <configuration>
+        <excludeFilterFile>${project.basedir}/config/spotbugs-exclude.xml,${project.basedir}/config/spotbugs-baseline.xml</excludeFilterFile>
+      </configuration>
+      <executions>
+        <execution><goals><goal>check</goal></goals></execution>
+      </executions>
+    </plugin>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-pmd-plugin</artifactId>
+      <version>3.28.0</version>
+      <configuration>
+        <rulesets><ruleset>${project.basedir}/config/pmd-ruleset.xml</ruleset></rulesets>
+        <excludeFromFailureFile>${project.basedir}/config/pmd-baseline.properties</excludeFromFailureFile>
+        <printFailingErrors>true</printFailingErrors>
+      </configuration>
+      <executions>
+        <execution><goals><goal>check</goal></goals></execution>
+      </executions>
+    </plugin>
+    ```
+
+    The `check` goal runs in `verify` by default, so no `<phase>` is needed; that is why `./mvnw test` never runs the analyzers. On a new project with the gate first, leave out the two baseline references (`spotbugs-baseline.xml` and `excludeFromFailureFile`), and every finding fails the build from day one.
 - SpotBugs reads an exclude filter, `backend/config/spotbugs-baseline.xml`, with one `<Match>` (class, method, rule) per existing finding: 237 entries.
 - PMD reads `backend/config/pmd-baseline.properties`, one line per class listing the rules it may break: 130 findings in 68 classes. Both files open with a comment saying they only shrink.
 - Decisions live elsewhere: `spotbugs-exclude.xml` and `pmd-ruleset.xml` (PMD's quickstart, unchanged) start empty and hold each rule the team decides not to enforce, with the reason. Keeping them apart from the baseline means "we decided" never hides inside "we have not looked yet".

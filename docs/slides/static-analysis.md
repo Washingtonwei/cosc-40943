@@ -746,6 +746,43 @@ Frontend checks: report only, for now. Actions pinned to commit SHAs.
 **Say:** This is the pull request that added them, #104. Two plugins in the pom, two baseline files, a workflow that runs verify on every pull request. The frontend checks run but don't block yet, because none of them passes; each becomes blocking once its findings are fixed or baselined. Warn first, then block, and don't stay at warn.
 :::
 
+## The gate, in pom.xml
+
+```xml
+<plugin>
+  <groupId>com.github.spotbugs</groupId>
+  <artifactId>spotbugs-maven-plugin</artifactId>
+  <version>4.10.5.0</version>
+  <configuration>
+    <excludeFilterFile>${project.basedir}/config/spotbugs-exclude.xml,${project.basedir}/config/spotbugs-baseline.xml</excludeFilterFile>
+  </configuration>
+  <executions>
+    <execution><goals><goal>check</goal></goals></execution>
+  </executions>
+</plugin>
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-pmd-plugin</artifactId>
+  <version>3.28.0</version>
+  <configuration>
+    <rulesets><ruleset>${project.basedir}/config/pmd-ruleset.xml</ruleset></rulesets>
+    <excludeFromFailureFile>${project.basedir}/config/pmd-baseline.properties</excludeFromFailureFile>
+    <printFailingErrors>true</printFailingErrors>
+  </configuration>
+  <executions>
+    <execution><goals><goal>check</goal></goals></execution>
+  </executions>
+</plugin>
+```
+
+::: key
+`check` runs in `verify`, not `test`. New project? Drop the two baseline lines.
+:::
+
+::: note
+**Say:** This is all it takes. Each plugin gets a `check` goal, which Maven runs in `verify` by default, after the tests. That's why green tests aren't a green gate. SpotBugs reads two exclude files: the team's decisions and the baseline. PMD reads the team's ruleset and its baseline. Starting a new project? Delete the two baseline lines and every finding fails from day one. Copy this into your team's pom on Friday.
+:::
+
 ## Demo: watch the gate fail {.center}
 
 ```java
