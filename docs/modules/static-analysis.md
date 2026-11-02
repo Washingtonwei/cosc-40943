@@ -73,6 +73,8 @@ So let the tool catch the boring mistakes before any person looks at the code. S
 
 The machines run first, because they are cheapest ([section 3](#3-motivation)), and that is what makes the gate a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks.
 
+**An analyzer never changes its mind.** Same code, same findings, on every run. An AI reviewer is a model: ask it twice and it can answer differently, and an agent that disagrees with it can talk its way past. Nobody talks an analyzer out of a finding; the code changes or a person writes down why. That is why the gate on agent-written code is a deterministic tool, not another model.
+
 **Every path, but only approximately.** A test checks the paths it executes; a static analyzer reasons about every path, including the ones no test reaches. It cannot do that exactly, and you already know why. Whether a program can ever reach a given line is undecidable, because the halting problem reduces to it, and **Rice's theorem** generalizes the result: every nontrivial question about what a program does ("can this dereference null?", "can this input reach that query?") is undecidable. An analyzer that always finishes must therefore approximate, and every approximation errs in one direction or the other:
 
 | Error | What it is | What it costs | In theory terms |
@@ -168,6 +170,8 @@ Five findings from Project Pulse, one per kind of judgment:
 
 **Fix the configuration, not the code.** 117 of ESLint's 130 problems are `no-undef` on `cy`, `it`, and `describe` in the Cypress tests. The code is fine; the linter was never told those files run under Cypress. One override in the ESLint configuration removes all 117. When one rule floods a report, ask first whether the tool is configured for this codebase.
 
+**Not worth it: true, and still not worth the change.** The finding is correct, but the fix costs more than the risk it removes, here. PMD's `LocalVariableCouldBeFinal` is right about every local variable it flags, and adding `final` to all of them changes no behavior on a team that does not reassign locals anyway; PMD's own quickstart ruleset, the one Project Pulse uses, ships it commented out. The reason has to say what makes the risk small *in this codebase*, because "not worth it" with no reason is a false positive nobody checked. When the same verdict fits every finding of a rule, it is one decision for the whole project, made in the configuration, not repeated at each site. Assignment 4 opens with four such decisions, so this module leaves them to you.
+
 **How to suppress, with the reason attached:**
 
 | Tool | At one site | For the whole project |
@@ -194,6 +198,8 @@ Five findings from Project Pulse, one per kind of judgment:
 **In the gate, check; on your machine, fix.** Run the fixing variants (`eslint --fix`, `prettier --write`) locally. In CI run the checking variants (`eslint`, `prettier --check`, `npm run type-check`), because a CI job that fixes code changes what it was asked to check. And make the deploy run the same checks: Project Pulse deployed with `npm run build-only`, which skips `vue-tsc`, and that is how its 18 type errors reached production ([section 3](#3-motivation)).
 
 **Keep the gate fast and the rule set small.** A check that adds ten minutes to every pull request gets skipped, and a rule that fires on code the team considers fine gets turned off in anger. Start with the defaults of a few good tools, add a rule when a real bug gets past, and remove one when its findings are never acted on.
+
+**Red has to block.** On GitHub, a failing check stops a merge only when a ruleset (or branch protection rule) on `main` lists it as a required status check. Without that, the merge button stays enabled and a red check is advice.
 
 **Watch the gate fail before you trust it.** Plant one bug the tools should catch and confirm the build goes red. A gate you have never seen fail is a gate you are only hoping works. Wednesday's [CI/CD](../schedule.md) lecture wires these checks into the pipeline.
 
@@ -360,7 +366,7 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 **Team, own project (Friday's studio):**
 
 - **First run:** run the analyzers for your stack, record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
-- **Gate:** make the checks fail your pull request build. Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch it fail.
+- **Gate:** make the checks fail your pull request build, and make them required on `main`. Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch it fail.
 - **Write it down** ([4.7](#47-a-new-project-the-gate-comes-first)): a "Static analysis" subsection in section 8.2 of your architecture-of-record, and a charter line citing it: the gate command, suppressions carry reasons, and a baseline only shrinks.
 - **Your own rule** (optional, [4.8](#48-your-own-rules-turn-a-repeated-review-comment-into-a-check)): pick one convention from your section 8.2, have your agent draft a rule for it, and commit it with one example it flags and one it passes.
 
@@ -396,7 +402,7 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 1. A teammate says a good enough analyzer would report every bug and nothing else. Use Rice's theorem to answer, and say which kind of error you would rather tolerate in a pull request gate.
 2. A first SpotBugs run on your team's repository reports 400 findings. What do you do in the first ten minutes, and what do you not do?
-3. Give one Project Pulse finding of each verdict (real, false positive, not worth it) and say how each is recorded.
+3. Give one Project Pulse finding that is real and one that is a false positive, and say how each is recorded. Then: what must the reason say when you call a finding not worth it?
 4. `@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "false positive")`. What is wrong with it, and what would a good justification say for `UserUtils.getUserCourseId`?
 5. Your PMD baseline lists `TeamService=CompareObjectsWithEquals`. A teammate adds a new `==` comparison to `TeamService`. Does the build fail? What does that tell you about the baseline?
 6. An agent's pull request turns the build green by adding twelve entries to the SpotBugs baseline. What do you ask for in review?

@@ -154,6 +154,30 @@ The gate lets you read an agent's 800-line pull request for intent, not for null
 **Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace.
 :::
 
+## The check that never changes its mind
+
+::: cols
+**Analyzer**
+
+Same code, same findings, every run.
+
+Cannot be talked out of a finding.
+|||
+**AI reviewer**
+
+Ask twice, get two answers.
+
+An agent can argue its way past.
+:::
+
+::: key
+The gate on agent-written code is a deterministic tool, not another model.
+:::
+
+::: note
+**Say:** One more difference, and it's the one that matters with agents. Run SpotBugs a hundred times on the same code and you get the same report a hundred times. Ask a model to review twice and you may get two reviews, and an agent that disagrees with a model reviewer can often argue its way through. Nobody argues with an analyzer. Either the code changes or a person writes down why the finding doesn't apply. That's why the gate is a tool, and the AI reviewer sits beside it, not instead of it.
+:::
+
 ## Why every analyzer guesses
 
 ::: steps
@@ -389,6 +413,22 @@ The Axios interceptor already showed the error.
 **Say:** When one rule floods a report, ask first whether the tool is configured for this codebase. I tried it: one override, and 117 problems vanish without touching a test.
 :::
 
+## True, but not worth it
+
+::: steps
+- PMD's LocalVariableCouldBeFinal: right about every local it flags
+- Adding final everywhere changes no behavior if nobody reassigns locals
+- PMD's own quickstart ruleset ships it commented out
+:::
+
+::: key
+"Not worth it" needs a reason about this codebase, or it is a false positive nobody checked.
+:::
+
+::: note
+**Say:** The third verdict. The tool is right, and the fix still isn't worth it here. The reason has to say what makes the risk small in this codebase, not "too noisy." And when the verdict fits every finding of a rule, it's one decision for the whole project, in the configuration. Your assignment opens with four of those, so I'm not answering them today.
+:::
+
 ## Suppress with a reason
 
 ```java
@@ -438,6 +478,22 @@ A CI job that fixes the code changes what it was asked to check.
 
 ::: note
 **Say:** Fixing variants on your laptop, checking variants in the gate. And the deploy has to run the same checks: Project Pulse deployed with build-only, which skips the type checker, and that's how 18 type errors reached production. Keep the gate fast and the rules few; a ten-minute check gets skipped. And watch it fail once before you trust it.
+:::
+
+## Red has to block
+
+::: steps
+- A failing check stops a merge only if main requires it
+- GitHub: a ruleset (or branch protection) lists the required status checks
+- Without it, the merge button stays enabled
+:::
+
+::: key
+A red check nobody is required to fix is advice.
+:::
+
+::: note
+**Say:** "Nothing merges red" isn't automatic. GitHub shows the red X and still lets you click merge, unless main has a ruleset that marks the check as required. Friday, make yours required. Wednesday we set it up.
 :::
 
 ## {.center}
