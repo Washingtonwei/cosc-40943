@@ -1,6 +1,6 @@
 # Static Analysis
 
-> **Purpose (one line):** use analyzers to catch, before anyone reviews or runs the code, the bugs a machine can find: triage what they report, make them a gate on every pull request (from the first commit on a new project, behind a shrinking baseline on an old one), and hold the agent's code to the same bar.
+> **Purpose (one line):** catch what a machine can find before a person has to: triage the findings, and make the analyzers a gate on every pull request, for your code and the agent's alike.
 
 ## 1. Learning objectives
 
