@@ -118,10 +118,11 @@ cd backend
 ./mvnw org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd -Dformat=xml
 ```
 
-The reports land in `target/spotbugsXml.xml` and `target/pmd.xml` (add `spotbugs:gui` for a browsable view). On the frontend, run the checks without `--fix`, so nothing changes under you:
+The reports land in `target/spotbugsXml.xml` and `target/pmd.xml` (add `spotbugs:gui` for a browsable view). Run this way, PMD uses the plugin's small default ruleset and reports 5 findings; the 130 below come from PMD's quickstart ruleset, which #104 configures. Defaults decide what you see. On the frontend, run the checks without `--fix`, so nothing changes under you:
 
 ```bash
 cd frontend
+npm ci
 npx eslint . --ext .vue,.js,.ts --ignore-path ../.gitignore
 npm run type-check
 npx prettier --check src/

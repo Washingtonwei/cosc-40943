@@ -283,7 +283,7 @@ An analyzer that flags every line has zero false negatives.
 
 **Say:** On a codebase you just joined, look before you change anything. Maven runs any plugin by its coordinates, so I don't touch pom.xml. And on the frontend, no `--fix`: I want to see, not change.
 
-*[Show `target/spotbugsXml.xml` count: 237. PMD: 130 with the quickstart rules.]*
+*[Show `target/spotbugsXml.xml` count: 237. PMD: only 5. That's the plugin's tiny default ruleset. Defaults decide what you see; #104 switches to PMD's quickstart rules, and those find 130.]*
 :::
 
 ## Read by rule, not by file
