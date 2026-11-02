@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.29.0" timestamp="2026-11-01T21:23:46.502">
+<file name="project-pulse/backend/src/main/java/team/projectpulse/activity/Activity.java">
+<violation beginline="39" endline="39" begincolumn="12" endcolumn="20" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.activity" class="Activity" method="Activity" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/activity/ActivityController.java">
+<violation beginline="70" endline="70" begincolumn="21" endcolumn="39" rule="UnusedLocalVariable" ruleset="Best Practices" package="team.projectpulse.activity" class="ActivityController" method="addActivityComment" variable="updatedActivityDto" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'updatedActivityDto'.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/activity/ActivitySecurityService.java">
+<violation beginline="80" endline="80" begincolumn="26" endcolumn="59" rule="LambdaCanBeMethodReference" ruleset="Code Style" package="team.projectpulse.activity" class="ActivitySecurityService" method="canAccessActivity" variable="sectionIds" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#lambdacanbemethodreference" priority="3">
+Lambda expression could be written as a method reference: `Section::getSectionId`
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/activity/ActivitySpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="27" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.activity" class="ActivitySpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/course/Course.java">
+<violation beginline="35" endline="35" begincolumn="12" endcolumn="18" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.course" class="Course" method="Course" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/course/CourseSpecs.java">
+<violation beginline="6" endline="6" begincolumn="14" endcolumn="25" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.course" class="CourseSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="10" endline="10" begincolumn="91" endcolumn="123" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.course" class="CourseSpecs" method="containsCourseName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="15" endline="15" begincolumn="98" endcolumn="137" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.course" class="CourseSpecs" method="containsCourseDescription" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/EvaluationService.java">
+<violation beginline="257" endline="257" begincolumn="68" endcolumn="107" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.evaluation" class="EvaluationService" method="generateEvaluationSummariesForStudent" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/PeerEvaluation.java">
+<violation beginline="38" endline="38" begincolumn="12" endcolumn="26" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.evaluation" class="PeerEvaluation" method="PeerEvaluation" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/PeerEvaluationAverage.java">
+<violation beginline="19" endline="19" begincolumn="12" endcolumn="33" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.evaluation" class="PeerEvaluationAverage" method="PeerEvaluationAverage" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="19" endline="19" begincolumn="12" endcolumn="33" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.evaluation" class="PeerEvaluationAverage" method="PeerEvaluationAverage" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/Rating.java">
+<violation beginline="19" endline="19" begincolumn="12" endcolumn="18" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.evaluation" class="Rating" method="Rating" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/RatingAverage.java">
+<violation beginline="9" endline="9" begincolumn="12" endcolumn="25" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.evaluation" class="RatingAverage" method="RatingAverage" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/evaluation/WeeklyPeerEvaluationReport.java">
+<violation beginline="13" endline="13" begincolumn="12" endcolumn="38" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.evaluation" class="WeeklyPeerEvaluationReport" method="WeeklyPeerEvaluationReport" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="13" endline="13" begincolumn="12" endcolumn="38" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.evaluation" class="WeeklyPeerEvaluationReport" method="WeeklyPeerEvaluationReport" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/instructor/Instructor.java">
+<violation beginline="32" endline="32" begincolumn="12" endcolumn="22" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.instructor" class="Instructor" method="Instructor" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/instructor/InstructorSecurityService.java">
+<violation beginline="43" endline="45" begincolumn="9" endcolumn="10" rule="SimplifyBooleanReturns" ruleset="Design" package="team.projectpulse.instructor" class="InstructorSecurityService" method="isCurrentUserAdminOfInstructorCourse" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/instructor/InstructorService.java">
+<violation beginline="116" endline="116" begincolumn="83" endcolumn="135" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.instructor" class="InstructorService" method="updateInstructor" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/instructor/InstructorSpecs.java">
+<violation beginline="6" endline="6" begincolumn="14" endcolumn="29" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.instructor" class="InstructorSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="10" endline="10" begincolumn="85" endcolumn="116" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.instructor" class="InstructorSpecs" method="hasFirstName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="15" endline="15" begincolumn="84" endcolumn="114" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.instructor" class="InstructorSpecs" method="hasLastName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="20" endline="20" begincolumn="81" endcolumn="108" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.instructor" class="InstructorSpecs" method="hasEmail" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/notification/ReminderService.java">
+<violation beginline="72" endline="72" begincolumn="17" endcolumn="139" rule="GuardLogStatement" ruleset="Best Practices" package="team.projectpulse.notification" class="ReminderService" method="remind" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
+Logger calls should be surrounded by log level guards.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/notification/WeeklyReminderScheduler.java">
+<violation beginline="55" endline="55" begincolumn="28" endcolumn="35" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.notification" class="WeeklyReminderScheduler" method="sendWeeklyReminders" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="77" endline="77" begincolumn="46" endcolumn="55" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.notification" class="WeeklyReminderScheduler" method="sendWeeklyReminders" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="81" endline="81" begincolumn="17" endcolumn="124" rule="GuardLogStatement" ruleset="Best Practices" package="team.projectpulse.notification" class="WeeklyReminderScheduler" method="sendWeeklyReminders" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
+Logger calls should be surrounded by log level guards.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/collaboration/Comment.java">
+<violation beginline="38" endline="38" begincolumn="12" endcolumn="19" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.collaboration" class="Comment" method="Comment" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="38" endline="38" begincolumn="12" endcolumn="19" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.collaboration" class="Comment" method="Comment" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/collaboration/CommentThread.java">
+<violation beginline="62" endline="62" begincolumn="12" endcolumn="25" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.collaboration" class="CommentThread" method="CommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="62" endline="62" begincolumn="12" endcolumn="25" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.collaboration" class="CommentThread" method="CommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/collaboration/converter/CommentDtoToCommentConverter.java">
+<violation beginline="12" endline="12" begincolumn="29" endcolumn="41" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.collaboration.converter" class="CommentDtoToCommentConverter" method="convert" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/collaboration/converter/CommentThreadToCommentThreadDtoConverter.java">
+<violation beginline="22" endline="22" begincolumn="29" endcolumn="41" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.collaboration.converter" class="CommentThreadToCommentThreadDtoConverter" method="convert" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/collaboration/converter/CommentToCommentDtoConverter.java">
+<violation beginline="20" endline="20" begincolumn="29" endcolumn="41" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.collaboration.converter" class="CommentToCommentDtoConverter" method="convert" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/document/DocumentSection.java">
+<violation beginline="72" endline="72" begincolumn="12" endcolumn="27" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSection" method="DocumentSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="72" endline="72" begincolumn="12" endcolumn="27" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.document" class="DocumentSection" method="DocumentSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="101" endline="101" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSection" method="addCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="107" endline="107" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSection" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="109" endline="109" begincolumn="13" endcolumn="48" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.ram.document" class="DocumentSection" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/document/DocumentSectionLock.java">
+<violation beginline="35" endline="35" begincolumn="12" endcolumn="31" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSectionLock" method="DocumentSectionLock" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="35" endline="35" begincolumn="12" endcolumn="31" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.document" class="DocumentSectionLock" method="DocumentSectionLock" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="39" endline="39" begincolumn="31" endcolumn="44" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSectionLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="40" endline="40" begincolumn="9" endcolumn="44" rule="SimplifyBooleanReturns" ruleset="Design" package="team.projectpulse.ram.document" class="DocumentSectionLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return {condition} || {elseBranch};`
+</violation>
+<violation beginline="40" endline="40" begincolumn="32" endcolumn="44" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="DocumentSectionLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/document/RequirementDocument.java">
+<violation beginline="55" endline="55" begincolumn="12" endcolumn="31" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.document" class="RequirementDocument" method="RequirementDocument" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="55" endline="55" begincolumn="12" endcolumn="31" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.document" class="RequirementDocument" method="RequirementDocument" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="59" endline="59" begincolumn="30" endcolumn="37" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="RequirementDocument" method="addSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="66" endline="66" begincolumn="30" endcolumn="37" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="RequirementDocument" method="removeSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="69" endline="69" begincolumn="13" endcolumn="42" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.ram.document" class="RequirementDocument" method="removeSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+<violation beginline="75" endline="75" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="RequirementDocument" method="addCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="82" endline="82" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.document" class="RequirementDocument" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="85" endline="85" begincolumn="13" endcolumn="41" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.ram.document" class="RequirementDocument" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/document/RequirementDocumentSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="38" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.ram.document" class="RequirementDocumentSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="19" endline="19" begincolumn="86" endcolumn="113" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.ram.document" class="RequirementDocumentSpecs" method="hasTitleLike" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/document/template/DocumentTemplateRegistry.java">
+<violation beginline="48" endline="48" begincolumn="13" endcolumn="87" rule="GuardLogStatement" ruleset="Best Practices" package="team.projectpulse.ram.document.template" class="DocumentTemplateRegistry" method="loadAllTemplates" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
+Logger calls should be surrounded by log level guards.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/requirement/ArtifactKeySequence.java">
+<violation beginline="30" endline="30" begincolumn="12" endcolumn="31" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.requirement" class="ArtifactKeySequence" method="ArtifactKeySequence" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/requirement/ArtifactLink.java">
+<violation beginline="53" endline="53" begincolumn="12" endcolumn="24" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.requirement" class="ArtifactLink" method="ArtifactLink" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="53" endline="53" begincolumn="12" endcolumn="24" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.requirement" class="ArtifactLink" method="ArtifactLink" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/requirement/ArtifactLinkSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="31" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.ram.requirement" class="ArtifactLinkSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/requirement/RequirementArtifact.java">
+<violation beginline="80" endline="80" begincolumn="12" endcolumn="31" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.requirement" class="RequirementArtifact" method="RequirementArtifact" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="113" endline="113" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.requirement" class="RequirementArtifact" method="addCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="119" endline="119" begincolumn="29" endcolumn="36" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.requirement" class="RequirementArtifact" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="121" endline="121" begincolumn="13" endcolumn="41" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.ram.requirement" class="RequirementArtifact" method="removeCommentThread" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/requirement/RequirementArtifactSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="38" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.ram.requirement" class="RequirementArtifactSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCase.java">
+<violation beginline="76" endline="76" begincolumn="12" endcolumn="19" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.usecase" class="UseCase" method="UseCase" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="76" endline="76" begincolumn="12" endcolumn="19" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCase" method="UseCase" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseController.java">
+<violation beginline="33" endline="36" begincolumn="9" endcolumn="12" rule="DanglingJavadoc" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCaseController" method="findUseCaseById" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#danglingjavadoc" priority="3">
+Javadoc comment does not belong to any class, method or field
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseExtension.java">
+<violation beginline="58" endline="58" begincolumn="12" endcolumn="28" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCaseExtension" method="UseCaseExtension" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseExtensionStep.java">
+<violation beginline="21" endline="21" begincolumn="12" endcolumn="32" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCaseExtensionStep" method="UseCaseExtensionStep" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseLock.java">
+<violation beginline="35" endline="35" begincolumn="12" endcolumn="23" rule="UnnecessaryConstructor" ruleset="Code Style" package="team.projectpulse.ram.usecase" class="UseCaseLock" method="UseCaseLock" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryconstructor" priority="3">
+Avoid unnecessary constructors - the compiler will generate these for you
+</violation>
+<violation beginline="35" endline="35" begincolumn="12" endcolumn="23" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCaseLock" method="UseCaseLock" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="39" endline="39" begincolumn="31" endcolumn="44" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.usecase" class="UseCaseLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="40" endline="40" begincolumn="9" endcolumn="44" rule="SimplifyBooleanReturns" ruleset="Design" package="team.projectpulse.ram.usecase" class="UseCaseLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return {condition} || {elseBranch};`
+</violation>
+<violation beginline="40" endline="40" begincolumn="32" endcolumn="44" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.ram.usecase" class="UseCaseLock" method="isLocked" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseMainStep.java">
+<violation beginline="31" endline="31" begincolumn="12" endcolumn="27" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.ram.usecase" class="UseCaseMainStep" method="UseCaseMainStep" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseService.java">
+<violation beginline="251" endline="251" begincolumn="22" endcolumn="38" rule="UnusedPrivateMethod" ruleset="Best Practices" package="team.projectpulse.ram.usecase" class="UseCaseService" method="updateCollection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#unusedprivatemethod" priority="3">
+Avoid unused private methods such as 'updateCollection(Set&lt;T&gt;, Set&lt;T&gt;)'.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/rubric/Criterion.java">
+<violation beginline="24" endline="24" begincolumn="12" endcolumn="21" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.rubric" class="Criterion" method="Criterion" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/rubric/CriterionSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="28" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.rubric" class="CriterionSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="9" endline="9" begincolumn="90" endcolumn="121" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.rubric" class="CriterionSpecs" method="containsCriterion" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="14" endline="14" begincolumn="92" endcolumn="125" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.rubric" class="CriterionSpecs" method="containsDescription" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/rubric/Rubric.java">
+<violation beginline="27" endline="27" begincolumn="12" endcolumn="18" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.rubric" class="Rubric" method="Rubric" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/rubric/RubricSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="25" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.rubric" class="RubricSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="9" endline="9" begincolumn="91" endcolumn="123" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.rubric" class="RubricSpecs" method="containsRubricName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/Section.java">
+<violation beginline="54" endline="54" begincolumn="12" endcolumn="19" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.section" class="Section" method="Section" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="128" endline="128" begincolumn="27" endcolumn="34" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.section" class="Section" method="addTeam" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="129" endline="129" begincolumn="41" endcolumn="62" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.section" class="Section" method="addTeam" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="142" endline="142" begincolumn="30" endcolumn="37" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.section" class="Section" method="addStudent" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="143" endline="143" begincolumn="47" endcolumn="74" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.section" class="Section" method="addStudent" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/SectionSecurityService.java">
+<violation beginline="78" endline="80" begincolumn="13" endcolumn="14" rule="SimplifyBooleanReturns" ruleset="Design" package="team.projectpulse.section" class="SectionSecurityService" method="canAccessSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/SectionService.java">
+<violation beginline="57" endline="57" begincolumn="32" endcolumn="76" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.section" class="SectionService" method="findByCriteria" variable="activeStr" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/SectionSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="26" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.section" class="SectionSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="9" endline="9" begincolumn="92" endcolumn="125" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.section" class="SectionSpecs" method="containsSectionName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/dto/SectionDto.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="28" rule="UnnecessaryImport" ruleset="Code Style" package="team.projectpulse.section.dto" class="SectionDto" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'java.time.LocalTime'
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/security/AuthController.java">
+<violation beginline="38" endline="38" begincolumn="9" endcolumn="76" rule="GuardLogStatement" ruleset="Best Practices" package="team.projectpulse.security" class="AuthController" method="getLoginInfo" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#guardlogstatement" priority="2">
+Logger calls should be surrounded by log level guards.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/security/AuthService.java">
+<violation beginline="39" endline="39" begincolumn="13" endcolumn="60" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.security" class="AuthService" method="createLoginInfo" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/security/JwtProvider.java">
+<violation beginline="30" endline="30" begincolumn="22" endcolumn="73" rule="LambdaCanBeMethodReference" ruleset="Code Style" package="team.projectpulse.security" class="JwtProvider" method="createToken" variable="authorities" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#lambdacanbemethodreference" priority="3">
+Lambda expression could be written as a method reference: `GrantedAuthority::getAuthority`
+</violation>
+<violation beginline="38" endline="38" begincolumn="53" endcolumn="84" rule="UselessParentheses" ruleset="Code Style" package="team.projectpulse.security" class="JwtProvider" method="createToken" variable="claims" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `authentication.getPrincipal()`.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/security/SecurityConfiguration.java">
+<violation beginline="317" endline="317" begincolumn="23" endcolumn="45" rule="LambdaCanBeMethodReference" ruleset="Code Style" package="team.projectpulse.security" class="SecurityConfiguration" method="securityFilterChain" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#lambdacanbemethodreference" priority="3">
+Lambda expression could be written as a method reference: `AbstractHttpConfigurer::disable`
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/student/Student.java">
+<violation beginline="17" endline="17" begincolumn="12" endcolumn="19" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.student" class="Student" method="Student" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/student/StudentSecurityService.java">
+<violation beginline="43" endline="45" begincolumn="9" endcolumn="10" rule="SimplifyBooleanReturns" ruleset="Design" package="team.projectpulse.student" class="StudentSecurityService" method="isCurrentUserInstructorOfStudentSection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#simplifybooleanreturns" priority="3">
+This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/student/StudentService.java">
+<violation beginline="120" endline="120" begincolumn="83" endcolumn="140" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.student" class="StudentService" method="updateStudent" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/student/StudentSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="26" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.student" class="StudentSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="9" endline="9" begincolumn="90" endcolumn="121" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.student" class="StudentSpecs" method="containsFirstName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="14" endline="14" begincolumn="89" endcolumn="119" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.student" class="StudentSpecs" method="containsLastName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="19" endline="19" begincolumn="81" endcolumn="108" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.student" class="StudentSpecs" method="hasEmail" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="24" endline="24" begincolumn="96" endcolumn="126" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.student" class="StudentSpecs" method="hasTeamName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="34" endline="34" begincolumn="102" endcolumn="135" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.student" class="StudentSpecs" method="hasSectionName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/system/PeerEvaluationUserAuditorAware.java">
+<violation beginline="25" endline="25" begincolumn="29" endcolumn="53" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="PeerEvaluationUserAuditorAware" method="getCurrentAuditor" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/system/Result.java">
+<violation beginline="18" endline="18" begincolumn="12" endcolumn="18" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.system" class="Result" method="Result" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/system/StatusCode.java">
+<violation beginline="3" endline="3" begincolumn="14" endcolumn="24" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.system" class="StatusCode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/system/UserUtils.java">
+<violation beginline="27" endline="27" begincolumn="54" endcolumn="66" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="30" endline="30" begincolumn="46" endcolumn="58" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="33" endline="33" begincolumn="28" endcolumn="40" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="35" endline="35" begincolumn="41" endcolumn="50" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="36" endline="36" begincolumn="38" endcolumn="58" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="37" endline="37" begincolumn="40" endcolumn="66" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.system" class="UserUtils" method="getUserId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="46" endline="46" begincolumn="47" endcolumn="104" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.system" class="UserUtils" method="getUserCourseId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+<violation beginline="61" endline="61" begincolumn="47" endcolumn="104" rule="LiteralsFirstInComparisons" ruleset="Best Practices" package="team.projectpulse.system" class="UserUtils" method="getUserSectionId" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_bestpractices.html#literalsfirstincomparisons" priority="3">
+Position literals first in String comparisons
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/team/Team.java">
+<violation beginline="28" endline="28" begincolumn="12" endcolumn="16" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.team" class="Team" method="Team" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+<violation beginline="96" endline="96" begincolumn="33" endcolumn="40" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.team" class="Team" method="addInstructor" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+<violation beginline="102" endline="102" begincolumn="33" endcolumn="40" rule="ControlStatementBraces" ruleset="Code Style" package="team.projectpulse.team" class="Team" method="removeInstructor" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#controlstatementbraces" priority="3">
+This statement should have braces
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/team/TeamService.java">
+<violation beginline="178" endline="178" begincolumn="13" endcolumn="38" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.team" class="TeamService" method="transferTeam" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+<violation beginline="191" endline="191" begincolumn="13" endcolumn="41" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="team.projectpulse.team" class="TeamService" method="transferStudent" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+Use equals() to compare object references.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/team/TeamSpecs.java">
+<violation beginline="5" endline="5" begincolumn="14" endcolumn="23" rule="InstantiableUtilityClass" ruleset="Design" package="team.projectpulse.team" class="TeamSpecs" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_design.html#instantiableutilityclass" priority="3">
+All members are static. Consider adding a private no-args constructor to prevent instantiation.
+</violation>
+<violation beginline="9" endline="9" begincolumn="89" endcolumn="119" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.team" class="TeamSpecs" method="containsTeamName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+<violation beginline="14" endline="14" begincolumn="102" endcolumn="135" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="team.projectpulse.team" class="TeamSpecs" method="hasSectionName" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+When doing a String.toLowerCase()/toUpperCase() call, use a Locale
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/user/PeerEvaluationUser.java">
+<violation beginline="36" endline="36" begincolumn="12" endcolumn="30" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.user" class="PeerEvaluationUser" method="PeerEvaluationUser" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/user/UserController.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="66" rule="UnnecessaryImport" ruleset="Code Style" package="team.projectpulse.user" class="UserController" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'org.springframework.security.core.userdetails.UserDetails'
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/user/resetpassword/ResetPasswordToken.java">
+<violation beginline="18" endline="18" begincolumn="12" endcolumn="30" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.user.resetpassword" class="ResetPasswordToken" method="ResetPasswordToken" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/user/userinvitation/UserInvitation.java">
+<violation beginline="17" endline="17" begincolumn="12" endcolumn="26" rule="UncommentedEmptyConstructor" ruleset="Documentation" package="team.projectpulse.user.userinvitation" class="UserInvitation" method="UserInvitation" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.29.0/pmd_rules_java_documentation.html#uncommentedemptyconstructor" priority="3">
+Document empty constructor
+</violation>
+</file>
+</pmd>

@@ -118,7 +118,7 @@ cd backend
 ./mvnw org.apache.maven.plugins:maven-pmd-plugin:3.28.0:pmd -Dformat=xml
 ```
 
-The reports land in `target/spotbugsXml.xml` and `target/pmd.xml` (add `spotbugs:gui` for a browsable view). Run this way, PMD uses the plugin's small default ruleset and reports 5 findings; the 130 below come from PMD's quickstart ruleset, which #104 configures. Defaults decide what you see. On the frontend, run the checks without `--fix`, so nothing changes under you:
+The reports land in `target/spotbugsXml.xml` and `target/pmd.xml` (add `spotbugs:gui` for a browsable view). This run's reports on Project Pulse are saved here: SpotBugs ([HTML](../assets/static-analysis/spotbugs.html), [XML](../assets/static-analysis/spotbugsXml.xml)), PMD with the plugin's default ruleset ([HTML](../assets/static-analysis/pmd.html), [XML](../assets/static-analysis/pmd.xml)), and PMD with the quickstart ruleset, the 130 findings read below ([HTML](../assets/static-analysis/pmd-quickstart.html), [XML](../assets/static-analysis/pmd-quickstart.xml)). Run this way, PMD uses the plugin's small default ruleset and reports 5 findings; the 130 below come from PMD's quickstart ruleset, which #104 configures. Defaults decide what you see. On the frontend, run the checks without `--fix`, so nothing changes under you:
 
 ```bash
 cd frontend

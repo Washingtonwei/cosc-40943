@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.17.0" timestamp="2026-11-01T21:23:00.381">
+<file name="project-pulse/backend/src/main/java/team/projectpulse/activity/ActivityController.java">
+<violation beginline="70" endline="70" begincolumn="21" endcolumn="39" rule="UnusedLocalVariable" ruleset="Best Practices" package="team.projectpulse.activity" class="ActivityController" method="addActivityComment" variable="updatedActivityDto" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedlocalvariable" priority="3">
+Avoid unused local variables such as 'updatedActivityDto'.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/ram/usecase/UseCaseService.java">
+<violation beginline="251" endline="251" begincolumn="22" endcolumn="38" rule="UnusedPrivateMethod" ruleset="Best Practices" package="team.projectpulse.ram.usecase" class="UseCaseService" method="updateCollection" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedprivatemethod" priority="3">
+Avoid unused private methods such as 'updateCollection(Set&lt;T&gt;, Set&lt;T&gt;)'.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/section/dto/SectionDto.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="28" rule="UnnecessaryImport" ruleset="Code Style" package="team.projectpulse.section.dto" class="SectionDto" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'java.time.LocalTime'
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/security/JwtProvider.java">
+<violation beginline="38" endline="38" begincolumn="53" endcolumn="84" rule="UselessParentheses" ruleset="Code Style" package="team.projectpulse.security" class="JwtProvider" method="createToken" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `authentication.getPrincipal()`.
+</violation>
+</file>
+<file name="project-pulse/backend/src/main/java/team/projectpulse/user/UserController.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="66" rule="UnnecessaryImport" ruleset="Code Style" package="team.projectpulse.user" class="UserController" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'org.springframework.security.core.userdetails.UserDetails'
+</violation>
+</file>
+</pmd>
