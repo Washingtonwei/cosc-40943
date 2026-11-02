@@ -154,28 +154,32 @@ The gate lets you read an agent's 800-line pull request for intent, not for null
 **Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace. The automated checks a change must pass before it can merge are the gate; more on it later today.
 :::
 
-## The check that never changes its mind
+## Why not just ask Claude Code?
 
 ::: cols
 **Analyzer**
 
 Same code, same findings, every run.
 
-Cannot be talked out of a finding.
+Every file, in seconds, no tokens.
+
+Blind to intent.
 |||
-**AI reviewer**
+**Model**
 
 Ask twice, get two answers.
 
-An agent can argue its way past.
+Reads what fits in context, paid per run.
+
+Can judge intent.
 :::
 
 ::: key
-The gate on agent-written code is a deterministic tool, not another model.
+One loop: the analyzer finds, the agent fixes, the analyzer checks again.
 :::
 
 ::: note
-**Say:** One more difference, and it's the one that matters with agents. Run SpotBugs a hundred times on the same code and you get the same report a hundred times. Ask a model to review twice and you may get two reviews, and an agent that disagrees with a model reviewer can often argue its way through. Nobody argues with an analyzer. Either the code changes or a person writes down why the finding doesn't apply. That's why the gate is a tool, and the AI reviewer sits beside it, not instead of it.
+**Say:** Ask first: "We have Claude Code. Why bother with an analyzer?" Let someone make the case; it's half right. A model can find these bugs, and it can judge things no analyzer can. But run SpotBugs a hundred times and you get the same report a hundred times, in seconds, for free, on every file. Ask a model twice and you may get two reviews, and an agent can argue its way past a model reviewer. Nobody argues with an analyzer. So don't pick one: the analyzer is the gate, the agent reads its report and fixes, the analyzer checks again, and you decide only what needs judgment.
 :::
 
 ## Why every analyzer guesses
