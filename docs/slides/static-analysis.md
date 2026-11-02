@@ -659,6 +659,7 @@ A suppression without a reason is a bug report you deleted.
 | Where | What | Why |
 |---|---|---|
 | Editor | IntelliJ, SonarQube for IDE, ESLint | Seconds |
+| Before you push | ./mvnw verify, frontend checks | Same as the PR, a minute sooner |
 | Pull request | mvn verify, ESLint, Hadolint, CodeQL | The gate |
 | Schedule | Dependabot, CodeQL on main | New CVEs, old code |
 
@@ -667,7 +668,7 @@ Shift left: the earlier the check, the cheaper the fix.
 :::
 
 ::: note
-**Say:** Editor is fastest. A pre-commit hook is optional and skippable, so never your only gate. The pull request is the gate: nothing merges red. And the gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
+**Say:** Editor is fastest. Before you push, run the gate yourself (a Git hook can run the fast checks on every commit, but anyone can skip a hook, so it's never the gate): `./mvnw verify`, not `./mvnw test`. The analyzers run in `verify`, after the tests, so green tests are not a green gate. Finding it on your laptop costs a minute; finding it in the pull request costs a red check your whole team sees. CI enforces the gate; it shouldn't be where you first meet a finding. The pull request is the gate: nothing merges red. And the gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
 :::
 
 ## Check in CI, fix on your machine

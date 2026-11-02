@@ -329,9 +329,11 @@ Five findings from Project Pulse, one per kind of judgment:
 | Where | What runs there | Why |
 |---|---|---|
 | **Editor** | IntelliJ inspections, SonarQube for IDE, ESLint and `vue-tsc` in VS Code | Fastest feedback, while the code is still in your head |
-| **Before commit** (optional) | Formatter, fast linters, as a Git hook | Keeps noise out of review; skippable, so never the only gate |
+| **Before you push** | The gate command (`./mvnw verify` in Project Pulse), plus the frontend checks; optionally a Git hook runs the fast ones on every commit | The pull request runs the same thing; finding a problem here costs a minute, not a red pull request. A hook is skippable, so never the only gate |
 | **Pull request** | Everything that must pass: `mvn verify`, ESLint, type check, Hadolint, CodeQL | **The gate.** Nothing merges red |
 | **On a schedule** | Dependabot, CodeQL on `main` | New vulnerabilities are published about code that did not change |
+
+**Green tests are not a green gate.** In Project Pulse, SpotBugs and PMD run in Maven's `verify` phase, which comes after `test`, so `./mvnw test` passing says nothing about the analyzers. Before you push, run `./mvnw verify`, the same command the pull request runs, and the agent should run it before it says it is done. CI is there to enforce the gate, not to be the first place you see a finding; CodeQL, Dependabot, and secret scanning run only on GitHub, so those you leave to CI.
 
 **In the gate, check; on your machine, fix.** Run the fixing variants (`eslint --fix`, `prettier --write`) locally. In CI run the checking variants (`eslint`, `prettier --check`, `npm run type-check`), because a CI job that fixes code changes what it was asked to check. And make the deploy run the same checks: Project Pulse deployed with `npm run build-only`, which skips `vue-tsc`, and that is how its 18 type errors reached production ([section 3](#3-motivation)).
 
