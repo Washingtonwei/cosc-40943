@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" width="1100" height="640" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">The static analysis ladder</title>
+<desc id="d">A ladder with eight rungs. From the bottom, the cheapest checks that run first: compiler and IDE, formatter, linter, null types, dataflow and taint, dependencies, containers, and secrets at the top. Each rung names what it catches, how it reads the code, and its tools for Java and Vue. The linter rung is highlighted as where the module starts (4.3 to 4.8); null types and dataflow are bracketed as 4.9, following values across methods; dependencies, containers, and secrets are bracketed as 4.10, beyond your own code.</desc>
+<rect width="1100" height="640" rx="18" fill="#0F1420"/>
+<text x="28" y="40" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">THE LADDER</text>
+<text x="380" y="72" text-anchor="end" fill="#5C6780" font-size="13" font-weight="700" letter-spacing="1.5">RUNG · WHAT IT CATCHES</text>
+<text x="560" y="72" fill="#5C6780" font-size="13" font-weight="700" letter-spacing="1.5">TOOLS (JAVA · VUE) · HOW IT READS</text>
+
+<!-- cost arrow -->
+<line x1="70" y1="560" x2="70" y2="110" stroke="#2C374E" stroke-width="4" stroke-linecap="round"/>
+<polygon points="70,94 60,114 80,114" fill="#2C374E"/>
+<text transform="translate(52,335) rotate(-90)" text-anchor="middle" fill="#9AA3B5" font-size="15" font-weight="600">climb: each rung sees further</text>
+<text x="70" y="590" text-anchor="middle" fill="#6FCF57" font-size="14" font-weight="700">cheap, fast,</text>
+<text x="70" y="608" text-anchor="middle" fill="#6FCF57" font-size="14" font-weight="700">runs first</text>
+
+<!-- rails -->
+<line x1="420" y1="86" x2="420" y2="590" stroke="#5C6780" stroke-width="10" stroke-linecap="round"/>
+<line x1="540" y1="86" x2="540" y2="590" stroke="#5C6780" stroke-width="10" stroke-linecap="round"/>
+
+<!-- rungs, bottom (0) to top (7): y = 545 - 62*i -->
+<g stroke="#9AA3B5" stroke-width="8" stroke-linecap="round">
+  <line x1="420" y1="545" x2="540" y2="545"/>
+  <line x1="420" y1="483" x2="540" y2="483"/>
+  <line x1="420" y1="297" x2="540" y2="297"/>
+  <line x1="420" y1="359" x2="540" y2="359"/>
+  <line x1="420" y1="235" x2="540" y2="235"/>
+  <line x1="420" y1="173" x2="540" y2="173"/>
+  <line x1="420" y1="111" x2="540" y2="111"/>
+</g>
+<line x1="420" y1="421" x2="540" y2="421" stroke="#9B6BD6" stroke-width="12" stroke-linecap="round"/>
+
+<!-- 0 compiler -->
+<text x="398" y="541" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Compiler and IDE</text>
+<text x="398" y="561" text-anchor="end" fill="#9AA3B5" font-size="14">syntax, types, unreachable code</text>
+<text x="562" y="541" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">javac, IntelliJ · vue-tsc</text>
+<text x="562" y="561" fill="#9AA3B5" font-size="14">parses and type-checks</text>
+
+<!-- 1 formatter -->
+<text x="398" y="479" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Formatter</text>
+<text x="398" y="499" text-anchor="end" fill="#9AA3B5" font-size="14">inconsistent layout</text>
+<text x="562" y="479" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">Spotless · Prettier</text>
+<text x="562" y="499" fill="#9AA3B5" font-size="14">reprints the syntax tree</text>
+
+<!-- 2 linter -->
+<text x="398" y="417" text-anchor="end" fill="#C9A8F0" font-size="20" font-weight="800">Linter</text>
+<text x="398" y="437" text-anchor="end" fill="#9AA3B5" font-size="14">known bug patterns</text>
+<text x="562" y="417" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">SpotBugs, PMD · ESLint</text>
+<text x="562" y="437" fill="#9AA3B5" font-size="14">patterns in the syntax tree or bytecode</text>
+
+<!-- 3 null types -->
+<text x="398" y="355" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Null types</text>
+<text x="398" y="375" text-anchor="end" fill="#9AA3B5" font-size="14">null dereferences</text>
+<text x="562" y="355" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">NullAway · strictNullChecks</text>
+<text x="562" y="375" fill="#9AA3B5" font-size="14">a type system that tracks null</text>
+
+<!-- 4 dataflow -->
+<text x="398" y="293" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Dataflow and taint</text>
+<text x="398" y="313" text-anchor="end" fill="#9AA3B5" font-size="14">input reaching SQL, HTML, a shell</text>
+<text x="562" y="293" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">CodeQL</text>
+<text x="562" y="313" fill="#9AA3B5" font-size="14">follows values across methods and files</text>
+
+<!-- 5 dependencies -->
+<text x="398" y="231" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Dependencies</text>
+<text x="398" y="251" text-anchor="end" fill="#9AA3B5" font-size="14">libraries with known vulnerabilities</text>
+<text x="562" y="231" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">Dependabot</text>
+<text x="562" y="251" fill="#9AA3B5" font-size="14">lockfile against a vulnerability database</text>
+
+<!-- 6 containers -->
+<text x="398" y="169" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Containers</text>
+<text x="398" y="189" text-anchor="end" fill="#9AA3B5" font-size="14">runs as root, unpinned base image</text>
+<text x="562" y="169" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">Hadolint, Trivy</text>
+<text x="562" y="189" fill="#9AA3B5" font-size="14">the Dockerfile, or the built image</text>
+
+<!-- 7 secrets -->
+<text x="398" y="107" text-anchor="end" fill="#F2EDE3" font-size="20" font-weight="700">Secrets</text>
+<text x="398" y="127" text-anchor="end" fill="#9AA3B5" font-size="14">a key committed to the repository</text>
+<text x="562" y="107" fill="#F2EDE3" font-size="16" font-family="'IBM Plex Mono',Consolas,monospace">GitHub secret scanning</text>
+<text x="562" y="127" fill="#9AA3B5" font-size="14">known key formats, on every push</text>
+
+<!-- brackets -->
+<path d="M900,470 h10 v90 h-10" fill="none" stroke="#5C6780" stroke-width="2"/>
+<text x="924" y="512" fill="#9AA3B5" font-size="15" font-weight="700">you likely</text>
+<text x="924" y="531" fill="#9AA3B5" font-size="15" font-weight="700">have these</text>
+
+<path d="M900,404 h10 v34 h-10" fill="none" stroke="#9B6BD6" stroke-width="2.5"/>
+<text x="924" y="418" fill="#C9A8F0" font-size="16" font-weight="800">start here</text>
+<text x="924" y="437" fill="#C9A8F0" font-size="15">4.3 to 4.8</text>
+
+<path d="M900,280 h10 v96 h-10" fill="none" stroke="#5BE0E6" stroke-width="2"/>
+<text x="924" y="320" fill="#5BE0E6" font-size="16" font-weight="800">4.9</text>
+<text x="924" y="339" fill="#5BE0E6" font-size="15">values across</text>
+<text x="924" y="356" fill="#5BE0E6" font-size="15">methods</text>
+
+<path d="M900,94 h10 v158 h-10" fill="none" stroke="#FFB443" stroke-width="2"/>
+<text x="924" y="160" fill="#FFB443" font-size="16" font-weight="800">4.10</text>
+<text x="924" y="179" fill="#FFB443" font-size="15">beyond your</text>
+<text x="924" y="196" fill="#FFB443" font-size="15">own code</text>
+</svg>

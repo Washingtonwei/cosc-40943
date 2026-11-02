@@ -147,14 +147,14 @@ If a cheap check can reject the change, don't spend the expensive one.
 | **Code review** | Is this what the use case asks for? | Line 600 of a tired afternoon | Heartbleed |
 
 ::: key
-The gate lets you read an agent's 800-line pull request for intent, not for null checks.
+Each one is blind where another looks.
 :::
 
 ::: note
-**Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace. The automated checks a change must pass before it can merge are the gate; more on it later today.
+**Say:** You've now met all three: review in week 8, testing last week, analysis today. They don't compete; each one is blind where another one looks. And each has its story: goto fail today, CrowdStrike's green suite in testing, Heartbleed's approved review. The analyzer checks every path, run or not, but has no idea what the code is for. The reviewer knows what it's for, and gets tired. Put the cheap, tireless slice first, the Swiss cheese from code review, and a person never spends review time on a missing brace.
 :::
 
-## Why not just ask Claude Code?
+## Why not just ask your coding agent?
 
 ::: cols
 **Analyzer**
@@ -179,7 +179,7 @@ One loop: the analyzer finds, the agent fixes, the analyzer checks again.
 :::
 
 ::: note
-**Say:** Ask first: "We have Claude Code. Why bother with an analyzer?" Let someone make the case; it's half right. A model can find these bugs, and it can judge things no analyzer can. But run SpotBugs a hundred times and you get the same report a hundred times, in seconds, for free, on every file. Ask a model twice and you may get two reviews, and an agent can argue its way past a model reviewer. Nobody argues with an analyzer. So don't pick one: the analyzer is the gate, the agent reads its report and fixes, the analyzer checks again, and you decide only what needs judgment.
+**Say:** Ask first: "We have a coding agent, Claude Code or Codex. Why bother with an analyzer?" Let someone make the case; it's half right. A model can find these bugs, and it can judge things no analyzer can. But run SpotBugs a hundred times and you get the same report a hundred times, in seconds, for free, on every file. Ask a model twice and you may get two reviews, and an agent can argue its way past a model reviewer. Nobody argues with an analyzer. So don't pick one. The automated checks a change must pass before it can merge are called the gate; more on it later today. The analyzer belongs in the gate, the agent reads its report and fixes, the analyzer checks again, and you decide only what needs judgment.
 :::
 
 ## Why every analyzer guesses
@@ -195,7 +195,7 @@ No analyzer is both sound and complete. One that claims to be is claiming to sol
 :::
 
 ::: note
-**Say:** Theory of computation, cashing in. Can this null ever be dereferenced? Can this input ever reach that query? Those are questions about what the program does, and Rice's theorem says every nontrivial one is undecidable. So a tool that finishes in seconds has to guess. Sound means it never misses a real bug; complete means it never cries wolf. You can't have both. Every tool you use today picks a trade-off, usually leaning toward fewer false alarms.
+**Say:** Theory of computation, cashing in. Can this null ever be dereferenced? Can this input ever reach that query? Those are questions about what the program does, and Rice's theorem says every nontrivial one is undecidable. So a tool that finishes in seconds has to guess. Sound means it never misses a real bug; complete means it never cries wolf. You can't have both. Every tool you use today picks a trade-off. SpotBugs, PMD, and ESLint lean toward complete: they would rather miss a bug than cry wolf.
 :::
 
 ## Two ways to be wrong
@@ -232,6 +232,14 @@ An analyzer that flags every line has zero false negatives.
 
 ::: note
 **Say:** Perfect recall. Nobody reads it. This is the trade-off every tool makes, and the reason "turn on all the rules" is the wrong first move.
+:::
+
+## Climb the ladder {.center}
+
+![A ladder of eight rungs, cheapest at the bottom: compiler and IDE, formatter, linter (where this module starts), null types and dataflow (4.9), then dependencies, containers, and secrets, beyond your own code (4.10)](img/static-analysis-ladder.svg)
+
+::: note
+**Say:** Here's the whole climb on one picture. Bottom rungs are cheap and run first; you probably already have the compiler and maybe a formatter. Today we start on the linter rung, where the findings are. Then we climb: null types and dataflow follow values across methods, and the top three look past your own code, at your libraries, your container, and your secrets. Next slide has the tools for each rung.
 :::
 
 ## The ladder
@@ -465,7 +473,7 @@ Shift left: the earlier the check, the cheaper the fix.
 :::
 
 ::: note
-**Say:** Editor is fastest. A pre-commit hook is optional and skippable, so never your only gate. The pull request is the gate: nothing merges red. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
+**Say:** Editor is fastest. A pre-commit hook is optional and skippable, so never your only gate. The pull request is the gate: nothing merges red. And the gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks. And some things change while your code doesn't: a vulnerability published tomorrow in a library you use today. That's what scheduled scans are for. A verdict means nothing unless the build enforces it. Wednesday we wire all this into the pipeline.
 :::
 
 ## Check in CI, fix on your machine

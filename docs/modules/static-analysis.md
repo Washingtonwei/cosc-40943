@@ -71,9 +71,7 @@ So let the tool catch the boring mistakes before any person looks at the code. S
 | **Testing** | Does it do what we checked, on the inputs we ran? | Wrong behavior on the paths you exercise | Cases nobody wrote | CrowdStrike: every test passed ([Testing](testing.md#3-motivation)) |
 | **Code review** | Is this what the use case asks for, built the way we agreed? | Missing behavior, design, the contract | Line 600 of a tired afternoon | Heartbleed: reviewed and merged ([Code Review](code-review.md#3-motivation)) |
 
-The machines run first, because they are cheapest ([section 3](#3-motivation)). The automated checks a change must pass before it can merge are called the **gate**; [4.5](#45-make-it-a-gate) covers it in detail. The gate is a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks.
-
-**"Why not just ask Claude Code?"** Because the two do different jobs, and they work best together. An analyzer gives the same findings on the same code on every run; ask a model twice and it can answer differently, and an agent that disagrees with it can talk its way past. An analyzer reads every file in seconds, in every build, and costs no tokens; a model reads what fits in its context and is paid per run. What the analyzer cannot judge is intent, and there the model is better. So put them in one loop: the analyzer finds, the agent reads the report and fixes, the analyzer checks again, and a person decides only what needs judgment. That is why the gate on agent-written code is a deterministic tool, and the agent is the one who answers to it.
+**"Why not just ask your coding agent?"** Because the two do different jobs, and they work best together. An analyzer gives the same findings on the same code on every run; ask a model twice and it can answer differently, and an agent that disagrees with it can talk its way past. An analyzer reads every file in seconds, in every build, and costs no tokens; a model reads what fits in its context and is paid per run. What the analyzer cannot judge is intent, and there the model is better. So put them in one loop: the analyzer finds, the agent reads the report and fixes, the analyzer checks again, and a person decides only what needs judgment. That is why the **gate**, the automated checks a change must pass before it can merge ([4.5](#45-make-it-a-gate)), is a deterministic tool on agent-written code, and the agent is the one who answers to it.
 
 **Every path, but only approximately.** A test checks the paths it executes; a static analyzer reasons about every path, including the ones no test reaches. It cannot do that exactly, and you already know why. Whether a program can ever reach a given line is undecidable, because the halting problem reduces to it, and **Rice's theorem** generalizes the result: every nontrivial question about what a program does ("can this dereference null?", "can this input reach that query?") is undecidable. An analyzer that always finishes must therefore approximate, and every approximation errs in one direction or the other:
 
@@ -82,7 +80,7 @@ The machines run first, because they are cheapest ([section 3](#3-motivation)). 
 | **False positive** | A warning about code that is fine | Time, and trust: a team that sees enough of them stops reading warnings | The tool is not *complete* |
 | **False negative** | A real bug the tool says nothing about | A clean report is not a proof of safety | The tool is not *sound* |
 
-No useful analyzer is both sound and complete; most are neither, and tune the balance for the people reading the report. A tool that claimed to be both would be claiming to solve the halting problem.
+No useful analyzer is both sound and complete; most are neither, and tune the balance for the people reading the report. A tool that claimed to be both would be claiming to solve the halting problem. Practical tools like SpotBugs, PMD, and ESLint lean toward complete. They would rather miss some bugs than bury developers in false alarms, because developers stop reading a tool that cries wolf too often, as Google found (below).
 
 **Heartbleed beat the analyzers too.** Coverity, one of the best commercial analyzers, did not flag it ([Code Review](code-review.md#3-motivation)). The reviewer's hole and the analyzer's hole lined up, which is the Swiss cheese model in one bug.
 
@@ -91,6 +89,8 @@ No useful analyzer is both sound and complete; most are neither, and tune the ba
 ### 4.2 The ladder, on Project Pulse
 
 Each tool approximates a different kind of problem, by reading the code in a different way. Lower rungs are cheaper and run earlier.
+
+![A ladder of eight rungs, cheapest at the bottom: compiler and IDE, formatter, linter (where this module starts), null types and dataflow (4.9), then dependencies, containers, and secrets, beyond your own code (4.10)](../slides/img/static-analysis-ladder.svg)
 
 | Rung | What it catches | How it reads the code | Tools (Java; Vue) | Project Pulse before #104 (fall 2026) |
 |---|---|---|---|---|
@@ -184,7 +184,7 @@ Five findings from Project Pulse, one per kind of judgment:
 
 ### 4.5 Make it a gate
 
-**A verdict means nothing unless the build enforces it.** A tool that does not fail the build is decoration ([section 3](#3-motivation)). The **gate** is the set of checks a change must pass before it merges, and on a team it lives on the pull request.
+**A verdict means nothing unless the build enforces it.** A tool that does not fail the build is decoration ([section 3](#3-motivation)). The **gate** is the set of checks a change must pass before it merges, and on a team it lives on the pull request. That makes the gate a productivity tool: it lets you read an agent's 800-line pull request for intent, not for null checks.
 
 **Shift left: the earlier a check runs, the cheaper the fix.** A warning in the editor costs seconds; the same bug found in review costs a conversation, and in production an incident.
 
