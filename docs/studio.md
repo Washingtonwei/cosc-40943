@@ -326,3 +326,20 @@ git push -u origin add-workflow-commands
 **When the agent gets in the way.** Out of usage: switch to a teammate's laptop and session; the documents are in the repository, so nothing is lost. A command not found: check that `.claude/commands/` is on the branch you are on and restart the session. The agent wants to skip a stop or approve its own work: say no, it is following your files, and the stops are in them.
 
 **Before your Checkpoint 2 slot:** the slice merged, `v0.1.0` tagged with release notes, and every item on the [checklist](project.md#checkpoint-2-checklist) ready to show. Book the slot with your TA in your team's Slack channel by the end of Friday's studio.
+
+### Week 11, Nov 6: the gate on your repository
+
+**Objective:** by the end of the hour your team's `main` cannot take a change that fails the build, the tests, or the analyzers. Monday's [Static Analysis](modules/static-analysis.md#7-hands-on-studio-optional-individual-assignment) and Wednesday's [CI/CD](modules/ci-cd.md#7-hands-on-studio-optional-individual-assignment) both land here. Assignment 3 is due at the start of class, and Checkpoint 2 slots run outside class as booked.
+
+**Before Friday:** if your Checkpoint 2 slot is today and you have not tagged `v0.1.0` with release notes, do it first ([how](modules/ci-cd.md#49-versions-tags-release-notes-and-feature-flags)).
+
+| When | What your team does |
+|---|---|
+| First 20 minutes | One member runs the analyzers for your stack and records the counts by rule ([how](modules/static-analysis.md#43-the-first-run-without-touching-the-build)). Another copies the jobs from Project Pulse's [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml) into your `.github/workflows/`, adapts the paths, and opens a pull request so the checks run once |
+| Next 10 minutes | Settings, Rules, Rulesets, New branch ruleset, targeting the default branch: Restrict deletions, Block force pushes, Require a pull request (1 approval), Require status checks to pass (pick each check from the GitHub Actions source), Require branches to be up to date, and an empty bypass list ([why each](modules/ci-cd.md#44-from-a-check-to-a-gate)) |
+| Next 15 minutes | Plant one bug on a branch, open a pull request, and watch it go red with Merge locked. Then add to your charter: the gate command, "a baseline only shrinks," and "never weaken a check to make it pass without saying so in the pull request." Write the open deployment question into section 7 of your architecture-of-record, with an owner ([the questions](modules/ci-cd.md#410-where-will-your-project-run)) |
+| Last 5 minutes | Your TA checks your ruleset and the locked pull request |
+
+**What you produce:** the workflow and the ruleset on `main`, the red pull request (close it afterward), the charter lines merged, and the open question in section 7. Your TA takes attendance, which counts as it does every studio; this is not a checkpoint.
+
+**When it gets stuck.** A check does not appear when you search for it: it has to have run once, so push the workflow and open a pull request first. A check's name is the job's `name:` if the job has one, otherwise the job's ID. Your backend lives in a subfolder: set `working-directory` on the step, as Project Pulse does.

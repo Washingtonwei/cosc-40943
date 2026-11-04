@@ -46,3 +46,6 @@ Modules go up as they are written, in the order the course teaches them, so this
 
 [**Static Analysis**](modules/static-analysis.md) · [slides](slides/static-analysis.html)
 : Add analyzers to a codebase you did not write, triage what they report, and make them a gate for new code, the agent's included. The ladder from compiler to container scan; SpotBugs, PMD, and ESLint read by rule; real, false positive, or not worth it, each recorded with a reason; a baseline that only shrinks; JSpecify and NullAway; CodeQL, Dependabot, and pinning the tools you trust.
+
+[**CI/CD and Continuous Deployment**](modules/ci-cd.md) · [slides](slides/ci-cd.html)
+: Get every change from a laptop to a running system the same way every time. Continuous integration as a habit; what a build ships, from JAR to container; a GitHub Actions workflow read job by job; a ruleset that makes checks block; continuous delivery and continuous deployment; build once and promote to staging; rolling back code and data; secrets, forks, and an agent in CI; reproducible builds, release tags, and feature flags.

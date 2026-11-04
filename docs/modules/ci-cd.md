@@ -1,84 +1,323 @@
 # CI/CD and Continuous Deployment
 
-> **Purpose (one line):** _to be written when authored._
+> **Purpose (one line):** get every change from a laptop to a running system the same way every time: checked on every pull request, blocked when red, deployed from exactly what was checked, and undoable when it goes wrong.
 
+## 1. Learning objectives
 
-!!! note "This module is still being written"
-    The course is being revamped this term, so modules go up as they are written rather than all at once. What is here is usable; the rest is coming. Lectures and studio do not depend on the missing parts.
+By the end of this module, a student can:
 
-## Drafting notes (raw — distribute into template sections, then delete before `stable`)
+1. Tell continuous integration, continuous delivery, and continuous deployment apart, and say which one a given pipeline practices.
+2. Read a GitHub Actions workflow and name its event, jobs, steps, and runner.
+3. Make checks a gate with a ruleset on `main`, and explain why a green pull request must also be up to date with `main`.
+4. Trace one commit from pull request to production: built once, tagged with its commit SHA, deployed to staging, swapped into production.
+5. Roll back a bad release, and recognize a database change that makes rolling back impossible.
+6. Keep the pipeline's secrets away from code that should not have them, including an agent running in CI.
+7. Tag a release with release notes, and always be able to name the commit production runs.
 
-### Two anchoring failures: Knight Capital (2012) and Cloudflare (2025)
+## 2. Where it fits
 
-Open with Knight Capital because it is fast and the number is brutal. Spend the time on Cloudflare, because its postmortem is a teaching artifact in its own right.
+- **Prerequisites:** [Static Analysis](static-analysis.md) (Monday of the same week), whose checks this pipeline runs; [Testing](testing.md); and [4.10 of The AI-Augmented Team](ai-augmented-team.md#410-knowing-exactly-what-you-built), which named configuration items and baselines and left releases to this module.
+- **Leads into:** [Reliability](reliability.md) (week 12), which measures what runs in production and counts on the rollback taught here; the deployment view of your [architecture-of-record](architecture.md#45-describing-it-views-and-c4-to-draw-them), drawn for Checkpoint 3.
+- **How it's taught:** Wednesday of week 11. Friday's studio builds the gate on your team's repository together with Monday's analyzers. Release tags start with this week's Checkpoint 2.
+- **About the examples:** Project Pulse code links are pinned to commit [`90668c5`](https://github.com/Washingtonwei/project-pulse/tree/90668c51b83f5352acf8d0f304a46590625cc87c), as Project Pulse stood in fall 2026. Its ruleset on `main` was added on 3 November 2026, and [4.4](#44-from-a-check-to-a-gate) shows the repository before and after.
+- **Course outcome it delivers:** [build, test, and ship a working MVP](../syllabus.md#learning-outcomes) (outcome 4).
 
-**Knight Capital, 1 August 2012. Budget two minutes.** A technician deployed new Retail Liquidity Program code by hand to **seven of eight** SMARS servers. The eighth still held **Power Peg**, dead code from 2003 that had never been removed. The new code **reused the feature flag** that had once activated Power Peg. When the flag went live, the eighth server woke the dead code: 212 parent orders became **millions of child orders, 4 million executions across 154 stocks, more than 397 million shares, in about 45 minutes**. Roughly **$440-460 million** lost, the firm did not survive independently, and the SEC imposed a $12 million penalty for market access rule violations.
+## 3. Motivation
 
-Three release-engineering decisions, each individually defensible: a manual deploy with no verification that every node matched, dead code left in the tree, and a flag repurposed instead of retired.
+Two teams start the same project from the same repository.
 
-**Cloudflare, 18 November 2025. Budget ten minutes.** A database permissions change caused a metadata query to return rows from a second database, because the query never filtered on database name. A generated Bot Management feature file **more than doubled in size** and exceeded a **hardcoded limit of 200 features** against a normal load of about 60. The Rust proxy called `.unwrap()` on the resulting `Err`, and the worker thread panicked. **5 hours 46 minutes** total, with core impact for 3 hours 10 minutes. X, ChatGPT, and Shopify went down, and Downdetector itself went offline.
+![Team 1: four unhappy developers on long-lived branches merge at once and GitHub explodes. Team 2: four happy developers on short-lived branches hit a small fire, put out with an extinguisher](../slides/img/ci-two-teams.svg)
 
-Their own first remediation is the line to put on a slide:
+**Team 1** gives each developer a large feature. Each one works on a branch for a month, drifting further from `main` every day. On integration day everyone merges at once: dozens of conflicts, and bugs that interact, so each one is harder to find because fifty arrived together. Integration takes weeks, and the team is exhausted before it starts testing.
 
-> Harden ingestion of Cloudflare-generated configuration files in the same way we would for user-generated input.
+**Team 2** splits the work into small pieces. A branch lives for hours and merges the same day. There are still conflicts and bugs, but they are small, the code is fresh in its author's mind, and they are fixed in minutes. Neither team writes better code. Team 2 integrates more often, so each integration is small:
 
-That is a **trust boundary** decision. Someone decided, implicitly and years earlier, that configuration the company generated itself did not need validating, and nothing in the pipeline ever tested that assumption.
+> "Instead of heading for a big integration breakdown, I decided to have a small breakdown every Tuesday evening." (Adapted from Graham Parke, *No Hope for Gomez!*)
 
-**The AI angle for both:** an agent asked to write that query omits the database filter too, because nothing in the specification says the second database exists. Generation speed does not touch a wrong assumption, it ships it sooner. The gate is what catches it, which is the reason this module exists.
+Merging several times a day only works if checking each merge costs nobody anything, so a machine does it. Deploying is the same story, with higher stakes. In late July 2012, a technician at Knight Capital copied new trading code onto its order router's servers and missed **one of eight**. The eighth still held Power Peg, code Knight had stopped using in 2003, and the new code reused the flag that used to switch Power Peg on. On 1 August the flag went live, and the eighth server turned 212 customer orders into millions: 4 million executions, more than 397 million shares, in about 45 minutes. Knight lost more than $460 million (SEC, 2013). Nothing about it was exotic: a manual deploy no second person checked, dead code left in, and a reused flag. A pipeline puts the same artifact on every server, or on none.
 
-**Sources:** Cloudflare's own outage postmortem (18 November 2025), and the SEC administrative proceeding against Knight Capital Americas LLC (2013).
+**AI raises the stakes.** An agent multiplies the pull requests a team produces; it does not multiply the hours people have to review them. The pipeline is the one reviewer that checks every pull request the same way, however many there are.
 
-### Authored: releases, rollback, and reproducible builds (move into Core concepts when the module is written)
+## 4. Core concepts
 
-These sections are finished prose (`DECISION-configuration-management`). Week 2's [4.10](ai-augmented-team.md#410-knowing-exactly-what-you-built) named configuration items, baselines, and agent provenance and deferred releases to here. Renumber when the module takes shape.
+### 4.1 Continuous integration
 
-#### The same commit, the same build
+**Continuous integration (CI)** is a practice: everyone merges into the shared `main` branch at least daily, and every change is built and tested automatically, so a broken `main` is found within minutes (Fowler). On GitHub it takes the shape of a short-lived branch and a pull request: the pull request triggers the build and the tests, and it merges when they pass. Your team already works this way, one sub-issue, one branch, one pull request ([the Git workflow](../git-workflow.md)).
 
-<!-- DRAFTING NOTE: the instructor fixes Project Pulse's workflow right after the week 11 lecture (npm ci, no --update-snapshots). Students read the live flaw first; afterward, rewrite this paragraph as a before and after citing the fix's pull request. -->
+CI is a habit before it is a tool. A team with GitHub Actions configured and three-week branches is not doing CI. The practice has three rules:
 
-A build is **reproducible** when the same commit always produces the same artifact. A lockfile records the exact version of every dependency, but only if the build obeys it. `npm ci` installs exactly what `package-lock.json` says and fails if the lockfile and `package.json` disagree; `npm install` may update the lockfile within the ranges `package.json` allows. Project Pulse's deploy workflow (`.github/workflows/azure-webapps-deploy.yml`) runs `npm install`, and its Maven step passes `--update-snapshots`, so two deploys of one commit can ship different dependencies. The fix is one word: `npm ci`. What the workflow gets right is the image tag: every container is tagged with the commit's SHA, so production can always be traced to one commit.
+- Merge small changes, at least daily.
+- Every change runs the same checks.
+- A red `main` is fixed before anyone does anything else.
 
-#### Versions, tags, and release notes
+### 4.2 What gets shipped: build, artifact, container
 
-A **tag** marks a baseline: this commit is what we released. **Semantic Versioning** (`MAJOR.MINOR.PATCH`) says what kind of change a release is: a patch fixes, a minor version adds, a major version breaks something a user or another system relied on. For a web application with no API consumers, the version is mostly a sentence to the client.
+**Building** turns source code into an **artifact**, the thing that actually runs. For Spring Boot, `./mvnw package` produces an executable JAR (a "fat JAR"): your classes, every dependency, and an embedded Tomcat server in one file you start with `java -jar`. Project Pulse's deploy workflow builds the Vue frontend first and copies it into Spring Boot's `static/` folder, so one JAR serves both.
 
-Project Pulse's [`v1.4.2`](https://github.com/Washingtonwei/project-pulse/releases/tag/v1.4.2) is the model. `v1.4.1` reset every instructor's selected course section at login; the next day `v1.4.2` shipped as a patch, and its release notes name the regression, the issue ([#28](https://github.com/Washingtonwei/project-pulse/issues/28)), and the fix. Its counter-example is the same repository today: the last tag is `v1.5.0`, from December 2025, 47 merged pull requests ago, and `pom.xml` says `2.0.0`, a version no tag names.
+A JAR still depends on the machine it lands on: the right Java version, the right libraries, the right settings. That is where "it works on my machine" comes from. A **container** packages the application together with the runtime it needs, so the server only has to run containers. An **image** is the read-only template; a **container** is a running instance of it, the way an object is an instance of a class. Project Pulse's [`Dockerfile`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/Dockerfile) starts from `eclipse-temurin:21-jre`, so Java 21 travels with the application. Containers share the host's operating system kernel instead of virtualizing hardware, which makes them much lighter than virtual machines.
 
-GitHub generates a draft of release notes from the pull requests merged since the last tag, and an agent can rewrite that draft for the client. A human checks it against what actually changed for users, because a pull request title describes the code, not what the client will notice.
+![Containerize once, run anywhere: the application and its JRE and libraries in one container, running unchanged on a container engine in development and in production](../slides/img/containerize-once.svg)
 
-**Your team:** tag a release for every demo from Checkpoint 2 on (`v0.1.0` at Checkpoint 2, `v0.2.0` at Checkpoint 3, `v1.0.0` for the MVP your client receives), each with release notes, and always be able to say which tag or commit production runs.
+How Project Pulse's Dockerfile splits the JAR into layers for faster rebuilds is Spring Boot detail, covered in [its documentation](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html). What matters here is that the image is the artifact the pipeline ships.
 
-#### Rolling back: the code and the data
+### 4.3 A pipeline, read on Project Pulse
 
-Rolling back code is fast if it was planned. Project Pulse deploys to an Azure staging slot and swaps it into production, so undoing a bad release is a swap back, in seconds, with no rebuild.
+A **pipeline** is the automated sequence that takes a change to a result: checked, built, deployed. GitHub's pipeline tool is GitHub Actions, and its vocabulary is small:
 
-Rolling back data is not. Project Pulse's schema changes are Flyway migrations (`V1` through `V5` in `backend/src/main/resources/db/migration/`), and they run forward only: the previous build, swapped back in, meets the new schema. So a schema change that the previous build cannot live with is a release you cannot roll back.
+```mermaid
+classDiagram
+    direction LR
+    Repository "1" --> "0..*" Workflow : holds
+    Event "1..*" --> "0..*" Workflow : triggers
+    Workflow "1" *-- "1..*" Job
+    Job "1" *-- "1..*" Step
+    Job "1" --> "1" Runner : runs on
+```
 
-The way out is to split one change into steps that each keep both builds working (*expand and contract*):
+| Concept | What it is | In Project Pulse's pull request workflow |
+|---|---|---|
+| **Workflow** | One YAML file in `.github/workflows/` | [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml) |
+| **Event** | What starts it | `pull_request` to `main` (opened, or a new commit pushed) |
+| **Job** | A group of steps on one runner; jobs run in parallel unless one `needs` another | `build`, `frontend`, `dockerfile` |
+| **Step** | One action (`uses:`) or one shell command (`run:`) | `uses: actions/checkout@…`, then `run: mvn --batch-mode verify` |
+| **Runner** | The machine a job runs on | `ubuntu-latest`: a fresh virtual machine, thrown away after the job |
+
+The backend job, in full:
+
+```yaml
+build:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Check out the repository
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+    - name: Set up JDK 21
+      uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+      with:
+        java-version: "21"
+        distribution: "temurin"
+        cache: maven
+    - name: Build, test, and run static analysis with Maven
+      working-directory: ./backend
+      run: mvn --batch-mode verify
+```
+
+**The runner is the point.** It starts with nothing from your laptop: no local database, no file you forgot to commit, no dependency you installed by hand. A test that passes in your IDE and fails here has found something real about your project, not about GitHub.
+
+**Keep it fast.** The three jobs run in parallel, so the slowest one sets the wait. A pipeline people wait half an hour for gets bypassed; aim for Extreme Programming's ten-minute build, which Fowler calls "perfectly within reason" for most projects.
+
+Project Pulse has a second workflow, [`azure-webapps-deploy.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/azure-webapps-deploy.yml), triggered by a push to `main`. Together the two make the whole path:
+
+```mermaid
+flowchart LR
+    pr["Pull request"] --> ci["maven-build.yml<br/>build · frontend · dockerfile"]
+    ci -->|"all green, up to date"| main["Merge to main"]
+    main --> build["azure-webapps-deploy.yml: build<br/>frontend + JAR → image<br/>tagged with the commit SHA"]
+    build --> deploy["deploy job → staging slot"]
+    deploy -->|"a person swaps"| prod["Production slot"]
+```
+
+### 4.4 From a check to a gate
+
+**A check that does not block is advice** ([Static Analysis 4.5](static-analysis.md#45-make-it-a-gate)). Project Pulse shows why. Until 3 November 2026, its three checks ran on every pull request, and nothing required them to pass: the merge button stayed enabled next to a red X. After the merge, the deploy workflow built with `-DskipTests`, trusting tests that might never have passed. The checks ran; nothing listened.
+
+The fix is a **ruleset** on `main` (Settings, Rules, Rulesets, New branch ruleset). Project Pulse's, named "Protect main," targets the default branch with an empty bypass list:
+
+| Rule | What it stops |
+|---|---|
+| Restrict deletions | Deleting `main` |
+| Block force pushes | Rewriting history, so a released commit SHA always exists |
+| Require a pull request before merging (0 approvals) | Pushing straight to `main` around the checks. A solo maintainer cannot approve their own pull request, so 0; a team should require 1 |
+| Require status checks to pass: `build`, `frontend`, `dockerfile` | Merging while any check is red or still running |
+| Require branches to be up to date before merging | Merging a pull request that was tested against an old `main` |
+
+**Leave the bypass list empty, yourself included.** A gate the maintainer can walk around is not one.
+
+**"Up to date" is the subtle rule.** A student opens a pull request on Monday, branched from Monday's `main`, and it goes green. On Tuesday a teammate merges something else. The Monday branch's green checks tested Monday's `main` plus its change, which is not what `main` becomes after the merge, so both changes can pass alone and break together. With this rule, GitHub shows **Update branch**: it merges the new `main` into the branch, and the checks run again on the real combination. Large teams use a **merge queue** instead, which tests each pull request together with the ones ahead of it.
+
+**Know what each required check actually checks.** Project Pulse's `frontend` job runs ESLint, the type check, and Prettier with `continue-on-error: true`, because none passes on `main` yet (130, 18, and 75 findings). Requiring `frontend` blocks a broken `npm ci` and nothing else, until each step's findings are fixed or baselined and the step turns blocking ([Static Analysis 4.6](static-analysis.md#46-an-existing-codebase-baseline-then-ratchet)).
+
+**A flaky check destroys the gate.** A test that fails at random teaches everyone to press "Re-run" until it goes green, and then a real failure gets re-run too. Fix a flaky test, or quarantine it with an issue, the day it is seen.
+
+### 4.5 Continuous delivery and continuous deployment
+
+"CD" means two different things:
+
+| Practice | What is automatic | Who decides when production changes |
+|---|---|---|
+| **Continuous integration** | Build and test every change | Not about production |
+| **Continuous delivery** | Every green merge is built into a release that could go to production | A person, by pressing a button |
+| **Continuous deployment** | Every green merge goes to production | Nobody; the pipeline does |
+
+![Continuous deployment: a developer merges a pull request, GitHub triggers GitHub Actions, and the workflow builds and deploys to the cloud](../slides/img/cd-flow.svg)
+
+Project Pulse practices both, at different stages. Every merge to `main` is deployed automatically to the **staging** slot, which is continuous deployment to staging. Production changes only when a person swaps the slots, which is continuous delivery to production. For a client project, a person deciding when users see a change is a sound choice.
+
+**Build once, then promote that build.** The deploy workflow tags the image with the commit's SHA (`ghcr.io/…:${{ github.sha }}`) and deploys that image to staging; the swap moves the same image into production. Nothing is rebuilt for production, because a rebuild is a new artifact nobody tested. The SHA tag also answers "which commit is production running?" at any moment.
+
+**So when is `-DskipTests` at deploy time safe?** Only when [4.4](#44-from-a-check-to-a-gate) holds: the tests passed on exactly the code being merged, with the branch up to date. Since 3 November 2026 that is enforced on Project Pulse; before, it was trust.
+
+**A pipeline ships bad changes as fast as good ones.** On 18 November 2025, a database permissions change made a query return duplicate entries, and a configuration file Cloudflare generates every five minutes for its bot detection doubled in size. It passed a hardcoded limit of 200 features (normal use was about 60), the proxy's Rust code called `unwrap()` on the error and panicked, and each bad copy of the file was "rapidly propagated across the network." Sites behind Cloudflare returned errors from 11:20 UTC until core traffic recovered around 14:30, and everything was normal again at 17:06. Cloudflare's first remediation:
+
+> "Hardening ingestion of Cloudflare-generated configuration files in the same way we would for user-generated input."
+
+Anything the pipeline ships, configuration included, goes through the gate and through staging.
+
+### 4.6 Staging, swap, and rolling back
+
+Deploying straight into production has two costs. Users get errors while the new container starts, which takes a minute or two for Project Pulse, and they are the first to meet the new build.
+
+![GitHub Actions deploys the new app to the staging slot while users keep using production; when it checks out, staging and production swap](../slides/img/staging-swap.svg)
+
+A **staging slot** is a second copy of the application with its own URL, invisible to users. Deploy there, check it by hand (log in, open the pages the change touched, submit one form; a **smoke test**), then **swap**. Azure warms the new build up before routing traffic to it, so users see no downtime. Deployment slots need Azure App Service's Standard tier or higher.
+
+Each slot keeps its own database. Project Pulse's code reads the database address from Azure Key Vault, and two app settings on each slot choose which: `SPRING_PROFILES_ACTIVE` (`staging` or `prod`, picking [`application-staging.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/resources/application-staging.yml) or `application-prod.yml`) and `AZURE_KEY_VAULT_ENDPOINT` (the vault holding that environment's secrets). Both are marked as *deployment slot settings*, so they stay with the slot instead of travelling with the code. A new build therefore meets staging data first. During the swap, Azure restarts the new build with production's settings before routing users to it. That restart is when Flyway runs the new migration on production's database, while the old build is still serving users from it.
+
+**Rolling back code is a swap back,** in seconds, with no rebuild. [Reliability](reliability.md) calls this a repair-time decision: a team that cannot make failures rare can make repair fast.
+
+**Rolling back data is not.** Project Pulse's schema changes are Flyway migrations (`V1` through `V6` in [`db/migration/`](https://github.com/Washingtonwei/project-pulse/tree/90668c51b83f5352acf8d0f304a46590625cc87c/backend/src/main/resources/db/migration)), and they run forward only. A swap back brings back the old code, not the old schema: the previous build meets the new database. So a schema change the previous build cannot live with is a release you cannot roll back.
+
+Project Pulse has both kinds:
+
+- **`V5` is safe to roll back.** It made columns `NOT NULL` only after the code had stopped writing nulls (`@ManyToOne(optional = false)`), and its header records that every column "was verified to hold zero nulls in both staging and prod before this migration was written." Code first, data checked, schema last.
+- **`V6` is not.** Pull request #99 added two activity categories and switched how a category is stored, from a number to its name: `@Enumerated(EnumType.STRING)` in `Activity.java` and, in the same pull request, `V6`, which converts the column. It was a good change; storing numbers would have silently relabeled old rows when the list grew. But once `V6` has run, the previous build expects a number and finds a name, so swapping back brings back a build that cannot read the activity table. For a release like this, the plan is to roll forward: fix the problem and deploy again. The team should know that before merging, not during the outage.
+
+When a change must stay reversible, split it into steps that each keep both builds working (**expand and contract**):
 
 1. **Expand.** Add the new column, nullable, used by nothing.
-2. **Write.** Ship code that writes it.
-3. **Read.** Ship code that reads it, handling the rows where it is still empty.
-4. **Contract.** Only when every running build uses it, tighten it or remove what it replaced.
+2. **Write.** Ship code that writes both columns.
+3. **Read.** Ship code that reads the new one, handling rows where it is still empty.
+4. **Contract.** Only when every running build uses it, remove what it replaced.
 
-Project Pulse's `V5__mandatory_association_columns_not_null.sql` is a contract step done right. The code had already refused to write nulls in those columns (`@ManyToOne(optional = false)`), and the migration's header records that every column "was verified to hold zero nulls in both staging and prod before this migration was written." Code first, data checked, schema last.
+### 4.7 Secrets in the pipeline
 
-#### Feature flags, and retiring them
+A pipeline needs credentials. Project Pulse's workflows use three:
 
-A **feature flag** ships code switched off, so turning a feature on and off is a configuration change rather than a deploy. Project Pulse has one: `app.reminders.enabled`, which stops the weekly reminder scheduler without a release. Flags are also a configuration item, and they rot. Knight Capital's 2012 loss began with a flag reused for new code while one server still ran the old code it used to switch on. Every flag gets an owner and a removal date, and a retired flag is deleted, never repurposed.
+| Secret | What it can do |
+|---|---|
+| `AZURE_WEBAPP_PUBLISH_PROFILE` | Deploy anything to the staging slot |
+| `CLAUDE_CODE_OAUTH_TOKEN` | Run Claude Code on the instructor's account |
+| `GITHUB_TOKEN` | Created fresh for each job and expired when it ends; here, push the image to GitHub's container registry |
 
-#### The AI angle
+Secrets live in Settings, Secrets and variables, Actions. GitHub masks them in logs, and a workflow gets one only if it names it. Four habits keep them safe:
 
-An agent asked to add a column writes the migration and the code that reads it in one change, which is the one shape that cannot be rolled back. An agent asked to fix a failing install deletes the lockfile and regenerates it. Neither is visible unless the reviewer asks two questions of every pull request that touches the schema or a lockfile: can the previous build run against this, and did the dependency set change on purpose?
+- **Least privilege.** Each workflow declares what its `GITHUB_TOKEN` may do: `maven-build.yml` asks for `contents: read` and nothing else; the deploy workflow adds `packages: write` because it pushes an image.
+- **Forks get no secrets.** A pull request from a fork runs with no secrets and a read-only token, which is why Project Pulse's checks need none. Never "fix" a fork's failing workflow by switching to the `pull_request_target` event: it runs with your secrets, and if it checks out the pull request's code, a stranger's code runs with them.
+- **Short-lived beats long-lived.** The publish profile is a password that works until someone regenerates it. With **OIDC**, Azure trusts a token GitHub issues to this repository's workflow and hands back a credential that lasts minutes, so there is no stored password to steal. Project Pulse still uses the publish profile; OIDC is its next step.
+- **Pin what runs next to your secrets.** Name every Action by commit SHA ([Static Analysis 4.10](static-analysis.md#410-beyond-your-code-dependencies-containers-secrets-and-your-own-tools) tells the story). Project Pulse's deploy workflow, the one holding the publish profile, named its Actions by tag (`actions/checkout@v4`) until pull request [#108](https://github.com/Washingtonwei/project-pulse/pull/108) pinned all seven, in November 2026.
 
-#### Pinning Actions (link, do not retell)
+**An agent in CI.** Project Pulse's [`claude.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/claude.yml) runs Claude Code whenever someone writes `@claude` in an issue or a pull request comment. That agent holds a secret, reads text anyone can write, and can reach the network: all three parts of the lethal trifecta ([Implementation 4.7](implementation.md#47-what-the-agent-may-read-and-run)). Its guards are the action's default of acting only for people with write access to the repository (leave it on), a read-only `GITHUB_TOKEN`, and Actions pinned to SHAs. The rule: an agent in CI never acts on text from someone outside the team.
 
-Pinning every Action to a commit SHA, with Dependabot proposing updates, is a pipeline habit this module should require of the team's workflows. The Trivy story and the tag versus SHA explanation live in [Static Analysis 4.8](static-analysis.md#410-beyond-your-code-dependencies-containers-secrets-and-your-own-tools); cite it. The deploy workflow (`azure-webapps-deploy.yml`, which holds the publish profile) is the Project Pulse example: pin it in the same pull request that changes `npm install` to `npm ci`.
+### 4.8 The same commit, the same build
 
-#### Sources for these sections
+A build is **reproducible** when the same commit always produces the same artifact. A lockfile records the exact version of every dependency, but only if the build obeys it. `npm ci` installs exactly what `package-lock.json` says and fails if the lockfile and `package.json` disagree; `npm install` may update the lockfile within the ranges `package.json` allows. Project Pulse's pull request workflow ran `npm ci`, but its [deploy workflow](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/azure-webapps-deploy.yml#L34) ran `npm install`, so the build that shipped was not quite the build that was checked, and two deploys of one commit could ship different frontend dependencies. The fix was one word, `npm ci`, in pull request [#108](https://github.com/Washingtonwei/project-pulse/pull/108). The same pull request dropped Maven's `--update-snapshots`, which fetches the newest build of any `-SNAPSHOT` dependency, a version whose contents can change under the same name. Project Pulse declared none, so the flag did nothing yet; it would have started mattering the day someone added one.
 
-- IEEE 828-2012, *Standard for Configuration Management in Systems and Software Engineering*.
-- Preston-Werner, T. *Semantic Versioning 2.0.0*. <https://semver.org/>
-- npm documentation, `npm ci`. <https://docs.npmjs.com/cli/commands/npm-ci>
+### 4.9 Versions, tags, release notes, and feature flags
+
+A **tag** marks a baseline: this commit is what we released. **Semantic Versioning** (`MAJOR.MINOR.PATCH`) says what kind of change a release is: a patch fixes, a minor version adds, a major version breaks something a user or another system relied on. For a web application with no API consumers, the version is mostly a message to the client.
+
+Project Pulse's [`v1.4.2`](https://github.com/Washingtonwei/project-pulse/releases/tag/v1.4.2) is the model. `v1.4.1` reset every instructor's selected course section at login; about thirteen hours later `v1.4.2` shipped as a patch, and its release notes name the regression, the issue ([#28](https://github.com/Washingtonwei/project-pulse/issues/28)), and the fix. Its counterexample is the same repository in fall 2026: the last tag is `v1.5.0`, from December 2025, 61 merged pull requests ago, and `pom.xml` says `2.0.0`, a version no tag names.
+
+To tag a release, from the commit you demo:
+
+```bash
+git tag -a v0.1.0 -m "Checkpoint 2: proving slice"
+git push origin v0.1.0
+```
+
+Then on GitHub: Releases, Draft a new release, choose the tag, **Generate release notes**. GitHub drafts the notes from the pull requests merged since the last tag, and an agent can rewrite the draft for the client. A person checks it against what users will actually notice, because a pull request title describes the code, not the change a client sees.
+
+**Your team:** a tagged release with release notes for every demo from Checkpoint 2 on: `v0.1.0` at Checkpoint 2, `v0.2.0` at Checkpoint 3, `v1.0.0` for the MVP your client receives ([the project page](../project.md)). Always be able to say which tag or commit production runs.
+
+A **feature flag** ships code switched off, so turning a feature on or off is a configuration change rather than a deploy. Project Pulse has one: `app.reminders.enabled` stops the weekly reminder scheduler without a release, and it is off in `application-staging.yml`, so staging never sends real students their Monday reminder. Flags are configuration items too, and they rot; Knight Capital's loss ([Motivation](#3-motivation)) began with a reused one. Every flag gets an owner and a removal date, and a retired flag is deleted, never repurposed.
+
+### 4.10 Where will your project run?
+
+Your team does not have to decide this week, but it should start asking. The questions:
+
+| Question | Why it matters |
+|---|---|
+| Who hosts it: the client's cloud account, a student credit, a free tier? | Whoever's account it is can turn it off |
+| Who pays, and what happens when a student credit runs out? | A cloud account bills by the hour; set a cost alert the day you create it, and turn off what you do not use |
+| Who owns it after December, and after May? | The client keeps the system; your credentials leave with you |
+| What is staging? | A second slot, a second app, or nothing; on Azure, slots need the Standard tier |
+| What data will it hold? | Real client data brings privacy and backup duties, and the migrations of [4.6](#46-staging-swap-and-rolling-back) |
+| How does a change get there? | The pipeline of [4.5](#45-continuous-delivery-and-continuous-deployment), from the first deploy |
+
+Write the open question into section 7 (the deployment view) of your architecture-of-record, with an owner, and settle it by Checkpoint 3, when the deployment view is due ([Architecture 4.7](architecture.md#47-one-deployable-or-several) covers what you deploy; this is where).
+
+## 5. The AI-native lens
+
+- **Delegate to AI:** drafting a workflow from a description of the steps; explaining a failed run from its log; drafting release notes from the merged pull requests; splitting a schema change into expand and contract steps; checking a workflow for unpinned Actions and broad permissions.
+- **Keep human:** what is required on `main` and who may bypass it; when production changes; which secrets exist and who holds them; whether a schema change can be rolled back, and the roll-forward plan when it cannot.
+- **Context to supply:** the gate command and the required checks; that every deploy goes through staging; that no workflow change merges without a person reading it; and one charter line, widening the static analysis one ("a baseline only shrinks"): **never weaken a check to make it pass without saying so in the pull request.** When your project has migrations, ask the agent to say in each pull request whether the previous build can run against the new schema, and if not, the roll-forward plan.
+- **How to verify:** read every pull request that touches `.github/workflows/`, a test annotation, a baseline, a lockfile, or a migration with one question: **does this make red green without fixing anything?** An agent asked to fix a failing build can add `@Disabled`, set `continue-on-error: true`, grow a baseline, or delete and regenerate the lockfile, and each of those turns the check green. Then watch the gate fail once on purpose, so you know it can.
+
+## 6. Risks & mitigations
+
+| Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
+|---|---|---|
+| **Classic:** checks run but do not block (Project Pulse until 3 November 2026) | Asking "can I merge this while it is red?" | A ruleset on `main` with required checks and an empty bypass list |
+| **Classic:** green alone, broken together | Asking what the checks were run against | Require branches to be up to date, or a merge queue |
+| **Classic:** a schema change that cannot be rolled back | Asking whether the previous build can run against the new schema | Expand and contract, or a roll-forward plan written before the merge |
+| **Classic:** production rebuilt instead of promoted | Asking which commit and image production runs | Build once, tag with the SHA, promote the same image |
+| **AI-introduced:** the agent makes a red build green by weakening the check | Reading workflow, test-annotation, baseline, and lockfile diffs as code | The question in [5](#5-the-ai-native-lens); the charter line that a check is never weakened silently |
+| **AI-introduced:** an agent in CI acts on an outsider's text with the pipeline's secrets | Asking who can trigger it and what it can reach | Write-access-only trigger, read-only token, pinned Actions, short-lived credentials |
+
+## 7. Hands-on (studio + optional individual assignment)
+
+**In class (Wednesday):** Project Pulse's two workflows read job by job, its ruleset before and after, pull request #108 blocked until its required checks passed, and the path of one commit to staging.
+
+**Team, own project (Friday's studio, with [Static Analysis](static-analysis.md#7-hands-on-studio-optional-individual-assignment)):**
+
+- **Gate:** your pull request workflow and the ruleset on `main` from the static analysis studio, plus the rest of [4.4](#44-from-a-check-to-a-gate): Restrict deletions, Block force pushes, Require a pull request (1 approval), Require branches to be up to date, and an empty bypass list. Open one pull request that should fail, and confirm the merge button locks.
+- **Charter:** widen the static analysis line to "never weaken a check to make it pass without saying so in the pull request" ([5](#5-the-ai-native-lens)).
+- **Release:** tag `v0.1.0` with release notes for Checkpoint 2 ([4.9](#49-versions-tags-release-notes-and-feature-flags)).
+- **Deployment:** write the open questions of [4.10](#410-where-will-your-project-run) into section 7 of your architecture-of-record, with an owner.
+- **If you deploy already:** tag the image with the commit SHA, and deploy to staging before production.
+
+**Individual assignment:** none. [*Triage the analyzers*](../assignments/triage-the-analyzers.md) (assignment 4) runs on a pipeline like this one, and your pull request must leave it green.
+
+## 8. Summary / key takeaways
+
+- CI is a habit: small changes merged daily, every change checked the same way, a red `main` fixed first.
+- A check that does not block is advice. Require it on `main`, require branches to be up to date, and leave the bypass list empty.
+- Continuous delivery means any green merge could ship; continuous deployment means it does. Decide which one your client needs.
+- Build once, tag with the commit SHA, and promote that same artifact from staging to production.
+- Rolling back code is a swap; rolling back data is not. Know before merging whether the previous build can run against the new schema.
+- Secrets go only where they are needed, for as short a time as possible, never to a fork or to an agent acting on outsiders' text.
+- Tag every demo, write release notes for the client, and always know which commit production runs.
+
+## 9. Key papers & further reading
+
+- Fowler, M. "[Continuous Integration](https://martinfowler.com/articles/continuousIntegration.html)." martinfowler.com, revised 2024.
+- Humble, J., and Farley, D. *Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation*. Addison-Wesley, 2010.
+- Forsgren, N., Humble, J., and Kim, G. *Accelerate: The Science of Lean Software and DevOps*. IT Revolution, 2018.
+- U.S. Securities and Exchange Commission. *In the Matter of Knight Capital Americas LLC*, Administrative Proceeding File No. 3-15570, 16 October 2013.
+- Cloudflare. "Cloudflare outage on November 18, 2025." The Cloudflare Blog, November 2025.
 - Meiklejohn, C. S. "Reliably Releasing Software." CMU 17-313 lecture, Spring 2026. Dark launches, flag ramps, and the four-step database change.
-- Project Pulse facts checked against `main` at `8768a1d` on 2026-10-10: the deploy workflow's `npm install`, `--update-snapshots`, SHA image tag, and staging slot; tags through `v1.5.0` and 47 merged pull requests after it; `pom.xml` at `2.0.0`; the `v1.4.2` release notes; `V5`'s header; `app.reminders.enabled`.
+- Preston-Werner, T. [*Semantic Versioning 2.0.0*](https://semver.org/).
+- IEEE 828-2012, *Standard for Configuration Management in Systems and Software Engineering*.
+- GitHub documentation: [workflow syntax](https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions), [rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions), [OpenID Connect](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect). Microsoft, [staging environments in Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots). npm, [`npm ci`](https://docs.npmjs.com/cli/commands/npm-ci).
+
+## 10. Self-check
+
+1. Your team has GitHub Actions running on every pull request, and branches that live three weeks. Are you doing CI? What would you change first?
+2. A test passes in IntelliJ and fails on the runner. Name two things the runner does not have that your laptop does.
+3. In `maven-build.yml`, name the event, the jobs, and one step of each kind (`uses:` and `run:`).
+4. Your pull request's check is red and the merge button still works. What is missing, and where do you add it?
+5. Two pull requests are green on their own; after both merge, `main` is red. Which ruleset option would have caught it, and how?
+6. Is Project Pulse practicing continuous delivery or continuous deployment? Answer for staging and for production separately.
+7. Why does the deploy workflow tag the image with `github.sha` instead of `latest`? What goes wrong if production is rebuilt from `main` instead of promoted from staging?
+8. After `V6` deployed, a bug appears. Why can you not just swap back? How would expand and contract have split the change?
+9. A contributor's pull request from a fork fails because a step needs a secret. A teammate suggests `pull_request_target`. What do you say?
+10. An agent's pull request fixes a failing build by adding `continue-on-error: true` to a step. What do you ask in review?
+11. Your client asks which version they are looking at in the demo. How does your team answer, precisely?
+
+## Related
+
+- [Static Analysis](static-analysis.md): the checks this pipeline runs, and why red has to block.
+- [Reliability](reliability.md): what happens after the deploy, and why fast repair matters as much as rare failure.
+- [The AI-Augmented Team](ai-augmented-team.md#410-knowing-exactly-what-you-built): configuration items, baselines, and knowing what you built.
+- [Architecture](architecture.md): the deployment view your team draws for Checkpoint 3.
+- [Project](../project.md): the checkpoints, and the release each demo runs from.
+- [Schedule](../schedule.md): when this is taught.
