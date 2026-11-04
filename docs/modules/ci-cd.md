@@ -58,7 +58,27 @@ A JAR still depends on the machine it lands on: the right Java version, the righ
 
 ![Containerize once, run anywhere: the application and its JRE and libraries in one container, running unchanged on a container engine in development and in production](../slides/img/containerize-once.svg)
 
-How Project Pulse's Dockerfile splits the JAR into layers for faster rebuilds is Spring Boot detail, covered in [its documentation](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html). What matters here is that the image is the artifact the pipeline ships.
+A **Dockerfile** is the recipe for an image. Project Pulse's, shortened:
+
+```dockerfile
+FROM eclipse-temurin:21-jre AS builder                # stage 1: a scratch workspace
+WORKDIR /builder
+COPY backend/target/*.jar application.jar
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+
+FROM eclipse-temurin:21-jre                           # stage 2: the image that ships
+WORKDIR /application
+COPY --from=builder /builder/extracted/dependencies/ ./
+COPY --from=builder /builder/extracted/application/ ./
+ENTRYPOINT ["java", "-jar", "application.jar"]
+```
+
+- **`FROM`** names the **base image** to start from, here Java 21 on Linux, so the runtime comes with it instead of being installed by hand.
+- **`COPY`** puts files into the image. The JAR is already built: Maven runs first, and Docker only packages the result.
+- **Two `FROM` lines make a multi-stage build.** Stage 1 unpacks the JAR and is thrown away; only stage 2 ships, so the image holds just what it needs to run.
+- **`ENTRYPOINT`** is the command a container runs when it starts.
+
+Each instruction adds a **layer**, and Docker rebuilds only from the first layer that changed. That is why stage 2 copies the libraries before your code: when only your code changes, the library layers come from the cache, and Azure downloads only the small last one. The full file has four such copies ([Spring Boot's documentation](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html) explains them). The workflow then pushes the image to a **registry**, GitHub's `ghcr.io`, tagged with the commit SHA, and Azure pulls it from there. The image is the artifact the pipeline ships.
 
 ### 4.3 A pipeline, read on Project Pulse
 
