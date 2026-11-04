@@ -51,6 +51,8 @@ Integration should be a routine, not a drama.
 
 ::: note
 **Say:** Nothing here is exotic. A manual deploy that no second person checked, dead code left in, and a flag reused for new code. The SEC order says a simple double-check of the deployment could have caught it. A pipeline puts the same artifact on every server, or on none. We'll come back to the flag later.
+
+One more twist, and it's the scariest part. While the team was trying to stop it, they rolled back: they removed the new code from the seven servers that had it right. That put the old code back on those seven, still receiving the reused flag, so Power Peg started firing on all eight. The rollback made it worse. Keep that in mind when we get to rolling back: know what a rollback actually restores before the day you need it.
 :::
 
 ## More pull requests, same hours
