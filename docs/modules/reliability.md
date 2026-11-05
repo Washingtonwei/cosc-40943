@@ -133,6 +133,7 @@ Every action changes the system. None of them is "be more careful."
 
 - **Goal:** your system's reliability promise is measured, and one of its dependencies fails the way your specification says.
 - **On your own project, out of class:** turn one availability or performance requirement in your specification into an SLO: name its SLI, its window, its target, and its error budget, and write them under the requirement. Then write one automated test that makes an external dependency fail (an email service, a client API, a model) by throwing or timing out, and asserts the degradation your specification requires. If your specification never says what happens when that dependency fails, write that requirement first. Run the test once against code with the handling removed, to see it fail.
+- **Adapt to your stack:** Project Pulse's timeouts live in its Spring configuration ([4.4](#44-failing-well-timeout-retry-isolation-degradation)). Run the [adapt step](../studio.md#adapt) for where your stack sets a timeout and a retry policy, how your tests make a dependency throw or time out, and how you measure your SLI.
 - **Deliverable & assessment:** at [Checkpoint 3](../project.md#checkpoints), show the SLO with its current measured value (the observability you built in week 12 supplies it) and the degradation test, red against the reverted code and green against yours.
 
 **Individual assignment (Project Pulse):** none.

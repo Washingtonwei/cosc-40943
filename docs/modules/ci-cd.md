@@ -329,7 +329,7 @@ Write the open question into section 7 (the deployment view) of your architectur
 
 **Team, own project (Friday's studio, with [Static Analysis](static-analysis.md#7-hands-on-studio-optional-individual-assignment)):**
 
-- **Gate:** your pull request workflow, drafted by your agent and read by your team against [the six questions in 4.3](#reviewing-a-workflow), then the ruleset on `main`, by [the steps in 4.4](#ruleset-step-by-step). Open one pull request that should fail, and confirm the merge button locks.
+- **Gate:** your pull request workflow, drafted by your agent ([adapt step](../studio.md#adapt)) and read by your team against [the six questions in 4.3](#reviewing-a-workflow), then the ruleset on `main`, by [the steps in 4.4](#ruleset-step-by-step). Open one pull request that should fail, and confirm the merge button locks.
 - **Charter:** widen the static analysis line to "never weaken a check to make it pass without saying so in the pull request" ([5](#5-the-ai-native-lens)).
 - **Release:** tag `v0.1.0` with release notes for Checkpoint 2 ([4.9](#49-versions-tags-release-notes-and-feature-flags)).
 - **Deployment:** write the open questions of [4.10](#410-where-will-your-project-run) into section 7 of your architecture-of-record, with an owner.

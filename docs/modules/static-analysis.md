@@ -432,7 +432,7 @@ This module's tools are one stack's answer: Java and Vue. A Python, JavaScript, 
 
 **Start with what runs on an ordinary Linux runner:** your analyzer, your formatter in checking mode, and your unit tests. Building for a device (an iOS or Android build, a game export) is not part of the first gate; if your gate leaves it out, record that as a debt row in section 11 of your architecture-of-record. A Flutter app, a .NET MAUI app, and a Godot game can all start here. For MAUI, gate a plain class library that holds your logic, with its test project, rather than the app project, which needs platform workloads.
 
-Then run each tool yourself before it goes in the workflow. The agent's description of a tool is a claim; the first run's counts by rule are the evidence ([4.3](#43-the-first-run-without-touching-the-build)).
+Then run each tool yourself before it goes in the workflow. The agent's description of a tool is a claim; the first run's counts by rule are the evidence ([4.3](#43-the-first-run-without-touching-the-build)). This is the studio's [adapt step](../studio.md#adapt), applied to the ladder.
 
 ### 4.8 Your own rules: turn a repeated review comment into a check
 

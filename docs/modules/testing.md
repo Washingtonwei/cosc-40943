@@ -275,7 +275,8 @@ Units are cheap, fast, and pinpoint a failure; end-to-end tests are slow, brittl
 **Team, own project:**
 
 - **One test per extension:** for your proving slice's use case, every extension has a test named after it, in given/when/then form.
-- **Your charter:** add both BDDMockito halves (`given(...).willReturn(...)` and `then(...).should(...)`) and the rule that a failing test is never edited to pass without saying so.
+- **Adapt to your stack:** Project Pulse tests with JUnit, AssertJ, and Mockito in its BDD style. Run the [adapt step](../studio.md#adapt) for your test framework, your assertion and mocking libraries, and how your tests reach a real database or service.
+- **Your charter:** your mocking library's two given/when/then halves (Project Pulse: BDDMockito's `given(...).willReturn(...)` and `then(...).should(...)`), and the rule that a failing test is never edited to pass without saying so.
 
 **Individual assignment:** in *Add a use case* (assignment 3, due Fri Nov 6), for each AI-generated test you keep, write one line in the pull request description naming its oracle's source, and break the code once to show it goes red.
 

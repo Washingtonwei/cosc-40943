@@ -12,6 +12,40 @@ Friday is not a lecture and not a lab on a toy problem. It is the hour your team
 
 Attendance in studio counts the same as lecture attendance: each absence is a 1% grade reduction.
 
+### Adapt Project Pulse to your project {#adapt}
+
+Every lecture teaches on Project Pulse: Java, Maven, Spring Boot, and Vue. Your project is probably built on something else, and that is fine. When a studio applies a concept to your project, your coding agent does the translation: it reads the module and your documents, and proposes your project's version of each Project Pulse choice. Your team decides, and you must be able to say why.
+
+**Give the agent the context:** the module's URL, your specification, your architecture-of-record, your charter, and one line on your stack and where each part lives. Then start from this prompt:
+
+```text
+Read <module URL>. It teaches <topic> on Project Pulse, a Java, Spring Boot,
+and Vue project. Our project is <stack, and the folder each part lives in>.
+Read docs/requirements/, docs/design/architectural-design.md, and our charter.
+
+1. List each choice Project Pulse makes for this topic (<the choices the
+   module names>), and the principle in the module it serves, with its section.
+2. For each, propose our version. For a choice that is easy to swap (a library
+   or a tool), recommend one and give its latest release date. For a choice
+   that is hard to reverse (architecture, persistence, authentication, where
+   the system runs), give two or three options with their tradeoffs, and do
+   not pick one.
+3. Say what in Project Pulse does not apply to us, and why.
+4. Draft the table for our pull request description. Change no file until we
+   have decided.
+```
+
+**The table** goes in the description of the pull request the adaptation produces:
+
+| Project Pulse's choice | The principle it serves (module section) | Our choice | Why ours differs | What does not apply to us |
+|---|---|---|---|---|
+
+The agent drafts it; your team corrects it. The second and last columns are your part: a row whose principle nobody on the team can explain is a row you have not understood, whatever the agent wrote.
+
+**Who decides depends on how hard the choice is to undo.** An easy choice (a test library, an analyzer, a formatter): adopt the agent's recommendation only after you have run it on your own code. A hard choice: your team picks from the options and records it as a `KD-*` in section 9 of your architecture-of-record, with the option it rejected.
+
+**Record each decision where it lives,** not only in the table: a convention in section 8.2, a key decision in section 9, and its one-line instruction in your charter, so your agent follows it next session. The [week 11 gate studio](#week-11-nov-6-the-gate-on-your-repository) is a worked example.
+
 ## Teaching assistants
 
 Led by **Hiep Nguyen**. Each TA takes four or five of the thirteen teams and keeps them all semester.
@@ -331,7 +365,7 @@ git push -u origin add-workflow-commands
 
 **Objective:** by the end of the hour your team's `main` cannot take a change that fails the build, the tests, or the analyzers. Monday's [Static Analysis](modules/static-analysis.md#7-hands-on-studio-optional-individual-assignment) and Wednesday's [CI/CD](modules/ci-cd.md#7-hands-on-studio-optional-individual-assignment) both land here. Assignment 3 is due at the start of class, and Checkpoint 2 slots run outside class as booked.
 
-**Your agent writes it; your team owns it.** Most of your projects are not Java, so Project Pulse's files are the example, not a template. Read them as the example of a finished gate: its pull request workflow, [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml), and the analyzer blocks in its [`pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237). Your coding agent (Claude Code, Codex, or whichever your team uses) proposes the tools for your stack and drafts the workflow. Your team decides what goes in and reads every line before it merges.
+**Your agent writes it; your team owns it.** Most of your projects are not Java, so Project Pulse's files are the example, not a template. Read them as the example of a finished gate: its pull request workflow, [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml), and the analyzer blocks in its [`pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237). Your coding agent (Claude Code, Codex, or whichever your team uses) proposes the tools for your stack and drafts the workflow. Your team decides what goes in and reads every line before it merges. This is the [adapt step](#adapt), applied to the gate.
 
 **Before Friday:** if your Checkpoint 2 slot is today and you have not tagged `v0.1.0` with release notes, do it first ([how](modules/ci-cd.md#49-versions-tags-release-notes-and-feature-flags)).
 

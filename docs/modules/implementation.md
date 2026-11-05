@@ -261,6 +261,8 @@ Commit a skill by pull request, as you would the charter, because the whole team
 
 Before your agent builds the proving slice, commit the team's `.claude/settings.json` with `Read` deny rules for your secrets, by pull request, and confirm the agent is refused. Add two lines to your agent charter: your logging rule from 4.9, and "no dependency is added until a person confirms it exists and is the intended one". Your TA checks both at Checkpoint 2. If you run more than one agent, add the four parallel-agent lines from [Agent Setup](../agent-setup.md#10-your-team-repository). Build the slice trunk first, and read the trunk before the leaves.
 
+**Adapt to your stack:** 4.9's logging rule is written for SLF4J, and the deny rules for Claude Code's `.claude/settings.json`. Run the [adapt step](../studio.md#adapt) for your logging library and for your own agent's way to keep it from reading your secrets, and write your versions into the charter.
+
 **Individual assignment:** *Add a use case* (assignment 3, due Fri Nov 6) takes one use case end to end on Project Pulse, trunk first.
 
 ## 8. Summary / key takeaways
