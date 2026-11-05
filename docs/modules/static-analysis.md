@@ -421,6 +421,19 @@ With the baselines in place, `./mvnw verify` passed. Adding one method that comp
 
 Two places it does not go. The specification says what the product must do for your client, and SpotBugs is not a client requirement. Nor is it a `KD-*`: an analyzer can be swapped in an afternoon, and key decisions are for what is hard to reverse. Project Pulse shows the shape: a "Static analysis" bullet in its [Architectural conventions](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/docs/design/architectural-design.md#architectural-conventions), `TD-analyzer-baselines` among its debts, and a short reminder in `CLAUDE.md` that links to both ([#107](https://github.com/Washingtonwei/project-pulse/pull/107)).
 
+#### Choosing tools for your stack {#choosing-tools}
+
+This module's tools are one stack's answer: Java and Vue. A Python, JavaScript, or C# project climbs the same [ladder](#42-the-ladder-on-project-pulse) with different tools, and your coding agent knows the candidates. Let it propose; your team decides, by four tests:
+
+- **Free, and runs in your own build with no account,** so the gate works on every runner and every fork.
+- **Maintained.** Check the latest release yourself. A tool can be the common answer and dead: ESLint 8 has been end of life since October 2024, and an agent can still suggest it.
+- **Has a checking mode** that reports and changes nothing, for CI ([4.5](#45-make-it-a-gate)).
+- **One per rung.** Two linters with overlapping rules double the findings and the arguments. A formatter, a linter, and a type checker if the language has one is a good start.
+
+**Start with what runs on an ordinary Linux runner:** your analyzer, your formatter in checking mode, and your unit tests. Building for a device (an iOS or Android build, a game export) is not part of the first gate; if your gate leaves it out, record that as a debt row in section 11 of your architecture-of-record. A Flutter app, a .NET MAUI app, and a Godot game can all start here. For MAUI, gate a plain class library that holds your logic, with its test project, rather than the app project, which needs platform workloads.
+
+Then run each tool yourself before it goes in the workflow. The agent's description of a tool is a claim; the first run's counts by rule are the evidence ([4.3](#43-the-first-run-without-touching-the-build)).
+
 ### 4.8 Your own rules: turn a repeated review comment into a check
 
 **Every rule so far was written by strangers.** The SpotBugs and PMD authors know common Java mistakes; they do not know your team's conventions. Those live in section 8.2 of your architecture-of-record and in review comments. When a reviewer writes the same comment for the third time, the comment is a rule waiting to be written.
@@ -557,9 +570,9 @@ A pinned SHA never updates itself, so you would also miss the action's fixes. De
 
 **Team, own project (Friday's studio):**
 
-- **First run:** run the analyzers for your stack with the commands in [4.3](#43-the-first-run-without-touching-the-build) (SpotBugs and PMD by their coordinates, `npx eslint .`, `npm run type-check`), record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
-- **Gate:** copy the SpotBugs and PMD plugin blocks from [Project Pulse's `pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237) (point PMD at your own ruleset file) and the jobs from its pull request workflow, [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml). Then make the checks required with a ruleset on `main`, by [the steps in CI/CD 4.4](ci-cd.md#ruleset-step-by-step). Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch the pull request go red and the merge button lock.
-- **Before you push, from now on:** `./mvnw verify`, not `./mvnw test`, plus the frontend checks ([4.5](#45-make-it-a-gate)).
+- **First run:** with your agent, choose the tools for your stack ([4.7](#choosing-tools)), run each in checking mode as [4.3](#43-the-first-run-without-touching-the-build) does for Project Pulse, record the counts by rule, and decide which rules your team turns off, with the reason in the configuration.
+- **Gate:** have your agent add the checks to your build and draft the pull request workflow, with Project Pulse's [`pom.xml` plugin blocks](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237) and [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml) as the example, not a template to copy. Your team reads the workflow against [CI/CD's six questions](ci-cd.md#reviewing-a-workflow) before it merges. Then make the checks required with a ruleset on `main`, by [the steps in CI/CD 4.4](ci-cd.md#ruleset-step-by-step). Your repository is young, so triage everything and skip the baseline if you can; baseline only what you cannot finish today. Plant one bug and watch the pull request go red and the merge button lock.
+- **Before you push, from now on:** your gate command, the same one the pull request runs, not just the tests (Project Pulse: `./mvnw verify`, not `./mvnw test`; [4.5](#45-make-it-a-gate)).
 - **Write it down** ([4.7](#47-a-new-project-the-gate-comes-first)): a "Static analysis" subsection in section 8.2 of your architecture-of-record, and a charter line citing it: the gate command, suppressions carry reasons, and a baseline only shrinks.
 - **Your own rule** (optional, [4.8](#48-your-own-rules-turn-a-repeated-review-comment-into-a-check)): pick one convention from your section 8.2, have your agent draft a rule for it, and commit it with one example it flags and one it passes.
 

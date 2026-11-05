@@ -331,15 +331,53 @@ git push -u origin add-workflow-commands
 
 **Objective:** by the end of the hour your team's `main` cannot take a change that fails the build, the tests, or the analyzers. Monday's [Static Analysis](modules/static-analysis.md#7-hands-on-studio-optional-individual-assignment) and Wednesday's [CI/CD](modules/ci-cd.md#7-hands-on-studio-optional-individual-assignment) both land here. Assignment 3 is due at the start of class, and Checkpoint 2 slots run outside class as booked.
 
+**Your agent writes it; your team owns it.** Most of your projects are not Java, so Project Pulse's files are the example, not a template. Read them as the example of a finished gate: its pull request workflow, [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml), and the analyzer blocks in its [`pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/backend/pom.xml#L187-L237). Your coding agent (Claude Code, Codex, or whichever your team uses) proposes the tools for your stack and drafts the workflow. Your team decides what goes in and reads every line before it merges.
+
 **Before Friday:** if your Checkpoint 2 slot is today and you have not tagged `v0.1.0` with release notes, do it first ([how](modules/ci-cd.md#49-versions-tags-release-notes-and-feature-flags)).
 
 | When | What your team does |
 |---|---|
-| First 20 minutes | One member runs the analyzers for your stack and records the counts by rule ([how](modules/static-analysis.md#43-the-first-run-without-touching-the-build)). Another copies the jobs from Project Pulse's [`maven-build.yml`](https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml) into your `.github/workflows/`, adapts the paths, and opens a pull request so the checks run once |
-| Next 10 minutes | Merge the workflow pull request. Then the owner creates the "Protect main" ruleset on screen while the team watches, following [the eight steps in CI/CD 4.4](modules/ci-cd.md#ruleset-step-by-step) ([why each rule](modules/ci-cd.md#44-from-a-check-to-a-gate)), and someone tries a direct push to `main` to see it refused |
-| Next 15 minutes | Plant one bug on a branch, open a pull request, and watch it go red with Merge locked. Then add to your charter: the gate command, "a baseline only shrinks," and "never weaken a check to make it pass without saying so in the pull request." Write the open deployment question into section 7 of your architecture-of-record, with an owner ([the questions](modules/ci-cd.md#410-where-will-your-project-run)) |
-| Last 5 minutes | Your TA checks your ruleset and the locked pull request |
+| First 15 minutes, after attendance | **Choose and run the tools.** Give your agent the prompt below. Decide as a team which tools to adopt ([four tests](modules/static-analysis.md#choosing-tools)), run each one in checking mode, and record the counts by rule |
+| Next 10 minutes | **The workflow.** Read the agent's draft together against [the six questions](modules/ci-cd.md#reviewing-a-workflow), fix what fails them, correct the comparison table, then open the pull request with the table in its description so the checks run once |
+| Next 10 minutes | Merge the workflow pull request after a teammate approves it. Then the owner creates the "Protect main" ruleset on screen while the team watches, following [the eight steps in CI/CD 4.4](modules/ci-cd.md#ruleset-step-by-step) ([why each rule](modules/ci-cd.md#44-from-a-check-to-a-gate)), and someone tries a direct push to `main` to see it refused |
+| Next 5 minutes | Plant one bug on a branch, open a pull request, and watch it go red with Merge locked. Then, in class if time allows and otherwise before Monday, add to your charter: the gate command, "a baseline only shrinks," and "never weaken a check to make it pass without saying so in the pull request." Write the open deployment question into section 7 of your architecture-of-record, with an owner ([the questions](modules/ci-cd.md#410-where-will-your-project-run)) |
+| Last 5 minutes | Your TA checks your ruleset and the locked pull request, then points at one line of your workflow and asks any member what it does |
 
-**What you produce:** the workflow and the ruleset on `main`, the red pull request (close it afterward), the charter lines merged, and the open question in section 7. Your TA takes attendance, which counts as it does every studio; this is not a checkpoint.
+**A prompt to start from.** Fill in the first line, and keep the rest:
 
-**When it gets stuck.** A check that will not appear in the ruleset: see [the end of the steps](modules/ci-cd.md#ruleset-step-by-step). Your backend lives in a subfolder: set `working-directory` on the step, as Project Pulse does.
+```text
+Our project is <languages and frameworks, and the folder each part lives in>.
+We are adding static analysis to our pull request pipeline.
+
+1. For each part of our stack, propose free tools that run in our own build
+   with no account: a formatter, a linter, and a type checker if the language
+   has one. For each, say what it catches, why you chose it over the
+   alternatives, and its latest release date.
+2. Give the command that runs each tool in checking mode, changing no files.
+   Run them and report the findings counted by rule. Do not fix anything.
+   Stop here and wait for us to choose.
+3. After we choose, write .github/workflows/pull-request.yml. On every pull
+   request to main, run our build, our tests, and the chosen checks, and fail
+   on any finding. Model it on Project Pulse's workflow:
+   https://github.com/Washingtonwei/project-pulse/blob/90668c51b83f5352acf8d0f304a46590625cc87c/.github/workflows/maven-build.yml
+   One job per part of the stack, every action pinned to a full commit SHA,
+   checking commands only (no --fix, no --write), no continue-on-error.
+   Use ubuntu-latest, and do not build for a device (no iOS, Android, or
+   game export build).
+4. Explain the workflow line by line.
+5. Draft the comparison table for the pull request description: one row
+   per job, with Project Pulse's matching job, the command that fails it,
+   and what it does not check.
+```
+
+**The comparison table** goes in the workflow pull request's description. The agent drafts it; your team corrects it, because "what fails it" and "what it does not check" are where your review shows. For a Flutter app it might begin:
+
+| Project Pulse job | Our job | What fails it | What it does not check |
+|---|---|---|---|
+| `build`: `mvn verify` (tests, SpotBugs, PMD) | `app`: `flutter analyze`, `dart format --set-exit-if-changed .`, `flutter test` | Any analyzer finding, an unformatted file, a failing test | Android and iOS builds (debt row in section 11) |
+| `frontend`: ESLint, type check, Prettier, all `continue-on-error` | None: the Flutter app is our only client | | |
+| `dockerfile`: Hadolint | None: we do not ship a container yet | | |
+
+**What you produce:** the workflow, merged through a pull request that carries the comparison table, and the ruleset on `main`, the red pull request (close it afterward), the charter lines merged, and the open question in section 7. Your TA takes attendance, which counts as it does every studio; this is not a checkpoint.
+
+**When it gets stuck.** The workflow goes red on its own pull request: that is the first run telling the truth about findings already in your code. Fix the easy ones with your agent, turn off rules you reject with a reason in the configuration, and baseline only what you cannot finish today ([Static Analysis 4.6](modules/static-analysis.md#46-an-existing-codebase-baseline-then-ratchet)), so `main` is green before you plant the bug. A workflow fails with "unable to resolve action": the agent made up a commit SHA, so look up the release's commit on the action's own GitHub page. A check that will not appear in the ruleset: see [the end of the steps](modules/ci-cd.md#ruleset-step-by-step). Your backend lives in a subfolder: set `working-directory` on the step, as Project Pulse does.

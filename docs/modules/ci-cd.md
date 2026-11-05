@@ -136,6 +136,19 @@ flowchart LR
     deploy -->|"a person swaps"| prod["Production slot"]
 ```
 
+#### Before you merge a workflow your agent wrote {#reviewing-a-workflow}
+
+An agent drafts a workflow in a minute, and the workflow runs with your repository's access, so read it the way you read code. Every member should be able to answer these about your own workflow:
+
+1. **When does it run?** The `on:` block: which events, which branches. A check workflow runs on `pull_request` to `main`.
+2. **What can fail it?** In each job, find the command that exits non-zero on a failed test or a finding. A job with no such command is green forever.
+3. **Is anything made to pass?** `continue-on-error: true`, `|| true`, and fixing variants (`--fix`, `--write`) each turn a check into advice. Remove them, or say in the pull request why one stays, as Project Pulse does for its `frontend` job ([4.4](#44-from-a-check-to-a-gate)).
+4. **Is every action pinned?** Each `uses:` names a full commit SHA, with the version in a comment, as in the backend job above ([why](static-analysis.md#410-beyond-your-code-dependencies-containers-secrets-and-your-own-tools)).
+5. **Does it match your laptop?** It runs the commands your team runs before pushing, so a red run is never a surprise.
+6. **Does it ask for secrets or write `permissions:`?** A check workflow needs neither.
+
+**A line nobody on the team can explain does not merge.** Ask the agent what it does, then check the documentation it cites.
+
 ### 4.4 From a check to a gate
 
 **A check that does not block is advice** ([Static Analysis 4.5](static-analysis.md#45-make-it-a-gate)). Project Pulse shows why. Until 3 November 2026, its three checks ran on every pull request, and nothing required them to pass: the merge button stayed enabled next to a red X. After the merge, the deploy workflow built with `-DskipTests`, trusting tests that might never have passed. The checks ran; nothing listened.
@@ -160,30 +173,30 @@ The fix is a **ruleset** on `main` (Settings, Rules, Rulesets, New branch rulese
 
 #### Set up the ruleset, step by step {#ruleset-step-by-step}
 
-**The repository owner does this.** On a personal repository every collaborator has write access, and only the owner sees the Settings tab, so put the owner's screen up and have the team watch. **First, the pull request workflow has to have run once** on a pull request in the last seven days; until it has, its checks do not appear in step 6.
+**The repository owner does this.** On a personal repository every collaborator has write access, and only the owner sees the Settings tab, so put the owner's screen up and have the team watch. **First, the pull request workflow has to have run once** on a pull request, recently; until it has, its checks do not appear in step 6.
 
-1. In the repository, open **Settings**. In the sidebar under **Code and automation**, click **Rules**, then **Rulesets**. Click **New ruleset**, then **New branch ruleset**.
+1. In the repository, open **Settings**. In the sidebar under **Code, planning, and automation**, open **Rulesets**. Click **New ruleset**, then **New branch ruleset**.
 2. **Ruleset Name:** `Protect main`.
-3. **Enforcement status:** **Active**. A ruleset saved as Disabled enforces nothing.
+3. **Enforcement status:** a new ruleset starts at **Disabled**; change it to **Active**. A ruleset saved as Disabled enforces nothing.
 4. **Bypass list:** leave it empty. Do not click **Add bypass**.
-5. **Target branches:** click **Add target**, then **Include default branch**.
+5. **Target branches:** click **Add a target**, then include the default branch.
 6. Under **Rules**, set exactly these and leave every other rule unchecked:
     - **Restrict deletions:** checked.
     - **Require a pull request before merging:** checked. In its settings, set **Required approvals** to 1.
-    - **Require status checks to pass:** checked. Check **Require branches to be up to date before merging** under it, and leave "Do not require status checks on creation" unchecked. Click **Add checks**, type a job name (`build`), and pick the entry whose source is **GitHub Actions**. Repeat for every job in your pull request workflow.
+    - **Require status checks to pass:** checked. Check **Require branches to be up to date before merging** under it, and leave "Do not require status checks on creation" unchecked. Add a check (the **+** button), type a job name (`build`), and pick the entry whose source is **GitHub Actions**. Repeat for every job in your pull request workflow.
     - **Block force pushes:** checked.
 7. Click **Create**.
-8. **Retire the week 3 rule.** Under **Settings**, **Branches**, delete the branch protection rule on `main` from the [Git Workflow](../git-workflow.md#repository-settings) setup. Both would apply, and a team should have one place to look.
+8. **Retire the week 3 rule.** Under **Settings**, **Branches**, if a branch protection rule on `main` from the [Git Workflow](../git-workflow.md#repository-settings) setup is listed, delete it. Both would apply, and a team should have one place to look.
 
 **Check that it holds.** Open any pull request: each check you added shows **Required**, and Merge stays disabled until they pass and a teammate approves. Then try to walk around it from a laptop, on an up-to-date `main`:
 
 ```bash
 git commit --allow-empty -m "Test the ruleset"
-git push origin main     # rejected: GH013: Repository rule violations found
+git push origin main     # rejected: repository rule violations
 git reset --soft HEAD~1  # drop the test commit
 ```
 
-**When a check will not appear in step 6.** It has not run in the last seven days, so open a pull request that runs the workflow and come back. Search for the job's `name:` if it has one, otherwise its ID. A job with a `matrix` reports one check per combination, such as `build (21)`, and each one is added separately.
+**When a check will not appear in step 6.** It has not run recently, so open a pull request that runs the workflow and come back. Search for the job's `name:` if it has one, otherwise its ID. A job with a `matrix` reports one check per combination, such as `build (21)`, and each one is added separately.
 
 ### 4.5 Continuous delivery and continuous deployment
 
@@ -316,7 +329,7 @@ Write the open question into section 7 (the deployment view) of your architectur
 
 **Team, own project (Friday's studio, with [Static Analysis](static-analysis.md#7-hands-on-studio-optional-individual-assignment)):**
 
-- **Gate:** your pull request workflow from the static analysis studio, then the ruleset on `main`, by [the steps in 4.4](#ruleset-step-by-step). Open one pull request that should fail, and confirm the merge button locks.
+- **Gate:** your pull request workflow, drafted by your agent and read by your team against [the six questions in 4.3](#reviewing-a-workflow), then the ruleset on `main`, by [the steps in 4.4](#ruleset-step-by-step). Open one pull request that should fail, and confirm the merge button locks.
 - **Charter:** widen the static analysis line to "never weaken a check to make it pass without saying so in the pull request" ([5](#5-the-ai-native-lens)).
 - **Release:** tag `v0.1.0` with release notes for Checkpoint 2 ([4.9](#49-versions-tags-release-notes-and-feature-flags)).
 - **Deployment:** write the open questions of [4.10](#410-where-will-your-project-run) into section 7 of your architecture-of-record, with an owner.
