@@ -38,7 +38,7 @@ This is also where your Senior Design project starts. It continues into COSC 409
 | **Friday** | [Studio](studio.md). Same room, whole class, TA-led. Your team applies the week's move to your own client project. Three Fridays in the term are your checkpoint presentation; Checkpoint 2 is a demo you book with your TA. |
 | **Outside class** | Team working meetings, client meetings, and building. |
 
-See it on Project Pulse Wednesday. Do it on your project Friday.
+See it on Project Pulse Wednesday. Do it on your project Friday, with your agent translating Project Pulse's choices to your stack and your team deciding ([how](studio.md#adapt)).
 
 ## The through-lines
 

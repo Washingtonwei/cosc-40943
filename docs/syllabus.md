@@ -103,7 +103,7 @@ An AI coding agent does the per-use-case design and implementation. It works aga
 The course meets MWF, and the three days do different jobs.
 
 - **Monday and Wednesday are lecture.** A software engineering topic, demonstrated on [Project Pulse](https://github.com/Washingtonwei/project-pulse), a real Vue.js and Spring Boot application. You watch the move performed on real code.
-- **Friday is studio.** Same room, whole class, TA-led. Your team applies that week's move to your own client project while the TAs circulate. On four Fridays, studio is your team's checkpoint presentation. See [Friday Studio](studio.md).
+- **Friday is studio.** Same room, whole class, TA-led. Your team applies that week's move to your own client project while the TAs circulate. Your project probably isn't built on Java and Spring Boot, and that's fine. Your coding agent reads the module and your documents and proposes your project's version of each Project Pulse choice. Your team decides, and must be able to say which principle each choice serves ([how](studio.md#adapt)). On three Fridays, studio is your team's checkpoint presentation; Checkpoint 2 is a demo you book with your TA. See [Friday Studio](studio.md).
 - **Outside class**, your team meets, meets its client, and builds. Full team working meetings and client meetings happen outside the class period.
 
 ### What this course expects of your time
