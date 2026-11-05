@@ -158,6 +158,33 @@ The fix is a **ruleset** on `main` (Settings, Rules, Rulesets, New branch rulese
 
 **A flaky check destroys the gate.** A test that fails at random teaches everyone to press "Re-run" until it goes green, and then a real failure gets re-run too. Fix a flaky test, or quarantine it with an issue, the day it is seen.
 
+#### Set up the ruleset, step by step {#ruleset-step-by-step}
+
+**The repository owner does this.** On a personal repository every collaborator has write access, and only the owner sees the Settings tab, so put the owner's screen up and have the team watch. **First, the pull request workflow has to have run once** on a pull request in the last seven days; until it has, its checks do not appear in step 6.
+
+1. In the repository, open **Settings**. In the sidebar under **Code and automation**, click **Rules**, then **Rulesets**. Click **New ruleset**, then **New branch ruleset**.
+2. **Ruleset Name:** `Protect main`.
+3. **Enforcement status:** **Active**. A ruleset saved as Disabled enforces nothing.
+4. **Bypass list:** leave it empty. Do not click **Add bypass**.
+5. **Target branches:** click **Add target**, then **Include default branch**.
+6. Under **Rules**, set exactly these and leave every other rule unchecked:
+    - **Restrict deletions:** checked.
+    - **Require a pull request before merging:** checked. In its settings, set **Required approvals** to 1.
+    - **Require status checks to pass:** checked. Check **Require branches to be up to date before merging** under it, and leave "Do not require status checks on creation" unchecked. Click **Add checks**, type a job name (`build`), and pick the entry whose source is **GitHub Actions**. Repeat for every job in your pull request workflow.
+    - **Block force pushes:** checked.
+7. Click **Create**.
+8. **Retire the week 3 rule.** Under **Settings**, **Branches**, delete the branch protection rule on `main` from the [Git Workflow](../git-workflow.md#repository-settings) setup. Both would apply, and a team should have one place to look.
+
+**Check that it holds.** Open any pull request: each check you added shows **Required**, and Merge stays disabled until they pass and a teammate approves. Then try to walk around it from a laptop, on an up-to-date `main`:
+
+```bash
+git commit --allow-empty -m "Test the ruleset"
+git push origin main     # rejected: GH013: Repository rule violations found
+git reset --soft HEAD~1  # drop the test commit
+```
+
+**When a check will not appear in step 6.** It has not run in the last seven days, so open a pull request that runs the workflow and come back. Search for the job's `name:` if it has one, otherwise its ID. A job with a `matrix` reports one check per combination, such as `build (21)`, and each one is added separately.
+
 ### 4.5 Continuous delivery and continuous deployment
 
 "CD" means two different things:
@@ -289,7 +316,7 @@ Write the open question into section 7 (the deployment view) of your architectur
 
 **Team, own project (Friday's studio, with [Static Analysis](static-analysis.md#7-hands-on-studio-optional-individual-assignment)):**
 
-- **Gate:** your pull request workflow and the ruleset on `main` from the static analysis studio, plus the rest of [4.4](#44-from-a-check-to-a-gate): Restrict deletions, Block force pushes, Require a pull request (1 approval), Require branches to be up to date, and an empty bypass list. Open one pull request that should fail, and confirm the merge button locks.
+- **Gate:** your pull request workflow from the static analysis studio, then the ruleset on `main`, by [the steps in 4.4](#ruleset-step-by-step). Open one pull request that should fail, and confirm the merge button locks.
 - **Charter:** widen the static analysis line to "never weaken a check to make it pass without saying so in the pull request" ([5](#5-the-ai-native-lens)).
 - **Release:** tag `v0.1.0` with release notes for Checkpoint 2 ([4.9](#49-versions-tags-release-notes-and-feature-flags)).
 - **Deployment:** write the open questions of [4.10](#410-where-will-your-project-run) into section 7 of your architecture-of-record, with an owner.

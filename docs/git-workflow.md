@@ -143,7 +143,7 @@ For the member who [owns the repository](studio.md#where-your-repository-lives).
 
 On `main`, under branch protection: require a pull request before merging, require at least one approving review, and disallow direct pushes.
 
-**Leave "require status checks to pass" off for now.** Your repository has no pipeline until week 11, and a required check that never reports leaves every pull request stuck waiting for it forever. Turn it on when you have a build to wait for.
+**Leave "require status checks to pass" off for now.** Your repository has no pipeline until week 11, and a required check that never reports leaves every pull request stuck waiting for it forever. In week 11, when you have a build to wait for, you replace this rule with a ruleset that requires the checks ([steps](modules/ci-cd.md#ruleset-step-by-step)).
 
 In general settings, pick one merge method and allow only that one, so history stays uniform. Turn off rebase merging.
 
