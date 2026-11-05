@@ -246,7 +246,7 @@ Hofstadter's Law: it always takes longer than you expect, even when you take int
 ::: note
 **Say:** Then compare. Hours logged divided by the estimate's midpoint. Estimated 8 to 16, logged 18: ratio 1.5. Next time you'd say 4 to 8, say 6 to 12. And a slip you see coming goes to the client at the next meeting, not on the date. *[Read the joke.]* The ratio is how you actually take that law into account.
 
-**Background:** one ratio per estimate. The refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Tracked per person and per team, six ratios is how a team finds out that review, not building, is where its hours go.
+**Background:** one ratio per estimate. The refined ratio says how well you estimate a build, the coarse ratio how well you estimate a use case you have only read, and the release forecast uses the coarse one. Tracked per person and per team, six ratios is how a team finds out that review, not building, is where its hours go. The module's 4.4 has a suggested layout for the table: one row per estimate, in `docs/calibration.md`.
 :::
 
 ## Then look back

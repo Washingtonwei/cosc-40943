@@ -97,6 +97,15 @@ An estimate nobody checks teaches nothing. The course already records the other 
 3. **When the use case is done**, compute a **calibration ratio** for each of its estimates: the hours logged since that estimate was made, divided by its midpoint. The refined ratio says how well you estimate a build; the coarse ratio says how well you estimate a use case you have only read, and the release forecast uses it.
 4. **When the use case closes, run a five-minute retrospective** before the next one starts. The owner answers three questions: Which part missed most? What did you not know when you estimated? What will you do differently on the next estimate? Write the answer as that use case's biggest-miss sentence in the calibration table that day, not at the checkpoint. The ratio corrects your bias; the retrospective improves your judgment.
 
+Keep the table in your team repository, for example as `docs/calibration.md`, with one row per estimate, so a finished use case usually has a coarse row and a refined row. Any layout with these fields works; this one is a starting point:
+
+| Use case | Estimate | Made | Range (h) | Midpoint (h) | Actual (h) | Ratio | Biggest miss |
+|---|---|---|---|---|---|---|---|
+| `UC-AREA-slug` | Coarse | Week 7 | 8–16 | 12 | 18 | 1.5 | The one sentence from the retrospective: what missed most, and why |
+| `UC-AREA-slug` | Refined | Week 8 | 6–10 | 8 | 11 | 1.4 | |
+
+**Actual** is the hours on weekly activity report lines tagged with that use case's ID, logged since the estimate was made. **Ratio** is actual divided by midpoint.
+
 A ratio of 1.5 means you take half again as long as you think. Multiply both ends of your next estimate by it: at 1.5, a use case you would have called 4 to 8 hours becomes 6 to 12. Track it per person and per team: six ratios on a team is how you find out that review, not building, is where your team's hours go.
 
 When the ratio says a promised date will slip, tell the client at the next meeting, not on the date. A slip reported early is planning; reported late, it is a broken promise. The same ratio turns the team's remaining estimates into a [release forecast](traceability.md#47-from-estimates-to-a-release-plan).
