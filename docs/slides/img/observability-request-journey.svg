@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">One request's journey: short in a monolith, across many services in a microservice system</title>
+<desc id="d">On the left, a request enters one deployable, Project Pulse, and its trace is short: one HTTP span and a call out to the mail server. On the right, a request enters a system of thirteen small services drawn as hexagons and crosses four of them; one is slow, and the trace is the only thing that shows which. Redrawn from the instructor's 2025 Web Tech deck.</desc>
+<defs>
+<marker id="rj-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BE0E6"/></marker>
+<marker id="rj-ar-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
+</defs>
+<rect width="1000" height="400" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">ONE REQUEST'S JOURNEY</text>
+<text x="972" y="36" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">redrawn from the 2025 Web Tech deck</text>
+<!-- monolith -->
+<text x="200" y="76" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="700">One deployable</text>
+<text x="200" y="98" text-anchor="middle" fill="#9AA3B5" font-size="15">Project Pulse</text>
+<line x1="200" y1="112" x2="200" y2="150" stroke="#5BE0E6" stroke-width="3" marker-end="url(#rj-ar)"/>
+<rect x="110" y="156" width="180" height="150" rx="14" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<text x="200" y="196" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Spring Boot app</text>
+<rect x="132" y="218" width="136" height="16" rx="4" fill="#5BE0E6" opacity="0.85"/>
+<text x="200" y="252" text-anchor="middle" fill="#9AA3B5" font-size="14">HTTP span</text>
+<rect x="190" y="266" width="78" height="16" rx="4" fill="#FF4D4D" opacity="0.9"/>
+<text x="148" y="279" text-anchor="middle" fill="#FF8080" font-size="14" font-weight="700">SMTP</text>
+<text x="200" y="340" text-anchor="middle" fill="#F2EDE3" font-size="16" font-weight="700">The trace is short.</text>
+<text x="200" y="362" text-anchor="middle" fill="#9AA3B5" font-size="15">It still shows 9.8 of 10 s waiting on mail.</text>
+<line x1="400" y1="70" x2="400" y2="370" stroke="#2A3347" stroke-width="2"/>
+<!-- microservices -->
+<text x="700" y="76" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="700">Many services</text>
+<text x="700" y="98" text-anchor="middle" fill="#9AA3B5" font-size="15">a microservice system</text>
+<g stroke-width="2">
+<!-- row 1 y=150 -->
+<polygon points="566,150 583,120 617,120 634,150 617,180 583,180" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="640,150 657,120 691,120 708,150 691,180 657,180" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="714,150 731,120 765,120 782,150 765,180 731,180" fill="#173A44" stroke="#5BE0E6"/>
+<polygon points="788,150 805,120 839,120 856,150 839,180 805,180" fill="#1B2335" stroke="#2A3347"/>
+<!-- row 2 y=214 -->
+<polygon points="529,214 546,184 580,184 597,214 580,244 546,244" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="603,214 620,184 654,184 671,214 654,244 620,244" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="677,214 694,184 728,184 745,214 728,244 694,244" fill="#173A44" stroke="#5BE0E6"/>
+<polygon points="751,214 768,184 802,184 819,214 802,244 768,244" fill="#173A44" stroke="#5BE0E6"/>
+<polygon points="825,214 842,184 876,184 893,214 876,244 842,244" fill="#3A1A20" stroke="#FF4D4D" stroke-width="3"/>
+<!-- row 3 y=278 -->
+<polygon points="566,278 583,248 617,248 634,278 617,308 583,308" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="640,278 657,248 691,248 708,278 691,308 657,308" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="714,278 731,248 765,248 782,278 765,308 731,308" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="788,278 805,248 839,248 856,278 839,308 805,308" fill="#1B2335" stroke="#2A3347"/>
+</g>
+<!-- request path -->
+<line x1="748" y1="104" x2="748" y2="142" stroke="#5BE0E6" stroke-width="3" marker-end="url(#rj-ar)"/>
+<polyline points="748,150 711,214 785,214 846,214" fill="none" stroke="#5BE0E6" stroke-width="3" stroke-linejoin="round" marker-end="url(#rj-ar)"/>
+<g fill="#5BE0E6"><circle cx="748" cy="150" r="5"/><circle cx="711" cy="214" r="5"/><circle cx="785" cy="214" r="5"/></g>
+<text x="900" y="219" fill="#FF8080" font-size="16" font-weight="800">slow</text>
+<text x="700" y="340" text-anchor="middle" fill="#F2EDE3" font-size="16" font-weight="700">Which one was slow?</text>
+<text x="700" y="362" text-anchor="middle" fill="#9AA3B5" font-size="15">Only the trace can say.</text>
+</svg>

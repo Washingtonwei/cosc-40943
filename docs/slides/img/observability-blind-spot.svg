@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">Deployment is not the end: the developer cannot see what is failing in production</title>
+<desc id="d">A developer stands outside a production panel on Azure and asks how to see inside the deployed app. Inside, the Spring Boot app on Azure Web App and the Azure Database can each fail: the database goes offline, the app goes down, requests get slow, and CPU, memory, or disk run out. None of these failures reaches the developer. Redrawn from the instructor's 2025 Web Tech deck.</desc>
+<defs>
+<marker id="bs-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
+</defs>
+<rect width="1000" height="430" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">DEPLOYMENT IS NOT THE END</text>
+<text x="972" y="36" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">redrawn from the 2025 Web Tech deck</text>
+<!-- developer -->
+<rect x="40" y="86" width="260" height="70" rx="14" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<path d="M150,156 L140,184 L176,156 Z" fill="#1B2335" stroke="#5BE0E6" stroke-width="2" stroke-linejoin="round"/>
+<line x1="142" y1="156" x2="174" y2="156" stroke="#1B2335" stroke-width="4"/>
+<text x="170" y="116" text-anchor="middle" fill="#F2EDE3" font-size="19" font-weight="700">How do I see inside</text>
+<text x="170" y="141" text-anchor="middle" fill="#F2EDE3" font-size="19" font-weight="700">the deployed app?</text>
+<circle cx="140" cy="236" r="26" fill="none" stroke="#F2EDE3" stroke-width="4"/>
+<circle cx="131" cy="232" r="3" fill="#F2EDE3"/>
+<circle cx="149" cy="232" r="3" fill="#F2EDE3"/>
+<path d="M128,250 q6,-6 12,0 t12,0" fill="none" stroke="#F2EDE3" stroke-width="3" stroke-linecap="round"/>
+<path d="M98,330 q0,-62 42,-62 q42,0 42,62" fill="none" stroke="#F2EDE3" stroke-width="4" stroke-linecap="round"/>
+<rect x="104" y="306" width="72" height="34" rx="4" fill="#0F1420" stroke="#9AA3B5" stroke-width="2"/>
+<line x1="94" y1="342" x2="186" y2="342" stroke="#9AA3B5" stroke-width="3" stroke-linecap="round"/>
+<text x="140" y="378" text-anchor="middle" fill="#F2EDE3" font-size="20" font-weight="700">Developer</text>
+<text x="140" y="400" text-anchor="middle" fill="#9AA3B5" font-size="15">tests green, gate green</text>
+<!-- the wall -->
+<line x1="330" y1="70" x2="330" y2="410" stroke="#9AA3B5" stroke-width="2" stroke-dasharray="6 7"/>
+<text x="310" y="250" text-anchor="middle" fill="#9AA3B5" font-size="14" font-weight="700" transform="rotate(-90 310 250)">no view in</text>
+<!-- production panel -->
+<rect x="350" y="62" width="622" height="350" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
+<text x="372" y="92" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">PRODUCTION · AZURE</text>
+<!-- web app -->
+<rect x="420" y="170" width="220" height="120" rx="16" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<path d="M454,214 q10,-24 34,-22 q-2,26 -28,30 q-4,-4 -6,-8 z" fill="#6DB33F"/>
+<text x="530" y="214" fill="#F2EDE3" font-size="18" font-weight="700">Spring Boot</text>
+<text x="530" y="236" fill="#9AA3B5" font-size="15">app</text>
+<text x="530" y="276" text-anchor="middle" fill="#F2EDE3" font-size="18" font-weight="700">Azure Web App</text>
+<!-- database -->
+<ellipse cx="850" cy="186" rx="62" ry="16" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<path d="M788,186 v86 a62,16 0 0,0 124,0 v-86" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<ellipse cx="850" cy="186" rx="62" ry="16" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<text x="850" y="314" text-anchor="middle" fill="#F2EDE3" font-size="18" font-weight="700">Azure Database</text>
+<!-- broken connection -->
+<line x1="640" y1="230" x2="702" y2="230" stroke="#9AA3B5" stroke-width="3"/>
+<line x1="726" y1="230" x2="788" y2="230" stroke="#9AA3B5" stroke-width="3"/>
+<path d="M708,214 l10,12 l-8,4 l10,14" fill="none" stroke="#FF4D4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- failure tags -->
+<g font-size="15" font-weight="700" text-anchor="middle">
+<rect x="430" y="118" width="96" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="478" y="138" fill="#FF8080">app down</text>
+<rect x="540" y="118" width="90" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="585" y="138" fill="#FF8080">slow</text>
+<rect x="660" y="262" width="150" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="735" y="282" fill="#FF8080">database offline</text>
+<rect x="404" y="346" width="120" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="464" y="366" fill="#FF8080">CPU at 100%</text>
+<rect x="540" y="346" width="132" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="606" y="366" fill="#FF8080">memory full</text>
+<rect x="688" y="346" width="104" height="30" rx="15" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
+<text x="740" y="366" fill="#FF8080">disk full</text>
+</g>
+</svg>

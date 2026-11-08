@@ -653,6 +653,101 @@ A cloud account bills by the hour. Set a cost alert the day you create it.
 **Say:** You don't decide this week. You start asking. Write the open question into section 7 of your architecture-of-record, the deployment view, with an owner, and settle it by Checkpoint 3, when that view is due. And from experience, mine and former students': turn off what you're not using, or the bill arrives before the grade does.
 :::
 
+## Over the wall
+
+::: cols
+**Developers**
+
+Write features. Rewarded for change. Hand the release over the wall.
+|||
+**Operations**
+
+Keep production up. Rewarded for stability. Catch what comes over.
+:::
+
+::: ask
+Every release is a negotiation, every outage a search for someone to blame. What would you change?
+:::
+
+::: note
+**Say:** Until the late 2000s, this was most companies. Two groups with opposite incentives. In 2009 at the Velocity conference, John Allspaw and Paul Hammond showed how Flickr deployed more than ten times a day: "Dev and Ops Cooperation at Flickr." Same year, Patrick Debois started DevOpsDays in Ghent, Belgium, and the movement got its name.
+:::
+
+## DevOps: you build it, you run it
+
+> "You build it, you run it."
+>
+> Werner Vogels, Amazon
+
+::: key
+One team owns a change from commit to production.
+:::
+
+::: note
+**Say:** DevOps is a culture first and a toolkit second. Everything we did today is the toolkit: the pipeline, the gate, staging, the swap. The culture is that the team that wrote it is the team that gets the call when it breaks. You already live this: your team deploys what it builds.
+:::
+
+## CALMS
+
+| | Means | You've done it |
+|---|---|---|
+| **C**ulture | One team, commit to production | You deploy what you build |
+| **A**utomation | Done twice by hand? Pipeline step | Today's workflows |
+| **L**ean | Small batches, flowing | Team 2 |
+| **M**easurement | Numbers, not opinions | DORA; observability, week 12 |
+| **S**haring | Dashboards, knowledge, blameless postmortems | Reliability |
+
+::: note
+**Say:** John Willis, Damon Edwards, and Jez Humble summed DevOps up as CALMS. If an interviewer asks what DevOps is, this is the skeleton of a good answer. Notice the last column: none of it is new to you.
+:::
+
+## How DevOps measures itself
+
+::: cols
+**Speed**
+
+Deployment frequency. Change lead time, commit to production. Recovery time after a failed deploy.
+|||
+**Stability**
+
+Change fail rate. Deployment rework rate.
+:::
+
+::: key
+DORA: "speed and stability are not tradeoffs."
+:::
+
+::: note
+**Say:** The DORA research, written up in Accelerate, started with four metrics; DORA tracks five now. Recovery time used to be called time to restore service, and you'll still hear that name. The finding that surprises people: the fastest teams are also the most stable. Small automated changes are both faster and safer. That's Team 2 from the start of the hour.
+:::
+
+## DevOps and SRE
+
+```java
+class SRE implements DevOps { }
+```
+
+::: joke
+Google's own summary, from The Site Reliability Workbook: "class SRE implements interface DevOps."
+:::
+
+::: note
+**Say:** DevOps is the interface: what to do. Site reliability engineering is Google's implementation: SLOs, error budgets, and a cap on how much of an engineer's time goes to operations work. You'll meet SRE properly in week 12. And on a job ad, "DevOps engineer" usually means the person who builds and runs the pipeline and the cloud infrastructure.
+:::
+
+## In an interview: "What is DevOps?"
+
+::: steps
+- What: one team owns software from commit to production, instead of handing releases to operations
+- How: automation and small, frequent changes, so each failure is small and quick to fix
+- How you know: the DORA metrics
+- Then one example from your project: your pipeline, your gate, your rollback
+:::
+
+::: note
+**Say:** Three sentences and one story. The story is what gets you the job: "On my senior design team, every pull request ran our tests and the merge button locked when they failed." And the follow-up is often "and SRE?" You now have the joke for that.
+:::
+
 ## Red made green
 
 ::: ai

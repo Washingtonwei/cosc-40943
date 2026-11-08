@@ -305,6 +305,28 @@ Your team does not have to decide this week, but it should start asking. The que
 
 Write the open question into section 7 (the deployment view) of your architecture-of-record, with an owner, and settle it by Checkpoint 3, when the deployment view is due ([Architecture 4.7](architecture.md#47-one-deployable-or-several) covers what you deploy; this is where).
 
+### 4.11 DevOps: the idea behind the pipeline
+
+Everything in this module serves one movement. Until the late 2000s, most companies split software between two groups. Developers wrote features and handed a release "over the wall"; operations kept production running. Developers were rewarded for change and operations for stability, so every release was a negotiation and every outage a search for someone to blame. At the Velocity conference in 2009, John Allspaw and Paul Hammond showed how Flickr deployed more than ten times a day by making the two groups work as one ("10+ Deploys per Day: Dev and Ops Cooperation at Flickr"). The same year, Patrick Debois founded DevOpsDays, first held in Ghent, Belgium, and **DevOps** became the movement's name.
+
+**DevOps is a culture first and a toolkit second.** John Willis, Damon Edwards, and Jez Humble summed it up as **CALMS**:
+
+| Letter | Means | Where you have done it |
+|---|---|---|
+| **C**ulture | One team owns a change from commit to production. Amazon's Werner Vogels: "You build it, you run it." | Your team deploys and supports what it builds |
+| **A**utomation | Anything done twice by hand becomes a pipeline step | [4.3](#43-a-pipeline-read-on-project-pulse) to [4.6](#46-staging-swap-and-rolling-back) |
+| **L**ean | Small batches that flow continuously | Team 2 in the [motivation](#3-motivation); one sub-issue, one pull request |
+| **M**easurement | Decide from numbers, not opinions | The DORA metrics below; [Observability](observability.md) |
+| **S**haring | Shared dashboards, shared knowledge, blameless postmortems | [Reliability 4.6](reliability.md#46-incidents-and-blameless-postmortems) |
+
+**How DevOps measures itself.** The DORA research program, written up in *Accelerate* (Forsgren, Humble, and Kim), measures software delivery with a few numbers. *Accelerate* named four, and DORA now tracks five: **deployment frequency**, **change lead time** (commit to production), **change fail rate**, **failed deployment recovery time** (formerly "time to restore service"), and **deployment rework rate**. The first ones measure speed, the others stability, and DORA's headline finding is that the two do not trade off: "speed and stability are not tradeoffs." Small, automated changes are both faster and safer, which is Team 2's story again.
+
+**DevOps and SRE.** Google's site reliability engineering is one specific way to do DevOps, with hard rules: SLOs, error budgets, and a cap on operations work ([Observability](observability.md) has the job). Google's own summary is a programmer's joke: `class SRE implements interface DevOps` (*The Site Reliability Workbook*, 2018). On a job ad, "DevOps engineer" usually means someone who builds and runs the pipeline and the infrastructure (CI/CD, containers, cloud, infrastructure as code). The culture is everyone's job.
+
+!!! tip "In an interview: \"What is DevOps?\""
+
+    Answer in three sentences. **What:** "DevOps is a culture where one team owns software from commit to production, instead of developers handing releases to a separate operations team." **How:** "It works through automation (CI/CD, infrastructure as code, monitoring) and small, frequent changes, so each failure is small and quick to fix." **How you know:** "You measure it with the DORA metrics, such as deployment frequency, lead time, change fail rate, and recovery time." Then give one example from your own project: your pipeline, your gate, your rollback. A follow-up is often "and SRE?": one specific way to do DevOps, with SLOs and error budgets.
+
 ## 5. The AI-native lens
 
 - **Delegate to AI:** drafting a workflow from a description of the steps; explaining a failed run from its log; drafting release notes from the merged pull requests; splitting a schema change into expand and contract steps; checking a workflow for unpinned Actions and broad permissions.
@@ -346,12 +368,16 @@ Write the open question into section 7 (the deployment view) of your architectur
 - Rolling back code is a swap; rolling back data is not. Know before merging whether the previous build can run against the new schema.
 - Secrets go only where they are needed, for as short a time as possible, never to a fork or to an agent acting on outsiders' text.
 - Tag every demo, write release notes for the client, and always know which commit production runs.
+- DevOps is the culture behind all of it: one team owns a change from commit to production, automates the path, and measures delivery with the DORA metrics. SRE is one way to implement it.
 
 ## 9. Key papers & further reading
 
 - Fowler, M. "[Continuous Integration](https://martinfowler.com/articles/continuousIntegration.html)." martinfowler.com, revised 2024.
 - Humble, J., and Farley, D. *Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation*. Addison-Wesley, 2010.
 - Forsgren, N., Humble, J., and Kim, G. *Accelerate: The Science of Lean Software and DevOps*. IT Revolution, 2018.
+- DORA. "[DORA's software delivery performance metrics](https://dora.dev/guides/dora-metrics/)." dora.dev. The current five metrics and what each measures.
+- Allspaw, J., and Hammond, P. "[10+ Deploys per Day: Dev and Ops Cooperation at Flickr](https://www.slideshare.net/jallspaw/10-deploys-per-day-dev-and-ops-cooperation-at-flickr)." Velocity, 2009. The talk that started the movement.
+- Beyer, B., Murphy, N. R., Rensin, D. K., Kawahara, K., and Thorne, S., eds. *The Site Reliability Workbook*. O'Reilly, 2018. Chapter 1, "[How SRE Relates to DevOps](https://sre.google/workbook/how-sre-relates/)."
 - U.S. Securities and Exchange Commission. *In the Matter of Knight Capital Americas LLC*, Administrative Proceeding File No. 3-15570, 16 October 2013.
 - Cloudflare. "Cloudflare outage on November 18, 2025." The Cloudflare Blog, November 2025.
 - Meiklejohn, C. S. "Reliably Releasing Software." CMU 17-313 lecture, Spring 2026. Dark launches, flag ramps, and the four-step database change.
@@ -372,6 +398,7 @@ Write the open question into section 7 (the deployment view) of your architectur
 9. A contributor's pull request from a fork fails because a step needs a secret. A teammate suggests `pull_request_target`. What do you say?
 10. An agent's pull request fixes a failing build by adding `continue-on-error: true` to a step. What do you ask in review?
 11. Your client asks which version they are looking at in the demo. How does your team answer, precisely?
+12. An interviewer asks, "What is DevOps, and how is it different from SRE?" Answer in three sentences, with one example from your team's project.
 
 ## Related
 

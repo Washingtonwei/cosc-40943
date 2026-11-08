@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 470" width="1000" height="470" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">The service reliability hierarchy, with monitoring at the base</title>
+<desc id="d">A pyramid of seven layers, from bottom to top: monitoring, incident response, postmortem and root cause analysis, testing and release procedures, capacity planning, development, and product. Monitoring, the widest layer at the bottom, is highlighted. A note says the hierarchy was drawn up by Google site reliability engineers on the HealthCare.gov rescue in 2013 and 2014, and quotes the book: without monitoring, you have no way to tell whether the service is even working. Our own drawing, after Figure III-1 of Site Reliability Engineering (Beyer et al. 2016).</desc>
+<defs>
+<marker id="rh-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BE0E6"/></marker>
+</defs>
+<rect width="1000" height="470" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">THE SERVICE RELIABILITY HIERARCHY</text>
+<text x="972" y="36" text-anchor="end" fill="#FFB443" font-size="14" font-weight="700">after Figure III-1, Site Reliability Engineering</text>
+<g stroke-width="2" stroke-linejoin="round">
+<polygon points="258.7,72 401.3,72 430.2,118 229.8,118" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="227.3,122 432.7,122 461.6,168 198.4,168" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="195.9,172 464.1,172 493,218 167,218" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="164.5,222 495.5,222 524.5,268 135.5,268" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="133,272 527,272 555.9,318 104.1,318" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="101.6,322 558.4,322 587.3,368 72.7,368" fill="#1B2335" stroke="#2A3347"/>
+<polygon points="70.2,372 589.8,372 618.7,418 41.3,418" fill="#173A44" stroke="#5BE0E6" stroke-width="3"/>
+</g>
+<g text-anchor="middle" font-size="17" font-weight="700" fill="#F2EDE3">
+<text x="330" y="101">Product</text>
+<text x="330" y="151">Development</text>
+<text x="330" y="201">Capacity Planning</text>
+<text x="330" y="251">Testing + Release Procedures</text>
+<text x="330" y="301">Postmortem / Root Cause Analysis</text>
+<text x="330" y="351">Incident Response</text>
+<text x="330" y="402" fill="#5BE0E6" font-size="19" font-weight="800" letter-spacing="1">MONITORING</text>
+</g>
+<text x="676" y="112" fill="#F2EDE3" font-size="19" font-weight="700">Drawn up by Google SREs</text>
+<text x="676" y="138" fill="#F2EDE3" font-size="19" font-weight="700">on the HealthCare.gov rescue,</text>
+<text x="676" y="164" fill="#F2EDE3" font-size="19" font-weight="700">2013–14</text>
+<text x="676" y="222" fill="#9AA3B5" font-size="16">"Without monitoring, you have</text>
+<text x="676" y="246" fill="#9AA3B5" font-size="16">no way to tell whether the service</text>
+<text x="676" y="270" fill="#9AA3B5" font-size="16">is even working."</text>
+<text x="676" y="350" fill="#FFB443" font-size="17" font-weight="700">Every layer above</text>
+<text x="676" y="374" fill="#FFB443" font-size="17" font-weight="700">stands on this one.</text>
+<path d="M666,392 C650,395 640,395 628,395" fill="none" stroke="#5BE0E6" stroke-width="3" marker-end="url(#rh-ar)"/>
+<text x="500" y="452" text-anchor="middle" fill="#9AA3B5" font-size="13">Layers from Beyer et al., Site Reliability Engineering (O'Reilly, 2016), Part III; our own drawing, not the book's figure.</text>
+</svg>
