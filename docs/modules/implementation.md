@@ -36,7 +36,7 @@ Counting the code (a controller, a new `SubmissionStatusService`, a scheduler ch
 
 **The hours moved to the reader.** A change the reminder's size, like [pull request #76](https://github.com/Washingtonwei/project-pulse/pull/76) (884 lines across 23 files), comes out of one agent session. As one diff, it is either read in full, which spends the estimate, or skimmed and approved by a team that cannot explain it.
 
-**The agent takes its habits from your code.** Only 4 of Project Pulse's 266 backend classes declare a logger, and its catch-all exception handler logs nothing. Whatever your codebase does by habit, the agent will do too, unless a written rule says otherwise (4.9).
+**The agent takes its habits from your code.** Only 4 of Project Pulse's 266 backend classes declare a logger, and until November its catch-all exception handler logged nothing. Whatever your codebase does by habit, the agent will do too, unless a written rule says otherwise (4.9).
 
 ## 4. Core concepts
 
@@ -163,7 +163,7 @@ Some of your clients handed you a codebase with few documents. Asked to document
 
 ### 4.9 Log what the person at 2 AM will need
 
-The agent imitates the code around it, so the logging rule has to be written where the agent reads it: your charter. The rule, for Spring Boot (SLF4J):
+The agent imitates the code around it, so the logging rule has to be written down: as a convention in section 8.2 of your architecture-of-record, with a one-line reminder in your charter, which the agent reads every session. The rule, for Spring Boot (SLF4J), as Project Pulse records it in its [Architectural conventions](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#architectural-conventions):
 
 | Rule | Example |
 |---|---|
@@ -173,7 +173,7 @@ The agent imitates the code around it, so the logging rule has to be written whe
 | Every `catch` that does not rethrow logs the exception object | `LOGGER.error("Could not send the weekly reminders for section {}", name, e);` |
 | Log identifiers, never content: no secrets, tokens, or passwords, and for a person their ID, never their email, scores, or comments | `LOGGER.error("Could not send the weekly reminder to student {}", student.getId(), e);` Request bodies here carry peer evaluations (`CO-ferpa`) |
 
-**The catch-all.** Project Pulse's last-resort handler logs nothing, and Spring does not log an exception a handler has already resolved, so an unexpected `NullPointerException` in production leaves no stack trace anywhere. The user sees "A server internal error occurs."; the operator, and the agent asked to debug it, see nothing. The handler also sends the raw exception message to the browser, a disclosure problem. The fix:
+**The catch-all.** Until November 2026, Project Pulse's last-resort handler logged nothing, and Spring does not log an exception a handler has already resolved, so an unexpected `NullPointerException` in production left no stack trace anywhere. The user saw "A server internal error occurs."; the operator, and the agent asked to debug it, saw nothing. The handler also sent the raw exception message to the browser, a disclosure problem. The fix, merged as [pull request #110](https://github.com/Washingtonwei/project-pulse/pull/110):
 
 ```diff
  @ExceptionHandler(Exception.class)
@@ -187,7 +187,7 @@ The agent imitates the code around it, so the logging rule has to be written whe
 
 A reviewer should not have to catch this twice: [Static Analysis 4.8](static-analysis.md#48-your-own-rules-turn-a-repeated-review-comment-into-a-check) turns it into a rule the build enforces.
 
-**Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's `WeeklyReminderScheduler` gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log. That breaks the rule: an operator who needs the address can look it up from the ID, and a log is copied to more places than the database is (`CO-ferpa`). The fix is one argument, `student.getId()`. An agent asked to "add logging" will not make that call for you; the reviewer has to ask.
+**Review what was logged, not only whether.** Asked to "add logging", an agent can log everything. Project Pulse's reminder code gets the rule right (parameters, the exception object, a count at `info`) and also writes each failed student's email address into the log (`ReminderService`). That breaks the rule: an operator who needs the address can look it up from the ID, and a log is copied to more places than the database is (`CO-ferpa`). The fix is one argument, `student.getId()`. An agent asked to "add logging" will not make that call for you; the reviewer has to ask.
 
 ### 4.10 One engineer, several agents
 
@@ -250,7 +250,7 @@ Commit a skill by pull request, as you would the charter, because the whole team
 | **AI-amplified:** trusting your felt speed with an agent | Comparing the estimate with the logged hours, not with memory | The calibration ratio at every checkpoint |
 | **AI-amplified:** cognitive debt, a diff too large to read and approved anyway | At the pause, trying to say what changed and why without asking the agent | Trunk and leaf commits along the design (4.6); one pause, after the trunk |
 | **AI-amplified:** refactoring mixed into the feature, sometimes left half done | Asking of each changed file outside the design: did the use case need this? | A needed refactor proposed before any code, then made first in its own commit and finished everywhere; anything else proposed, not made (4.6) |
-| **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in the charter (4.9); fix the catch-all before the agent imitates it |
+| **AI-amplified:** the agent copies the codebase's habits, silent catches and personal data in logs included | Reading each new log line for what it writes out | The logging rule in section 8.2, with its reminder in the charter (4.9); fix the catch-all before the agent imitates it |
 | **AI-introduced:** the agent reads a secret, follows instructions hidden in outside content, or adds an invented package | Asking who wrote the text the agent is about to read, and whether anyone chose the new dependency | Deny rules for secrets in `.claude/settings.json`; checks never off; outside content read raw first; every new dependency confirmed by a person (4.7) |
 | **AI-introduced:** existing code read back as requirements, defects included | Asking the client whether each recovered behavior was intended | The code is evidence, never authority (4.8); defects go to `OPEN-ISSUES.md` |
 | **AI-introduced:** parallel agents make conflicting decisions nobody wrote down | Asking what each agent will decide that the others need to know | Fan out by leaf only after the trunk merges (4.10); no more agents than pull requests you can review |
@@ -328,6 +328,6 @@ Before your agent builds the proving slice, commit the team's `.claude/settings.
 - The first test, given/when/then read off a use case, moved to `MODULE-testing`'s drafting notes on 2026-10-11, taught Fri Oct 23.
 - `MODULE-static-analysis` (week 11): PMD's `SystemPrintln` and `AvoidPrintStackTrace`. The silent catch-all is the worked example of a custom rule (`ServerErrorHandlerMustLog`, static analysis 4.8).
 - `MODULE-observability` (week 12): reading logs, Actuator `/loggers`, correlation IDs with MDC, structured output, handing the log to the agent when debugging.
-- Assignment 5 (*Hunt the bug*, Fri Nov 20): plant the bug so it surfaces as a 500 through the silent catch-all; the student fixes it and adds the regression test and the log line that would have localized it. **Blocking:** fix logging in Project Pulse `main` before that upstream is stamped. Course status open item 17 still applies.
+- Assignment 5 (*Hunt the bug*, Fri Nov 20): plant the bug so it surfaces as a 500 through the silent catch-all; the student fixes it and adds the regression test and the log line that would have localized it. The catch-all logs on `main` since pull request #110 (`30ad565`), so the blocking item is met. Course status open item 17 still applies.
 - Assignment 3 (*Add a use case*, Fri Nov 6) requires trunk-first commits, ungraded this term; grading them is in `course-design/next-offering.md`. Optionally graded against the logging rule.
 -->
