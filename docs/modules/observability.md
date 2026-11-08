@@ -46,29 +46,47 @@ Your code passed its tests and its gate, and it is running on Azure. Now the dat
 
 ![A developer outside the production panel asks how to see inside the deployed app, while inside the app goes down, gets slow, loses its database, and runs out of CPU, memory, or disk](../slides/img/observability-blind-spot.svg)
 
-**Monitoring** answers questions you decided on in advance: is it up, how many errors, how slow. **Observability** is the property of a system that lets you answer a question you did not anticipate, from the outside, without shipping new code to ask it (Majors, Fong-Jones, and Miranda 2022). A dashboard of the five numbers you thought of is monitoring. Being able to ask "why did only the students in this course section get a 500 on Monday at 9 a.m.?" and get an answer from what the system already emits is observability.
+**Monitoring** is watching a few numbers you picked in advance. You decide ahead of time that you care whether the site is up, how many requests fail, and how long pages take, and you put those numbers on a dashboard. When one turns red, you know *that* something is wrong.
 
-The analogy from the car: the dashboard tells you the engine is hot (monitoring), and the mechanic's diagnostic port tells you why (observability). You need both, and you install the port before the breakdown, not during it.
+**Observability** is being able to find out *why*, even when the problem is one you never imagined (Majors, Fong-Jones, and Miranda 2022). Say the error count jumps on Monday at 9 a.m. You keep asking questions of what the system already records: Which page fails? For everyone, or only students in one course section? Since when? If you can answer those from the logs, metrics, and traces you have, without adding code and redeploying just to find out, your system is observable. If all you can say is "errors are up," it is not.
+
+A car works the same way. The temperature gauge on the dashboard tells you the engine is hot (monitoring). The mechanic plugs a scanner into the diagnostic port and reads out why (observability). You need both, and the port has to be installed before the breakdown, not during it.
 
 ![A car dashboard with the temperature gauge in the red answers a question you planned; a scanner on the diagnostic port reads out why: the cooling fan relay failed](../slides/img/observability-car-dashboard.svg)
 
 ### 4.2 Three signals
 
+A running system can tell you about itself in three ways.
+
 | Signal | What it is | The question it answers | In Project Pulse |
 |---|---|---|---|
-| **Log** | A timestamped record of one event, written by the code | What happened, to which request, and why? | SLF4J and Logback to standard output |
-| **Metric** | A number aggregated over time, cheap to store | How much, how often, how slow, and is it getting worse? | Micrometer, read through Actuator's `/actuator/metrics` |
-| **Trace** | The path of one request through the system, as timed spans | Where did this request spend its time, and where did it fail? | Micrometer Tracing with Brave, exported to Zipkin |
+| **Metric** | A number measured over and over, such as requests per minute | How many, how fast, and is it getting worse? | Micrometer, read through Actuator's `/actuator/metrics` |
+| **Trace** | The path of one request through the system, with how long each step took | Where did this request spend its time, and where did it fail? | Micrometer Tracing with Brave, sent to Zipkin |
+| **Log** | A line of text the code writes when something happens | What happened, to which request, and why? | SLF4J and Logback to standard output |
 
-Use them in that order of cost and the reverse order of detail. A metric tells you something is wrong (error rate up since the last deploy). A trace tells you where (the invitation route, in the mail call). A log tells you why (the SMTP server rejected the address). Each one is worth less without the others: a metric with no logs says "something is wrong" and stops.
+Use them in that order. A metric is the cheapest to keep, and it tells you *that* something is wrong: the error rate went up after the last deploy. A trace tells you *where*: the invitation request, which took 10 seconds. A log tells you *why*: the mail server rejected the address. Each needs the others. A metric with no logs can say "something is wrong" and nothing more.
 
 ### 4.3 Logs in production
 
-[Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need) owns what to log: levels by audience, the exception object in every `catch`, identifiers and never content. This section is what happens to the line after the code writes it.
+[Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need) covers what to log: levels by audience, the exception object in every `catch`, identifiers and never content. This section is what happens to the line after the code writes it.
 
-**Where it goes.** A container should write logs to standard output and let the platform collect them (Wiggins 2011, factor XI). Project Pulse does: Logback's default console output, nothing written to a file. On Azure App Service, standard output appears in the app's log stream once application logging is turned on. Find out where your platform puts it before the first incident, not during it.
+**Where it goes.** A container should write logs to standard output and let the platform collect them (Wiggins 2011, *The Twelve-Factor App*). Project Pulse does: Logback's default console output, nothing written to a file. On Azure App Service, standard output appears in the app's log stream once application logging is turned on. Find out where your platform puts it before the first incident, not during it.
 
-**Structured, so a machine can search it.** A plain line (`ERROR ... Could not send the invitation email to ...`) is for a person reading one line. Production has thousands, and you will search them by field: every error for this route, in the last hour, with this trace ID. Spring Boot writes JSON logs with one property:
+**Structured, so a machine can search it.** A plain line is written for a person reading one line:
+
+```text
+2026-11-09T09:02:14 ERROR [a3f9c2e1b7d04e58] t.p.system.EmailService : Could not send the invitation email
+```
+
+Production has thousands of lines, and you will search them by field: every error, from this class, in the last hour, with this request ID. A structured line is the same event as JSON, with each piece in a named field (shortened here):
+
+```json
+{"@timestamp":"2026-11-09T09:02:14Z", "log.level":"ERROR",
+ "log.logger":"team.projectpulse.system.EmailService",
+ "message":"Could not send the invitation email", "traceId":"a3f9c2e1b7d04e58"}
+```
+
+Spring Boot writes JSON logs with one property:
 
 ```yaml
 logging:
@@ -79,20 +97,21 @@ logging:
 
 Project Pulse does not set it yet. Turn it on in the deployed profiles only; plain lines are easier to read on a laptop.
 
-**One ID per request.** When tracing is on, Spring Boot adds the trace ID and span ID to every log line (logging correlation). Every line a request writes, in every class, carries the same ID, so one search returns the whole story of one request. This is what makes a single failure findable among many. Sampling ([4.5](#45-traces-following-one-request)) decides which traces are exported, not which requests get an ID.
+**One ID per request.** When a request arrives, Project Pulse gives it an ID and stamps that ID on every log line the request writes, in every class (Spring Boot calls this logging correlation; [4.5](#45-traces-following-one-request) explains where the ID comes from). One search for the ID returns the whole story of one request. That is how you find a single failure among thousands of lines.
 
-**Change the level without a deploy.** The `loggers` endpoint reads and sets log levels at runtime. In development:
+**Change the level without a deploy.** The `loggers` endpoint reads and sets log levels at runtime. Dev exposes it, but every Actuator endpoint except `health` and `info` still requires an admin, so first log in as a seeded admin (`POST /api/v1/users/login` with Basic auth returns a token):
 
 ```bash
 curl -X POST localhost/actuator/loggers/team.projectpulse.user \
+  -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' -d '{"configuredLevel":"DEBUG"}'
 ```
 
-Turn `debug` on for one package while you reproduce the problem, then turn it back off. In Project Pulse's deployed profiles, `loggers` is not exposed at all ([4.6](#46-management-endpoints-are-attack-surface)), which is the right default and means this is a development tool there.
+Turn `debug` on for one package while you reproduce the problem, then turn it back off. In Project Pulse's deployed profiles, `loggers` is not exposed at all ([4.6](#46-management-endpoints-are-attack-surface)). That is the right default, so use this in development only.
 
 ### 4.4 Metrics: what the numbers count
 
-Actuator exposes Micrometer's meters at `/actuator/metrics`. A metric has a name and **tags**, so one metric answers many questions:
+Spring Boot counts things for you and shows them at `/actuator/metrics`. Each metric has a name and a set of **tags**, labels that let you slice it. The same request count can be filtered to one page, or to failed requests only:
 
 ```text
 /actuator/metrics/http.server.requests
@@ -100,23 +119,31 @@ Actuator exposes Micrometer's meters at `/actuator/metrics`. A metric has a name
 /actuator/metrics/jvm.memory.used
 ```
 
-Spring Boot records `http.server.requests` for every route with no code from you. Three kinds of meter cover most needs: a **counter** only goes up (invitations sent), a **gauge** reads a current value (live threads), and a **timer** records how long something took and how often (`@Timed` on a method, or `MeterRegistry.timer(...)` in code).
+Spring Boot records `http.server.requests` for every route with no code from you. When you add a metric of your own, three kinds cover most needs:
+
+- **Counter:** only goes up (invitations sent).
+- **Gauge:** reads a value right now (threads alive).
+- **Timer:** records how long something took, and how often (`@Timed` on a method, or `MeterRegistry.timer(...)` in code).
 
 **Which numbers to watch.** Google's site reliability engineers name four golden signals for any service that answers requests (Beyer et al. 2016, chapter 6):
 
-| Signal | Project Pulse metric |
-|---|---|
-| **Latency**, of successes and failures separately | `http.server.requests`, by `uri` and `status` |
-| **Traffic** | `http.server.requests` count |
-| **Errors** | `http.server.requests` with `status:5xx`, plus requests that returned the wrong thing |
-| **Saturation** | `jvm.memory.used`, `jvm.threads.live`, the database connection pool's `hikaricp.connections.pending` |
+| Signal | In plain words | Project Pulse metric |
+|---|---|---|
+| **Latency** | How long requests take; count successes and failures separately | `http.server.requests`, by `uri` and `status` |
+| **Traffic** | How many requests arrive | `http.server.requests` count |
+| **Errors** | How many requests fail | `http.server.requests` with `outcome:SERVER_ERROR`, plus requests that returned the wrong thing |
+| **Saturation** | How full the system is | `jvm.memory.used`, `jvm.threads.live`, the database connection pool's `hikaricp.connections.pending` |
 
 Machine metrics (memory, threads) tell you the system is struggling. **Business metrics** tell you whether it is doing its job: weekly activity reports submitted before Monday's deadline, reminders that reached their student. A business metric is a counter you add yourself, and it is often the first to show a problem the machine metrics miss.
 
 !!! question "What does this number measure?"
-    Before you trust a metric, say what it counts and what it cannot see. `http.server.requests` counts requests that reached the application. It misses every request that failed before it arrived (DNS, the platform, a crashed container), which is exactly when users are hurting most. Actuator's counts start at zero when the application starts, so every deploy and every restart resets them. And once a number becomes a target, people improve the number instead of the thing (Goodhart's law): a team graded on error rate learns to return `200` with an error inside.
+    Before you trust a metric, say what it counts and what it cannot see. Take `http.server.requests`:
 
-**Your SLO, measured.** [Reliability 4.3](reliability.md#43-from-requirement-to-measurement-sli-slo-error-budget) turns a requirement into an SLI, an SLO, and an error budget. The SLI is a metric you have chosen to make a promise about, so this is where it gets measured. Project Pulse's `AVL-uptime` promises 99% of each term, which leaves about 27 hours of downtime. Three ways to get a measured value, cheapest first:
+    - **It counts only requests that reached the application.** A request that failed before it arrived (DNS, the platform, a crashed container) is not in it, and that is exactly when users are hurting most.
+    - **It starts at zero whenever the application starts.** Every deploy and every restart resets it.
+    - **Once a number becomes a target, people improve the number instead of the thing** (Goodhart's law). A team graded on error rate learns to return `200` with an error message inside.
+
+**Your SLO, measured.** An **SLO** (service level objective) is a promise you make about the system, such as "up 99% of the term." The **SLI** (service level indicator) is the number that checks the promise. [Reliability 4.3](reliability.md#43-from-requirement-to-measurement-sli-slo-error-budget) shows how a requirement becomes both; this is where the SLI gets measured. Project Pulse's `AVL-uptime` promises 99% of each term, which leaves about 27 hours of downtime. Three ways to get a measured value, cheapest first:
 
 | Source | What it measures | What it misses |
 |---|---|---|
@@ -124,25 +151,27 @@ Machine metrics (memory, threads) tell you the system is struggling. **Business 
 | **An outside probe** of the health endpoint, every minute, from somewhere that is not your app | Whether the app answers at all, including when the platform is down | Everything the health check does not check |
 | **The application's own metric** (`http.server.requests` by status, over the window) | Success ratio of real requests, per route | Requests that never arrived; resets on every restart |
 
-Project Pulse's `PER-report-load` is already SLO-shaped: dashboard and report views within 500 milliseconds at the 95th percentile. A 95th percentile needs a histogram, which Spring Boot records when asked:
+Project Pulse's `PER-report-load` is already SLO-shaped: dashboard and report views within 500 milliseconds at the 95th percentile, which means 95 of every 100 views load within 500 milliseconds. Spring Boot computes a 95th percentile in the application when asked, and `/actuator/metrics/http.server.requests` then shows it:
 
 ```yaml
 management:
   metrics:
     distribution:
-      percentiles-histogram:
-        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.95
 ```
 
-Whichever source you choose, write it under the requirement in your specification, with what it misses. A probe that only checks the status code reports "up" for a path that does not exist, because Project Pulse answers unknown paths with its single-page app and `200 text/html`. Check the content type, too. An SLI that cannot fail measures nothing.
+That percentile is per instance and cannot be averaged across instances. With a monitoring backend such as Prometheus, set `percentiles-histogram` instead: the application publishes histogram buckets, and the backend computes the percentile from all of them.
+
+Whichever source you choose, write it under the requirement in your specification, with what it misses. A probe that checks only the status code reports "up" even when its URL is mistyped, because Project Pulse answers unknown paths with its single-page app and `200 text/html`. Check the content type, too. An SLI that cannot fail measures nothing.
 
 ### 4.5 Traces: following one request
 
-A **trace** is one request's journey; each step is a **span**, with a start, a duration, and its parent. In a system of many services, a request can cross five of them, and the trace is the only thing that shows which one was slow. Project Pulse is one deployable, so its traces are short: the HTTP request, plus a span for each call that leaves the process through an instrumented client. They still earn their keep the moment the app calls something slow (a mail server, an LLM): the trace shows the request spent 9.8 of its 10 seconds waiting on SMTP.
+A **trace** is one request's journey. Each step inside it is a **span**: when it started, how long it took, and which step called it. In a system of many services, a request can cross five of them, and the trace is the only thing that shows which one was slow. Project Pulse runs as one application, so its traces are short: one span for the request, plus one for each outside call that Spring knows how to time. They still earn their keep the moment the app calls something slow (a mail server, an LLM): the trace shows the request spent 9.8 of its 10 seconds waiting on SMTP.
 
 ![On the left, one request through Project Pulse makes a short trace with an HTTP span and a long SMTP call; on the right, a request crosses four of thirteen services and only the trace shows which one was slow](../slides/img/observability-request-journey.svg)
 
-Project Pulse sends traces through Brave to Zipkin, sampling 10% of them:
+Project Pulse sends traces through Brave to Zipkin. Sampling means keeping only some of the traces, and Project Pulse keeps 10%:
 
 ```yaml
 management:
@@ -162,16 +191,25 @@ Actuator can show your configuration (`env`, `configprops`), your beans and rout
 | `exposure.include: health,info` as the base for every profile | A profile that forgets to override it gets the safe set, not the full one |
 | `health.show-details: when-authorized` | An anonymous probe sees `{"status":"UP"}`; an admin sees each check |
 | `info.git.mode: simple`, `java` and `os` off | The deployed commit is public; the exact JVM version, which tells an attacker which CVEs to try, is not |
-| Every other endpoint requires `ROLE_admin` (`EndpointRequest` rules in `SecurityConfiguration`) | The management port has its own rules, because the API's deny-by-default does not cover `/actuator/**` |
+| Every other endpoint requires `ROLE_admin` (`EndpointRequest` rules in `SecurityConfiguration`) | The Actuator endpoints have their own rules, because the API's deny-by-default does not cover `/actuator/**` |
 
-**A health check is a design decision.** `/actuator/health` combines one check per dependency (database, mail, disk), and if any is `DOWN`, the whole app is `DOWN` and answers `503`. In November 2026, Project Pulse's staging slot reported `DOWN` because its mail check could not log in: staging's Key Vault still held the Gmail credentials rotated out in September. The check was right that mail was broken. Whether that makes the whole app "down" is a question for your platform: Azure App Service can take an instance out of rotation when its health check fails, which would turn a broken mail server into an unreachable site. Spring Boot separates the two questions: **liveness** (is this process stuck, should it be restarted?) and **readiness** (can it serve traffic now?). Put a dependency in readiness only if the app is useless without it.
+**A health check is a design decision.** `/actuator/health` combines one check per dependency (database, mail, disk). If any one is `DOWN`, the whole app reports `DOWN` and answers `503`.
+
+In November 2026, Project Pulse's staging slot reported `DOWN` because its mail check could not log in: staging's Key Vault still held the Gmail credentials rotated out in September. The check was right that mail was broken. But should a broken mail server make the whole app "down"? Azure App Service can take an instance out of rotation when its health check fails, which would turn a broken mail server into an unreachable site.
+
+Spring Boot splits "healthy" into two questions:
+
+- **Liveness:** is the process stuck? If so, restart it.
+- **Readiness:** can it serve traffic right now? If not, send requests elsewhere until it can.
+
+Put a dependency in readiness only if the app is useless without it.
 
 ### 4.7 Debugging from evidence, with an agent
 
 A production bug report says "it broke." The agent can read every log line faster than you can, but only if you hand it the lines. Work in this order:
 
-1. **Bound it with a metric.** When did the error rate change, on which route? A change that lines up with a deploy points at the deploy.
-2. **Find one failing request.** Its log lines by trace ID, with the stack trace the fixed catch-all now writes.
+1. **Narrow it down with a metric.** When did the error rate change, on which route? A change that lines up with a deploy points at the deploy.
+2. **Find one failing request.** Search the logs for its ID, and read its stack trace (which the catch-all handler writes only once it is fixed).
 3. **Give the agent the evidence, not the symptom.** "Here is the stack trace, the request, and the commit that deployed at 9:02. Explain the failure and propose a test that reproduces it." An agent given only "users get a 500 on the report page" will guess, fluently.
 4. **Reproduce it with a failing test** before any fix, and watch it fail ([Testing](testing.md)).
 5. **Fix, then confirm in production**: the metric from step 1 goes back to normal.
@@ -184,7 +222,7 @@ Code the agent wrote needs this order most. You did not reason through it line b
 
 ### 4.8 From watching to checking
 
-Observability watches the real system with real users, after the fact. **Dynamic analysis** runs the program on purpose to check a property while it runs: an assertion inside the code that every execution must satisfy, a fuzzer that tries inputs nobody wrote a test for, a tool that watches memory or threads. The same instinct carries over. A log line says "this happened"; an in-code invariant says "this must never happen" and stops the run when it does. Dynamic analysis comes next in the course.
+Observability watches the real system with real users, after the fact. **Dynamic analysis** runs the program on purpose to check a property while it runs: an assertion inside the code that every execution must satisfy, a fuzzer that tries inputs nobody wrote a test for, a tool that watches memory or threads. The same instinct carries over. A log line says "this happened"; an assertion in the code says "this must never happen" and stops the run when it does. Dynamic analysis comes next in the course.
 
 ## 5. The AI-native lens
 
@@ -208,10 +246,10 @@ Observability watches the real system with real users, after the fact. **Dynamic
 
 - **Goal:** your team's SLO has a measured value, and you can find one failed request in your logs.
 - **In class, Wednesday's lab:** the instructor runs Project Pulse's dev stack live, and you call out what to check next. One storyline, five steps:
-    1. **Tour the Actuator.** Open `/actuator`, `/actuator/health`, and `/actuator/metrics/http.server.requests`. Then raise one logger to `DEBUG` through `/actuator/loggers` without a restart ([4.3](#43-logs-in-production)).
+    1. **Tour the Actuator.** Log in as an admin ([4.3](#43-logs-in-production)), then open `/actuator`, `/actuator/health`, and `/actuator/metrics/http.server.requests`. Then raise one logger to `DEBUG` through `/actuator/loggers` without a restart ([4.3](#43-logs-in-production)).
     2. **Fix the empty dashboard.** Prometheus scrapes `/actuator/prometheus` and gets a 404, so Grafana shows nothing. Find why, fix it, and watch the panels fill. Then ask of one panel what the number measures ([4.4](#44-metrics-what-the-numbers-count)).
     3. **Stop the mail server mid-request.** Stop the Mailpit container, then send a request that sends mail. Does Project Pulse degrade or hang? Read the answer in the latency metric and the Zipkin trace ([4.5](#45-traces-following-one-request)). This is a degradation test seen live ([Reliability 4.4](reliability.md#44-failing-well-timeout-retry-isolation-degradation)).
-    4. **Find the silent 500.** Trigger the catch-all handler, which logs nothing. Bound the failure with a metric, find the request, then give the agent the evidence and ask for a failing test before any fix ([4.7](#47-debugging-from-evidence-with-an-agent)).
+    4. **Find the silent 500.** Trigger the catch-all handler, which logs nothing. Narrow it down with a metric, find the request, then give the agent the evidence and ask for a failing test before any fix ([4.7](#47-debugging-from-evidence-with-an-agent)).
     5. **Turn one metric into an SLO.** Pick the indicator, the target, and the window, the way your team will for Checkpoint 3.
 - **On your own project, out of class:** take the SLO your team wrote for Checkpoint 3 ([Reliability](reliability.md#7-hands-on-studio-optional-individual-assignment)) and choose its source from the table in [4.4](#44-metrics-what-the-numbers-count). Write the source and what it misses under the requirement. Then make one request fail on purpose in your deployed system and find its log line from outside the code: the platform's log stream, not your terminal.
 - **Adapt to your stack:** Project Pulse's signals come from Spring Boot Actuator and Micrometer. Run the [adapt step](../studio.md#adapt) for where your stack's logs go, how it exposes a health check and metrics, and where your SLI can come from. A mobile app or a game measures from the client and its backend service, not from Actuator.
@@ -267,11 +305,12 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - SRE box: checked 2026-11-08 against sre.google/sre-book/introduction/ (the Treynor Sloss quote; "a 50% cap on the aggregate 'ops' work for all SREs"; joining Google in 2003 with a seven-engineer production team). Next offering, when reliability has its own lecture, consider moving the box there.
 - Service reliability hierarchy: sre.google Part III introduction credits "a number of Google SREs, including our former colleague Mikey Dickerson" on HealthCare.gov in 2013–14; the "Without monitoring" quote is from the same page. Layer names follow the page's section order; the figure's own labels were not read. The book is CC BY-NC-ND 4.0, so the SVG is our own drawing, not an adaptation of the figure.
 - Spring Boot 4: `logging.structured.format.console` values (ecs, logstash, gelf); trace and span IDs added to log lines by default when Micrometer Tracing is present (logging correlation); `management.metrics.distribution.percentiles-histogram`; `hikaricp.connections.pending` metric name.
+- 4.3's sample plain and JSON log lines are illustrative. In rehearsal, turn on `logging.structured.format.console: ecs`, capture a real line, and match the sample's field names (especially the trace ID key) and the plain line's layout to it.
 - Brave: unsampled requests still carry a trace ID in the logging context. Confirm on Project Pulse dev with sampling at 0.1.
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the health check feature removing an unhealthy instance (only matters with more than one instance).
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
 - Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, the Prometheus endpoint not resolving under Spring Boot 4, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the 404ing scrape (docker/prometheus/prometheus.yml); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException at ExceptionHandlerAdvice.java line 214 logs nothing; loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
-- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the cause and fix of the `/actuator/prometheus` 404 (the dev profile already exposes `prometheus` at application-dev.yml line 29, so exposure is not the cause); what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds.
+- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the cause and fix of the `/actuator/prometheus` 404 (the dev profile already exposes `prometheus` at application-dev.yml line 29, so exposure is not the cause); what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Two expectations to test: (1) once the endpoint is registered, the anonymous Prometheus scrape gets a 401, because SecurityConfiguration line 316 puts every endpoint but health and info behind ROLE_admin in all profiles (prometheus.yml says so); step 2 then needs a scrape credential too. (2) EmailService calls JavaMailSender.send synchronously with no @Observed, and Spring Boot does not instrument mail, so the trace is likely one long HTTP span with no SMTP child. If so, rewrite the 4.5 "9.8 of its 10 seconds" sentence and the request-journey SVG, and make "a trace shows only what someone instrumented" the step 3 discovery.
 - Staging health DOWN from the mail check, fixed 2026-11-04 (course status.md, week 11).
 - The case-study link points at the architecture document's Observability & operations section, which records the incident; the course's own write-up is notes/case-study-actuator-leak.md (not published).
 
