@@ -1,6 +1,6 @@
 # Observability and Debugging
 
-**Slides:** [Observability](../slides/observability.html) (the fast version).
+<!-- **Slides:** [Observability](../slides/observability.html) (the fast version). Restore when the deck exists. -->
 
 > **Purpose (one line):** see inside your running system well enough to answer a question you did not plan for, measure the objective you promised your client, and debug a production failure from evidence rather than guesses, with an agent doing the legwork.
 
