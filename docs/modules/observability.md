@@ -121,6 +121,32 @@ The telemetry has to come from somewhere. In Project Pulse, a handful of tools p
 | **Grafana** | Draws dashboards and sends alerts. It stores no metrics itself; it asks Prometheus for them. | `localhost:3000` |
 | **Zipkin** | Stores traces and shows each one as a timeline of its spans. | `localhost:9411` |
 
+Logback comes with Spring Boot. Each of the other tools inside the app is one dependency in Project Pulse's [`backend/pom.xml`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/pom.xml), and none needs code to start working:
+
+```xml
+<dependency> <!-- Actuator: the /actuator endpoints -->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+<dependency> <!-- Micrometer: counts and times -->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-micrometer-metrics</artifactId>
+</dependency>
+<dependency> <!-- serves the numbers at /actuator/prometheus -->
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+    <scope>runtime</scope>
+</dependency>
+<dependency> <!-- Micrometer Tracing with Brave: trace IDs and spans -->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-micrometer-tracing-brave</artifactId>
+</dependency>
+<dependency> <!-- sends finished spans to Zipkin -->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-zipkin</artifactId>
+</dependency>
+```
+
 Notice the two directions. Prometheus *pulls* metrics from the app; the app *pushes* spans to Zipkin. In production, none of these collectors runs yet (`TD-prod-observability`, section 3), which is why Wednesday's lab runs on a laptop.
 
 **A dashboard reads a collector, not `/actuator/metrics`.** That endpoint is a window for a person's spot check, not a history. A production dashboard needs a collector that keeps the history, and the collector gets the numbers one of the same two ways. Either it pulls them from an endpoint that only machines inside the network can reach, or the app pushes them to a monitoring service and exposes nothing. Either way, the public site does not serve its metrics. On Azure App Service, which has one public port, pushing is the natural fit; Project Pulse has not chosen a service yet.
@@ -197,6 +223,22 @@ Spring Boot records `http.server.requests` for every route with no code from you
 
 Machine metrics (memory, threads) tell you the system is struggling. **Business metrics** tell you whether it is doing its job: weekly activity reports submitted before Monday's deadline, reminders that reached their student. A business metric is a counter you add yourself, and it is often the first to show a problem the machine metrics miss.
 
+Here is one for Project Pulse, a sketch that is not in the repository: count each invitation email by outcome, in the loop of `UserInvitationService.sendEmailInvitations`. The `try` and `catch` are the real code; the two counter lines are new, and `MeterRegistry` comes in through the constructor like any other bean.
+
+```java
+try {
+    this.emailService.sendInvitationEmail(userInvitation);
+    invitedEmails.add(email);
+    meterRegistry.counter("invitations.sent", "outcome", "success").increment();
+} catch (RuntimeException e) {
+    LOGGER.error("Could not send the invitation email to {}", email, e);
+    failedEmails.add(email);
+    meterRegistry.counter("invitations.sent", "outcome", "failure").increment();
+}
+```
+
+The count appears at `/actuator/metrics/invitations.sent?tag=outcome:failure`, and in Prometheus as `invitations_sent_total`. With the mail server down, memory and threads look fine; this number climbs.
+
 !!! question "What does this number measure?"
     Before you trust a metric, say what it counts and what it cannot see. Take `http.server.requests`:
 
@@ -243,7 +285,16 @@ One annotation on the email method adds the bottom trace's two spans:
 public void sendInvitationEmail(UserInvitation userInvitation) {
 ```
 
-With `management.observations.annotations.enabled: true`, each call becomes a span. Now the trace says where the time went: the first email took 105 milliseconds and the second 15, after about 50 milliseconds of database work that still has no span. If the mail server ever slows down, this is the span that grows.
+The annotation does nothing on its own. It needs one property:
+
+```yaml
+management:
+  observations:
+    annotations:
+      enabled: true
+```
+
+It also needs the `spring-boot-starter-aspectj` dependency, which Project Pulse already declares: Spring makes the span by wrapping the method in an aspect, code that runs before and after it. Then each call becomes a span. Now the trace says where the time went: the first email took 105 milliseconds and the second 15, after about 50 milliseconds of database work that still has no span. If the mail server ever slows down, this is the span that grows.
 
 Sampling means keeping only some of the traces, and Project Pulse keeps 10%:
 
@@ -258,7 +309,26 @@ That is a tradeoff to make deliberately. At 10%, nine of ten failed requests hav
 
 ### 4.7 Management endpoints are attack surface
 
-The endpoints in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) can show your configuration, your routes, and everything in memory, and they can change log levels. That is the diagnostic port from [4.1](#41-deployment-is-not-the-end), and it is also a port for anyone else. On September 6, 2026, Project Pulse's `/actuator/env` returned its database and mail passwords to any anonymous caller on the internet; the settings came from a local development tutorial and applied to every profile ([the case study](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#observability--operations)). The fix is in [`application.yml`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/resources/application.yml):
+The endpoints in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) can show your configuration, your routes, and everything in memory, and they can change log levels. That is the diagnostic port from [4.1](#41-deployment-is-not-the-end), and it is also a port for anyone else. On September 6, 2026, Project Pulse's `/actuator/env` returned its database and mail passwords to any anonymous caller on the internet; the settings came from a local development tutorial and applied to every profile ([the case study](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#observability--operations)). The fix is in [`application.yml`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/resources/application.yml) (abridged):
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+      roles: admin
+  info:
+    git:
+      mode: simple
+    java:
+      enabled: false
+    os:
+      enabled: false
+```
 
 | Setting | Why |
 |---|---|
@@ -388,6 +458,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the Health check feature's behavior (calls the path about once a minute, restarts or replaces an instance that keeps failing; with one instance it is not taken out of rotation). The instructor confirmed 2026-11-08 that Health check is disabled for Project Pulse. Production `/actuator/health/liveness` and `/readiness` both gave `{"status":"UP"}` on 2026-11-08; that they exclude db and mail is Spring Boot's default group membership, not observed during the staging outage.
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
 - Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml; #112 replaces the last two with spring-boot-micrometer-tracing-brave and spring-boot-starter-zipkin and declares spring-boot-starter-micrometer-metrics); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the anonymous scrape and the commented admin-token block (docker/prometheus/prometheus.yml, #112); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException logged nothing at `75340e1` and logs the exception since pull request #110 (`30ad565`); loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
+- Code excerpts checked against `main` at `64559aa` on 2026-11-09: the five dependencies in 4.3 and `spring-boot-starter-aspectj` (backend/pom.xml); the abridged `management` block in 4.7 (application.yml lines 32 to 60); the `try`/`catch` around `sendInvitationEmail` in `UserInvitationService.sendEmailInvitations`. The `invitations.sent` counter in 4.5 is a sketch, not in the repository; `management.observations.annotations.enabled` is not set in the repository either (the lab adds it).
 - Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the Prometheus scrape with a pasted admin token; Grafana has no data source and no dashboard (the repository provisions neither, and the instructor's laptop showed none on 2026-11-08), so step 2 adds the data source and builds one panel live; confirm the panel query renders; what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Tracing was off from the Spring Boot 4 upgrade (`d5b67b2`, 2026-01-24) until #112 (merged 2026-11-09 as `64559aa`): no Tracer bean, no trace ID in log lines (observed 2026-11-08 before and after the change; trace IDs are 32 hex characters, shown as `[traceId-spanId]`); spans reach Zipkin with #112. Observed 2026-11-08 with #112 and sampling 1.0 on dev: the invitation trace (POST /api/v1/sections/2/students/email-invitations?courseId=1, two addresses, Mailpit up) has an HTTP span, Spring Security's spans, and one secured request span with no database or SMTP child (174.8 ms); with @Observed(name = "email.send", contextualName = "send invitation email") on EmailService.sendInvitationEmail and management.observations.annotations.enabled=true, two email spans appear (105.1 ms, 15.4 ms) in a 207.1 ms request. Both runs drawn in observability-trace-invitation.svg. Not yet seen: the trace with Mailpit stopped (step 3, which now adds the annotation live). Production probe check 2026-11-08: `/actuator/helth` 404, `/helth` 200 text/html, `/api/v1/helth` 401. observability-request-journey.svg is no longer used by the module; its left panel claims an SMTP span, so redraw it before any deck reuses it.
 - Staging health DOWN from the mail check, fixed 2026-11-04 (course status.md, week 11).
 - The case-study link points at the architecture document's Observability & operations section, which records the incident; the course's own write-up is notes/case-study-actuator-leak.md (not published).

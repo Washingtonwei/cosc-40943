@@ -170,6 +170,20 @@ The third one answers 404. Is something broken?
 **Say:** Inside the app: Micrometer counts, Micrometer Tracing with Brave gives each request a trace ID, Logback writes the lines. Outside: Prometheus stores numbers over time, Grafana draws them, Zipkin stores traces. Notice the two directions. Prometheus pulls; the app pushes spans. Your stack has its own names for all of this; OpenTelemetry is the common one. Your agent maps it in the adapt step.
 :::
 
+## Five dependencies, no code
+
+```text
+spring-boot-starter-actuator            the /actuator endpoints
+spring-boot-starter-micrometer-metrics  counts and times
+micrometer-registry-prometheus          the Prometheus format
+spring-boot-micrometer-tracing-brave    trace IDs and spans
+spring-boot-starter-zipkin              sends spans to Zipkin
+```
+
+::: note
+**Say:** This is everything in Project Pulse's pom.xml that the picture needs. Logback comes with Spring Boot. Not one line of Java so far. The full dependency blocks are in the module, 4.3.
+:::
+
 ## A dashboard reads a collector
 
 ::: cols
@@ -303,6 +317,22 @@ Reports submitted before Monday's deadline. Is it doing its job?
 **Say:** A business metric is a counter you add yourself, and it's often the first to show a problem the machine metrics miss. If reminders stop reaching students, memory looks perfectly healthy.
 :::
 
+## Count it yourself
+
+```java
+try {
+    this.emailService.sendInvitationEmail(userInvitation);
+    meterRegistry.counter("invitations.sent", "outcome", "success").increment();
+} catch (RuntimeException e) {
+    LOGGER.error("Could not send the invitation email to {}", email, e);
+    meterRegistry.counter("invitations.sent", "outcome", "failure").increment();
+}
+```
+
+::: note
+**Say:** This is a sketch, not in the repository yet. The try and catch are the real invitation loop in UserInvitationService; the two counter lines are new, and MeterRegistry comes in through the constructor. It shows up at /actuator/metrics/invitations.sent, and in Prometheus as invitations_sent_total. Stop the mail server and memory looks fine; this number climbs.
+:::
+
 ## What does this number measure?
 
 ::: steps
@@ -405,7 +435,20 @@ The outage is always in the span you didn't add.
 :::
 
 ::: note
-**Say:** Plus one property, management.observations.annotations.enabled: true. If the mail server ever slows down, this is the span that grows. We'll make it grow on Wednesday.
+**Say:** One annotation, and each call becomes a span. If the mail server ever slows down, this is the span that grows. We'll make it grow on Wednesday.
+:::
+
+## Turn the annotation on
+
+```yaml
+management:
+  observations:
+    annotations:
+      enabled: true
+```
+
+::: note
+**Say:** The annotation does nothing on its own. It needs this property, plus spring-boot-starter-aspectj, which Project Pulse already has: Spring makes the span by wrapping the method in an aspect, code that runs before and after it.
 :::
 
 ## Keep one in ten
@@ -447,15 +490,27 @@ The diagnostic port is a port for anyone else, too.
 
 ## The fix, in application.yml
 
-::: steps
-- Expose health and info as the base for every profile
-- Show health details only to an admin
-- Publish the commit, not the JVM version
-- Every other endpoint requires ROLE_admin
-:::
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info        # the base for every profile
+  endpoint:
+    health:
+      show-details: when-authorized # details for an admin only
+      roles: admin
+  info:
+    git:
+      mode: simple                  # the commit, not the JVM version
+    java:
+      enabled: false
+    os:
+      enabled: false
+```
 
 ::: note
-**Say:** The base is the safe set, so a profile that forgets to override it gets the safe set, not the full one. The JVM version tells an attacker which CVEs to try. And the Actuator paths need their own security rules, because the API's deny-by-default covers only /api/v1.
+**Say:** Every other endpoint also requires ROLE_admin, through EndpointRequest rules in SecurityConfiguration. The base is the safe set, so a profile that forgets to override it gets the safe set, not the full one. The JVM version tells an attacker which CVEs to try. And the Actuator paths need their own security rules, because the API's deny-by-default covers only /api/v1.
 :::
 
 ## Is the app down?
