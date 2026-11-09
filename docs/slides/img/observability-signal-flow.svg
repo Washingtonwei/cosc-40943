@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">Where Project Pulse's telemetry goes: Prometheus pulls, the app pushes</title>
+<desc id="d">Inside Project Pulse, Micrometer counts and times things and hands them to Actuator's /actuator endpoints; Micrometer Tracing with Brave gives each request a trace ID and spans; Logback writes log lines. Outside the app, Prometheus pulls the numbers from Actuator every 15 seconds and stores them over time, and Grafana queries Prometheus to draw dashboards. The app pushes finished spans to Zipkin, which stores and shows traces. Brave puts the trace ID on every log line, and Logback writes the lines to standard output.</desc>
+<defs>
+<marker id="sf-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
+<marker id="sf-ar-pull" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FFB443"/></marker>
+<marker id="sf-ar-push" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5BE0E6"/></marker>
+</defs>
+<rect width="1000" height="460" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">WHERE THE TELEMETRY GOES</text>
+<!-- app panel -->
+<rect x="28" y="58" width="412" height="342" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
+<polygon points="50,82 56,71.6 68,71.6 74,82 68,92.4 56,92.4" fill="#6DB33F" stroke="#6DB33F" stroke-width="2" stroke-linejoin="round"/>
+<g fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+<path d="M65.1,78.7 A5.3,5.3 0 1,1 58.9,78.7"/>
+<line x1="62" y1="75.7" x2="62" y2="81.3"/>
+</g>
+<text x="84" y="87" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">INSIDE PROJECT PULSE</text>
+<!-- micrometer -->
+<rect x="48" y="110" width="170" height="64" rx="12" fill="#1B2335" stroke="#2A3347" stroke-width="2"/>
+<text x="133" y="137" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Micrometer</text>
+<text x="133" y="159" text-anchor="middle" fill="#9AA3B5" font-size="14">counts and times</text>
+<line x1="220" y1="142" x2="246" y2="142" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#sf-ar)"/>
+<!-- actuator -->
+<rect x="250" y="110" width="170" height="64" rx="12" fill="#1B2335" stroke="#FFB443" stroke-width="2"/>
+<text x="335" y="137" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Actuator</text>
+<text x="335" y="159" text-anchor="middle" fill="#9AA3B5" font-size="14">/actuator/*</text>
+<!-- tracing -->
+<rect x="48" y="210" width="372" height="64" rx="12" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<text x="234" y="237" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Micrometer Tracing + Brave</text>
+<text x="234" y="259" text-anchor="middle" fill="#9AA3B5" font-size="14">a trace ID per request, a span per step</text>
+<!-- logback -->
+<rect x="48" y="314" width="170" height="64" rx="12" fill="#1B2335" stroke="#2A3347" stroke-width="2"/>
+<text x="133" y="341" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Logback</text>
+<text x="133" y="363" text-anchor="middle" fill="#9AA3B5" font-size="14">log lines</text>
+<line x1="133" y1="276" x2="133" y2="310" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#sf-ar)"/>
+<text x="145" y="298" fill="#9AA3B5" font-size="13">trace ID on every line</text>
+<!-- prometheus -->
+<rect x="560" y="110" width="170" height="64" rx="12" fill="#1B2335" stroke="#E6522C" stroke-width="2"/>
+<text x="645" y="137" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Prometheus</text>
+<text x="645" y="159" text-anchor="middle" fill="#9AA3B5" font-size="14">numbers over time</text>
+<line x1="558" y1="142" x2="424" y2="142" stroke="#FFB443" stroke-width="2.5" marker-end="url(#sf-ar-pull)"/>
+<text x="491" y="132" text-anchor="middle" fill="#FFB443" font-size="13" font-weight="700">pulls every 15 s</text>
+<!-- grafana -->
+<rect x="800" y="110" width="172" height="64" rx="12" fill="#1B2335" stroke="#F2A93B" stroke-width="2"/>
+<text x="886" y="137" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Grafana</text>
+<text x="886" y="159" text-anchor="middle" fill="#9AA3B5" font-size="14">dashboards, alerts</text>
+<line x1="798" y1="142" x2="734" y2="142" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#sf-ar)"/>
+<text x="766" y="132" text-anchor="middle" fill="#9AA3B5" font-size="13">queries</text>
+<!-- zipkin -->
+<rect x="560" y="210" width="170" height="64" rx="12" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<text x="645" y="237" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Zipkin</text>
+<text x="645" y="259" text-anchor="middle" fill="#9AA3B5" font-size="14">traces as timelines</text>
+<line x1="422" y1="242" x2="556" y2="242" stroke="#5BE0E6" stroke-width="2.5" marker-end="url(#sf-ar-push)"/>
+<text x="491" y="232" text-anchor="middle" fill="#5BE0E6" font-size="13" font-weight="700">pushes spans</text>
+<!-- stdout -->
+<rect x="560" y="314" width="170" height="64" rx="12" fill="#0B0F18" stroke="#2A3347" stroke-width="2"/>
+<text x="645" y="341" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">standard output</text>
+<text x="645" y="363" text-anchor="middle" fill="#9AA3B5" font-size="14">terminal, log stream</text>
+<line x1="220" y1="346" x2="556" y2="346" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#sf-ar)"/>
+<text x="491" y="336" text-anchor="middle" fill="#9AA3B5" font-size="13">writes</text>
+<!-- legend -->
+<line x1="560" y1="420" x2="600" y2="420" stroke="#FFB443" stroke-width="2.5" marker-end="url(#sf-ar-pull)"/>
+<text x="610" y="425" fill="#FFB443" font-size="14" font-weight="700">pull: the collector asks</text>
+<line x1="790" y1="420" x2="830" y2="420" stroke="#5BE0E6" stroke-width="2.5" marker-end="url(#sf-ar-push)"/>
+<text x="840" y="425" fill="#5BE0E6" font-size="14" font-weight="700">push: the app sends</text>
+</svg>

@@ -8,7 +8,7 @@
 
 By the end of this module, a student can:
 
-1. Say what monitoring answers and what observability adds, pick the signal (log, metric, or trace) that answers a given question, and say what each tool in Project Pulse's stack (Actuator, Prometheus, Grafana, Zipkin) does.
+1. Say what monitoring answers and what observability adds, pick the kind of telemetry (log, metric, or trace) that answers a given question, and say what each tool in Project Pulse's stack (Actuator, Prometheus, Grafana, Zipkin) does.
 2. Get a log line out of a deployed system and find every line for one failed request by its trace ID.
 3. Read a metric from Spring Boot Actuator, say what it actually counts, and choose the four golden signals for a service.
 4. Turn an SLO into a measured value: name where the indicator comes from and what it misses.
@@ -24,17 +24,17 @@ By the end of this module, a student can:
 
 ## 3. Motivation
 
-**The site was down, and nobody could see why.** HealthCare.gov, the federal website for buying health insurance under the Affordable Care Act, launched on October 1, 2013, and broke under its first traffic. By mid-October about 3 in 10 visitors could get on at all, and only 26,794 people enrolled through it that month. Many contractors had built it for over $300 million, and no one could see the whole running system. When a small White House rescue team arrived in late October, they found that the people running the site "had no 'dashboard,' no quick way for engineers to measure what was going on at the website, such as how many people were using it." A White House adviser put it more plainly: "Nobody could even tell us if the system was up." People checked by opening a laptop and trying it.
+**The site was down, and nobody could see why.** HealthCare.gov, the federal website for buying health insurance, launched on October 1, 2013, and broke under its first traffic. By mid-October only about 3 in 10 visitors could get on at all. When a small rescue team arrived later that month, they found that the people running the site "had no 'dashboard,' no quick way for engineers to measure what was going on at the website." A White House adviser put it more plainly: "Nobody could even tell us if the system was up."
 
-The team stayed up until about 2:30 a.m. building that dashboard. Mikey Dickerson, a site reliability engineer on leave from Google, started stand-ups on October 24, twice a day including weekends, in a room lined with screens showing its graphs. His posted rules began: "The war room and the meetings are for solving problems. There are plenty of other venues where people devote their creative energies to shifting blame." Once the team could see the system, they could rank the problems. By December 1 the site handled 50,000 simultaneous users, uptime had gone from 43% to 95%, and the error rate had dropped from 6% to 0.5% (Brill 2014).
+The team's first job was to build that dashboard. Once they could see the system, they could rank the problems and fix the worst ones first. By December 1, uptime had gone from 43% to 95%, and the error rate had dropped from 6% to 0.5% (Brill 2014).
 
-The rescue left an idea behind. The Google engineers on the team needed a way to explain how a service becomes reliable, and the answer became the *service reliability hierarchy* (Beyer et al. 2016, Part III). Monitoring is its bottom layer, under incident response, postmortems, testing, capacity planning, development, and the product itself: "Without monitoring, you have no way to tell whether the service is even working."
+The rescue left an idea behind. Google engineers on the team, Mikey Dickerson among them, used the *service reliability hierarchy* to explain how a service becomes reliable (Beyer et al. 2016, Part III). Monitoring is its bottom layer: "Without monitoring, you have no way to tell whether the service is even working."
 
 ![The service reliability hierarchy as a pyramid: monitoring at the base, then incident response, postmortem and root cause analysis, testing and release procedures, capacity planning, development, and product at the top](../slides/img/observability-reliability-hierarchy.svg)
 
-**Project Pulse would not know either.** Its architecture document lists production telemetry as "not collected anywhere yet" (`TD-prod-observability`). It has the parts: Actuator, Micrometer, Brave tracing, and a Prometheus, Grafana, and Zipkin stack in `docker-compose.yml` ([4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) explains each). But that stack runs only on a developer's laptop, and even there the Prometheus scrape returns 404, because Spring Boot 4 moved the endpoint into a module that is not on the classpath. The dashboard is quietly empty, and nothing reports that it is empty.
+**Project Pulse would not know either.** Its architecture document lists the gap among its technical debts: production telemetry is "not collected anywhere yet" ([`TD-prod-observability`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#risks-and-technical-debt)). It has the parts: Actuator, Micrometer, Brave tracing, and a Prometheus, Grafana, and Zipkin stack in `docker-compose.yml` ([4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) explains each). But that stack runs only on a developer's laptop, and even there part of it stopped working without a word. When Project Pulse moved from Spring Boot 3 to 4 in January 2026, tracing switched off: Spring Boot 4 sets tracing up only through its own modules, and the build still named the old libraries. Every test passed. For more than nine months no log line carried a trace ID and no trace reached Zipkin, and nothing reported it. [Pull request #112](https://github.com/Washingtonwei/project-pulse/pull/112) restores it.
 
-![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, but the Prometheus scrape returns 404 so the dashboards are empty; in production on Azure there is no collector at all](../slides/img/observability-stack.svg)
+![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, but Prometheus has no admin login, so its scrape gets 401 and the dashboards are empty; in production on Azure there is no collector at all](../slides/img/observability-stack.svg)
 
 Then there was the silent 500. Until November 2026, an unexpected exception reached `ExceptionHandlerAdvice.handleOtherException`, which logged nothing. A student saw "A server internal error occurs." and you saw nothing at all. [Pull request #110](https://github.com/Washingtonwei/project-pulse/pull/110) added the log line ([Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need)). This module is about everything after that: where the line goes, how you find it among thousands, and how you know it happened before the student emails you.
 
@@ -54,11 +54,11 @@ A car works the same way. The temperature gauge on the dashboard tells you the e
 
 ![A car dashboard with the temperature gauge in the red answers a question you planned; a scanner on the diagnostic port reads out why: the cooling fan relay failed](../slides/img/observability-car-dashboard.svg)
 
-### 4.2 Three signals
+### 4.2 Three kinds of telemetry
 
-A running system can tell you about itself in three ways.
+**Telemetry** is the data a running system sends out about itself, so you can see what it is doing without standing next to it. The word means "measuring from far away": a spacecraft radios its temperature and fuel back to Earth the same way. Software telemetry comes in three kinds.
 
-| Signal | What it is | The question it answers | In Project Pulse |
+| Kind | What it is | The question it answers | In Project Pulse |
 |---|---|---|---|
 | **Metric** | A number measured over and over, such as requests per minute | How many, how fast, and is it getting worse? | Micrometer, read through Actuator's `/actuator/metrics` |
 | **Trace** | The path of one request through the system, with how long each step took | Where did this request spend its time, and where did it fail? | Micrometer Tracing with Brave, sent to Zipkin |
@@ -68,7 +68,7 @@ Use them in that order. A metric is the cheapest to keep, and it tells you *that
 
 ### 4.3 The tools: Spring Boot Actuator and Project Pulse's stack
 
-The signals have to come from somewhere. In Project Pulse, a handful of tools produce them, collect them, and show them. Your stack has its own; this is the map for Project Pulse.
+The telemetry has to come from somewhere. In Project Pulse, a handful of tools produce it, collect it, and show it. Your stack has its own; this is the map for Project Pulse.
 
 **Spring Boot Actuator** is the diagnostic port from [4.1](#41-deployment-is-not-the-end). It is a Spring Boot module that adds ready-made web endpoints under `/actuator`, each one reporting on the running app. You add one dependency (`spring-boot-starter-actuator`) and write no code. An endpoint answers only once configuration exposes it, and Project Pulse exposes a different set in each profile:
 
@@ -77,11 +77,11 @@ The signals have to come from somewhere. In Project Pulse, a handful of tools pr
 | `health` | Is the app up, and is each thing it depends on (database, mail, disk) up? | Status only | Each check | [4.7](#47-management-endpoints-are-attack-surface) |
 | `info` | Which app, which version, and which Git commit is deployed | Yes | Plus Java and OS versions | |
 | `metrics` | Every number the app counts: requests, memory, threads, database connections | No | Admin only | [4.5](#45-metrics-what-the-numbers-count) |
-| `prometheus` | The same numbers, in the format Prometheus reads | No | Exposed, but answers 404 (section 3) | Wednesday's lab |
+| `prometheus` | The same numbers, in the format Prometheus reads | No | Admin only, so an anonymous scrape gets 401 | Wednesday's lab |
 | `loggers` | Each logger's level, and a way to change it without a restart | No | Admin only | [4.4](#44-logs-in-production) |
 | `env`, `configprops` | Every configuration value, and where it came from | No | Admin only, values shown | [4.7](#47-management-endpoints-are-attack-surface) |
 | `beans`, `mappings` | Every Spring bean, and every URL the app answers | No | Admin only | |
-| `heapdump` | A file holding everything in the app's memory right now | No | Admin only | [4.7](#47-management-endpoints-are-attack-surface) |
+| `heapdump` | A file holding everything in the app's memory right now | No | Listed, but answers 404 | [4.7](#47-management-endpoints-are-attack-surface) |
 
 `/actuator` on its own lists the endpoints that are exposed. In every profile, everything except `health` and `info` requires an admin login; [4.7](#47-management-endpoints-are-attack-surface) explains why.
 
@@ -95,7 +95,7 @@ The signals have to come from somewhere. In Project Pulse, a handful of tools pr
     curl https://projectpulse.team/actuator/metrics
     ```
 
-    The first answers `{"groups":["liveness","readiness"],"status":"UP"}`. The second names the app, its version, and the Git commit running right now. The third answers 404, because production does not expose `metrics` at all.
+    The first answers `{"groups":["liveness","readiness"],"status":"UP"}`. The second names the app, its version, and the Git commit running right now. The third answers 404, because production does not expose `metrics` at all, not even to an admin: an endpoint that is not exposed has no URL to protect.
 
     **On your laptop**, start Project Pulse in development ([Starting the Project](https://github.com/Washingtonwei/project-pulse/blob/main/CLAUDE.md#starting-the-project)). Log in as the seeded admin, and copy `data.token` from the answer:
 
@@ -110,19 +110,7 @@ The signals have to come from somewhere. In Project Pulse, a handful of tools pr
 
 **The rest of the stack.** Actuator answers one question at a time, when you ask it. To watch a number change over a week, or to look at a request after it has finished, other tools collect what the app sends out and keep it. Project Pulse's `docker-compose.yml` runs them next to the app on a laptop:
 
-```mermaid
-flowchart LR
-  subgraph App["Project Pulse (Spring Boot)"]
-    M["Micrometer<br/>counts and times"] --> A["Actuator<br/>/actuator/*"]
-    T["Micrometer Tracing + Brave<br/>trace IDs and spans"]
-    L["Logback<br/>log lines"]
-  end
-  P["Prometheus<br/>stores numbers over time"] -- "pulls every 15 s" --> A
-  G["Grafana<br/>draws dashboards"] -- "queries" --> P
-  T -- "sends finished spans" --> Z["Zipkin<br/>stores and shows traces"]
-  T -- "trace ID" --> L
-  L --> S["standard output"]
-```
+![Inside Project Pulse, Micrometer hands numbers to Actuator, Brave gives each request a trace ID, and Logback writes log lines. Prometheus pulls the numbers from Actuator every 15 seconds and Grafana queries Prometheus; the app pushes finished spans to Zipkin; Logback writes to standard output with the trace ID on every line](../slides/img/observability-signal-flow.svg)
 
 | Tool | Its job | On a laptop |
 |---|---|---|
@@ -135,7 +123,9 @@ flowchart LR
 
 Notice the two directions. Prometheus *pulls* metrics from the app; the app *pushes* spans to Zipkin. In production, none of these collectors runs yet (`TD-prod-observability`, section 3), which is why Wednesday's lab runs on a laptop.
 
-**Other stacks.** Every major stack has the same pieces under other names. The most common today is **OpenTelemetry**, an open standard with libraries for Java, Python, JavaScript, .NET, and more, which produces all three signals and sends them to tools like these. You may choose different tools; know what each one in Project Pulse does, and let the [adapt step](../studio.md#adapt) map them onto yours.
+**A dashboard reads a collector, not `/actuator/metrics`.** That endpoint is a window for a person's spot check, and it starts from zero on every restart. A production dashboard needs a collector that keeps the history, and the collector gets the numbers one of the same two ways. Either it pulls them from an endpoint that only machines inside the network can reach, or the app pushes them to a monitoring service and exposes nothing. Either way, the public site does not serve its metrics. On Azure App Service, which has one public port, pushing is the natural fit; Project Pulse has not chosen a service yet.
+
+**Other stacks.** Every major stack has the same pieces under other names. The most common today is **OpenTelemetry**, an open standard with libraries for Java, Python, JavaScript, .NET, and more, which produces all three kinds (it calls them *signals*) and sends them to tools like these. You may choose different tools; know what each one in Project Pulse does, and let the [adapt step](../studio.md#adapt) map them onto yours.
 
 ### 4.4 Logs in production
 
@@ -146,7 +136,7 @@ Notice the two directions. Prometheus *pulls* metrics from the app; the app *pus
 **Structured, so a machine can search it.** A plain line is written for a person reading one line:
 
 ```text
-2026-11-09T09:02:14 ERROR [a3f9c2e1b7d04e58] t.p.system.EmailService : Could not send the invitation email
+2026-11-09T09:02:14 ERROR [6af11fb6455b81a0d269388fabd85224-0860298ded65bb60] t.p.system.EmailService : Could not send the invitation email
 ```
 
 Production has thousands of lines, and you will search them by field: every error, from this class, in the last hour, with this trace ID. A structured line is the same event as JSON, with each piece in a named field (shortened here):
@@ -154,7 +144,7 @@ Production has thousands of lines, and you will search them by field: every erro
 ```json
 {"@timestamp":"2026-11-09T09:02:14Z", "log.level":"ERROR",
  "log.logger":"team.projectpulse.system.EmailService",
- "message":"Could not send the invitation email", "traceId":"a3f9c2e1b7d04e58"}
+ "message":"Could not send the invitation email", "traceId":"6af11fb6455b81a0d269388fabd85224"}
 ```
 
 Spring Boot writes JSON logs with one property:
@@ -300,13 +290,13 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - **Delegate to AI:** reading. An agent can scan thousands of log lines for a pattern, correlate a spike with a deploy, draft the configuration for structured logs or a percentile histogram, and add a counter where you tell it to.
 - **Keep human:** what to watch and what to promise. Which business events matter, which dependencies belong in the health check, and what the client can tolerate are decisions about the product, not the code. So is what may never appear in a log (`CO-ferpa`).
 - **Context to supply:** the SLO and where its indicator comes from, what "normal" looks like (traffic is near zero on Saturday and peaks Monday before the report deadline), and the deploy history. An agent that does not know a deploy happened at 9:02 will not look there.
-- **How to verify:** check the agent's explanation against evidence it did not write: the trace, the timestamp, a test that fails before the fix. For telemetry the agent adds, break the thing on purpose and see the signal move. A dashboard nobody has seen go red is decoration.
+- **How to verify:** check the agent's explanation against evidence it did not write: the trace, the timestamp, a test that fails before the fix. For telemetry the agent adds, break the thing on purpose and see it show up. A dashboard nobody has seen go red is decoration.
 
 ## 6. Risks & mitigations
 
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
-| **Classic:** telemetry that silently collects nothing (Project Pulse's 404ing Prometheus scrape) | Asking "when did I last see this number change?" | Break something on purpose once and watch the signal move |
+| **Classic:** telemetry that silently collects nothing (Project Pulse's tracing, off for nine months after a framework upgrade) | Asking "when did I last see this number change?" | Break something on purpose once and check that the telemetry shows it; after every framework upgrade, check that a log line still carries a trace ID |
 | **Classic:** management endpoints exposed to the internet | Asking of every endpoint "what does this do on the public internet?" | Expose `health` and `info` by default; everything else behind a role |
 | **AI-amplified:** an agent asked to "add logging" or "add monitoring" logs request bodies, emails, or tokens | Reviewing what was logged, not only whether | The charter's logging rule ([Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need)); grep the logs for an email address |
 | **AI-introduced:** a fluent diagnosis from a symptom, with no evidence | Asking "which log line or trace shows that?" | Give the agent evidence first; reproduce with a failing test before the fix |
@@ -318,12 +308,12 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - **Goal:** your team's SLO has a measured value, and you can find one failed request in your logs.
 - **In class, Wednesday's lab:** the instructor runs Project Pulse's dev stack live, and you call out what to check next. One storyline, five steps:
     1. **Tour Actuator.** Log in as an admin, then open `/actuator`, `/actuator/health`, and `/actuator/metrics/http.server.requests` ([4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack)). Then raise one logger to `DEBUG` through `/actuator/loggers` without a restart ([4.4](#44-logs-in-production)).
-    2. **Fix the empty dashboard.** Prometheus scrapes `/actuator/prometheus` and gets a 404, so Grafana shows nothing. Find why, fix it, and watch the panels fill. Then ask of one panel what the number measures ([4.5](#45-metrics-what-the-numbers-count)).
+    2. **Fix the empty dashboard.** Grafana shows nothing. Open Prometheus's targets page (`localhost:9090/targets`): the scrape of `/actuator/prometheus` gets a 401. Say why the endpoint refuses it ([4.7](#47-management-endpoints-are-attack-surface)), paste an admin token into `docker/prometheus/prometheus.yml`, restart Prometheus, and watch the panels fill. Then ask of one panel what the number measures ([4.5](#45-metrics-what-the-numbers-count)).
     3. **Stop the mail server mid-request.** Stop the Mailpit container, then send a request that sends mail. Does Project Pulse degrade or hang? Read the answer in the latency metric and the Zipkin trace ([4.6](#46-traces-following-one-request)). This is a degradation test seen live ([Reliability 4.4](reliability.md#44-failing-well-timeout-retry-isolation-degradation)).
     4. **Find the 500 from its log line.** Trigger an unexpected exception, which the catch-all handler now logs. Narrow it down with a metric, find the request's stack trace by its trace ID, then give the agent the evidence and ask for a failing test before any fix ([4.8](#48-debugging-from-evidence-with-an-agent)).
     5. **Turn one metric into an SLO.** Pick the indicator, the target, and the window, the way your team will for Checkpoint 3.
 - **On your own project, out of class:** take the SLO your team wrote for Checkpoint 3 ([Reliability](reliability.md#7-hands-on-studio-optional-individual-assignment)) and choose its source from the table in [4.5](#45-metrics-what-the-numbers-count). Write the source and what it misses under the requirement. Then make one request fail on purpose in your deployed system and find its log line from outside the code: the platform's log stream, not your terminal.
-- **Adapt to your stack:** Project Pulse's signals come from the stack in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack). Run the [adapt step](../studio.md#adapt) for where your stack's logs go, how it exposes a health check and metrics, and where your SLI can come from. A mobile app or a game measures from the client and its backend service, not from Actuator.
+- **Adapt to your stack:** Project Pulse's telemetry comes from the stack in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack). Run the [adapt step](../studio.md#adapt) for where your stack's logs go, how it exposes a health check and metrics, and where your SLI can come from. A mobile app or a game measures from the client and its backend service, not from Actuator.
 - **Deliverable & assessment:** at [Checkpoint 3](../project.md#checkpoints), show the SLO with its current measured value and say where the number comes from and what it misses.
 
 **Individual assignment (Project Pulse):** none.
@@ -352,7 +342,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 
 ## 10. Self-check
 
-1. Your team's error rate doubled at 9:05 on Monday. Which signal do you open first, which second, and what does each tell you?
+1. Your team's error rate doubled at 9:05 on Monday. Which kind of telemetry do you open first, which second, and what does each tell you?
 2. `curl https://projectpulse.team/actuator/metrics` answers 404. Is something broken? Why might that be the right answer?
 3. A teammate's dashboard shows 99.9% success for the week. Name two ways it could be true while users could not reach the site.
 4. Before November 2026, Project Pulse's catch-all exception handler logged nothing. Why could no trace or dashboard tell you what caused a 500?
@@ -378,13 +368,13 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - SRE box: checked 2026-11-08 against sre.google/sre-book/introduction/ (the Treynor Sloss quote; "a 50% cap on the aggregate 'ops' work for all SREs"; joining Google in 2003 with a seven-engineer production team). Next offering, when reliability has its own lecture, consider moving the box there.
 - Service reliability hierarchy: sre.google Part III introduction credits "a number of Google SREs, including our former colleague Mikey Dickerson" on HealthCare.gov in 2013–14; the "Without monitoring" quote is from the same page. Layer names follow the page's section order; the figure's own labels were not read. The book is CC BY-NC-ND 4.0, so the SVG is our own drawing, not an adaptation of the figure.
 - Spring Boot 4: `logging.structured.format.console` values (ecs, logstash, gelf); trace and span IDs added to log lines by default when Micrometer Tracing is present (logging correlation); `management.metrics.distribution.percentiles-histogram`; `hikaricp.connections.pending` metric name.
-- 4.3's production outputs checked 2026-11-08 with curl: `/actuator/health` gave `{"groups":["liveness","readiness"],"status":"UP"}`, `/actuator/info` gave version 2.0.0 and commit `7090c7f`, `/actuator/metrics` gave 404. Dev also lists `httpexchanges` and `custom-beans` in its exposure, but neither is registered at `30ad565` (no `HttpExchangeRepository` bean, no custom `@Endpoint`), so the table leaves them out. Ports from docker-compose.yml: Prometheus 9090, Grafana 3000, Zipkin 9411; the scrape interval is 15 s in docker/prometheus/prometheus.yml. Seeded admin login from Project Pulse's CLAUDE.md, Dev Credentials.
+- 4.3's production outputs checked 2026-11-08 with curl: `/actuator/health` gave `{"groups":["liveness","readiness"],"status":"UP"}`, `/actuator/info` gave version 2.0.0 and commit `7090c7f`, `/actuator/metrics` gave 404. Dev also lists `httpexchanges` and `custom-beans` in its exposure, but neither is registered at `30ad565` (no `HttpExchangeRepository` bean, no custom `@Endpoint`), so the table leaves them out. Dev checked 2026-11-08 at `bac7efe`: `/actuator` lists beans, configprops, env, health, info, loggers, mappings, metrics, prometheus; `heapdump` and `httpexchanges` answer 404 (heapdump's cause not found); `/actuator/prometheus` gives 401 anonymous and 200 to the admin. Ports from docker-compose.yml: Prometheus 9090, Grafana 3000, Zipkin 9411; the scrape interval is 15 s in docker/prometheus/prometheus.yml. Seeded admin login from Project Pulse's CLAUDE.md, Dev Credentials.
 - 4.4's sample plain and JSON log lines are illustrative. In rehearsal, turn on `logging.structured.format.console: ecs`, capture a real line, and match the sample's field names (especially the trace ID key) and the plain line's layout to it.
 - Brave: unsampled requests still carry a trace ID in the logging context. Confirm on Project Pulse dev with sampling at 0.1.
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the health check feature removing an unhealthy instance (only matters with more than one instance).
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
-- Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, the Prometheus endpoint not resolving under Spring Boot 4, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the 404ing scrape (docker/prometheus/prometheus.yml); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException logged nothing at `75340e1` and logs the exception since pull request #110 (`30ad565`); loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
-- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the cause and fix of the `/actuator/prometheus` 404 (the dev profile already exposes `prometheus` at application-dev.yml line 29, so exposure is not the cause); what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Two expectations to test: (1) once the endpoint is registered, the anonymous Prometheus scrape gets a 401, because SecurityConfiguration line 316 puts every endpoint but health and info behind ROLE_admin in all profiles (prometheus.yml says so); step 2 then needs a scrape credential too. (2) EmailService calls JavaMailSender.send synchronously with no @Observed, and Spring Boot does not instrument mail, so the trace is likely one long HTTP span with no SMTP child. If so, rewrite the 4.6 "9.8 of its 10 seconds" sentence and the request-journey SVG, and make "a trace shows only what someone instrumented" the step 3 discovery.
+- Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml; #112 replaces the last two with spring-boot-micrometer-tracing-brave and spring-boot-starter-zipkin and declares spring-boot-starter-micrometer-metrics); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the anonymous scrape and the commented admin-token block (docker/prometheus/prometheus.yml, #112); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException logged nothing at `75340e1` and logs the exception since pull request #110 (`30ad565`); loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
+- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the Prometheus scrape with a pasted admin token, and whether Grafana has dashboards provisioned to fill; spans arriving in Zipkin after #112; what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Tracing was off from the Spring Boot 4 upgrade (`d5b67b2`, 2026-01-24) until #112: no Tracer bean, no trace ID in log lines (observed 2026-11-08 before and after the change; trace IDs are 32 hex characters, shown as `[traceId-spanId]`). The lab needs #112 merged. One expectation to test: EmailService calls JavaMailSender.send synchronously with no @Observed, and Spring Boot does not instrument mail, so the trace is likely one long HTTP span with no SMTP child. If so, rewrite the 4.6 "9.8 of its 10 seconds" sentence and the request-journey SVG, and make "a trace shows only what someone instrumented" the step 3 discovery.
 - Staging health DOWN from the mail check, fixed 2026-11-04 (course status.md, week 11).
 - The case-study link points at the architecture document's Observability & operations section, which records the incident; the course's own write-up is notes/case-study-actuator-leak.md (not published).
 
