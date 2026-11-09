@@ -114,12 +114,12 @@ The telemetry has to come from somewhere. In Project Pulse, a handful of tools p
 
 | Tool | Its job | On a laptop |
 |---|---|---|
+| **Logback** | Inside the app. Formats each log line and writes it to standard output. Your code never calls it directly: it calls **SLF4J** (`LoggerFactory.getLogger(...)`), an interface, and Spring Boot puts Logback behind it by default. | your terminal |
 | **Micrometer** | Inside the app. Counts and times things, and hands the numbers to Actuator. It works like SLF4J does for logs: the code records a number once, and any monitoring tool can read it. | |
 | **Micrometer Tracing and Brave** | Inside the app. Gives each request a trace ID, times each step as a span, writes the ID into every log line, and sends finished spans to Zipkin. Micrometer Tracing is the interface Spring calls; Brave is the engine underneath. | |
 | **Prometheus** | A database for numbers over time. Every 15 seconds it asks the app's `/actuator/prometheus` for the current values (a *scrape*) and stores them, so you can ask "what was the error rate last Monday?" | `localhost:9090` |
 | **Grafana** | Draws dashboards and sends alerts. It stores no metrics itself; it asks Prometheus for them. | `localhost:3000` |
 | **Zipkin** | Stores traces and shows each one as a timeline of its spans. | `localhost:9411` |
-| **Logback** | Writes the log lines to standard output. | your terminal |
 
 Notice the two directions. Prometheus *pulls* metrics from the app; the app *pushes* spans to Zipkin. In production, none of these collectors runs yet (`TD-prod-observability`, section 3), which is why Wednesday's lab runs on a laptop.
 
@@ -228,9 +228,22 @@ Whichever source you choose, write it under the requirement in your specificatio
 
 ### 4.6 Traces: following one request
 
-A **trace** is one request's journey. Each step inside it is a **span**: when it started, how long it took, and which step called it. In a system of many services, a request can cross five of them, and the trace is the only thing that shows which one was slow. Project Pulse runs as one application, so its traces are short: one span for the request, plus one for each outside call that Spring knows how to time. They still earn their keep the moment the app calls something slow (a mail server, an LLM): the trace shows the request spent 9.8 of its 10 seconds waiting on SMTP.
+A **trace** is one request's journey. Each step inside it is a **span**: when it started, how long it took, and which step called it. In a system of many services, a request can cross five of them, and the trace is the only thing that shows which one was slow.
 
-![On the left, one request through Project Pulse makes a short trace with an HTTP span and a long SMTP call; on the right, a request crosses four of thirteen services and only the trace shows which one was slow](../slides/img/observability-request-journey.svg)
+Project Pulse runs as one application, so its traces are short. Here is a real one, twice: an instructor invites two students, and Project Pulse saves the invitations and emails each student a registration link.
+
+![Two Zipkin traces of the same invitation request on Project Pulse dev. Top, as shipped: the HTTP span, Spring Security's token and authorization spans, and one 164.9 ms secured request span with nothing inside it. Bottom, with @Observed on the email method: inside the secured request, about 50 ms with no span for the database work, then two send invitation email spans of 105.1 ms and 15.4 ms](../slides/img/observability-trace-invitation.svg)
+
+The top trace is what Project Pulse records today. Spring Boot times the web request, and Spring Security times its own steps (checking the token, checking the authorization rule). Then comes one 165-millisecond span, `secured request`, that holds everything else: the database work and both emails. Nothing inside it is timed. **A trace shows only what someone instrumented.** Spring Boot does not time database queries or sending mail on its own.
+
+One annotation on the email method adds the bottom trace's two spans:
+
+```java
+@Observed(name = "email.send", contextualName = "send invitation email")
+public void sendInvitationEmail(UserInvitation userInvitation) {
+```
+
+With `management.observations.annotations.enabled: true`, each call becomes a span. Now the trace says where the time went: the first email took 105 milliseconds and the second 15, after about 50 milliseconds of database work that still has no span. If the mail server ever slows down, this is the span that grows.
 
 Sampling means keeping only some of the traces, and Project Pulse keeps 10%:
 
@@ -374,7 +387,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the health check feature removing an unhealthy instance (only matters with more than one instance).
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
 - Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml; #112 replaces the last two with spring-boot-micrometer-tracing-brave and spring-boot-starter-zipkin and declares spring-boot-starter-micrometer-metrics); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the anonymous scrape and the commented admin-token block (docker/prometheus/prometheus.yml, #112); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException logged nothing at `75340e1` and logs the exception since pull request #110 (`30ad565`); loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
-- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the Prometheus scrape with a pasted admin token, and whether Grafana has dashboards provisioned to fill; spans arriving in Zipkin after #112; what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Tracing was off from the Spring Boot 4 upgrade (`d5b67b2`, 2026-01-24) until #112: no Tracer bean, no trace ID in log lines (observed 2026-11-08 before and after the change; trace IDs are 32 hex characters, shown as `[traceId-spanId]`). The lab needs #112 merged. One expectation to test: EmailService calls JavaMailSender.send synchronously with no @Observed, and Spring Boot does not instrument mail, so the trace is likely one long HTTP span with no SMTP child. If so, rewrite the 4.6 "9.8 of its 10 seconds" sentence and the request-journey SVG, and make "a trace shows only what someone instrumented" the step 3 discovery.
+- Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the Prometheus scrape with a pasted admin token, and whether Grafana has dashboards provisioned to fill; spans arriving in Zipkin after #112; what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Tracing was off from the Spring Boot 4 upgrade (`d5b67b2`, 2026-01-24) until #112: no Tracer bean, no trace ID in log lines (observed 2026-11-08 before and after the change; trace IDs are 32 hex characters, shown as `[traceId-spanId]`). The lab needs #112 merged. One expectation to test: Confirmed 2026-11-08 with #112 and sampling 1.0 on dev: the invitation trace (POST /api/v1/sections/2/students/email-invitations?courseId=1, two addresses, Mailpit up) has an HTTP span, Spring Security's spans, and one secured request span with no database or SMTP child (174.8 ms); with @Observed(name = "email.send", contextualName = "send invitation email") on EmailService.sendInvitationEmail and management.observations.annotations.enabled=true, two email spans appear (105.1 ms, 15.4 ms) in a 207.1 ms request. Both runs drawn in observability-trace-invitation.svg. Not yet seen: the trace with Mailpit stopped (step 3); consider having the lab add the annotation live. observability-request-journey.svg is no longer used by the module; its left panel claims an SMTP span, so redraw it before any deck reuses it.
 - Staging health DOWN from the mail check, fixed 2026-11-04 (course status.md, week 11).
 - The case-study link points at the architecture document's Observability & operations section, which records the incident; the course's own write-up is notes/case-study-actuator-leak.md (not published).
 

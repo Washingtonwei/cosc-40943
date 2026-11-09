@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 604" width="1000" height="604" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
+<title id="t">One invitation request in Project Pulse, as two traces</title>
+<desc id="d">Two real traces of the same request, an instructor inviting two students, captured in Zipkin on Project Pulse dev on 2026-11-08. Top, as Project Pulse ships: a 174.8 ms HTTP span; Spring Security's spans for the bearer token and the authorization rule; and one 164.9 ms secured request span with nothing inside it, although the database work and two emails happen there. Bottom, with @Observed on EmailService.sendInvitationEmail: the same shape, 207.1 ms in all, and inside the secured request two send invitation email spans of 105.1 ms and 15.4 ms, after about 50 ms with no span, which is the database work.</desc>
+<rect width="1000" height="604" rx="18" fill="#0F1420"/>
+<text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" text-anchor="start" letter-spacing="2">ONE INVITATION REQUEST, TRACED</text>
+<text x="972" y="36" fill="#FFB443" font-size="14" font-weight="700" text-anchor="end">two real runs, Project Pulse dev, Zipkin</text>
+<rect x="28" y="56" width="944" height="232" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
+<text x="48" y="84" fill="#9AA3B5" font-size="14" font-weight="800" text-anchor="start" letter-spacing="2">AS PROJECT PULSE SHIPS</text>
+<text x="952" y="84" fill="#9AA3B5" font-size="13" font-weight="400" text-anchor="end">Spring times the request and Spring Security, nothing else</text>
+<line x1="380.0" y1="108" x2="380.0" y2="278" stroke="#222B3D" stroke-width="1"/>
+<text x="380.0" y="102" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">0 ms</text>
+<line x1="517.5" y1="108" x2="517.5" y2="278" stroke="#222B3D" stroke-width="1"/>
+<text x="517.5" y="102" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">50 ms</text>
+<line x1="655.0" y1="108" x2="655.0" y2="278" stroke="#222B3D" stroke-width="1"/>
+<text x="655.0" y="102" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">100 ms</text>
+<line x1="792.5" y1="108" x2="792.5" y2="278" stroke="#222B3D" stroke-width="1"/>
+<text x="792.5" y="102" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">150 ms</text>
+<line x1="930.0" y1="108" x2="930.0" y2="278" stroke="#222B3D" stroke-width="1"/>
+<text x="930.0" y="102" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">200 ms</text>
+<text x="48" y="131" fill="#F2EDE3" font-size="14" font-weight="700" text-anchor="start">http post …/students/email-invitations</text>
+<rect x="380.0" y="118" width="480.7" height="17" rx="4" fill="#9B6BD6"/>
+<text x="866.7" y="131" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">174.8 ms</text>
+<text x="66" y="157" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">security filterchain before</text>
+<rect x="380.8" y="144" width="24.5" height="17" rx="4" fill="#56607A"/>
+<text x="411.3" y="157" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">8.9 ms</text>
+<text x="84" y="183" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">authenticate bearertoken</text>
+<rect x="383.3" y="170" width="3.0" height="17" rx="4" fill="#56607A"/>
+<text x="392.3" y="183" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">0.9 ms</text>
+<text x="84" y="209" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">authorize request</text>
+<rect x="387.1" y="196" width="17.9" height="17" rx="4" fill="#56607A"/>
+<text x="411.025" y="209" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">6.5 ms</text>
+<text x="66" y="235" fill="#F2EDE3" font-size="14" font-weight="700" text-anchor="start">secured request</text>
+<rect x="405.3" y="222" width="453.5" height="17" rx="4" fill="#2A3347" stroke="#FF8080" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="632.0375" y="235" fill="#FF8080" font-size="12.5" font-weight="700" text-anchor="middle">164.9 ms: the database work and two emails, with no spans inside</text>
+<text x="66" y="261" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">security filterchain after</text>
+<rect x="859.0" y="248" width="3.0" height="17" rx="4" fill="#56607A"/>
+<text x="868.05" y="261" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">0.4 ms</text>
+<rect x="28" y="304" width="944" height="284" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
+<text x="48" y="332" fill="#9AA3B5" font-size="14" font-weight="800" text-anchor="start" letter-spacing="2">WITH @Observed ON sendInvitationEmail</text>
+<text x="952" y="332" fill="#9AA3B5" font-size="13" font-weight="400" text-anchor="end">one annotation, two new spans</text>
+<line x1="380.0" y1="356" x2="380.0" y2="578" stroke="#222B3D" stroke-width="1"/>
+<text x="380.0" y="350" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">0 ms</text>
+<line x1="517.5" y1="356" x2="517.5" y2="578" stroke="#222B3D" stroke-width="1"/>
+<text x="517.5" y="350" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">50 ms</text>
+<line x1="655.0" y1="356" x2="655.0" y2="578" stroke="#222B3D" stroke-width="1"/>
+<text x="655.0" y="350" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">100 ms</text>
+<line x1="792.5" y1="356" x2="792.5" y2="578" stroke="#222B3D" stroke-width="1"/>
+<text x="792.5" y="350" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">150 ms</text>
+<line x1="930.0" y1="356" x2="930.0" y2="578" stroke="#222B3D" stroke-width="1"/>
+<text x="930.0" y="350" fill="#6B7489" font-size="12" font-weight="400" text-anchor="middle">200 ms</text>
+<text x="48" y="379" fill="#F2EDE3" font-size="14" font-weight="700" text-anchor="start">http post …/students/email-invitations</text>
+<rect x="380.0" y="366" width="569.5" height="17" rx="4" fill="#9B6BD6"/>
+<text x="943.525" y="379" fill="#0F1420" font-size="12" font-weight="700" text-anchor="end">207.1 ms</text>
+<text x="66" y="405" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">security filterchain before</text>
+<rect x="381.1" y="392" width="52.0" height="17" rx="4" fill="#56607A"/>
+<text x="439.07500000000005" y="405" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">18.9 ms</text>
+<text x="84" y="431" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">authenticate bearertoken</text>
+<rect x="384.9" y="418" width="20.4" height="17" rx="4" fill="#56607A"/>
+<text x="411.3" y="431" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">7.4 ms</text>
+<text x="84" y="457" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">authorize request</text>
+<rect x="407.8" y="444" width="24.8" height="17" rx="4" fill="#56607A"/>
+<text x="438.525" y="457" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">9 ms</text>
+<text x="66" y="483" fill="#F2EDE3" font-size="14" font-weight="700" text-anchor="start">secured request</text>
+<rect x="433.1" y="470" width="513.1" height="17" rx="4" fill="#2A3347"/>
+<text x="501.6875" y="483" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="middle">database: no span</text>
+<text x="940.2249999999999" y="483" fill="#C9CFDB" font-size="12" font-weight="700" text-anchor="end">186.6 ms</text>
+<text x="84" y="509" fill="#FFB443" font-size="14" font-weight="700" text-anchor="start">send invitation email</text>
+<rect x="570.3" y="496" width="289.0" height="17" rx="4" fill="#FFB443"/>
+<text x="865.3249999999999" y="509" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">105.1 ms</text>
+<text x="84" y="535" fill="#FFB443" font-size="14" font-weight="700" text-anchor="start">send invitation email</text>
+<rect x="868.1" y="522" width="42.4" height="17" rx="4" fill="#FFB443"/>
+<text x="916.475" y="535" fill="#9AA3B5" font-size="12" font-weight="400" text-anchor="start">15.4 ms</text>
+<text x="66" y="561" fill="#F2EDE3" font-size="14" font-weight="400" text-anchor="start">security filterchain after</text>
+<rect x="946.5" y="548" width="3.0" height="17" rx="4" fill="#56607A"/>
+<text x="943.5" y="561" fill="#C9CFDB" font-size="12" font-weight="700" text-anchor="end">0.7 ms</text>
+</svg>
