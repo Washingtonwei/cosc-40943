@@ -95,7 +95,7 @@ Your TA works through this list with your team in your booked slot in week 11, b
 - [ ] **The release plan.** Every use case and FR row in `docs/traceability.md` has a Release value (`v0.1.0`, `v0.2.0`, `v1.0.0`, `Spring`, or `Out`), set by pull request ([how](modules/traceability.md#47-from-estimates-to-a-release-plan)).
 - [ ] **The impact list.** If your client has changed a requirement or a business rule since your slice, the issue for that change carries its impact list (the IDs and files from the matrix, what a search for the IDs added, and the questions you took to the client), and its pull request says which files outside the list it touched and why ([how](modules/traceability.md#46-impact-analysis-what-a-change-touches-before-you-make-it)). No change yet: say so, and the item passes.
 
-You leave with Checkpoint 3's two reliability items: one measured SLO and one degradation test ([Reliability](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)). Start them that week. The week 12 lecture builds on what you will already have begun.
+You leave with Checkpoint 3's two reliability items: one measured SLO and one degradation test ([Reliability](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)). Start them that week. The week 12 observability lab ends with turning one metric into an SLO, the way your team measures its own.
 
 ## Weekly mechanics
 
