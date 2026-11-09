@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
 <title id="t">Project Pulse's observability stack: complete on a laptop, absent in production</title>
-<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus, which refuses the anonymous scrape with 401, so Grafana's dashboards are empty. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, the app and Azure Database run with no collector at all; only the health and info endpoints are public. That gap is TD-prod-observability. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse at 75340e1.</desc>
+<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus every 15 seconds and Grafana draws dashboards from it; a footnote says the scrape needs an admin token pasted into prometheus.yml, because the endpoint is admin only. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, the app and Azure Database run with no collector at all; only the health and info endpoints are public. That gap is TD-prod-observability. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse at 75340e1.</desc>
 <defs>
 <marker id="st-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
-<marker id="st-ar-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#FF4D4D"/></marker>
 </defs>
 <rect width="1000" height="460" rx="18" fill="#0F1420"/>
 <text x="28" y="36" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">PROJECT PULSE'S OBSERVABILITY STACK</text>
@@ -24,15 +23,14 @@
 <!-- prometheus -->
 <rect x="232" y="110" width="132" height="54" rx="12" fill="#1B2335" stroke="#E6522C" stroke-width="2"/>
 <text x="298" y="143" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Prometheus</text>
-<path d="M364,137 H460 V184" fill="none" stroke="#FF4D4D" stroke-width="2.5" stroke-dasharray="7 5" marker-start="url(#st-ar-r)"/>
-<text x="376" y="126" fill="#FF8080" font-size="14" font-weight="700">/actuator/prometheus</text>
-<rect x="472" y="146" width="52" height="24" rx="12" fill="#3A1A20" stroke="#FF4D4D" stroke-width="1.5"/>
-<text x="498" y="163" text-anchor="middle" fill="#FF8080" font-size="14" font-weight="800">401</text>
+<path d="M364,137 H460 V184" fill="none" stroke="#9AA3B5" stroke-width="2.5" marker-start="url(#st-ar)"/>
+<text x="376" y="126" fill="#F2EDE3" font-size="14" font-weight="700">/actuator/prometheus*</text>
+<text x="470" y="160" fill="#9AA3B5" font-size="14">every 15 s</text>
 <!-- grafana -->
 <rect x="48" y="110" width="140" height="54" rx="12" fill="#1B2335" stroke="#F2A93B" stroke-width="2"/>
 <text x="118" y="143" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Grafana</text>
 <line x1="230" y1="137" x2="192" y2="137" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#st-ar)"/>
-<text x="118" y="190" text-anchor="middle" fill="#FF8080" font-size="14" font-weight="700">dashboards: empty</text>
+<text x="118" y="190" text-anchor="middle" fill="#9AA3B5" font-size="14">dashboards</text>
 <!-- zipkin -->
 <rect x="232" y="210" width="132" height="54" rx="12" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
 <text x="298" y="243" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Zipkin</text>
@@ -49,7 +47,7 @@
 <ellipse cx="540" cy="336" rx="44" ry="11" fill="#1B2335" stroke="#2A3347" stroke-width="2"/>
 <text x="540" y="372" text-anchor="middle" fill="#F2EDE3" font-size="15" font-weight="700">MySQL</text>
 <line x1="540" y1="288" x2="540" y2="322" stroke="#9AA3B5" stroke-width="2.5"/>
-<text x="325" y="414" text-anchor="middle" fill="#9AA3B5" font-size="14">Every part is here, but the scrape has no admin login.</text>
+<text x="48" y="414" fill="#9AA3B5" font-size="13">* Admin only: paste an admin token into docker/prometheus/prometheus.yml.</text>
 <!-- production panel -->
 <rect x="642" y="58" width="330" height="374" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
 <text x="662" y="86" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">PRODUCTION · AZURE</text>

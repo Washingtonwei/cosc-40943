@@ -13,6 +13,14 @@ Week 12 · Seeing inside Project Pulse after it ships
 **Say:** Two weeks ago we shipped. The pipeline builds it, checks it, and puts it on Azure. Today's question: once it's running, how do you know what it's doing? Monday is the lecture. Wednesday I run Project Pulse on my laptop, break it on purpose, and you tell me where to look.
 :::
 
+## Deployment is not the end {.center}
+
+![A developer outside the production panel asks how to see inside the deployed app, while inside the app goes down, gets slow, loses its database, and runs out of CPU, memory, or disk](img/observability-blind-spot.svg)
+
+::: note
+**Say:** Your code passed its tests and its gate. Now the database can go offline, a release can carry a defect, a page can get slow, the disk can fill. None of that happens in your test suite. So how do you see inside? HealthCare.gov learned the hard way.
+:::
+
 ## Nobody could tell if it was up
 
 ::: steps
@@ -52,7 +60,7 @@ You cannot fix what you cannot see.
 
 ## Project Pulse would not know either {.center}
 
-![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, but Prometheus has no admin login, so its scrape gets 401 and the dashboards are empty; in production on Azure there is no collector at all](img/observability-stack.svg)
+![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, and Prometheus scrapes it with an admin token; in production on Azure there is no collector at all](img/observability-stack.svg)
 
 ::: note
 **Say:** Project Pulse has all the parts. On my laptop, Docker Compose runs Prometheus, Grafana, and Zipkin beside the app. In production on Azure, nothing collects anything. The architecture document says so honestly: TD-prod-observability, production telemetry "not collected anywhere yet."
@@ -73,14 +81,6 @@ How would you have noticed?
 
 ::: note
 **Say:** This one is mine. The build still named the old tracing libraries; they were on the classpath and nothing wired them up. Nothing failed, nothing logged a warning. I found it this weekend while writing this lecture. Pull request 112 fixes it. The answer to the question: you look at the signal once in a while, or you break something on purpose and check that it shows up.
-:::
-
-## Deployment is not the end {.center}
-
-![A developer outside the production panel asks how to see inside the deployed app, while inside the app goes down, gets slow, loses its database, and runs out of CPU, memory, or disk](img/observability-blind-spot.svg)
-
-::: note
-**Say:** Your code passed its tests and its gate. Now the database can go offline, a release can carry a defect, a page can get slow, the disk can fill. None of that happens in your test suite.
 :::
 
 ## That, then why

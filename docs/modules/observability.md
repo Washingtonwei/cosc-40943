@@ -19,10 +19,14 @@ By the end of this module, a student can:
 
 - **Prerequisites:** [Implementation](implementation.md#49-log-what-the-person-at-2-am-will-need), where your charter got its logging rule; [CI/CD](ci-cd.md), which ships the build this module watches; [Reliability](reliability.md#43-from-requirement-to-measurement-sli-slo-error-budget), read as background, where a requirement became an SLO.
 - **Leads into:** dynamic analysis, which turns watching into checking ([4.9](#49-from-watching-to-checking)), and [Checkpoint 3](../project.md#checkpoints), where your team shows its SLO with a measured value.
-- **How it's taught:** both lecture days of week 12. Monday is a lecture on [4.1](#41-deployment-is-not-the-end) to [4.7](#47-management-endpoints-are-attack-surface). Wednesday is a live lab on Project Pulse ([section 7](#7-hands-on-studio-optional-individual-assignment)), which works through [4.8](#48-debugging-from-evidence-with-an-agent) on a running system and ends with the SLO your team measures for Checkpoint 3. [Reliability](reliability.md) is reading this week; the lab runs one of its degradation tests ([4.4 there](reliability.md#44-failing-well-timeout-retry-isolation-degradation)). Friday is work time on your own project.
+- **How it's taught:** both lecture days of week 12. Monday is a lecture on [4.1](#41-monitoring-and-observability) to [4.7](#47-management-endpoints-are-attack-surface). Wednesday is a live lab on Project Pulse ([section 7](#7-hands-on-studio-optional-individual-assignment)), which works through [4.8](#48-debugging-from-evidence-with-an-agent) on a running system and ends with the SLO your team measures for Checkpoint 3. [Reliability](reliability.md) is reading this week; the lab runs one of its degradation tests ([4.4 there](reliability.md#44-failing-well-timeout-retry-isolation-degradation)). Friday is work time on your own project.
 - **Course outcome it delivers:** [building, testing, and shipping a working MVP](../syllabus.md#learning-outcomes) (outcome 4); shipping includes seeing what the system does once it is live. Also verifying AI output without lowering the bar (outcome 6), here an agent's diagnosis checked against evidence.
 
 ## 3. Motivation
+
+**Deployment is not the end.** Your code passed its tests and its gate, and it is running on Azure. Now the database can go offline, a release can carry a defect, a page can get slow, and CPU, memory, or disk can run out. None of that shows up in your test suite, because none of it happens there.
+
+![A developer outside the production panel asks how to see inside the deployed app, while inside the app goes down, gets slow, loses its database, and runs out of CPU, memory, or disk](../slides/img/observability-blind-spot.svg)
 
 **The site was down, and nobody could see why.** HealthCare.gov, the federal website for buying health insurance, launched on October 1, 2013, and broke under its first traffic. By mid-October only about 3 in 10 visitors could get on at all. When a small rescue team arrived later that month, they found that the people running the site "had no 'dashboard,' no quick way for engineers to measure what was going on at the website." A White House adviser put it more plainly: "Nobody could even tell us if the system was up."
 
@@ -34,17 +38,13 @@ The rescue left an idea behind. Google engineers on the team, Mikey Dickerson am
 
 **Project Pulse would not know either.** Its architecture document lists the gap among its technical debts: production telemetry is "not collected anywhere yet" ([`TD-prod-observability`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#risks-and-technical-debt)). It has the parts: Actuator, Micrometer, Brave tracing, and a Prometheus, Grafana, and Zipkin stack in `docker-compose.yml` ([4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) explains each). But that stack runs only on a developer's laptop, and even there part of it stopped working without a word. When Project Pulse moved from Spring Boot 3 to 4 in January 2026, tracing switched off: Spring Boot 4 sets tracing up only through its own modules, and the build still named the old libraries. Every test passed. For more than nine months no log line carried a trace ID and no trace reached Zipkin, and nothing reported it. [Pull request #112](https://github.com/Washingtonwei/project-pulse/pull/112) restores it.
 
-![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, but Prometheus has no admin login, so its scrape gets 401 and the dashboards are empty; in production on Azure there is no collector at all](../slides/img/observability-stack.svg)
+![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, and Prometheus scrapes it with an admin token; in production on Azure there is no collector at all](../slides/img/observability-stack.svg)
 
 Then there was the silent 500. Until November 2026, an unexpected exception reached `ExceptionHandlerAdvice.handleOtherException`, which logged nothing. A student saw "A server internal error occurs." and you saw nothing at all. [Pull request #110](https://github.com/Washingtonwei/project-pulse/pull/110) added the log line ([Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need)). This module is about everything after that: where the line goes, how you find it among thousands, and how you know it happened before the student emails you.
 
 ## 4. Core concepts
 
-### 4.1 Deployment is not the end
-
-Your code passed its tests and its gate, and it is running on Azure. Now the database can go offline, a release can carry a defect, a page can get slow, and CPU, memory, or disk can run out. None of that shows up in your test suite, because none of it happens there.
-
-![A developer outside the production panel asks how to see inside the deployed app, while inside the app goes down, gets slow, loses its database, and runs out of CPU, memory, or disk](../slides/img/observability-blind-spot.svg)
+### 4.1 Monitoring and observability
 
 **Monitoring** is watching a few numbers you picked in advance. You decide ahead of time that you care whether the site is up, how many requests fail, and how long pages take, and you put those numbers on a dashboard. When one turns red, you know *that* something is wrong.
 
@@ -70,7 +70,7 @@ Use them in that order. A metric is the cheapest to keep, and it tells you *that
 
 The telemetry has to come from somewhere. In Project Pulse, a handful of tools produce it, collect it, and show it. Your stack has its own; this is the map for Project Pulse.
 
-**Spring Boot Actuator** is the diagnostic port from [4.1](#41-deployment-is-not-the-end). It is a Spring Boot module that adds ready-made web endpoints under `/actuator`, each one reporting on the running app. You add one dependency (`spring-boot-starter-actuator`) and write no code. An endpoint answers only once configuration exposes it, and Project Pulse exposes a different set in each profile:
+**Spring Boot Actuator** is the diagnostic port from [4.1](#41-monitoring-and-observability). It is a Spring Boot module that adds ready-made web endpoints under `/actuator`, each one reporting on the running app. You add one dependency (`spring-boot-starter-actuator`) and write no code. An endpoint answers only once configuration exposes it, and Project Pulse exposes a different set in each profile:
 
 | Endpoint | What it tells you | Production | Your laptop (dev) | More in |
 |---|---|---|---|---|
@@ -309,7 +309,7 @@ That is a tradeoff to make deliberately. At 10%, nine of ten failed requests hav
 
 ### 4.7 Management endpoints are attack surface
 
-The endpoints in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) can show your configuration, your routes, and everything in memory, and they can change log levels. That is the diagnostic port from [4.1](#41-deployment-is-not-the-end), and it is also a port for anyone else. On September 6, 2026, Project Pulse's `/actuator/env` returned its database and mail passwords to any anonymous caller on the internet; the settings came from a local development tutorial and applied to every profile ([the case study](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#observability--operations)). The fix is in [`application.yml`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/resources/application.yml) (abridged):
+The endpoints in [4.3](#43-the-tools-spring-boot-actuator-and-project-pulses-stack) can show your configuration, your routes, and everything in memory, and they can change log levels. That is the diagnostic port from [4.1](#41-monitoring-and-observability), and it is also a port for anyone else. On September 6, 2026, Project Pulse's `/actuator/env` returned its database and mail passwords to any anonymous caller on the internet; the settings came from a local development tutorial and applied to every profile ([the case study](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#observability--operations)). The fix is in [`application.yml`](https://github.com/Washingtonwei/project-pulse/blob/main/backend/src/main/resources/application.yml) (abridged):
 
 ```yaml
 management:
