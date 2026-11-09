@@ -123,6 +123,18 @@ Install the port before the breakdown, not during it.
 **Say:** Telemetry is the data a running system sends out about itself, the way a spacecraft radios its temperature home. Use them in that order. The error rate went up after the deploy: metric. The invitation request spent its time sending email: trace. The mail server rejected the address: log. OpenTelemetry calls these three "signals"; careful, Google's "golden signals" later today mean something else.
 :::
 
+## Three of each, from Project Pulse
+
+| Metric | Trace | Log |
+|---|---|---|
+| http.server.requests | An instructor invites two students | Sent {} of {} weekly reminders |
+| jvm.memory.used | A user logs in | Could not send the invitation email |
+| hikaricp.connections.pending | A student adds an activity | Unhandled exception |
+
+::: note
+**Say:** Metrics: every request counted and timed, memory in use, requests waiting for a database connection. Traces: one request each, start to finish; we'll open the invitation trace in a few minutes. Logs: real lines from the code. The first is INFO from the weekly reminder job, the other two are ERROR, and the last one is the catch-all handler from pull request 110. The braces get filled in with the counts, the section, and the address.
+:::
+
 ## How do you know?
 
 ::: joke
