@@ -58,12 +58,14 @@ You cannot fix what you cannot see.
 **Say:** Google engineers on that rescue team, Mikey Dickerson among them, used this pyramid to explain how a service becomes reliable. It's in the SRE book. Everything sits on monitoring: "Without monitoring, you have no way to tell whether the service is even working."
 :::
 
-## Project Pulse would not know either {.center}
+## Project Pulse would not have known either {.center}
 
-![Project Pulse's observability stack: on a laptop, Prometheus, Grafana, Zipkin, Mailpit, and MySQL run beside the app, and Prometheus scrapes it with an admin token; in production on Azure there is no collector at all](img/observability-stack.svg)
+::: key
+"Production telemetry is not collected anywhere yet." Project Pulse's architecture document, until November 9, 2026
+:::
 
 ::: note
-**Say:** Project Pulse has all the parts. On my laptop, Docker Compose runs Prometheus, Grafana, and Zipkin beside the app. In production on Azure, nothing collects anything. The architecture document says so honestly: TD-prod-observability, production telemetry "not collected anywhere yet."
+**Say:** Project Pulse had all the parts. On my laptop, Docker Compose runs Prometheus, Grafana, and Zipkin beside the app. In production on Azure, nothing collected anything, and the architecture document said so honestly, as technical debt TD-prod-observability. Wednesday you'll see what production does now.
 :::
 
 ## Nine months without a trace
@@ -213,7 +215,7 @@ The public site does not serve its metrics.
 :::
 
 ::: note
-**Say:** So how would production get a dashboard? Not by opening /actuator/metrics to the internet. A collector either scrapes an endpoint only the inside of the network can reach, or the app pushes to a monitoring service. On Azure App Service, with one public port, pushing fits. Project Pulse hasn't picked a service yet; it's on my list for after the semester.
+**Say:** So how would production get a dashboard? Not by opening /actuator/metrics to the internet. A collector either scrapes an endpoint only the inside of the network can reach, or the app pushes to a monitoring service. Pull fits Kubernetes and virtual machines, where the scraper shares a private network with the app. On a platform like Azure App Service, with one public port, pushing is the standard pattern. Project Pulse pushes to Azure Application Insights; you'll see it on Wednesday.
 :::
 
 ## Logs go to standard output
@@ -588,7 +590,7 @@ Alive but not ready: me at 8 a.m. before coffee. Don't restart me, just wait.
 Project Pulse on a laptop · you call out where to look
 
 ::: note
-**Say:** Everything today runs locally: Project Pulse in the dev profile, plus Docker Compose. Nothing touches production. One storyline, five steps, and the agent comes in at step four. First, two minutes on what staging saw on Monday.
+**Say:** Everything we break today runs locally: Project Pulse in the dev profile, plus Docker Compose. Production we only look at. One storyline, five steps, and the agent comes in at step four. First, two minutes on what staging saw on Monday.
 :::
 
 ## Who is asking?
@@ -705,6 +707,32 @@ Asked to "add logging," an agent logs request bodies, emails, and tokens. Grep y
 
 ::: note
 **Do:** Data source URL http://prometheus:9090. Targets page localhost:9090/targets. The 401 is the ROLE_admin rule from Monday; the token goes in the commented authorization block. Panel query: sum by (status) (rate(http_server_requests_seconds_count[1m])). Ask the room what the number counts and what it misses.
+:::
+
+## How production does it {.center}
+
+![Project Pulse's observability stack. On a developer laptop, Prometheus pulls from the app's /actuator/prometheus every 15 seconds with an admin token, Grafana draws it, Zipkin receives traces, and Mailpit and MySQL run beside the app. In production on Azure, the app serves only /health and /info publicly, and the monitoring agent App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them](img/observability-stack.svg)
+
+::: note
+**Say:** What we just did is pull: Prometheus sits next to the app and scrapes it. That fits Kubernetes and virtual machines, where the scraper shares a private network with the app. Azure App Service gives us one public port, so production pushes instead: an agent inside the container sends everything out to Application Insights, and /actuator/prometheus stays closed. Nothing to scrape, no password to leak.
+
+**Do:** Portal, the peer-evaluation-tool Application Insights resource, Live Metrics. Open projectpulse.team in another tab and click around. Requests appear within seconds.
+:::
+
+## Find it on Azure
+
+```kusto
+let id = "<traceId from a log line>";
+let op = toscalar(traces | where tostring(customDimensions.traceId) == id
+                  | take 1 | project operation_Id);
+union requests, dependencies, exceptions, traces
+| where operation_Id == op | order by timestamp asc
+```
+
+::: note
+**Say:** On Azure one request gets two IDs: Brave's on the log line, and the agent's own. The agent keeps Brave's on every log row, so one ID still finds the request, its database queries, and its log lines. Look: the agent times every SQL query, which Zipkin on my laptop doesn't.
+
+**Do:** Logs, KQL mode. Get an ID first: traces | where timestamp > ago(1h) and isnotempty(customDimensions.traceId) | project timestamp, id = tostring(customDimensions.traceId), message | take 5.
 :::
 
 ## 3. Stop the mail server

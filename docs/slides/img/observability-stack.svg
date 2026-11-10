@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
-<title id="t">Project Pulse's observability stack: complete on a laptop, absent in production</title>
-<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus every 15 seconds and Grafana draws dashboards from it; a footnote says the scrape needs an admin token pasted into prometheus.yml, because the endpoint is admin only. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, the app and Azure Database run with no collector at all; only the health and info endpoints are public. That gap is TD-prod-observability. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse at 75340e1.</desc>
+<title id="t">Project Pulse's observability stack: the laptop pulls, production pushes</title>
+<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus every 15 seconds and Grafana draws dashboards from it; a footnote says the scrape needs an admin token pasted into prometheus.yml, because the endpoint is admin only. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, only the health and info endpoints are public, and nothing scrapes the app: the monitoring agent that App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them, under a 1 GB daily cap. That decision is KD-push-telemetry. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse on 2026-11-10.</desc>
 <defs>
 <marker id="st-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
 </defs>
@@ -10,6 +10,7 @@
 <!-- laptop panel -->
 <rect x="28" y="58" width="594" height="374" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
 <text x="48" y="86" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">DEVELOPER LAPTOP · docker-compose</text>
+<text x="602" y="86" text-anchor="end" fill="#E6522C" font-size="15" font-weight="800" letter-spacing="2">PULL</text>
 <!-- app -->
 <rect x="400" y="190" width="196" height="96" rx="14" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
 <polygon points="418,217 427,201.4 445,201.4 454,217 445,232.6 427,232.6" fill="#6DB33F" stroke="#6DB33F" stroke-width="3" stroke-linejoin="round"/>
@@ -51,21 +52,24 @@
 <!-- production panel -->
 <rect x="642" y="58" width="330" height="374" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
 <text x="662" y="86" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">PRODUCTION · AZURE</text>
-<rect x="672" y="110" width="270" height="78" rx="14" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
-<polygon points="690,132 699,116.4 717,116.4 726,132 717,147.6 699,147.6" fill="#6DB33F" stroke="#6DB33F" stroke-width="3" stroke-linejoin="round"/>
+<text x="952" y="86" text-anchor="end" fill="#9B6BD6" font-size="15" font-weight="800" letter-spacing="2">PUSH</text>
+<rect x="672" y="106" width="270" height="96" rx="14" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
+<polygon points="690,128 699,112.4 717,112.4 726,128 717,143.6 699,143.6" fill="#6DB33F" stroke="#6DB33F" stroke-width="3" stroke-linejoin="round"/>
 <g fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round">
-<path d="M712.6,127 A8,8 0 1,1 703.4,127"/>
-<line x1="708" y1="122.5" x2="708" y2="131"/>
+<path d="M712.6,123 A8,8 0 1,1 703.4,123"/>
+<line x1="708" y1="118.5" x2="708" y2="127"/>
 </g>
-<text x="736" y="142" fill="#F2EDE3" font-size="17" font-weight="700">Azure Web App</text>
-<text x="736" y="166" fill="#9AA3B5" font-size="14">public: /health, /info only</text>
-<ellipse cx="807" cy="222" rx="54" ry="12" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
-<path d="M753,222 v38 a54,12 0 0,0 108,0 v-38" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
-<ellipse cx="807" cy="222" rx="54" ry="12" fill="#1B2335" stroke="#5BE0E6" stroke-width="2"/>
-<text x="807" y="296" text-anchor="middle" fill="#F2EDE3" font-size="15" font-weight="700">Azure Database</text>
-<line x1="807" y1="188" x2="807" y2="210" stroke="#9AA3B5" stroke-width="2.5"/>
-<rect x="672" y="314" width="270" height="70" rx="14" fill="none" stroke="#FF4D4D" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="807" y="344" text-anchor="middle" fill="#FF8080" font-size="17" font-weight="700">no collector, no dashboard</text>
-<text x="807" y="367" text-anchor="middle" fill="#FF8080" font-size="14">logs, metrics, traces: not kept</text>
-<text x="807" y="414" text-anchor="middle" fill="#FFB443" font-size="15" font-weight="700">TD-prod-observability</text>
+<text x="736" y="136" fill="#F2EDE3" font-size="17" font-weight="700">Azure Web App</text>
+<text x="736" y="160" fill="#9AA3B5" font-size="14">public: /health, /info only</text>
+<rect x="690" y="172" width="234" height="20" rx="6" fill="#2A2140" stroke="#9B6BD6" stroke-width="1.5"/>
+<text x="807" y="187" text-anchor="middle" fill="#D9C6F2" font-size="13" font-weight="700">monitoring agent</text>
+<line x1="807" y1="204" x2="807" y2="258" stroke="#9AA3B5" stroke-width="2.5" marker-end="url(#st-ar)"/>
+<text x="820" y="226" fill="#F2EDE3" font-size="14" font-weight="700">pushes out</text>
+<text x="820" y="246" fill="#9AA3B5" font-size="13">requests · logs · metrics</text>
+<rect x="672" y="264" width="270" height="70" rx="14" fill="#1B2335" stroke="#9B6BD6" stroke-width="2"/>
+<text x="807" y="294" text-anchor="middle" fill="#F2EDE3" font-size="17" font-weight="700">Application Insights</text>
+<text x="807" y="318" text-anchor="middle" fill="#9AA3B5" font-size="14">Live Metrics · KQL · alerts</text>
+<text x="807" y="362" text-anchor="middle" fill="#9AA3B5" font-size="14">nothing scrapes the app</text>
+<text x="807" y="384" text-anchor="middle" fill="#9AA3B5" font-size="14">daily cap: 1 GB</text>
+<text x="807" y="414" text-anchor="middle" fill="#FFB443" font-size="15" font-weight="700">KD-push-telemetry</text>
 </svg>
