@@ -588,7 +588,34 @@ Alive but not ready: me at 8 a.m. before coffee. Don't restart me, just wait.
 Project Pulse on a laptop · you call out where to look
 
 ::: note
-**Say:** Everything today runs locally: Project Pulse in the dev profile, plus Docker Compose. Nothing touches production. One storyline, five steps, and the agent comes in at step four.
+**Say:** Everything today runs locally: Project Pulse in the dev profile, plus Docker Compose. Nothing touches production. One storyline, five steps, and the agent comes in at step four. First, two minutes on what staging saw on Monday.
+:::
+
+## Who is asking?
+
+| Path | Requests | Looking for |
+|---|---|---|
+| `/v2/.env`, `/backend/.env`, `/admin/.env`, `/.env.anthropic`, … | 85 | Passwords and API keys |
+| `/.gitlab-ci.yml`, `/.github/workflows/deploy.yml`, … | 30 | Secrets in pipeline files |
+| `/.git/config` | 18 | The repository |
+| `/actuator/env` | 17 | Every configuration value |
+| `/actuator/heapdump` | 12 | The app's memory |
+
+::: note
+**Say:** Monday afternoon I turned on Application Insights for Project Pulse's staging slot. Nobody announced that site. Within hours, this. Ask the room what each line is looking for before you say it. Then point at the two actuator lines: that's Monday's attack surface, asked for by strangers. Every one failed, because what you don't expose can't leak. Module 4.7.
+:::
+
+## Reading the numbers
+
+::: steps
+- Dashboard: 190 of 263 requests failed. 72%!
+- Rows or requests? Sum `itemCount`: 221 of 374
+- What failed? Every 4xx counts. Those were the bots
+- What should the SLI count? Our errors: 5xx
+:::
+
+::: note
+**Say:** Same dashboard, three honest numbers. The agent samples bursts, so each stored row stands for itemCount requests; count rows and you undercount. Application Insights calls every 4xx a failure, so bots asking for missing files look like an outage. The SLI counts 5xx. The query is in module 4.5, in KQL, Azure's query language. And it still misses the invitation that fails while returning 200, which is step three today.
 :::
 
 ## Debugging from evidence

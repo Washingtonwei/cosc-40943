@@ -159,7 +159,7 @@ Logback comes with Spring Boot. Each of the other tools inside the app is one de
 
 Notice the two directions. Prometheus *pulls* metrics from the app; the app *pushes* spans to Zipkin. In production, none of these collectors runs yet (`TD-prod-observability`, section 3), which is why Wednesday's lab runs on a laptop.
 
-**A dashboard reads a collector, not `/actuator/metrics`.** That endpoint is a window for a person's spot check, not a history. A production dashboard needs a collector that keeps the history, and the collector gets the numbers one of the same two ways. Either it pulls them from an endpoint that only machines inside the network can reach, or the app pushes them to a monitoring service and exposes nothing. Either way, the public site does not serve its metrics. On Azure App Service, which has one public port, pushing is the natural fit; Project Pulse has not chosen a service yet.
+**A dashboard reads a collector, not `/actuator/metrics`.** That endpoint is a window for a person's spot check, not a history. A production dashboard needs a collector that keeps the history, and the collector gets the numbers one of the same two ways. Either it pulls them from an endpoint that only machines inside the network can reach, or the app pushes them to a monitoring service and exposes nothing. Either way, the public site does not serve its metrics. On Azure App Service, which has one public port, pushing is the natural fit. Project Pulse pushes to **Azure Application Insights**: on staging since November 9, 2026, on production after the term. App Service attaches the monitoring agent to the container, so the code did not change.
 
 **Other stacks.** Every major stack has the same pieces under other names. The most common today is **OpenTelemetry**, an open standard with libraries for Java, Python, JavaScript, .NET, and more, which produces all three kinds (it calls them *signals*) and sends them to tools like these. You may choose different tools; know what each one in Project Pulse does, and let the [adapt step](../studio.md#adapt) map them onto yours.
 
@@ -289,6 +289,20 @@ That percentile is per instance and cannot be averaged across instances. With Pr
 
 Whichever source you choose, write it under the requirement in your specification, with what it misses. A probe that checks only the status code can report "up" from the wrong page: `https://projectpulse.team/health`, with `/actuator` left off, answers `200 text/html` from the single-page app. Check the content type, too. An SLI that cannot fail measures nothing.
 
+**Reading the numbers on staging.** The afternoon Application Insights went on, staging's overview showed 190 failed requests out of 263, about 72 percent. Three questions got to the truth, each answered with a query in **KQL** (Kusto Query Language), Azure Monitor's query language: a table, then a pipeline of steps.
+
+1. **Rows or requests?** When requests arrive in a burst, the agent keeps a sample and marks each kept row with `itemCount`, the number of requests it stands for. Counting rows gave 38 failures out of 148. Summing `itemCount` gave 221 out of 374 (the overview's count plus the traffic since). Always sum `itemCount`.
+2. **What failed?** Application Insights counts every `4xx` as a failure. Grouped by URL, nearly all the failures were bots asking for secrets that are not there ([4.7](#47-management-endpoints-are-attack-surface)).
+3. **What should the SLI count?** The errors that are ours, the `5xx` answers:
+
+```kusto
+requests
+| where timestamp > ago(7d)
+| summarize availability = 100.0 * sumif(itemCount, toint(resultCode) < 500) / sum(itemCount)
+```
+
+It still misses an invitation whose email fails while the request returns `200`.
+
 ### 4.6 Traces: following one request
 
 A **trace** is one request's journey. Each step inside it is a **span**: when it started, how long it took, and which step called it. In a system of many services, a request can cross five of them, and the trace is the only thing that shows which one was slow.
@@ -357,6 +371,19 @@ management:
 | `health.show-details: when-authorized` | An anonymous caller sees only the overall status; an admin sees each check |
 | `info.git.mode: simple`, `java` and `os` off | The deployed commit is public; the exact JVM version, which tells an attacker which CVEs to try, is not |
 | Every other endpoint requires `ROLE_admin` (`EndpointRequest` rules in `SecurityConfiguration`) | The Actuator endpoints have their own rules, because the API's deny-by-default does not cover `/actuator/**` |
+
+**Who is asking?** Nobody announced Project Pulse's staging site, and bots found it anyway. In the first afternoon of its Application Insights data (November 9, 2026), the failed requests grouped by URL looked like this:
+
+| Path | Requests | What the bot hoped to find |
+|---|---|---|
+| `/v2/.env`, `/backend/.env`, `/admin/.env`, `/.env.local`, `/public/.env`, `/.env.anthropic` | 85 | Passwords and API keys |
+| `/.gitlab-ci.yml`, `/.github/workflows/deploy.yml`, `/serverless.yml` | 30 | Secrets in pipeline files |
+| `/.git/config` | 18 | The repository and its history |
+| `/actuator/env` | 17 | Every configuration value, the September 6 leak |
+| `/actuator/heapdump` | 12 | The app's memory, passwords included |
+| `/serviceAccountKey.json`, `/keys.json` | 9 | Cloud credentials |
+
+Every one of them failed. An endpoint you did not expose cannot leak, and within hours of going online, something will check whether you exposed it.
 
 **A health check is a design decision.** `/actuator/health` combines one check per dependency (database, mail, disk). If any one is `DOWN`, the whole app reports `DOWN` and answers `503`.
 
@@ -455,6 +482,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 6. Your agent added `LOGGER.info("Request: {}", requestBody)` to every controller. What do you say in review?
 7. Your mail server's password expired, and your health endpoint now returns `503`. Should it? What would you change?
 8. An agent says the 500s are caused by a race condition in the scheduler. What do you ask for before you accept that?
+9. A dashboard says 59% of your requests failed this afternoon. What do you check before you believe it?
 
 ## Related
 
@@ -475,6 +503,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - Spring Boot 4: `logging.structured.format.console` values (ecs, logstash, gelf); trace and span IDs added to log lines by default when Micrometer Tracing is present (logging correlation); `management.metrics.distribution.percentiles-histogram`; `hikaricp.connections.pending` metric name.
 - 4.3's production outputs checked 2026-11-08 with curl: `/actuator/health` gave `{"groups":["liveness","readiness"],"status":"UP"}`, `/actuator/info` gave version 2.0.0 and commit `7090c7f`, `/actuator/metrics` gave 404. Dev also lists `httpexchanges` and `custom-beans` in its exposure, but neither is registered at `30ad565` (no `HttpExchangeRepository` bean, no custom `@Endpoint`), so the table leaves them out. Dev checked 2026-11-08 at `bac7efe`: `/actuator` lists beans, configprops, env, health, info, loggers, mappings, metrics, prometheus; `heapdump` and `httpexchanges` answer 404 (heapdump's cause not found); `/actuator/prometheus` gives 401 anonymous and 200 to the admin. Ports from docker-compose.yml: Prometheus 9090, Grafana 3000, Zipkin 9411; the scrape interval is 15 s in docker/prometheus/prometheus.yml. Seeded admin login from Project Pulse's CLAUDE.md, Dev Credentials.
 - 4.4's sample plain and JSON log lines are illustrative. In rehearsal, turn on `logging.structured.format.console: ecs`, capture a real line, and match the sample's field names (especially the trace ID key) and the plain line's layout to it.
+- Application Insights on staging (enabled 2026-11-09 from the slot's Application Insights page; resource `peer-evaluation-tool-staging`, East US): overview 190 failed of 263; `count()` 38 of 148 rows; `sum(itemCount)` 221 of 374, queried later the same evening. The "Who is asking?" table sums the URL query's top results by group. Not yet checked: the status code the bots got for `/actuator/env` and `/actuator/heapdump` (expected 404; query `requests | where url has "actuator" | summarize sum(itemCount) by resultCode, url`). Whether the Brave trace ID in log lines matches the agent's operation ID is also unchecked.
 - Brave: unsampled requests still carry a trace ID in the logging context. Supported 2026-11-08: on dev with sampling at 0.1, every request log line seen carried `[traceId-spanId]`; not proven, since those requests may have been sampled.
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the Health check feature's behavior (calls the path about once a minute, restarts or replaces an instance that keeps failing; with one instance it is not taken out of rotation). The instructor confirmed 2026-11-08 that Health check is disabled for Project Pulse. Production `/actuator/health/liveness` and `/readiness` both gave `{"status":"UP"}` on 2026-11-08; that they exclude db and mail is Spring Boot's default group membership, not observed during the staging outage.
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
