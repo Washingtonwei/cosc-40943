@@ -241,7 +241,7 @@ Find your platform's log stream before the first incident.
 ```
 
 ```json
-{"log.level":"ERROR", "log.logger":"team.projectpulse.user.userinvitation.UserInvitationService",
+{"log":{"level":"ERROR", "logger":"team.projectpulse.user.userinvitation.UserInvitationService"},
  "message":"Could not send an invitation email for section 2 of course 1", "traceId":"6af11fb6..."}
 ```
 
@@ -701,17 +701,17 @@ Asked to "add logging," an agent logs request bodies, emails, and tokens. Grep y
 ::: steps
 - Grafana shows nothing: no data source. Add Prometheus
 - Still nothing: Prometheus's targets page says 401. Why?
-- Paste an admin token into prometheus.yml, restart Prometheus
+- Sign the scrape in as the admin, restart Prometheus
 - Build one panel, then ask what it measures
 :::
 
 ::: note
-**Do:** Data source URL http://prometheus:9090. Targets page localhost:9090/targets. The 401 is the ROLE_admin rule from Monday; the token goes in the commented authorization block. Panel query: sum by (status) (rate(http_server_requests_seconds_count[1m])). Ask the room what the number counts and what it misses.
+**Do:** Data source URL http://prometheus:9090. Targets page localhost:9090/targets. The 401 is the ROLE_admin rule from Monday. Uncomment the basic_auth block in docker/prometheus/prometheus.yml, then docker compose restart prometheus. Why not paste a token: it dies on every backend restart, and step 3 restarts it. Panel query: sum by (status) (rate(http_server_requests_seconds_count[1m])). Ask the room what the number counts and what it misses.
 :::
 
 ## How production does it {.center}
 
-![Project Pulse's observability stack. On a developer laptop, Prometheus pulls from the app's /actuator/prometheus every 15 seconds with an admin token, Grafana draws it, Zipkin receives traces, and Mailpit and MySQL run beside the app. In production on Azure, the app serves only /health and /info publicly, and the monitoring agent App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them](img/observability-stack.svg)
+![Project Pulse's observability stack. On a developer laptop, Prometheus pulls from the app's /actuator/prometheus every 15 seconds, signed in as the admin, Grafana draws it, Zipkin receives traces, and Mailpit and MySQL run beside the app. In production on Azure, the app serves only /health and /info publicly, and the monitoring agent App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them](img/observability-stack.svg)
 
 ::: note
 **Say:** What we just did is pull: Prometheus sits next to the app and scrapes it. That fits Kubernetes and virtual machines, where the scraper shares a private network with the app. Azure App Service gives us one public port, so production pushes instead: an agent inside the container sends everything out to Application Insights, and /actuator/prometheus stays closed. Nothing to scrape, no password to leak.
@@ -748,7 +748,7 @@ Chaos engineering, student edition: stop a container and see who emails first.
 :::
 
 ::: note
-**Do:** docker compose stop mailpit. Read the answer in the latency metric and the email span in Zipkin, localhost:9411. This is a degradation test from Reliability 4.4, seen live. Restart Mailpit afterward.
+**Do:** Add the line, then ./mvnw -q compile in a second terminal; saving alone restarts nothing. docker compose stop mailpit, then send with new addresses. It degrades in about 60 ms: HTTP 200 with both addresses under "failed", an ERROR line per address, and two email spans marked "Connection refused" in Zipkin, localhost:9411. The latency metric shows nothing. Point at "timeout -1" in the span: refused fails fast, but a mail server that stalls would hang the request. This is a degradation test from Reliability 4.4, seen live. Restart Mailpit afterward.
 :::
 
 ## 4. Find the 500 from its log line
@@ -761,7 +761,7 @@ Chaos engineering, student edition: stop a container and see who emails first.
 :::
 
 ::: note
-**Do:** The catch-all handler logs it since pull request 110. Search the terminal output for the trace ID in the error line. Paste the stack trace, the request, and the commit into the agent, and ask for a hypothesis and a test that reproduces it, not a fix.
+**Do:** DELETE /api/v1/criteria/1 with the admin token: a 500, because criterion 1 is in the seeded rubric (a foreign key failure). It fails every time, so it can be rerun. Query http_server_requests_seconds_count{status="500"} in Prometheus: the route shows, but exception="none", because the handler caught it first. The metric says where; only the log says why. The catch-all handler logs it since pull request 110. Search the terminal output for the trace ID in the error line. Paste the stack trace, the request, and the commit into the agent, and ask for a hypothesis and a test that reproduces it, not a fix.
 :::
 
 ## 5. Turn one metric into an SLO

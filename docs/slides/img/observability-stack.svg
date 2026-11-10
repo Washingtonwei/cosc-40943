@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" role="img" aria-labelledby="t d" font-family="'Instrument Sans','Segoe UI',Helvetica,Arial,sans-serif">
 <title id="t">Project Pulse's observability stack: the laptop pulls, production pushes</title>
-<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus every 15 seconds and Grafana draws dashboards from it; a footnote says the scrape needs an admin token pasted into prometheus.yml, because the endpoint is admin only. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, only the health and info endpoints are public, and nothing scrapes the app: the monitoring agent that App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them, under a 1 GB daily cap. That decision is KD-push-telemetry. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse on 2026-11-10.</desc>
+<desc id="d">On a developer's laptop, docker-compose runs Prometheus, Grafana, Zipkin, Mailpit, and MySQL beside the Spring Boot app. Prometheus scrapes /actuator/prometheus every 15 seconds and Grafana draws dashboards from it; a footnote says the scrape signs in as the admin through a commented basic_auth block in prometheus.yml, because the endpoint is admin only. Traces, 10 percent sampled, go to Zipkin; mail goes to Mailpit. In production on Azure, only the health and info endpoints are public, and nothing scrapes the app: the monitoring agent that App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them, under a 1 GB daily cap. That decision is KD-push-telemetry. Redrawn from the instructor's 2025 Web Tech deck, updated to Project Pulse on 2026-11-10.</desc>
 <defs>
 <marker id="st-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9AA3B5"/></marker>
 </defs>
@@ -48,7 +48,7 @@
 <ellipse cx="540" cy="336" rx="44" ry="11" fill="#1B2335" stroke="#2A3347" stroke-width="2"/>
 <text x="540" y="372" text-anchor="middle" fill="#F2EDE3" font-size="15" font-weight="700">MySQL</text>
 <line x1="540" y1="288" x2="540" y2="322" stroke="#9AA3B5" stroke-width="2.5"/>
-<text x="48" y="414" fill="#9AA3B5" font-size="13">* Admin only: paste an admin token into docker/prometheus/prometheus.yml.</text>
+<text x="48" y="414" fill="#9AA3B5" font-size="13">* Admin only: uncomment the basic_auth block in docker/prometheus/prometheus.yml.</text>
 <!-- production panel -->
 <rect x="642" y="58" width="330" height="374" rx="16" fill="#161D2C" stroke="#2A3347" stroke-width="2"/>
 <text x="662" y="86" fill="#9AA3B5" font-size="14" font-weight="800" letter-spacing="2">PRODUCTION · AZURE</text>
