@@ -8,7 +8,7 @@
 
 By the end of this module, a student can:
 
-1. Say what monitoring answers and what observability adds, pick the kind of telemetry (log, metric, or trace) that answers a given question, and say what each tool in Project Pulse's stack (Actuator, Prometheus, Grafana, Zipkin) does.
+1. Say what monitoring answers and what observability adds, pick the kind of telemetry (log, metric, or trace) that answers a given question, and say what each tool in Project Pulse's stack (Actuator, Prometheus, Grafana, Zipkin, and Application Insights in production) does.
 2. Get a log line out of a deployed system and find every line for one failed request by its trace ID.
 3. Read a metric from Spring Boot Actuator, say what it actually counts, and choose the four golden signals for a service.
 4. Turn an SLO into a measured value: name where the indicator comes from and what it misses.
@@ -68,9 +68,9 @@ Three of each, all from Project Pulse:
 |---|---|
 | **Metric** | `http.server.requests`: how many requests, how long each took, by URL and status. `jvm.memory.used`: memory in use right now. `hikaricp.connections.pending`: requests waiting for a database connection. |
 | **Trace** | An instructor invites two students, and each gets an email ([4.6](#46-traces-following-one-request)). A user logs in (`POST /api/v1/users/login`). A student adds an activity to a weekly activity report (`POST /api/v1/activities`). |
-| **Log** | `INFO Sent {} of {} weekly reminders for section {}` (`WeeklyReminderScheduler`). `ERROR Could not send the invitation email to {}` (`UserInvitationService`). `ERROR Unhandled exception`, with the stack trace (`ExceptionHandlerAdvice`). |
+| **Log** | `INFO Sent {} of {} weekly reminders for section {}` (`WeeklyReminderScheduler`). `ERROR Could not send an invitation email for section {} of course {}` (`UserInvitationService`). `ERROR Unhandled exception`, with the stack trace (`ExceptionHandlerAdvice`). |
 
-Each `{}` is filled in when the line is written: the counts, the section, the address.
+Each `{}` is filled in when the line is written: the counts, the section, the course. Never the student's email address: identifiers, not content.
 
 Use them in that order. A metric is the cheapest to keep, and it tells you *that* something is wrong: the error rate went up after the last deploy. A trace tells you *where*: the invitation request spent its time sending email, if someone instrumented the email step ([4.6](#46-traces-following-one-request)). A log tells you *why*: the mail server rejected the address. Each needs the others. A metric with no logs can say "something is wrong" and nothing more.
 
@@ -159,7 +159,7 @@ Notice the two directions. Prometheus *pulls* metrics from the app; the app *pus
 
 **A dashboard reads a collector, not `/actuator/metrics`.** That endpoint is a window for a person's spot check, not a history. A production dashboard needs a collector that keeps the history, and the collector gets the numbers one of the same two ways. Either it *pulls* them from an endpoint that only machines inside the network can reach, or the app *pushes* them to a monitoring service and exposes nothing. Either way, the public site does not serve its metrics.
 
-Which way depends on where the app runs. Pull-based Prometheus fits Kubernetes and virtual machines, where the scraper sits inside the same private network as the app. On a PaaS (platform as a service) such as Azure App Service, the app gets one public port and no private network to share, so pushing is the standard pattern. Project Pulse pushes to **Azure Application Insights**, Azure's monitoring service, on staging and production since November 9, 2026 ([`KD-push-telemetry`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#architecture-decisions)). App Service attaches a monitoring agent to the container, so no code changed, and production still serves no metrics endpoint: `/actuator/prometheus` stays closed.
+Which way depends on where the app runs. Pull-based Prometheus fits Kubernetes and virtual machines, where the scraper sits inside the same private network as the app. On a PaaS (platform as a service) such as Azure App Service, the app gets one public port and no private network to share, so pushing is the standard pattern. Project Pulse pushes to **Azure Application Insights**, Azure's monitoring service, on staging and production since November 9, 2026 ([`KD-push-telemetry`](https://github.com/Washingtonwei/project-pulse/blob/main/docs/design/architectural-design.md#architecture-decisions)). App Service attaches a monitoring agent to the container, which takes no code, and production still serves no metrics endpoint: `/actuator/prometheus` stays closed.
 
 ![Project Pulse's observability stack. On a developer laptop, Prometheus pulls from the app's /actuator/prometheus every 15 seconds with an admin token, Grafana draws it, Zipkin receives traces, and Mailpit and MySQL run beside the app. In production on Azure, the app serves only /health and /info publicly, and the monitoring agent App Service attaches pushes requests, logs, and metrics out to Application Insights, where Live Metrics, KQL queries, and alerts read them](../slides/img/observability-stack.svg)
 
@@ -182,20 +182,20 @@ Actuator's `loggers`, `env`, and `mappings` have no common equivalent, so changi
 
 [Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need) covers what to log: levels by audience, the exception object in every `catch`, identifiers and never content. This section is what happens to the line after the code writes it.
 
-**Where it goes.** A container should write logs to standard output and let the platform collect them (Wiggins 2011, *The Twelve-Factor App*). Project Pulse does: Logback's default console output, nothing written to a file. On Azure App Service, standard output appears in the app's log stream once application logging is turned on. Find out where your platform puts it before the first incident, not during it.
+**Where it goes.** A container should write logs to standard output and let the platform collect them (Wiggins 2011, *The Twelve-Factor App*). Project Pulse does: Logback's default console output, nothing written to a file. On Azure App Service, standard output appears in the app's log stream once application logging is turned on, and Application Insights keeps each line as a row in its `traces` table, searchable with KQL ([4.5](#45-metrics-what-the-numbers-count)). Find out where your platform puts it before the first incident, not during it.
 
 **Structured, so a machine can search it.** A plain line is written for a person reading one line:
 
 ```text
-2026-11-09T09:02:14 ERROR [6af11fb6455b81a0d269388fabd85224-0860298ded65bb60] t.p.system.EmailService : Could not send the invitation email
+2026-11-09T09:02:14 ERROR [6af11fb6455b81a0d269388fabd85224-0860298ded65bb60] t.p.u.u.UserInvitationService : Could not send an invitation email for section 2 of course 1
 ```
 
 Production has thousands of lines, and you will search them by field: every error, from this class, in the last hour, with this trace ID. A structured line is the same event as JSON, with each piece in a named field (shortened here):
 
 ```json
 {"@timestamp":"2026-11-09T09:02:14Z", "log.level":"ERROR",
- "log.logger":"team.projectpulse.system.EmailService",
- "message":"Could not send the invitation email", "traceId":"6af11fb6455b81a0d269388fabd85224"}
+ "log.logger":"team.projectpulse.user.userinvitation.UserInvitationService",
+ "message":"Could not send an invitation email for section 2 of course 1", "traceId":"6af11fb6455b81a0d269388fabd85224"}
 ```
 
 Spring Boot writes JSON logs with one property:
@@ -268,7 +268,7 @@ try {
     invitedEmails.add(email);
     meterRegistry.counter("invitations.sent", "outcome", "success").increment();
 } catch (RuntimeException e) {
-    LOGGER.error("Could not send the invitation email to {}", email, e);
+    LOGGER.error("Could not send an invitation email for section {} of course {}", sectionId, courseId, e);
     failedEmails.add(email);
     meterRegistry.counter("invitations.sent", "outcome", "failure").increment();
 }
@@ -289,6 +289,7 @@ The count appears at `/actuator/metrics/invitations.sent?tag=outcome:failure`, a
 |---|---|---|
 | **The platform's metrics** (Azure App Service's request and HTTP 5xx counts, kept for you) | Requests and server errors the platform saw | Wrong answers returned with a `200` |
 | **An outside probe** of the health endpoint, every minute, from somewhere that is not your app | Whether the app answers at all, including when the platform is down | Everything the health check does not check |
+| **A monitoring service's request log** (Application Insights' `requests` table, below) | Every request the app answered, with its status, kept for you | Requests that never arrived; wrong answers returned with a `200` |
 | **The application's own metric** (`http.server.requests` by status, over the window) | Success ratio of real requests, per route | Requests that never arrived; resets on every restart |
 
 Project Pulse's `PER-report-load` is already SLO-shaped: dashboard and report views within 500 milliseconds at the 95th percentile, which means 95 of every 100 views load within 500 milliseconds. Spring Boot computes a 95th percentile in the application when asked, and `/actuator/metrics/http.server.requests` then shows it:
@@ -356,7 +357,7 @@ management:
       probability: 0.1 # Sample 10% of traces to bound trace volume
 ```
 
-That is a tradeoff to make deliberately. At 10%, nine of ten failed requests have no trace in Zipkin. Their log lines still carry a trace ID ([4.4](#44-logs-in-production)), so the logs still tie together; only the timing picture is missing. Raise the rate in development and for a demo; keep it bounded in production, where every trace costs storage.
+That is a tradeoff to make deliberately. At 10%, nine of ten failed requests have no trace in Zipkin. Their log lines still carry a trace ID ([4.4](#44-logs-in-production)), so the logs still tie together; only the timing picture is missing. Raise the rate in development and for a demo; keep it bounded in production, where every trace costs storage. In Project Pulse's deployed profiles Brave exports nothing, and the Application Insights agent samples on its own (the `itemCount` in [4.5](#45-metrics-what-the-numbers-count)).
 
 ### 4.7 Management endpoints are attack surface
 
@@ -444,6 +445,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 | Risk (classic + AI-introduced) | Human judgment that catches it | Mitigation |
 |---|---|---|
 | **Classic:** telemetry that silently collects nothing (Project Pulse's tracing, off for nine months after a framework upgrade) | Asking "when did I last see this number change?" | Break something on purpose once and check that the telemetry shows it; after every framework upgrade, check that a log line still carries a trace ID |
+| **Classic:** a monitoring bill with no ceiling (a log flood or a bot storm, billed by the gigabyte) | Asking "what does a bad day cost?" | Set the daily ingestion cap on the first day; Azure leaves it off |
 | **Classic:** management endpoints exposed to the internet | Asking of every endpoint "what does this do on the public internet?" | Expose `health` and `info` by default; everything else behind a role |
 | **AI-amplified:** an agent asked to "add logging" or "add monitoring" logs request bodies, emails, or tokens | Reviewing what was logged, not only whether | The charter's logging rule ([Implementation 4.9](implementation.md#49-log-what-the-person-at-2-am-will-need)); grep the logs for an email address |
 | **AI-introduced:** a fluent diagnosis from a symptom, with no evidence | Asking "which log line or trace shows that?" | Give the agent evidence first; reproduce with a failing test before the fix |
@@ -485,6 +487,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - Brill, S. "Obama's Trauma Team." *Time*, February 27, 2014. <https://time.com/10228/obamas-trauma-team/>. The HealthCare.gov rescue, from the first dashboard to the December 1 report card.
 - Beyer et al., *Site Reliability Engineering*, Part III introduction, "Practices," for the service reliability hierarchy and where it came from. <https://sre.google/sre-book/part-III-practices/>
 - Wiggins, A. "The Twelve-Factor App," factor XI, Logs. 2011. <https://12factor.net/logs>
+- Microsoft, "Configuration options: Azure Monitor Application Insights for Java." <https://learn.microsoft.com/en-us/azure/azure-monitor/app/java-standalone-config>. The agent Project Pulse runs in production: role name, sampling, and what it collects.
 - Spring Boot reference, Actuator: <https://docs.spring.io/spring-boot/reference/actuator/index.html>. Endpoints, metrics, tracing, and observability.
 - Harrison, R. "Gathering Metrics with Micrometer and Spring Boot Actuator." 2021. <https://ryanharrison.co.uk/2021/01/06/gathering-metrics-micrometer-spring-boot-actuator.html>
 - Sigelman, B. H., et al. "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure." Google Technical Report, 2010. Where modern tracing comes from.
@@ -526,7 +529,7 @@ Observability watches the real system with real users, after the fact. **Dynamic
 - Azure App Service: standard output in the log stream with application logging on; built-in Requests and Http 5xx metrics; the Health check feature's behavior (calls the path about once a minute, restarts or replaces an instance that keeps failing; with one instance it is not taken out of rotation). The instructor confirmed 2026-11-08 that Health check is disabled for Project Pulse. Production `/actuator/health/liveness` and `/readiness` both gave `{"status":"UP"}` on 2026-11-08; that they exclude db and mail is Spring Boot's default group membership, not observed during the staging outage.
 - Majors et al. 2022 chapter 1; Beyer et al. chapter 6 title; Sigelman et al. 2010.
 - Project Pulse facts checked against `main` at `75340e1` on 2026-11-08: Actuator, micrometer-registry-prometheus, micrometer-tracing-bridge-brave, zipkin-reporter-brave (backend/pom.xml; #112 replaces the last two with spring-boot-micrometer-tracing-brave and spring-boot-starter-zipkin and declares spring-boot-starter-micrometer-metrics); exposure, show-details, info, sampling 0.1 (backend/src/main/resources/application.yml); Logback to stdout, no structured logging, TD-prod-observability (docs/design/architectural-design.md, Observability & operations); the anonymous scrape and the commented admin-token block (docker/prometheus/prometheus.yml, #112); mysql, mailpit, prometheus, grafana, zipkin (docker-compose.yml); handleOtherException logged nothing at `75340e1` and logs the exception since pull request #110 (`30ad565`); loggers declared in 5 of 278 main Java files; AVL-uptime and PER-report-load (software-requirements-specification.md lines 768 and 738).
-- Code excerpts checked against `main` at `64559aa` on 2026-11-09: the five dependencies in 4.3 and `spring-boot-starter-aspectj` (backend/pom.xml); the abridged `management` block in 4.7 (application.yml lines 32 to 60); the `try`/`catch` around `sendInvitationEmail` in `UserInvitationService.sendEmailInvitations`. The `invitations.sent` counter in 4.5 is a sketch, not in the repository; `management.observations.annotations.enabled` is not set in the repository either (the lab adds it). 4.2's log examples are the format strings in WeeklyReminderScheduler, UserInvitationService, and ExceptionHandlerAdvice.handleOtherException; the trace examples use the invitation request from 4.6, the login endpoint, and ActivityController's POST. 4.3's Python and JavaScript libraries checked on PyPI and npm 2026-11-09: each released in 2025 or 2026 except prom-client (15.1.3, 2024-06-27, still the standard Node client); @godaddy/terminus left out (last release 2023).
+- Code excerpts checked against `main` at `64559aa` on 2026-11-09: the five dependencies in 4.3 and `spring-boot-starter-aspectj` (backend/pom.xml); the abridged `management` block in 4.7 (application.yml lines 32 to 60); the `try`/`catch` around `sendInvitationEmail` in `UserInvitationService.sendEmailInvitations` (its log line rechecked at `a9ef457` on 2026-11-10: section and course since #114, no address). 4.4's sample lines use that message. The `invitations.sent` counter in 4.5 is a sketch, not in the repository; `management.observations.annotations.enabled` is not set in the repository either (the lab adds it). 4.2's log examples are the format strings in WeeklyReminderScheduler, UserInvitationService, and ExceptionHandlerAdvice.handleOtherException; the trace examples use the invitation request from 4.6, the login endpoint, and ActivityController's POST. 4.3's Python and JavaScript libraries checked on PyPI and npm 2026-11-09: each released in 2025 or 2026 except prom-client (15.1.3, 2024-06-27, still the standard Node client); @godaddy/terminus left out (last release 2023).
 - Wednesday's lab, to confirm in rehearsal on Project Pulse dev: the Prometheus scrape with a pasted admin token; Grafana has no data source and no dashboard (the repository provisions neither, and the instructor's laptop showed none on 2026-11-08), so step 2 adds the data source and builds one panel live; confirm the panel query renders; what a mail-sending request does with Mailpit stopped (degrades, errors, or hangs, and for how long); which request reaches `handleOtherException`. Rewrite lab steps 2 to 4 in section 7 to match what rehearsal finds. Tracing was off from the Spring Boot 4 upgrade (`d5b67b2`, 2026-01-24) until #112 (merged 2026-11-09 as `64559aa`): no Tracer bean, no trace ID in log lines (observed 2026-11-08 before and after the change; trace IDs are 32 hex characters, shown as `[traceId-spanId]`); spans reach Zipkin with #112. Observed 2026-11-08 with #112 and sampling 1.0 on dev: the invitation trace (POST /api/v1/sections/2/students/email-invitations?courseId=1, two addresses, Mailpit up) has an HTTP span, Spring Security's spans, and one secured request span with no database or SMTP child (174.8 ms); with @Observed(name = "email.send", contextualName = "send invitation email") on EmailService.sendInvitationEmail and management.observations.annotations.enabled=true, two email spans appear (105.1 ms, 15.4 ms) in a 207.1 ms request. Both runs drawn in observability-trace-invitation.svg. Not yet seen: the trace with Mailpit stopped (step 3, which now adds the annotation live). Production probe check 2026-11-08: `/actuator/helth` 404, `/helth` 200 text/html, `/api/v1/helth` 401. observability-request-journey.svg is no longer used by the module; its left panel claims an SMTP span, so redraw it before any deck reuses it.
 - Staging health DOWN from the mail check, fixed 2026-11-04 (course status.md, week 11).
 - The case-study link points at the architecture document's Observability & operations section, which records the incident; the course's own write-up is notes/case-study-actuator-leak.md (not published).

@@ -130,11 +130,11 @@ Install the port before the breakdown, not during it.
 | Metric | Trace | Log |
 |---|---|---|
 | http.server.requests | An instructor invites two students | Sent {} of {} weekly reminders |
-| jvm.memory.used | A user logs in | Could not send the invitation email |
+| jvm.memory.used | A user logs in | Could not send an invitation email |
 | hikaricp.connections.pending | A student adds an activity | Unhandled exception |
 
 ::: note
-**Say:** Metrics: every request counted and timed, memory in use, requests waiting for a database connection. Traces: one request each, start to finish; we'll open the invitation trace in a few minutes. Logs: real lines from the code. The first is INFO from the weekly reminder job, the other two are ERROR, and the last one is the catch-all handler from pull request 110. The braces get filled in with the counts, the section, and the address.
+**Say:** Metrics: every request counted and timed, memory in use, requests waiting for a database connection. Traces: one request each, start to finish; we'll open the invitation trace in a few minutes. Logs: real lines from the code. The first is INFO from the weekly reminder job, the other two are ERROR, and the last one is the catch-all handler from pull request 110. The braces get filled in with the counts, the section, and the course. Never the student's email address.
 :::
 
 ## How do you know?
@@ -237,12 +237,12 @@ Find your platform's log stream before the first incident.
 ## Written for a machine
 
 ```text
-09:02:14 ERROR [6af11fb6...-0860298d...] EmailService : Could not send the invitation email
+09:02:14 ERROR [6af11fb6...-0860298d...] UserInvitationService : Could not send an invitation email for section 2 of course 1
 ```
 
 ```json
-{"log.level":"ERROR", "log.logger":"team.projectpulse.system.EmailService",
- "message":"Could not send the invitation email", "traceId":"6af11fb6..."}
+{"log.level":"ERROR", "log.logger":"team.projectpulse.user.userinvitation.UserInvitationService",
+ "message":"Could not send an invitation email for section 2 of course 1", "traceId":"6af11fb6..."}
 ```
 
 ::: note
@@ -338,7 +338,7 @@ try {
     this.emailService.sendInvitationEmail(userInvitation);
     meterRegistry.counter("invitations.sent", "outcome", "success").increment();
 } catch (RuntimeException e) {
-    LOGGER.error("Could not send the invitation email to {}", email, e);
+    LOGGER.error("Could not send an invitation email for section {} of course {}", sectionId, courseId, e);
     meterRegistry.counter("invitations.sent", "outcome", "failure").increment();
 }
 ```

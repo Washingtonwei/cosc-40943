@@ -484,7 +484,7 @@ Right level, parameters, the exception object. And every failed student's email 
 :::
 
 ::: note
-From Project Pulse's WeeklyReminderScheduler today. It follows four of the rules and breaks the fifth: every failed student's email address goes into the log. Fix: `student.getId()`; the operator looks the address up. CO-ferpa. Catching this is the reviewer's job, because the agent copied it from the code around it.
+From Project Pulse's WeeklyReminderScheduler, October 2026. It follows four of the rules and breaks the fifth: every failed student's email address goes into the log. Fix: `student.getId()`; the operator looks the address up. CO-ferpa. Catching this is the reviewer's job, because the agent copied it from the code around it. Pull request 114 made exactly this fix in November 2026, before Project Pulse's logs started flowing to Azure's monitoring service.
 :::
 
 ## Several agents at once
