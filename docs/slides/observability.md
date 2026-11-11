@@ -697,17 +697,17 @@ Asked to "add logging," an agent logs request bodies, emails, and tokens. Grep y
 **Do:** curl -X POST -u b.wei@abc.edu:123456 localhost/api/v1/users/login, then the three GETs with the bearer token. Ask: which endpoint would you least want a stranger to reach? Then the loggers POST from Monday on team.projectpulse.user, and show the DEBUG lines appear.
 :::
 
-## 2. The empty dashboard
+## 2. Read the dashboard
 
 ::: steps
-- Grafana shows nothing: no data source. Add Prometheus
-- Still nothing: Prometheus's targets page says 401. Why?
-- Sign the scrape in as the admin, restart Prometheus
-- Build one panel, then ask what it measures
+- Availability, errors, uptime: what does each number count?
+- Grafana stores nothing. Where do the numbers come from?
+- The scrape signs in as the admin. Without that: 401. Why?
+- Two alerts email Mailpit: any 5xx, any ERROR line
 :::
 
 ::: note
-**Do:** Data source URL http://prometheus:9090. Targets page localhost:9090/targets. The 401 is the ROLE_admin rule from Monday. Uncomment the basic_auth block in docker/prometheus/prometheus.yml, then docker compose restart prometheus. Why not paste a token: it dies on every backend restart, and step 3 restarts it. Panel query: sum by (status) (rate(http_server_requests_seconds_count[1m])). Ask the room what the number counts and what it misses.
+**Do:** Grafana localhost:3000, Dashboards, Project Pulse folder. Send the curl loop first so the request panel has a 200 line and a 401 line. Ask why the 401s don't count against availability, and why you'd watch uptime. Data source: http://prometheus:9090. Then the basic_auth block in docker/prometheus/prometheus.yml: the ROLE_admin rule from Monday. Why not paste a token: it dies on every backend restart, and step 3 restarts it. Optional: comment the block out, restart Prometheus, and show the 401 on localhost:9090/targets. The dashboard and alerts are files in docker/grafana/provisioning: pull main and you have them.
 :::
 
 ## How production does it {.center}
@@ -726,14 +726,15 @@ Asked to "add logging," an agent logs request bodies, emails, and tokens. Grep y
 - Add the @Observed line, sampling to 1.0, send an invitation
 - Stop the Mailpit container
 - Send another. Does Project Pulse degrade, error, or hang?
+- The alert fires. Where is its email?
 :::
 
 ::: joke
-Chaos engineering, student edition: stop a container and see who emails first.
+Our alert for the mail server is sent by email. What could go wrong?
 :::
 
 ::: note
-**Do:** Add the line, then ./mvnw -q compile in a second terminal; saving alone restarts nothing. docker compose stop mailpit, then send with new addresses. It degrades in about 60 ms: HTTP 200 with both addresses under "failed", an ERROR line per address, and two email spans marked "Connection refused" in Zipkin, localhost:9411. The latency metric shows nothing. Point at "timeout -1" in the span: refused fails fast, but a mail server that stalls would hang the request. This is a degradation test from Reliability 4.4, seen live. Restart Mailpit afterward.
+**Do:** Add the line, then ./mvnw -q compile in a second terminal; saving alone restarts nothing. docker compose stop mailpit, then send with new addresses. It degrades in about 60 ms: HTTP 200 with both addresses under "failed", an ERROR line per address, and two email spans marked "Connection refused" in Zipkin, localhost:9411. The request panels look fine; the ERROR count and the email panel's MailSendException line catch it, and the ERROR alert fires. Point at "timeout -1" in the span: refused fails fast, but a mail server that stalls would hang the request. This is a degradation test from Reliability 4.4, seen live. Restart Mailpit: the inbox is empty. The alert email failed once and is gone, not even a "resolved" later. An alert must never travel through the thing it watches.
 :::
 
 ## 4. Find the 500 on production
@@ -746,7 +747,7 @@ Chaos engineering, student edition: stop a container and see who emails first.
 :::
 
 ::: note
-**Do:** Portal, peer-evaluation-tool, Logs, KQL mode. Rerun opener query 2: one row says 500, POST /api/v1/evaluations. Ask the room what they'd look at next before running the next slide's query. If the portal or the network fails, use the laptop fallback in the runbook: DELETE /api/v1/criteria/1.
+**Do:** Portal, peer-evaluation-tool, Logs, KQL mode. Rerun opener query 2: one row says 500, POST /api/v1/evaluations. Ask the room what they'd look at next before running the next slide's query. If the portal or the network fails, use the laptop fallback in the runbook: DELETE /api/v1/criteria/1, which also fires both alerts and, with Mailpit up, emails them.
 :::
 
 ## One request, joined
@@ -793,7 +794,7 @@ Pick the indicator, the target, and the window. What does your number miss?
 :::
 
 ::: note
-**Say:** The way your team will for Checkpoint 3. Use the panel from step 2. Then name what it can't see: requests that never arrived, restarts, wrong answers with a 200.
+**Say:** The way your team will for Checkpoint 3. Start from the dashboard's availability panel: it is the indicator; the room picks the target and window. Then name what it can't see: requests that never arrived, restarts, wrong answers with a 200.
 :::
 
 ## Your week
