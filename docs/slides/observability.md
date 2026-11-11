@@ -720,22 +720,6 @@ Asked to "add logging," an agent logs request bodies, emails, and tokens. Grep y
 **Do:** Portal, the peer-evaluation-tool Application Insights resource, Live Metrics. Open projectpulse.team in another tab and click around. Requests appear within seconds.
 :::
 
-## Find it on Azure
-
-```kusto
-let id = "<traceId from a log line>";
-let op = toscalar(traces | where tostring(customDimensions.traceId) == id
-                  | take 1 | project operation_Id);
-union requests, dependencies, exceptions, traces
-| where operation_Id == op | order by timestamp asc
-```
-
-::: note
-**Say:** On Azure one request gets two IDs: Brave's on the log line, and the agent's own. The agent keeps Brave's on every log row, so one ID still finds the request, its database queries, and its log lines. Look: the agent times every SQL query, which Zipkin on my laptop doesn't.
-
-**Do:** Logs, KQL mode. Get an ID first: traces | where timestamp > ago(1h) and isnotempty(customDimensions.traceId) | project timestamp, id = tostring(customDimensions.traceId), message | take 5.
-:::
-
 ## 3. Stop the mail server
 
 ::: steps
@@ -752,17 +736,54 @@ Chaos engineering, student edition: stop a container and see who emails first.
 **Do:** Add the line, then ./mvnw -q compile in a second terminal; saving alone restarts nothing. docker compose stop mailpit, then send with new addresses. It degrades in about 60 ms: HTTP 200 with both addresses under "failed", an ERROR line per address, and two email spans marked "Connection refused" in Zipkin, localhost:9411. The latency metric shows nothing. Point at "timeout -1" in the span: refused fails fast, but a mail server that stalls would hang the request. This is a degradation test from Reliability 4.4, seen live. Restart Mailpit afterward.
 :::
 
-## 4. Find the 500 from its log line
+## 4. Find the 500 on production
 
 ::: steps
-- Trigger an unexpected exception
-- Narrow it down with the metric
-- Find its stack trace by trace ID
+- Production's first day: one 500. On which route?
+- Join everything with its operation_Id
+- Read the cause
 - Hand the agent the evidence; ask for a failing test first
 :::
 
 ::: note
-**Do:** DELETE /api/v1/criteria/1 with the admin token: a 500, because criterion 1 is in the seeded rubric (a foreign key failure). It fails every time, so it can be rerun. Query http_server_requests_seconds_count{status="500"} in Prometheus: the route shows, but exception="none", because the handler caught it first. The metric says where; only the log says why. The catch-all handler logs it since pull request 110. Search the terminal output for the trace ID in the error line. Paste the stack trace, the request, and the commit into the agent, and ask for a hypothesis and a test that reproduces it, not a fix.
+**Do:** Portal, peer-evaluation-tool, Logs, KQL mode. Rerun opener query 2: one row says 500, POST /api/v1/evaluations. Ask the room what they'd look at next before running the next slide's query. If the portal or the network fails, use the laptop fallback in the runbook: DELETE /api/v1/criteria/1.
+:::
+
+## One request, joined
+
+```kusto
+let op = toscalar(requests
+    | where timestamp > ago(2d) and resultCode == "500"
+          and name == "POST /api/v1/evaluations"
+    | take 1 | project operation_Id);
+union requests, dependencies, exceptions, traces
+| where operation_Id == op
+| project timestamp, itemType, name, resultCode, message
+| order by timestamp asc
+```
+
+::: note
+**Say:** Ten database reads, one INSERT into peer_evaluation, then MySQL: "Data too long for column private_comment." At 6:08 Tuesday morning a student wrote me a private comment longer than 255 characters, and lost it. Ask the room: whose bug is that? Point out that the INSERT shows placeholders, not the comment: no student data on the screen. The agent also timed every query, which Zipkin on my laptop doesn't.
+:::
+
+## Hand it to the agent
+
+::: key
+"Here is the request, the SQL, and the error from production. Explain the failure and propose a test that reproduces it. Do not fix it yet."
+:::
+
+::: note
+**Do:** Paste the query result into the agent in the Project Pulse checkout. Check its hypothesis against the code: private_comment is varchar(255) in V1__baseline.sql, PeerEvaluationDto checks no length, and the textarea's max-length="255" is a typo for maxlength, so the form had no limit. Then show pull request 118's test: a 256-character comment, expecting 400. Before the fix it failed with 500, like production.
+:::
+
+## 99.95% {.center}
+
+::: key
+The SLI called that day a success. The 0.05% was one student's work.
+:::
+
+::: note
+**Say:** 1,978 requests out of 1,979 were fine, and the SLO would be happy. The number told us where to look; someone still had to look. That's why your Checkpoint 3 asks for one failed request found from evidence, not just a percentage.
 :::
 
 ## 5. Turn one metric into an SLO
