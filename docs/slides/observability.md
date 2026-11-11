@@ -590,30 +590,31 @@ Alive but not ready: me at 8 a.m. before coffee. Don't restart me, just wait.
 Project Pulse on a laptop · you call out where to look
 
 ::: note
-**Say:** Everything we break today runs locally: Project Pulse in the dev profile, plus Docker Compose. Production we only look at. One storyline, five steps, and the agent comes in at step four. First, two minutes on what staging saw on Monday.
+**Say:** Everything we break today runs locally: Project Pulse in the dev profile, plus Docker Compose. Production we only look at. One storyline, five steps, and the agent comes in at step four. First, two minutes on what production saw in its first day.
 :::
 
 ## Who is asking?
 
 | Path | Requests | Looking for |
 |---|---|---|
-| `/v2/.env`, `/backend/.env`, `/admin/.env`, `/.env.anthropic`, … | 85 | Passwords and API keys |
-| `/.gitlab-ci.yml`, `/.github/workflows/deploy.yml`, … | 30 | Secrets in pipeline files |
-| `/.git/config` | 18 | The repository |
-| `/actuator/env` | 17 | Every configuration value |
-| `/actuator/heapdump` | 12 | The app's memory |
+| `/.gitlab-ci.yml` | 21 | Secrets in a pipeline file |
+| `/.env.openai`, `/.env.aws` | 13 | API keys |
+| `/.git/hooks/post-receive`, `/.hg/requires` | 14 | The repository |
+| `/l9owrv.php`, `/well.php`, `/wp-admin.php` | 24 | Someone else's back door |
+| `/vite.config.js`, `/webpack.json`, … | 43 | How the frontend is built |
+| `/robots.txt` | 8 | Nothing bad |
 
 ::: note
-**Say:** Monday afternoon I turned on Application Insights for Project Pulse's staging slot. Nobody announced that site. Within hours, this. Ask the room what each line is looking for before you say it. Then point at the two actuator lines: that's Monday's attack surface, asked for by strangers. Every one failed, because what you don't expose can't leak. Module 4.7.
+**Say:** Monday evening I turned on Application Insights for production, the site you use. These are its failed requests from the first day. Ask the room what each line is looking for before you say it. None of these files exist, so every one got a 404. Not every line is an attack: robots.txt is probably a search engine, and we run no PHP. But .env and .git are the same kind of door as /actuator/env from Monday: one URL that hands over secrets if it's open. What you don't expose can't leak. Module 4.7.
 :::
 
 ## Reading the numbers
 
 ::: steps
-- Dashboard: 190 of 263 requests failed. 72%!
-- Rows or requests? Sum `itemCount`: 221 of 374
-- What failed? Every 4xx counts. Those were the bots
-- What should the SLI count? Our errors: 5xx
+- Dashboard: 583 of 1,979 requests failed. 29%!
+- Rows or requests? 1,564 rows stand for 1,979. Sum `itemCount`
+- What failed? Every 4xx counts: 574 were 404s, mostly bots
+- What should the SLI count? Our errors, 5xx: 99.95%
 :::
 
 ::: note
