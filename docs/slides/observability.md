@@ -773,7 +773,7 @@ union requests, dependencies, exceptions, traces
 :::
 
 ::: note
-**Do:** Paste the query result into the agent in the Project Pulse checkout. Check its hypothesis against the code: private_comment is varchar(255) in V1__baseline.sql, PeerEvaluationDto checks no length, and the textarea's max-length="255" is a typo for maxlength, so the form had no limit. Then show pull request 118's test: a 256-character comment, expecting 400. Before the fix it failed with 500, like production.
+**Do:** Paste the query result into the agent in the worktree at the commit before pull request 118 (main already has the fix). Check its hypothesis against the code: private_comment is varchar(255) in V1__baseline.sql, PeerEvaluationDto checks no length, and the textarea's max-length="255" is a typo for maxlength, so the form had no limit. Then show pull request 118's test: a 256-character comment, expecting 400. Before the fix it failed with 500, like production.
 :::
 
 ## 99.95% {.center}
