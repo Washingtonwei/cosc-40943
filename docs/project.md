@@ -79,7 +79,7 @@ Four times in the term, your team presents to its TA. Checkpoint 0 is a verifica
 | **0**, kickoff gate | Fri Sep 4 | Verified in the room, not presented. Every member present. Your recurring meeting slot fixed and written into the contract. Team contract signed by every member and committed to your repository as [`docs/team-contract.md`](team-contract.md), each member signing in their own commit. GitHub repository, Projects board, and Slack channel standing, with your TA and the instructor on both. First client meeting requested, with a date proposed. **The client meeting itself, with minutes, is due Mon Sep 14.** |
 | **1** | Fri Oct 2 | Glossary, vision and scope, use cases, business rules, and draft SRS, reviewed with your TA in the room. Architecture-of-record drafted in the same studio and merged by 11:59 pm: every use-case area, component, and external integration named. Your TA checks it over the weekend and replies by Sunday evening. See the [studio](studio.md#week-6-oct-2-checkpoint-1-and-your-architecture-of-record). |
 | **2** | Week 11, a slot booked with your TA, by Fri Nov 6 | The architecture proven by one working vertical slice, demonstrated running, not described. See the [Checkpoint 2 checklist](#checkpoint-2-checklist) below. |
-| **3** | Fri Nov 20 | Fan-out progress and production readiness, demonstrated from a tagged release (`v0.2.0`) with release notes. Multiple use cases built, tested, and traced, with the traceability matrix resolving. CI/CD pipeline with at least one quality gate, static analysis wired in, observability in place. The calibration table extended to every finished use case, with a ratio per person and for the team, and one forecast line under it: does `v1.0.0` still fit the hours left ([how](modules/traceability.md#47-from-estimates-to-a-release-plan))? At least one rule in your agent charter that came from a review, merged by pull request ([closing a use case](method.md#phase-c-fan-out-per-use-case)). One availability or performance requirement turned into a [measured objective](modules/reliability.md#7-hands-on-studio-optional-individual-assignment), and one test that makes an external dependency fail and checks the degradation your specification requires. Graded on completeness and honest interpretation, never on accuracy. |
+| **3** | Fri Nov 20, in class; evidence links by Thu Nov 19, 11:59 pm | Fan-out progress and production readiness, demonstrated from a tagged release `v0.2.0`. See the [Checkpoint 3 checklist](#checkpoint-3-checklist) below. |
 
 Checkpoint 3 is the last one. After November 20 the next thing your client sees is the MVP demo, which means Thanksgiving week and week 14 are hardening on your own schedule with no scheduled gate to catch you. Plan for that.
 
@@ -96,6 +96,21 @@ Your TA works through this list with your team in your booked slot in week 11, b
 - [ ] **The impact list.** If your client has changed a requirement or a business rule since your slice, the issue for that change carries its impact list (the IDs and files from the matrix, what a search for the IDs added, and the questions you took to the client), and its pull request says which files outside the list it touched and why ([how](modules/traceability.md#46-impact-analysis-what-a-change-touches-before-you-make-it)). No change yet: say so, and the item passes.
 
 You leave with Checkpoint 3's two reliability items: one measured SLO and one degradation test ([Reliability](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)). Start them that week. The week 12 observability lab ends with turning one metric into an SLO, the way your team measures its own.
+
+### Checkpoint 3 checklist
+
+Checkpoint 3 runs in class on Fri Nov 20, about 10 minutes per team with your TA. **By Thu Nov 19, 11:59 pm, post one message in your team's Slack channel with a link for each item below**, so your TA can check the evidence before class. Friday's 10 minutes are the live demo from `v0.2.0` and your TA's questions. Monday's work time (Nov 16), with your TA in the room, is the time to get ready.
+
+- [ ] **The release.** Your demo runs from a tagged release `v0.2.0` with release notes.
+- [ ] **The fan-out.** Several use cases are built, tested, and traced, and every link in `docs/traceability.md` resolves.
+- [ ] **The pipeline.** CI/CD runs on every pull request with at least one quality gate, and static analysis is wired in ([CI/CD](modules/ci-cd.md), [static analysis](modules/static-analysis.md)).
+- [ ] **Observability.** You can show what your app logs and measures while it runs ([observability](modules/observability.md)).
+- [ ] **The calibration table.** It covers every finished use case, with a ratio per person and for the team, plus one forecast line under it: does `v1.0.0` still fit the hours left ([how](modules/traceability.md#47-from-estimates-to-a-release-plan))?
+- [ ] **A charter rule from review.** At least one rule in your agent charter came from a code review, merged by pull request ([closing a use case](method.md#phase-c-fan-out-per-use-case)).
+- [ ] **One measured objective.** One availability or performance requirement is turned into an SLO you actually measure ([how](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)).
+- [ ] **One degradation test.** One test makes an external dependency fail and checks the degradation your specification requires.
+
+Graded on completeness and honest interpretation, never on accuracy.
 
 ## Weekly mechanics
 
