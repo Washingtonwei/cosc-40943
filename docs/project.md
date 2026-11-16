@@ -101,14 +101,36 @@ You leave with Checkpoint 3's two reliability items: one measured SLO and one de
 
 Checkpoint 3 runs in class on Fri Nov 20, about 10 minutes per team with your TA. **By Thu Nov 19, 11:59 pm, post one message in your team's Slack channel with a link for each item below**, so your TA can check the evidence before class. Friday's 10 minutes are the live demo from `v0.2.0` and your TA's questions. Monday's work time (Nov 16), with your TA in the room, is the time to get ready.
 
+Each item says what your TA looks for, then where to review it. Most of your projects are not Java, so where Project Pulse is the example, run the [adapt step](studio.md#adapt) for your stack.
+
 - [ ] **The release.** Your demo runs from a tagged release `v0.2.0` with release notes.
+    - Tag the commit you demo with `git tag -a v0.2.0`, push the tag, then on GitHub draft a release and click **Generate release notes**. Rewrite the draft for your client, because a pull request title describes the code, not what a user notices ([CI/CD 4.9](modules/ci-cd.md#49-versions-tags-release-notes-and-feature-flags)).
+    - Be able to say which tag or commit your deployed system runs ([why a tag](modules/ai-augmented-team.md#410-knowing-exactly-what-you-built)).
 - [ ] **The fan-out.** Several use cases are built, tested, and traced, and every link in `docs/traceability.md` resolves.
-- [ ] **The pipeline.** CI/CD runs on every pull request with at least one quality gate, and static analysis is wired in ([CI/CD](modules/ci-cd.md), [static analysis](modules/static-analysis.md)).
-- [ ] **Observability.** You can show what your app logs and measures while it runs ([observability](modules/observability.md)).
-- [ ] **The calibration table.** It covers every finished use case, with a ratio per person and for the team, plus one forecast line under it: does `v1.0.0` still fit the hours left ([how](modules/traceability.md#47-from-estimates-to-a-release-plan))?
-- [ ] **A charter rule from review.** At least one rule in your agent charter came from a code review, merged by pull request ([closing a use case](method.md#phase-c-fan-out-per-use-case)).
-- [ ] **One measured objective.** One availability or performance requirement is turned into an SLO you actually measure ([how](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)).
+    - Every built use case has its row, with Build and Verify kept apart: built and tested are two different claims ([Traceability 4.1](modules/traceability.md#41-the-spine-one-row-per-use-case)).
+    - A row reads `✅ Verified` only when you can name a passing test for the main flow and every extension. Open each test the row cites and check it; `🟡 Partial` with the gap named is an honest row ([4.3](modules/traceability.md#43-a-requirement-with-no-test-is-not-traced)).
+    - Where the code and the specification disagree, decide which one is wrong and fix that one ([4.5](modules/traceability.md#45-three-ways-the-specification-and-the-code-drift-apart)).
+- [ ] **The pipeline.** CI/CD runs on every pull request with at least one quality gate, and static analysis is wired in.
+    - The gate from the [week 11 studio](studio.md#week-11-nov-6-the-gate-on-your-repository) still holds: the "Protect main" ruleset requires your checks, and Merge stays locked while one is red ([CI/CD 4.4](modules/ci-cd.md#44-from-a-check-to-a-gate), [step by step](modules/ci-cd.md#ruleset-step-by-step)).
+    - Be ready to show a pull request your gate turned red. A gate you have never seen fail is one you are only hoping works ([Static Analysis 4.5](modules/static-analysis.md#45-make-it-a-gate)).
+    - Anything you baselined or left out (a device build, a check still on `continue-on-error`) is a debt row in section 11 of your architecture-of-record ([4.7](modules/static-analysis.md#47-a-new-project-the-gate-comes-first)).
+- [ ] **Observability.** Your deployed system tells you when something goes wrong.
+    - Show where its logs go and how it exposes a health check and metrics ([Observability 4.3](modules/observability.md#43-the-tools-spring-boot-actuator-and-project-pulses-stack)).
+    - Make one request fail on purpose and find its log line from the platform's log stream, not your terminal ([the studio](modules/observability.md#7-hands-on-studio-optional-individual-assignment)).
+    - Check that your logs carry what the person debugging at 2 AM needs, and no email addresses, tokens, or passwords ([Implementation 4.9](modules/implementation.md#49-log-what-the-person-at-2-am-will-need)).
+- [ ] **The calibration table.** It covers every finished use case, with a ratio per person and for the team, plus one forecast line under it.
+    - **Actual** is the hours on weekly activity report lines tagged with the use case's ID, logged since the estimate was made. **Ratio** is actual divided by the estimate's midpoint. Each finished use case has its biggest-miss sentence ([Implementation 4.4](modules/implementation.md#44-recording-and-calibrating)).
+    - **The forecast** multiplies the midpoints of every unfinished `v1.0.0` row by your team's ratio and compares that with the hours your team will really have before the MVP demo. If it does not fit, move rows out of `v1.0.0` with your client ([Traceability 4.7](modules/traceability.md#47-from-estimates-to-a-release-plan), with an example line).
+- [ ] **A charter rule from review.** At least one rule in your agent charter came from a code review, merged by pull request.
+    - At each use-case close, the reviewer asks what the agent had to be corrected on more than once and turns it into a charter rule by a small pull request ([the method, Phase C step 4](method.md#phase-c-fan-out-per-use-case)).
+    - Link the review comment or pull request the rule came from. If the agent did your review, name the use case and test list in the request, or it reviews only the diff ([Code Review 4.7](modules/code-review.md#47-the-agent-as-first-reviewer)).
+- [ ] **One measured objective.** One availability or performance requirement is turned into an SLO you actually measure.
+    - Under the requirement, write its SLI (a ratio of good events to all events), its window, its target, and its error budget ([Reliability 4.3](modules/reliability.md#43-from-requirement-to-measurement-sli-slo-error-budget)).
+    - Show its current measured value, say where the number comes from, and say what it misses ([Observability 4.5](modules/observability.md#45-metrics-what-the-numbers-count)). A probe that cannot fail measures nothing.
 - [ ] **One degradation test.** One test makes an external dependency fail and checks the degradation your specification requires.
+    - Pick a call that leaves your process (an email service, a client API, a model). Make it throw or time out with a mock, and assert what the user sees instead ([Reliability 4.4](modules/reliability.md#44-failing-well-timeout-retry-isolation-degradation), [Testing 4.5](modules/testing.md#45-mockito-and-when-not-to-mock)).
+    - If your specification never says what happens when that dependency fails, write that requirement first.
+    - Show the test red against the code with the handling removed, and green against yours ([the studio](modules/reliability.md#7-hands-on-studio-optional-individual-assignment)).
 
 Graded on completeness and honest interpretation, never on accuracy.
 
