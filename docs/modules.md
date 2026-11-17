@@ -52,3 +52,6 @@ Modules go up as they are written, in the order the course teaches them, so this
 
 [**CI/CD and Continuous Deployment**](modules/ci-cd.md) · [slides](slides/ci-cd.html)
 : Get every change from a laptop to a running system the same way every time. Continuous integration as a habit; what a build ships, from JAR to container; a GitHub Actions workflow read job by job; a ruleset that makes checks block; continuous delivery and continuous deployment; build once and promote to staging; rolling back code and data; secrets, forks, and an agent in CI; reproducible builds, release tags, and feature flags.
+
+[**Maintainability and Technical Debt**](modules/maintainability.md) · [slides](slides/maintainability.html)
+: Keep the next change cheap. Maintainability as the cost of the next change; technical debt as principal and interest, with Fowler's quadrant; recording debt in section 11 of your architecture-of-record instead of a merged pull request; deciding to pay now, carry it, or pay in pieces; and paying one item down with an agent, a test that fails first and a refactor on its own, shown on a real Project Pulse week bug that would have fired in 2027.
