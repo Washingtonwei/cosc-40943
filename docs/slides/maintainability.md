@@ -116,27 +116,31 @@ Who reads a merged pull request's description again?
 **Say:** Somebody knew. It's written right there, in one line of a pull request description. Then the pull request merged. Who goes back and reads merged pull request descriptions? *[Nobody.]* Exactly. That's my pull request, by the way. I'm not proud of it, but it's a good example.
 :::
 
-## The same shape, at airline scale
+## Last Friday
 
-::: steps
-- December 2022: Southwest cancels or delays more than 16,900 flights
-- More than 2 million passengers stranded over the holidays
-- Crew scheduling software could not keep up with the reassignments
-- Crews on hold for more than five hours, some sent to flights already cancelled
+::: ask
+Who got stuck somewhere on Friday?
 :::
 
-U.S. Department of Transportation, 2023
+::: steps
+- November 13: every US departure stopped for more than four hours
+- 17 of 22 en route centers lose stable radio and radar
+- Thousands of flights cancelled over the weekend
+- The FAA: a router just installed in El Dorado, Arkansas, flooding the network
+:::
 
 ::: note
-**Say:** Now scale it up. Christmas 2022. A winter storm hits everyone. The other airlines recover. Southwest doesn't. Its crew scheduling software, maintained in-house, can't keep up. Pilots and flight attendants sit on hold for five hours to get an assignment. Some are sent to flights that were already cancelled.
+**Say:** Hands up if you were stuck somewhere on Friday. *[Wait. Some of you missed Monday because of this, and that's fine.]* Now scale my week bug up to a country. A router goes in at a remote site in Arkansas, during an upgrade. It starts flooding the network with about a thousand connection attempts every few seconds, and a second new router in Amarillo does the same. Seventeen of the twenty-two centers that guide planes between airports lose stable radio and radar, so the FAA stops everything. Why the routers did that is still under investigation, so we won't guess. We'll talk about what everyone already knew.
 :::
 
 ## Everyone knew
 
 ::: steps
-- Flight attendants: a decade of complaints about the scheduling technology
-- Pilots' union, November 2022: "one IT router failure away from a complete meltdown"
-- DOT penalty: $140 million, plus about $600 million in refunds
+- The copper lines: from the 1960s
+- 2009: the same network down five hours, over a misconfigured router
+- 2024: 51 of 138 air traffic control systems rated unsustainable, 54 more potentially
+- September 2025: DFW and Love Field stopped for five hours
+- GAO, September 2026: "buying delivery speed at the risk of ... potential disruptions"
 :::
 
 ::: key
@@ -144,7 +148,37 @@ Debt does not hurt on the day you take it on. It hurts on the day it comes due.
 :::
 
 ::: note
-**Say:** This was not a surprise. People had warned for years, in public. A month before the storm the pilots' union said the airline was one router failure away from a meltdown. Everyone knew. Nobody paid. And the day it came due was the worst possible day: the biggest travel week of the year. That's how debt works. It comes due on a bad day.
+**Say:** None of this was a surprise. The copper is from the 1960s. The same network went down in 2009 over one misconfigured router. In 2024 the FAA's own review rated more than a third of its systems unsustainable. DFW had its own five-hour stop fourteen months ago, twenty miles from here. And two months before Friday, GAO warned that rushing the upgrade risked disruptions. The day after, the FAA Administrator said agencies had flagged this network as a critical weakness for more than two decades. Everyone knew. And it came due on a Friday afternoon, the worst possible time. That's how debt works.
+:::
+
+## It broke while being fixed
+
+::: steps
+- The work: copper to fiber, about 70% done
+- The change: a new router at a remote site
+- The result: a nationwide ground stop
+:::
+
+::: key
+Paying debt is a change. Changes need tests.
+:::
+
+::: note
+**Say:** Here's the part I want you to keep. The FAA wasn't ignoring its debt on Friday. It was paying it: the copper replacement everyone had asked for, about 70% done. And the payment is what broke. So carrying debt is dangerous, and paying it is dangerous too, unless you pay in small, tested steps. Hold that thought. We come back to it in twenty minutes with my week bug.
+:::
+
+## Not only the FAA
+
+::: steps
+- Southwest, December 2022: crew scheduling can't keep up after a storm; more than 16,900 flights
+- Its pilots' union, a month before: "one IT router failure away from a complete meltdown"
+- Delta, July 2024: a crew-tracking tool can't keep up after CrowdStrike; about $500 million
+:::
+
+U.S. Department of Transportation; Delta Air Lines
+
+::: note
+**Say:** Airlines show the first lesson inside one company. Christmas 2022, a storm hits everyone; Southwest's crew scheduling can't keep up, and it cancels or delays nearly seventeen thousand flights. A $140 million DOT fine. Then Delta, 2024: the CrowdStrike outage hits every airline, and Delta's crew tracker is the one that can't catch up. Same shape, two companies, two years apart.
 :::
 
 ## Maintainability
@@ -414,7 +448,7 @@ The risk: "keep the behavior" quietly stops being true.
 :::
 
 ::: note
-**Say:** Paying debt is a refactor: new structure, same behavior. With an agent, the danger is that "same behavior" stops being true and nobody notices, because the agent is fast and sounds sure of itself. Four steps keep it honest. Let me show you on the week keys. I did this yesterday.
+**Say:** Paying debt is a refactor: new structure, same behavior. With an agent, the danger is that "same behavior" stops being true and nobody notices, because the agent is fast and sounds sure of itself. Four steps keep it honest. Remember Friday: the FAA was paying its debt when it broke. Let me show you on the week keys. I did this yesterday.
 :::
 
 ## Step 1: red first
