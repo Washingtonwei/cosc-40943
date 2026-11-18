@@ -78,6 +78,95 @@ ISO/IEC 25010 splits maintainability into parts. Each has a plain question and a
 
 **Readability is where all of these start.** Code is read far more often than it is written, and a change begins with someone understanding what is there. Clear names, one way of doing each thing, and short methods are not style points. They are what the next change costs.
 
+**Five habits that keep the next change cheap.** The table says what to aim for. These habits are how you get there, one class at a time. Each has a classic name from object-oriented design. Learn the names, because code reviewers and agents use them, and "this breaks single responsibility" is faster to say than the paragraph it stands for.
+
+**1. One place for each rule** (Don't Repeat Yourself, or DRY). DRY is not about lines that look alike. It is about knowledge: each rule your system follows should be written down once. Two methods can look the same and be fine, because they hold two rules that happen to match today (a username check and a password check that both require eight characters). Two methods can look nothing alike and still break DRY, because they hold one rule written twice. That is the week bug. These two lines share no code, and both answer "which week is this date in?":
+
+```java
+// WeekKeys.of: the rule, in its one place
+String.format("%d-W%02d", date.get(WeekFields.ISO.weekBasedYear()), date.get(WeekFields.ISO.weekOfWeekBasedYear()))
+
+// EvaluationService.getWeeksBetween: the same rule again, and wrong in 2027
+current.format(DateTimeFormatter.ofPattern("YYYY-'W'ww"))
+```
+
+The question to ask: if this rule changed tomorrow, how many places would I edit? More than one, and some day someone will edit only one.
+
+**2. One reason to change** (the Single Responsibility Principle). A class or a method should serve one kind of need. Robert C. Martin puts it as "a module should be responsible to one, and only one, actor": ask *who* would ask for it to change. Project Pulse learned this in December 2025. The frontend's settings store had one setter for the instructor's default course, called from two places: login, which restores the saved course and section, and the Courses page, where the instructor switches course. [Issue #26](https://github.com/Washingtonwei/project-pulse/issues/26) asked that switching course should clear the selected section, so the fix added one line to the shared setter:
+
+```ts
+const setDefaultCourseId = (newDefaultCourseId: number) => {
+  defaultCourseId.value = newDefaultCourseId
+  // 🔴 IMPORTANT: when course changes, clear the section
+  removeDefaultSectionId()
+}
+```
+
+Right for the Courses page, wrong for login: version 1.4.1 now wiped every instructor's saved section the moment they logged in ([issue #28](https://github.com/Washingtonwei/project-pulse/issues/28)). One method, two callers, two reasons to change. The fix gave each caller its own method ([at `cff8d29`](https://github.com/Washingtonwei/project-pulse/blob/cff8d29ea49e403a5ea868de0a2cb953c5c7ba8e/frontend/src/stores/settings.ts#L17-L27)):
+
+```ts
+// Plain setter – use this for login/backend restore
+const setDefaultCourseId = (courseId: number) => {
+  defaultCourseId.value = courseId
+}
+
+// UI-only setter – use this when user changes course in the app
+const setDefaultCourseIdAndResetSection = (newDefaultCourseId: number) => {
+  defaultCourseId.value = newDefaultCourseId
+  removeDefaultSectionId()
+}
+```
+
+Splitting can go too far, though. Split one rule across two classes and a change to it edits both, which breaks habit 1.
+
+**3. Add, don't edit** (the Open/Closed Principle). Code should be open for extension and closed for modification (Bertrand Meyer, 1988): adding a new kind of thing should mean adding code, not editing code that already works and is already tested. The usual tool is polymorphism. Each kind supplies its own behavior, so the code that uses them needs no `if` for each kind. Project Pulse's `SubmittableItem` does this with a Java enum whose constants each bring their own due day ([at `cff8d29`](https://github.com/Washingtonwei/project-pulse/blob/cff8d29ea49e403a5ea868de0a2cb953c5c7ba8e/backend/src/main/java/team/projectpulse/notification/SubmittableItem.java)):
+
+```java
+public enum SubmittableItem {
+    WEEKLY_ACTIVITY_REPORT("Weekly activity report") {
+        @Override
+        public DayOfWeek dueDay(Section section) {
+            return section.getWarWeeklyDueDay();
+        }
+        // ... dueTime the same way
+    },
+    PEER_EVALUATION("Peer evaluation") {
+        @Override
+        public DayOfWeek dueDay(Section section) {
+            return section.getPeerEvaluationWeeklyDueDay();
+        }
+        // ... dueTime the same way
+    };
+
+    public abstract DayOfWeek dueDay(Section section);
+}
+```
+
+The reminder scheduler asks each item for `item.dueDay(section)` and never names one. This shape has a name: the **Strategy** pattern, whose definition reads "Define a family of algorithms, encapsulate each one, and make them interchangeable." A **design pattern** is a named, reusable answer to a design problem that keeps coming back; the 1994 book by Gamma, Helm, Johnson, and Vlissides (the "Gang of Four") catalogs 23 of them. The name is the point. "Make it a Strategy" is a whole design in three words, to a teammate or to an agent.
+
+It is not finished, and that is worth seeing. `SubmissionStatusService` decides whether a student has submitted with a `switch`:
+
+```java
+boolean submitted = switch (item) {
+    case WEEKLY_ACTIVITY_REPORT -> reportingStudentIds.contains(student.getId());
+    case PEER_EVALUATION -> evaluateeIdsByEvaluator.getOrDefault(student.getId(), Set.of())
+            .containsAll(teammateIdsByTeam.get(student.getTeam().getTeamId()));
+};
+```
+
+A third item means editing two files. That is a fair trade here: the check needs data from the activity and evaluation features, which the enum does not have. And a Java `switch` expression must cover every constant, so the compiler points at the second place. That is the realistic version of open/closed: know where the edits will land, and let your tools find them.
+
+**4. Ask for what you need** (dependency injection). A class that builds its own dependencies is welded to them. A class that receives them, usually in its constructor, can be handed a different one, such as a test's. `EvaluationService` never calls `LocalDate.now()`. Spring passes it a `Clock`:
+
+```java
+public EvaluationService(PeerEvaluationRepository evaluationRepository, StudentRepository studentRepository,
+                         SectionRepository sectionRepository, Clock clock) {
+```
+
+In production the clock is the real one. In the `dev` profile it is fixed at August 20, 2023, 11:30 pm, to match the sample data. In a test it is any moment the test needs, so "which week is due now?" can be tested for New Year's Eve in the middle of July. This is testability from the table, built in.
+
+**5. Build for the change you can see** (Keep It Simple, and You Aren't Gonna Need It). Every habit above can be overdone. A pattern adds classes and indirection, and the next reader pays for both. Project Pulse has two submittable items, so they are an enum, not an interface with a factory and a plugin registry. If a fifth arrives, refactor then. Agents lean the other way: ask one to "make it extensible" and you can get three layers of abstraction around a choice with two options. [Design of Record 4.6](design-of-record.md#46-design-decisions-and-design-patterns) has the test: name the requirement that needs the flexibility, or leave it out.
+
 ### 4.2 Technical debt: principal and interest
 
 Ward Cunningham coined the term in 1992 to explain to his managers why the team needed time to rework code that already worked: "Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite."
@@ -244,6 +333,8 @@ Why this matters more now: agents make adding code nearly free, and they do not 
 - Ward Cunningham, "The WyCash Portfolio Management System," OOPSLA 1992 experience report. The origin of the metaphor, in two pages.
 - Martin Fowler, ["Technical Debt Quadrant"](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html) (2009) and ["Technical Debt"](https://martinfowler.com/bliki/TechnicalDebt.html).
 - Philippe Kruchten, Robert Nord, and Ipek Ozkaya, *Managing Technical Debt: Reducing Friction in Software Development*, Addison-Wesley, 2019. The principles in [4.2](#42-technical-debt-principal-and-interest).
+- Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software*, Addison-Wesley, 1994. The 23 patterns, Strategy among them.
+- Robert C. Martin, *Clean Architecture*, Prentice Hall, 2017, part III. The design principles (single responsibility, open/closed, and the rest of SOLID) in their author's words.
 - Michael Feathers, *Working Effectively with Legacy Code*, Prentice Hall, 2004. How to put tests around code you are afraid to change.
 - Shyam Agarwal, Hao He, and Bogdan Vasilescu, ["AI IDEs or Autonomous Agents? Measuring the Impact of Coding Agents on Software Development"](https://doi.org/10.1145/3793302.3793589), MSR 2026.
 - U.S. Government Accountability Office, ["Air Traffic Control Systems: Ambitious New Modernization Effort Needs to Improve Cost and Schedule Planning"](https://www.gao.gov/products/gao-26-107992), GAO-26-107992, September 2026. The copper lines, the 51 of 138, and the warning two months before the ground stop.
@@ -252,11 +343,12 @@ Why this matters more now: agents make adding code nearly free, and they do not 
 
 ## 10. Self-check
 
-1. A file in your project is messy but nobody has changed it in two months, and nobody plans to. Is it technical debt? What would make it debt?
-2. Name the principal and the interest of `TD-duplicate-scheduler`. Why is "carry it" a reasonable decision, and what must be written down for it to stay reasonable?
-3. The old week code had a test, and the test passed. What was wrong with the test, and which partition from [Testing](testing.md) would have caught it?
-4. Place each in Fowler's quadrant: (a) "We'll add input validation after the demo," written in your debt table; (b) your agent added a second date-parsing helper because it did not find the first; (c) skipping code review all week to hit Checkpoint 3.
-5. Your agent opens a pull request that fixes a bug and also "cleans up" three unrelated files. What do you ask for, and why?
+1. A teammate adds a third `SubmittableItem`, a weekly sprint retrospective. Which files change, which habit from [4.1](#41-maintainability-the-cost-of-the-next-change) tells you that is acceptable, and what makes sure nobody forgets the second file?
+2. A file in your project is messy but nobody has changed it in two months, and nobody plans to. Is it technical debt? What would make it debt?
+3. Name the principal and the interest of `TD-duplicate-scheduler`. Why is "carry it" a reasonable decision, and what must be written down for it to stay reasonable?
+4. The old week code had a test, and the test passed. What was wrong with the test, and which partition from [Testing](testing.md) would have caught it?
+5. Place each in Fowler's quadrant: (a) "We'll add input validation after the demo," written in your debt table; (b) your agent added a second date-parsing helper because it did not find the first; (c) skipping code review all week to hit Checkpoint 3.
+6. Your agent opens a pull request that fixes a bug and also "cleans up" three unrelated files. What do you ask for, and why?
 
 ## Related
 

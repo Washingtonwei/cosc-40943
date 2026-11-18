@@ -224,6 +224,124 @@ An agent learns your conventions from the code it reads. Two ways of doing one t
 **Say:** ISO splits it into five parts. Don't memorize the names. Remember the questions. Project Pulse has a real requirement for the first one, and a measurable scenario for the third: a new feature in two person-days with zero edits elsewhere. Readability sits under all five: a change starts with somebody reading.
 :::
 
+## Five habits
+
+::: steps
+- One place for each rule (DRY)
+- One reason to change (single responsibility)
+- Add, don't edit (open/closed)
+- Ask for what you need (dependency injection)
+- Build for the change you can see (KISS, YAGNI)
+:::
+
+::: note
+**Say:** The table says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. All five examples are Project Pulse code.
+:::
+
+## 1. One place for each rule
+
+```java
+// WeekKeys.of: the rule, in its one place
+date.get(WeekFields.ISO.weekBasedYear()), date.get(WeekFields.ISO.weekOfWeekBasedYear())
+
+// EvaluationService: the same rule again, wrong in 2027
+current.format(DateTimeFormatter.ofPattern("YYYY-'W'ww"))
+```
+
+::: ask
+If this rule changed tomorrow, how many places would you edit?
+:::
+
+::: note
+**Say:** Don't Repeat Yourself is not about lines that look alike. These two share no code at all. But they answer the same question: which week is this date in? One rule, written twice, and the copies drifted. That's our week bug. And the reverse is fine: a username check and a password check can look identical, because they're two rules that happen to match today.
+:::
+
+## 2. One reason to change
+
+```ts
+// v1.4.1: one setter, called by login AND by the Courses page
+const setDefaultCourseId = (newDefaultCourseId: number) => {
+  defaultCourseId.value = newDefaultCourseId
+  removeDefaultSectionId()   // right for the Courses page, wrong at login
+}
+```
+
+Issue #26 added that line. Issue #28: every instructor lost their section at login.
+
+::: note
+**Say:** Single responsibility: ask who would ask for this to change. Here, two callers. Login restores your saved course and section. The Courses page switches course. Issue twenty-six said "switching course should clear the section", so we added one line to the shared setter. Right for the Courses page. And now every login wiped the instructor's section: issue twenty-eight. The fix was two methods, one per caller. Two callers, two reasons to change.
+:::
+
+## 3. Add, don't edit
+
+```java
+public enum SubmittableItem {
+    WEEKLY_ACTIVITY_REPORT("Weekly activity report") {
+        public DayOfWeek dueDay(Section s) { return s.getWarWeeklyDueDay(); }
+    },
+    PEER_EVALUATION("Peer evaluation") {
+        public DayOfWeek dueDay(Section s) { return s.getPeerEvaluationWeeklyDueDay(); }
+    };
+    public abstract DayOfWeek dueDay(Section section);
+}
+```
+
+::: key
+The Strategy pattern: a family of algorithms, each one interchangeable.
+:::
+
+::: note
+**Say:** Open/closed: a new kind of thing should mean new code, not edits to code that already works. Each item brings its own due day, so the scheduler just asks `item.dueDay` and never names an item. That shape is called the Strategy pattern. A design pattern is a named answer to a problem that keeps coming back; the Gang of Four book from 1994 has twenty-three. The name is the point: "make it a Strategy" is a whole design in four words, for a teammate or for your agent.
+:::
+
+## The switch that's left
+
+```java
+boolean submitted = switch (item) {
+    case WEEKLY_ACTIVITY_REPORT -> reportingStudentIds.contains(student.getId());
+    case PEER_EVALUATION -> evaluateeIdsByEvaluator...containsAll(teammates);
+};
+```
+
+::: ask
+A third item: which files change? What reminds you of the second one?
+:::
+
+::: note
+**Say:** It's not finished. Whether you've submitted is still a switch, in another file, because it needs data the enum doesn't have. So a third item edits two files. *[Ask.]* The answer: the compiler. A switch expression has to cover every constant, so it won't build until you fix this one. That's open/closed in real life: know where the edits land, and let your tools find them.
+:::
+
+## 4. Ask for what you need
+
+```java
+public EvaluationService(PeerEvaluationRepository evaluationRepository,
+                         StudentRepository studentRepository,
+                         SectionRepository sectionRepository,
+                         Clock clock) {
+```
+
+Production: the real clock. Dev: August 20, 2023, 11:30 pm. A test: any moment it needs.
+
+::: note
+**Say:** Dependency injection sounds fancy. It's this: don't build what you need, ask for it. This service never calls "now". Spring hands it a clock. In production it's the real one; in dev it's frozen in August 2023 to match the sample data; in a test it's whatever you want. You can test New Year's Eve in the middle of July. That's the testability row from the table, built in.
+:::
+
+## 5. Build for the change you can see
+
+::: steps
+- Two items: an enum, not an interface, a factory, and a registry
+- A fifth item arrives: refactor then
+- Ask for "extensible" and an agent may build three layers for two options
+:::
+
+::: joke
+How many design patterns does it take to change a light bulb? A Strategy for the bulb, a Factory to make it, an Observer to tell everyone, and the bulb is a Singleton.
+:::
+
+::: note
+**Say:** Every habit can be overdone. Each pattern adds classes, and the next reader pays for them. Two items get an enum. If a fifth shows up, refactor then. Agents lean the other way, because pattern-heavy code is everywhere in what they learned from. Your test from the design week still works: name the requirement that needs the flexibility, or leave it out.
+:::
+
 ## Technical debt
 
 > Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite.
