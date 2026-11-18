@@ -44,42 +44,12 @@ Project Pulse, EvaluationService, at cff8d29
 - Every week of 2027 comes back one week late
 :::
 
-::: ask
-Same code, same test. What changed?
-:::
-
-::: note
-**Say:** I ran this yesterday. Ask for the second through fourth weeks of 2027 and you get the third through fifth. Every week of next year is off by one, so in the spring every student sees the wrong week's evaluations. Any guesses why? *[Take two or three. Someone may say "locale" or "year boundary".]*
-:::
-
-## Two rules for "week 1"
-
-::: cols
-**ISO, what Project Pulse stores**
-
-Week 1 is the first week with four days in the new year.
-|||
-**YYYY-'W'ww, what this code uses**
-
-The server's locale. In the US, week 1 is the week with January 1 in it.
-:::
-
 ::: key
-2026: the rules agree. 2027 starts on a Friday: they disagree all year.
+2027 starts on a Friday: ISO weeks and the server's locale disagree all year.
 :::
 
 ::: note
-**Say:** Project Pulse stores ISO week keys. The pattern in this method quietly uses the server's locale. This year the two happen to agree. Next year starts on a Friday, so they disagree by one week, every week. And the test? It uses weeks from 2023, another year where they agree. The test could not see it. That's a partition problem from week 10.
-:::
-
-## A classic
-
-::: joke
-There are two hard problems in computer science: cache invalidation, naming things, and off-by-one errors.
-:::
-
-::: note
-**Say:** *[Pause for the laugh.]* This one is literally an off-by-one error. But the off-by-one is not today's lesson. The lesson is how it got there.
+**Say:** I ran this yesterday. Ask for the second through fourth weeks of 2027 and you get the third through fifth. Every week of next year is off by one, so in the spring every student sees the wrong week's evaluations. Any guesses why? *[Take two or three.]* Project Pulse stores ISO week keys: week 1 is the first week with four days in the new year. The pattern `YYYY-'W'ww` quietly uses the server's locale instead, and in the US week 1 is the week with January 1 in it. This year the two agree. Next year starts on a Friday, so they disagree every week. And the test uses weeks from 2023, another year where they agree, so it could not see it. That's the partition lesson from week 10. You know the joke: there are two hard problems in computer science, cache invalidation, naming things, and off-by-one errors. *[Pause.]* But the off-by-one is not today's lesson. The lesson is how it got there.
 :::
 
 ## The right rule already existed
@@ -92,14 +62,6 @@ There are two hard problems in computer science: cache invalidation, naming thin
 public final class WeekKeys {
 ```
 
-Written in October 2026, for the reminders
-
-::: note
-**Say:** In October the team wrote WeekKeys. Its own comment says it's "the one place" for week keys. The new reminder code uses it. The old report code was never moved over. So the code had two copies of one rule, and one of them is wrong.
-:::
-
-## Where the gap was written down
-
 > Left open: EvaluationService.parseWeekDate/getWeeksBetween not using WeekKeys.
 
 Pull request #102, description, merged October 2026
@@ -108,12 +70,8 @@ Pull request #102, description, merged October 2026
 A merged pull request is where debt goes to be forgotten.
 :::
 
-::: ask
-Who reads a merged pull request's description again?
-:::
-
 ::: note
-**Say:** Somebody knew. It's written right there, in one line of a pull request description. Then the pull request merged. Who goes back and reads merged pull request descriptions? *[Nobody.]* Exactly. That's my pull request, by the way. I'm not proud of it, but it's a good example.
+**Say:** In October the team wrote WeekKeys. Its own comment says it's "the one place" for week keys. The new reminder code uses it. The old report code was never moved over, so the code had two copies of one rule, and one of them is wrong. And somebody knew: it's written right there, in one line of a pull request description. Then the pull request merged. Who goes back and reads merged pull request descriptions? *[Nobody.]* Exactly. That's my pull request, by the way. I'm not proud of it, but it's a good example.
 :::
 
 ## Last Friday
@@ -167,33 +125,11 @@ Paying debt is a change. Changes need tests.
 **Say:** Here's the part I want you to keep. The FAA wasn't ignoring its debt on Friday. It was paying it: the copper replacement everyone had asked for, about 70% done. And the payment is what broke. So carrying debt is dangerous, and paying it is dangerous too, unless you pay in small, tested steps. Hold that thought. We come back to it in twenty minutes with my week bug.
 :::
 
-## Not only the FAA
-
-::: steps
-- Southwest, December 2022: crew scheduling can't keep up after a storm; more than 16,900 flights
-- Its pilots' union, a month before: "one IT router failure away from a complete meltdown"
-- Delta, July 2024: a crew-tracking tool can't keep up after CrowdStrike; about $500 million
-:::
-
-U.S. Department of Transportation; Delta Air Lines
-
-::: note
-**Say:** Airlines show the first lesson inside one company. Christmas 2022, a storm hits everyone; Southwest's crew scheduling can't keep up, and it cancels or delays nearly seventeen thousand flights. A $140 million DOT fine. Then Delta, 2024: the CrowdStrike outage hits every airline, and Delta's crew tracker is the one that can't catch up. Same shape, two companies, two years apart.
-:::
-
 ## Maintainability
 
 ::: key
 The cost of the next change.
 :::
-
-ISO/IEC 25010: "the degree of effectiveness and efficiency with which a product or system can be modified by the intended maintainers"
-
-::: note
-**Say:** So, two terms today. The first is maintainability: how cheaply and safely someone can make the next change. That's the plain version. The formal one is ISO's, on the slide. "The intended maintainers": who are they?
-:::
-
-## Who changes your code next?
 
 ::: steps
 - You, in three months
@@ -202,26 +138,10 @@ ISO/IEC 25010: "the degree of effectiveness and efficiency with which a product 
 - An agent
 :::
 
-::: ai
-An agent learns your conventions from the code it reads. Two ways of doing one thing: it may copy either.
-:::
+ISO/IEC 25010: "the degree of effectiveness and efficiency with which a product or system can be modified by the intended maintainers"
 
 ::: note
-**Say:** You in three months counts as a stranger. And the agent is the one people forget. It reads your code to learn how you do things. If there are two week rules, it might copy the wrong one into your next feature. Messy code isn't only slow for humans now. It teaches your agent the wrong habits.
-:::
-
-## What makes code cheap to change
-
-| Part | The question | In Project Pulse |
-|---|---|---|
-| Modularity | Change one feature, touch no other? | MNT-feature-locality |
-| Analysability | Find where it lives, and why it fails? | Log lines that name what failed |
-| Modifiability | Change it without breaking something? | QS-add-bounded-context: 2 person-days |
-| Testability | Check the change quickly? | WeekKeys reads an injected Clock |
-| Reusability | One place for each rule? | WeekKeys, and the copy that ignored it |
-
-::: note
-**Say:** ISO splits it into five parts. Don't memorize the names. Remember the questions. Project Pulse has a real requirement for the first one, and a measurable scenario for the third: a new feature in two person-days with zero edits elsewhere. Readability sits under all five: a change starts with somebody reading.
+**Say:** Two terms today. The first is maintainability: how cheaply and safely someone can make the next change. The formal one is ISO's, at the bottom. "The intended maintainers": who are they? You in three months counts as a stranger. And the agent is the one people forget. It reads your code to learn how you do things. If there are two week rules, it might copy the wrong one into your next feature. Messy code isn't only slow for humans now. It teaches your agent the wrong habits. ISO splits maintainability into five parts (modularity, analysability, modifiability, testability, reusability), and readability sits under all of them, because a change starts with somebody reading. The module has the table. Today, the habits that get you there.
 :::
 
 ## Five habits
@@ -235,7 +155,7 @@ An agent learns your conventions from the code it reads. Two ways of doing one t
 :::
 
 ::: note
-**Say:** The table says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. All five examples are Project Pulse code.
+**Say:** ISO says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. All five examples are Project Pulse code.
 :::
 
 ## 1. One place for each rule
@@ -291,24 +211,7 @@ The Strategy pattern: a family of algorithms, each one interchangeable.
 :::
 
 ::: note
-**Say:** Open/closed: a new kind of thing should mean new code, not edits to code that already works. Each item brings its own due day, so the scheduler just asks `item.dueDay` and never names an item. That shape is called the Strategy pattern. A design pattern is a named answer to a problem that keeps coming back; the Gang of Four book from 1994 has twenty-three. The name is the point: "make it a Strategy" is a whole design in four words, for a teammate or for your agent.
-:::
-
-## The switch that's left
-
-```java
-boolean submitted = switch (item) {
-    case WEEKLY_ACTIVITY_REPORT -> reportingStudentIds.contains(student.getId());
-    case PEER_EVALUATION -> evaluateeIdsByEvaluator...containsAll(teammates);
-};
-```
-
-::: ask
-A third item: which files change? What reminds you of the second one?
-:::
-
-::: note
-**Say:** It's not finished. Whether you've submitted is still a switch, in another file, because it needs data the enum doesn't have. So a third item edits two files. *[Ask.]* The answer: the compiler. A switch expression has to cover every constant, so it won't build until you fix this one. That's open/closed in real life: know where the edits land, and let your tools find them.
+**Say:** Open/closed: a new kind of thing should mean new code, not edits to code that already works. Each item brings its own due day, so the scheduler just asks `item.dueDay` and never names an item. That shape is called the Strategy pattern. A design pattern is a named answer to a problem that keeps coming back; the Gang of Four book from 1994 has twenty-three. The name is the point: "make it a Strategy" is a whole design in four words, for a teammate or for your agent. It's not finished, though. Whether a student has submitted is still a `switch` on the item in `SubmissionStatusService`, because it needs data the enum doesn't have. So a third item edits two files. What reminds you of the second one? *[The compiler: a switch expression must cover every constant.]* That's open/closed in real life: know where the edits land, and let your tools find them.
 :::
 
 ## 4. Ask for what you need
@@ -348,60 +251,18 @@ How many design patterns does it take to change a light bulb? A Strategy for the
 
 Ward Cunningham, OOPSLA 1992
 
-::: note
-**Say:** The second term. Ward Cunningham, who also invented the wiki, came up with it in 1992 to explain to his managers why the team needed time to rework code that already worked. Notice: "a little debt speeds development." He's not against debt. He's against not paying it back.
-:::
-
-## Principal and interest
-
 ::: cols
 **Principal**
 
-The work to fix it.
-
-Week keys: about ten lines.
+The work to fix it. Week keys: about ten lines.
 |||
 **Interest**
 
-What every change pays while it stays.
-
-Week keys: everyone must know there are two rules. In 2027, a defect.
+What every change pays while it stays. Week keys: two rules to know, and in 2027, a defect.
 :::
 
 ::: note
-**Say:** The metaphor has two numbers. Principal is the fix. Interest is what you pay every time you touch the code while the debt is still there. For the week keys the principal is tiny. The interest was small too, until it became a bug.
-:::
-
-## No interest, no debt
-
-::: ask
-A file is messy, nobody has changed it in two months, and nobody plans to. Is it debt?
-:::
-
-::: key
-Spend your effort where changes happen.
-:::
-
-::: note
-**Say:** *[Take a vote.]* Kruchten and his coauthors say: if you pay no interest, it's probably not debt. Ugly code that nobody ever touches costs nothing. So don't polish the corners nobody visits. Clean up where the changes happen.
-:::
-
-## Debt is not the same as a bug
-
-::: cols
-**A bug**
-
-Wrong behavior now.
-|||
-**Debt**
-
-The next change gets expensive.
-:::
-
-The week keys: the debt (two copies of one rule) is what let the bug in.
-
-::: note
-**Say:** People mix these up. A bug is wrong behavior today. Debt is about the future cost of change. They're linked: debt is often how bugs get in. Two copies of a rule is debt. The day one copy is wrong, it's a bug.
+**Say:** The second term. Ward Cunningham, who also invented the wiki, came up with it in 1992 to explain to his managers why the team needed time to rework code that already worked. Notice: "a little debt speeds development." He's not against debt. He's against not paying it back. The metaphor has two numbers. Principal is the fix. Interest is what you pay every time you touch the code while the debt is still there. Quick vote: a file is messy, nobody has changed it in two months, and nobody plans to. Is it debt? *[Vote.]* Kruchten and his coauthors say no interest, probably no debt: spend your effort where changes happen. And debt is not a bug. A bug is wrong behavior today; debt makes the next change expensive. They're linked: two copies of a rule is debt, and the day one copy is wrong, it's a bug.
 :::
 
 ## Where debt lives
@@ -416,27 +277,7 @@ The week keys: the debt (two copies of one rule) is what let the bug in.
 | Documentation | A "Verified" row whose test no longer exists |
 
 ::: note
-**Say:** Debt isn't only in code. Every row here is real, from Project Pulse's own debt table or its history. The last one is the sneakiest: a traceability row that says Verified for a test that's gone. That's worse than no row, because people trust it.
-:::
-
-## Southwest, in Project Pulse
-
-::: cols
-**TD-duplicate-scheduler**
-
-The reminder job runs on every server. One server: fine. Two servers: every student gets every reminder twice.
-|||
-**Southwest**
-
-Software that kept up with normal days. A storm: it didn't.
-:::
-
-::: key
-An assumption that is true until the day it isn't. Nothing in the code warns you. Only the record does.
-:::
-
-::: note
-**Say:** Here's Southwest in miniature, in my own code. The reminder job assumes one server. True today. The day somebody adds a second server to handle load, every student gets two emails every Monday. The code won't warn anyone. The only thing that will is the row in the debt table.
+**Say:** Debt isn't only in code. Every row here is real, from Project Pulse's own debt table or its history. The last one is the sneakiest: a traceability row that says Verified for a test that's gone. That's worse than no row, because people trust it. And look at the assumption row: the reminder job runs on every server. One server, fine. Add a second for load, and every student gets every reminder twice. Nothing in the code warns you. Only the record does.
 :::
 
 ## Not all debt is bad
@@ -448,18 +289,12 @@ An assumption that is true until the day it isn't. Nothing in the code warns you
 
 Martin Fowler, Technical Debt Quadrant
 
-::: note
-**Say:** Fowler's quadrant. Two questions: on purpose or by accident, careful or careless. Top right is a normal engineering choice, like a mortgage. Project Pulse's scheduler is there. Bottom right is unavoidable: WeekKeys is how the team learned the right rule, and the old copy is what they learned from. The two left boxes are where trouble comes from. Agents add a new one bottom left: merging code nobody on the team understands. Remember cognitive debt from week 8.
-:::
-
-## Your MVP will have debt
-
 ::: key
-That's fine. Debt nobody wrote down is the dangerous kind.
+Your MVP will have debt. That's fine. Debt nobody wrote down is the dangerous kind.
 :::
 
 ::: note
-**Say:** I want to be clear, because some of you are worried right now. Your MVP will carry debt in two weeks. It should; you're shipping on a deadline. Taking on debt on purpose is not a failure. Forgetting you took it is.
+**Say:** Fowler's quadrant. Two questions: on purpose or by accident, careful or careless. Top right is a normal engineering choice, like a mortgage. Project Pulse's scheduler is there. Bottom right is unavoidable: WeekKeys is how the team learned the right rule, and the old copy is what they learned from. The two left boxes are where trouble comes from. Agents add a new one bottom left: merging code nobody on the team understands. Remember cognitive debt from week 8. And I want to be clear, because some of you are worried right now: your MVP will carry debt in two weeks. It should; you're shipping on a deadline. Taking on debt on purpose is not a failure. Forgetting you took it is.
 :::
 
 ## Make it visible: one row
@@ -487,22 +322,16 @@ Section 11 of your architecture-of-record
 - A teammate's memory
 :::
 
+::: joke
+A TODO comment is a promise written to someone who doesn't work here yet.
+:::
+
 ::: ask
 Could someone who never saw the conversation find it next semester?
 :::
 
 ::: note
-**Say:** Here's the test for any record of debt. Could someone who wasn't in the conversation find it next semester? A row in section 11: yes. A GitHub issue linked from that row: yes. My "Left open" line: no. Neither is a TODO in a file nobody opens.
-:::
-
-## TODO
-
-::: joke
-A TODO comment is a promise written to someone who doesn't work here yet.
-:::
-
-::: note
-**Say:** *[Beat.]* Try this tonight: search your repository for TODO and look at the oldest one. Some of you will find one the agent wrote, and nobody on the team remembers why.
+**Say:** Here's the test for any record of debt. Could someone who wasn't in the conversation find it next semester? A row in section 11: yes. A GitHub issue linked from that row: yes. My "Left open" line: no. Neither is a TODO in a file nobody opens. Try this tonight: search your repository for TODO and look at the oldest one.
 :::
 
 ## Temporary fix {.center}
@@ -515,41 +344,14 @@ A TODO comment is a promise written to someone who doesn't work here yet.
 
 ## Pay now, carry it, or pay in pieces
 
-::: steps
-- How often does this code change? That's the interest rate.
-- Is there a due date? A new year, a second server, a launch.
-- How big is the principal?
-- Does it compound?
-:::
-
-::: note
-**Say:** You'll never pay off all of it, and you shouldn't try. Four questions. Code that never changes charges almost no interest. A due date sets a deadline. A small fix today can become a week of work once three features sit on top of it. And architecture debt compounds: every feature built on a wrong boundary makes the fix bigger.
-:::
-
-## Three decisions
-
 | Item | Due | Principal | Decision |
 |---|---|---|---|
 | Week range rule | First week of 2027 | Ten lines | Pay now |
 | TD-duplicate-scheduler | A second server | A lock library | Carry it, trigger written down |
-| TD-feature-locality | None, but compounds | Large | Pay in pieces |
+| TD-feature-locality | None, but compounds | Large | Pay in pieces, and freeze the rest |
 
 ::: note
-**Say:** The four questions, applied. The week rule is due soon and costs ten lines: pay it now. The scheduler only comes due if we add a server, and we're not planning to: carry it, but write down the trigger. Feature locality is big and keeps growing: pay a piece at a time, one issue per violation.
-:::
-
-## Freeze it so it only shrinks
-
-::: steps
-- Record today's violations as a baseline
-- Fail the build on any new one
-- Pay the old ones down one at a time
-:::
-
-ArchUnit's FreezingArchRule; the same idea as your static analysis baseline
-
-::: note
-**Say:** One trick worth stealing for your job. Take a snapshot of the violations you have today, and fail the build on any new one. Now the debt can only shrink. You did exactly this with the SpotBugs baseline in week 11. ArchUnit does it for module boundaries.
+**Say:** You'll never pay off all of it, and you shouldn't try. Four questions. How often does this code change? That's the interest rate. Is there a due date? How big is the principal? Does it compound? Applied: the week rule is due soon and costs ten lines, so pay it now. The scheduler only comes due if we add a server, so carry it, but write down the trigger. Feature locality is big and keeps growing, so pay a piece at a time, one issue per violation. And a trick worth stealing for your job: snapshot today's violations and fail the build on any new one, so the debt can only shrink. You did exactly this with the SpotBugs baseline in week 11; ArchUnit's FreezingArchRule does it for module boundaries.
 :::
 
 ## Paying it down with an agent
@@ -622,15 +424,7 @@ A green test only counts if it was red first.
 This fix is on my laptop, tested, and not merged into Project Pulse yet.
 
 ::: note
-**Say:** Then every gate: 567 tests and both analyzers, all green. Last step, the one everybody skips: close the record. Otherwise the debt table drifts from the code, and a stale table is documentation debt. Full disclosure: this fix lives on my laptop. I'm in the middle of other changes to Project Pulse, so it waits its turn. Until it merges, the row stays open. That's not a failure; that's the register telling the truth.
-:::
-
-## The prompt
-
-> Read the Risks and Technical Debt table and WeekKeys.java. EvaluationService.getWeeksBetween has its own week rule. First write a test for 2027-W02 to 2027-W04 and show me it failing. Then, and only then, make it use WeekKeys and delete parseWeekDate. Change nothing else. Run ./mvnw verify and show me the result.
-
-::: note
-**Say:** Here's the prompt that does all four. Notice three things. It points the agent at the record. It says "show me it failing" before anything changes. And it says "change nothing else," because the agent likes to tidy as it goes, and you saw in week 8 what that does to a review. *[If time allows, run it live on the demo clone; otherwise show the saved run.]*
+**Say:** Then every gate: 567 tests and both analyzers, all green. Last step, the one everybody skips: close the record. Otherwise the debt table drifts from the code, and a stale table is documentation debt. Full disclosure: this fix lives on my laptop. I'm in the middle of other changes to Project Pulse, so it waits its turn. Until it merges, the row stays open. That's not a failure; that's the register telling the truth. The prompt that does all four steps is in the module, section 4.7: it points the agent at the record, says "show me it failing" before anything changes, and says "change nothing else."
 :::
 
 ## Agents and debt
@@ -643,18 +437,12 @@ This fix is on my laptop, tested, and not merged into Project Pulse yet.
 
 Open-source repositories after adopting coding agents. Agarwal, He, and Vasilescu, MSR 2026
 
-::: note
-**Say:** One piece of evidence from this year. Researchers at CMU followed open-source projects after they started using coding agents. The speed boost came early and faded. The warnings and complexity went up and stayed up. Agents make adding code nearly free. They don't make noticing an expired assumption any cheaper.
-:::
-
-## A new credit limit
-
 ::: joke
 Coding agents didn't invent technical debt. They just raised your credit limit.
 :::
 
 ::: note
-**Say:** *[Beat.]* Which is fine, if you keep the statements. That's what section 11 is.
+**Say:** One piece of evidence from this year. Researchers at CMU followed open-source projects after they started using coding agents. The speed boost came early and faded. The warnings and complexity went up and stayed up. Agents make adding code nearly free. They don't make noticing an expired assumption any cheaper. *[Joke, beat.]* Which is fine, if you keep the statements. That's what section 11 is.
 :::
 
 ## What to give the agent, what to keep
