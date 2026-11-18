@@ -155,7 +155,7 @@ ISO/IEC 25010: "the degree of effectiveness and efficiency with which a product 
 :::
 
 ::: note
-**Say:** ISO says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. All five examples are Project Pulse code.
+**Say:** ISO says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. Four of the five examples are Project Pulse code; the second is a classic.
 :::
 
 ## 1. One place for each rule
@@ -178,18 +178,23 @@ If this rule changed tomorrow, how many places would you edit?
 
 ## 2. One reason to change
 
-```ts
-// v1.4.1: one setter, called by login AND by the Courses page
-const setDefaultCourseId = (newDefaultCourseId: number) => {
-  defaultCourseId.value = newDefaultCourseId
-  removeDefaultSectionId()   // right for the Courses page, wrong at login
+```java
+public class Employee {
+    public Money calculatePay()  { ... regularHours() ... }  // accounting
+    public String reportHours()  { ... regularHours() ... }  // HR
+    public void save()           { ... }                     // database team
+    private double regularHours() { ... }                    // shared
 }
 ```
 
-Issue #26 added that line. Issue #28: every instructor lost their section at login.
+::: ask
+Accounting changes the overtime rule in regularHours(). What breaks?
+:::
+
+Robert C. Martin, *Clean Architecture*
 
 ::: note
-**Say:** Single responsibility: ask who would ask for this to change. Here, two callers. Login restores your saved course and section. The Courses page switches course. Issue twenty-six said "switching course should clear the section", so we added one line to the shared setter. Right for the Courses page. And now every login wiped the instructor's section: issue twenty-eight. The fix was two methods, one per caller. Two callers, two reasons to change.
+**Say:** Single responsibility. Martin's version: a module should be responsible to one actor. So ask who would ask for it to change. This class looks tidy, everything about an employee in one place. But three groups depend on it: accounting, HR, and the database team. Accounting changes how overtime counts, and a developer edits regularHours. *[Ask what breaks.]* Pay is right. HR's report shares that helper, so it's now wrong, and nobody in HR asked for anything. Every pay test passes. The fix: split by who asks. PayCalculator, HourReporter, EmployeeRepository, sharing only the data. And each keeps its own hours rule. Isn't that duplication? No: accounting's hours and HR's hours are two rules that happened to match. That's habit 1 again.
 :::
 
 ## 3. Add, don't edit

@@ -92,30 +92,21 @@ current.format(DateTimeFormatter.ofPattern("YYYY-'W'ww"))
 
 The question to ask: if this rule changed tomorrow, how many places would I edit? More than one, and some day someone will edit only one.
 
-**2. One reason to change** (the Single Responsibility Principle). A class or a method should serve one kind of need. Robert C. Martin puts it as "a module should be responsible to one, and only one, actor": ask *who* would ask for it to change. Project Pulse learned this in December 2025. The frontend's settings store had one setter for the instructor's default course, called from two places: login, which restores the saved course and section, and the Courses page, where the instructor switches course. [Issue #26](https://github.com/Washingtonwei/project-pulse/issues/26) asked that switching course should clear the selected section, so the fix added one line to the shared setter:
+**2. One reason to change** (the Single Responsibility Principle). A class or a method should serve one kind of need. Robert C. Martin puts it as "a module should be responsible to one, and only one, actor": ask *who* would ask for it to change. His example, from *Clean Architecture*, is the `Employee` class of a payroll system:
 
-```ts
-const setDefaultCourseId = (newDefaultCourseId: number) => {
-  defaultCourseId.value = newDefaultCourseId
-  // 🔴 IMPORTANT: when course changes, clear the section
-  removeDefaultSectionId()
+```java
+public class Employee {
+    public Money calculatePay()  { /* ... uses regularHours() ... */ }  // changes when accounting asks
+    public String reportHours()  { /* ... uses regularHours() ... */ }  // changes when HR asks
+    public void save()           { /* ... */ }                          // changes when the database team asks
+
+    private double regularHours() { /* ... */ }                        // shared by pay and the hours report
 }
 ```
 
-Right for the Courses page, wrong for login: version 1.4.1 now wiped every instructor's saved section the moment they logged in ([issue #28](https://github.com/Washingtonwei/project-pulse/issues/28)). One method, two callers, two reasons to change. The fix gave each caller its own method ([at `cff8d29`](https://github.com/Washingtonwei/project-pulse/blob/cff8d29ea49e403a5ea868de0a2cb953c5c7ba8e/frontend/src/stores/settings.ts#L17-L27)):
+It looks tidy: everything about an employee, in one place. But three groups of people depend on it. One day accounting changes how overtime is counted, and a developer updates `regularHours()`. Pay is now right. HR's hours report used the same helper, so it is now wrong, and nobody in HR asked for any change. Every test of pay passes.
 
-```ts
-// Plain setter – use this for login/backend restore
-const setDefaultCourseId = (courseId: number) => {
-  defaultCourseId.value = courseId
-}
-
-// UI-only setter – use this when user changes course in the app
-const setDefaultCourseIdAndResetSection = (newDefaultCourseId: number) => {
-  defaultCourseId.value = newDefaultCourseId
-  removeDefaultSectionId()
-}
-```
+The fix splits the class by who asks: a `PayCalculator` for accounting, an `HourReporter` for HR, and an `EmployeeRepository` for the database team, sharing only the employee's data. Each keeps its own hours rule. That looks like it breaks habit 1, and it does not: accounting's regular hours and HR's regular hours are two rules that happened to match, like the username and password checks.
 
 Splitting can go too far, though. Split one rule across two classes and a change to it edits both, which breaks habit 1.
 
