@@ -11,7 +11,7 @@ By the end of this module, a student can:
 3. Sort debt with Fowler's quadrant, and say which kinds are a normal engineering choice and which are not.
 4. Record debt where the next reader will find it: a row in section 11 of your architecture-of-record, not a sentence in a merged pull request.
 5. Decide whether to pay a debt now, pay it later, or carry it, from how often the code changes, when the debt comes due, and what it costs to fix.
-6. Pay down one debt item with an agent: a test that fails first, a refactor on its own, and the old copy deleted.
+6. Pay down one debt item with an agent: a test that pins the behavior first, a refactor on its own, and the old copy deleted.
 
 ## 2. Where it fits
 
@@ -272,7 +272,7 @@ That last move is worth stealing. An architecture test such as ArchUnit's `Freez
 
 Paying debt is a refactor: change the structure, keep the behavior. It is also a change, and changes break things; the FAA's ground stop in the [motivation](#3-motivation) happened while the debt was being paid. With an agent, the risk is that "keep the behavior" quietly stops being true, because the agent edits fast and confidently. Four steps keep it honest, shown on the week keys:
 
-**1. Write a test that fails first.** Pin the behavior you want before touching the code:
+**1. Pin the behavior with a test first.** Before touching the code, write a test for the behavior you want. Here the debt has already caused a bug, so the test is red on the old code:
 
 ```java
 @Test
@@ -285,6 +285,8 @@ void testGenerateEvaluationSummariesForStudentUsesIsoWeeksIn2027() {
 ```
 
 On the old code it fails with `["2027-W03", "2027-W04", "2027-W05"]`. A test that passes before the fix proves nothing about the fix.
+
+If this looks like test-driven development, it is: red, then green. Kent Beck's TDD builds new behavior in small loops (write a failing test, make it pass, then clean up), and a bug fix written this way is the same loop. Most debt has not caused a bug yet, though. Paying `TD-feature-locality` changes structure and keeps behavior, so there is nothing to turn red. Then step 1 is a test that pins what the code does today and passes before you touch anything: green before, green after. Michael Feathers calls these *characterization tests*. If one turns red during the refactor, the agent changed behavior it should not have.
 
 **2. Refactor on its own.** Use the one place for the rule and delete the copy:
 
@@ -347,7 +349,7 @@ Why this matters more now: agents make adding code nearly free, and they do not 
 - Technical debt has principal (the fix) and interest (what every change pays). No interest, no debt.
 - Deliberate, prudent debt is a normal choice. Debt nobody wrote down is the dangerous kind.
 - Record debt in section 11 with its interest and its due date, never only in a merged pull request.
-- Pay it with a test that fails first, a refactor on its own, and the record closed.
+- Pay it with a test that pins the behavior first, a refactor on its own, and the record closed.
 
 ## 9. Key papers & further reading
 

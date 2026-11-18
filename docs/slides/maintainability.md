@@ -366,7 +366,7 @@ Could someone who never saw the conversation find it next semester?
 ## Paying it down with an agent
 
 ::: steps
-- 1. A test that fails first
+- 1. Pin the behavior with a test first
 - 2. Refactor on its own
 - 3. Run every gate
 - 4. Close the record
@@ -377,7 +377,7 @@ The risk: "keep the behavior" quietly stops being true.
 :::
 
 ::: note
-**Say:** Paying debt is a refactor: new structure, same behavior. With an agent, the danger is that "same behavior" stops being true and nobody notices, because the agent is fast and sounds sure of itself. Four steps keep it honest. Remember Friday: the FAA was paying its debt when it broke. Let me show you on the week keys. I did this yesterday.
+**Say:** Paying debt is a refactor: new structure, same behavior. With an agent, the danger is that "same behavior" stops being true and nobody notices, because the agent is fast and sounds sure of itself. Four steps keep it honest. Step 1 is a test before any change. When the debt has already caused a bug, as here, it's red first, then green: yes, that's test-driven development. When it hasn't, the test pins today's behavior and stays green the whole time; Feathers calls that a characterization test. Remember Friday: the FAA was paying its debt when it broke. Let me show you on the week keys. I did this yesterday.
 :::
 
 ## Step 1: red first
