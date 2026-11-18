@@ -144,20 +144,6 @@ ISO/IEC 25010: "the degree of effectiveness and efficiency with which a product 
 **Say:** Two terms today. The first is maintainability: how cheaply and safely someone can make the next change. The formal one is ISO's, at the bottom. "The intended maintainers": who are they? You in three months counts as a stranger. And the agent is the one people forget. It reads your code to learn how you do things. If there are two week rules, it might copy the wrong one into your next feature. Messy code isn't only slow for humans now. It teaches your agent the wrong habits. ISO splits maintainability into five parts (modularity, analysability, modifiability, testability, reusability), and readability sits under all of them, because a change starts with somebody reading. The module has the table. Today, the habits that get you there.
 :::
 
-## Five habits
-
-::: steps
-- One place for each rule (DRY)
-- One reason to change (single responsibility)
-- Add, don't edit (open/closed)
-- Ask for what you need (dependency injection)
-- Build for the change you can see (KISS, YAGNI)
-:::
-
-::: note
-**Say:** ISO says what to aim for. Here's how you get there, one class at a time. Each habit has a classic name from object-oriented design. Learn the names: your reviewers use them, your agent uses them, and "this breaks single responsibility" is a lot faster than the paragraph it stands for. Four of the five examples are Project Pulse code; the second is a classic.
-:::
-
 ## 1. One place for each rule
 
 ```java
@@ -173,50 +159,68 @@ If this rule changed tomorrow, how many places would you edit?
 :::
 
 ::: note
-**Say:** Don't Repeat Yourself is not about lines that look alike. These two share no code at all. But they answer the same question: which week is this date in? One rule, written twice, and the copies drifted. That's our week bug. And the reverse is fine: a username check and a password check can look identical, because they're two rules that happen to match today.
+**Say:** ISO says what to aim for. Now five habits that get you there, one class at a time, each with a classic name from object-oriented design. Learn the names: your reviewers and your agent use them, and "this breaks single responsibility" is faster than the paragraph it stands for. Habit one. Don't Repeat Yourself is not about lines that look alike. These two share no code at all. But they answer the same question: which week is this date in? One rule, written twice, and the copies drifted. That's our week bug. And the reverse is fine: a username check and a password check can look identical, because they're two rules that happen to match today.
 :::
 
 ## 2. One reason to change
 
 ```java
-public class Employee {
-    public Money calculatePay()  { ... regularHours() ... }  // accounting
-    public String reportHours()  { ... regularHours() ... }  // HR
-    public void save()           { ... }                     // database team
-    private double regularHours() { ... }                    // shared
+public class UserInfo {
+    private long userId;
+    private String username;
+    private String avatarUrl;
+    private String email;
+    private String telephone;
+    private String street, city, state, zipCode;
 }
 ```
 
 ::: ask
-Accounting changes the overtime rule in regularHours(). What breaks?
+One job, or three?
 :::
 
-Robert C. Martin, *Clean Architecture*
-
 ::: note
-**Say:** Single responsibility. Martin's version: a module should be responsible to one actor. So ask who would ask for it to change. This class looks tidy, everything about an employee in one place. But three groups depend on it: accounting, HR, and the database team. Accounting changes how overtime counts, and a developer edits regularHours. *[Ask what breaks.]* Pay is right. HR's report shares that helper, so it's now wrong, and nobody in HR asked for anything. Every pay test passes. The fix: split by who asks. PayCalculator, HourReporter, EmployeeRepository, sharing only the data. And each keeps its own hours rule. Isn't that duplication? No: accounting's hours and HR's hours are two rules that happened to match. That's habit 1 again.
+**Say:** Single responsibility: a class should do one job, so it has one reason to change. Martin's version: ask who would ask for it to change. Here's a social app's user. One job, or three? *[Take answers; both sides will show up.]* The honest answer: it depends. If the app only shows profiles, this is one job, and splitting it would just scatter it. Now the app adds shopping: checkout needs a shipping address and a billing address. Then the company adds single sign-on, and login cares about email, phone, and a password. Same class, three needs: profile, checkout, login. A change for any one of them edits the class the other two depend on. Now you split: credentials for login, a list of addresses for checkout. The lesson: the class was right on day one and wrong a year later. Start simple, and split when the second kind of need shows up. If you can't split yet, that's debt: write the row. And don't overdo it: a serializer split into Serializer and Deserializer means one format change edits two classes. That breaks habit 1.
 :::
 
 ## 3. Add, don't edit
 
 ```java
-public enum SubmittableItem {
-    WEEKLY_ACTIVITY_REPORT("Weekly activity report") {
-        public DayOfWeek dueDay(Section s) { return s.getWarWeeklyDueDay(); }
-    },
-    PEER_EVALUATION("Peer evaluation") {
-        public DayOfWeek dueDay(Section s) { return s.getPeerEvaluationWeeklyDueDay(); }
-    };
-    public abstract DayOfWeek dueDay(Section section);
+public void check(String api, long requestCount, long errorCount, long durationOfSeconds) {
+    long tps = requestCount / durationOfSeconds;
+    if (tps > rule.getMatchedRule(api).getMaxTps()) { notification.notify(...); }
+    if (errorCount > rule.getMatchedRule(api).getMaxErrorCount()) { notification.notify(...); }
 }
 ```
 
-::: key
-The Strategy pattern: a family of algorithms, each one interchangeable.
+::: ask
+"Also alert when too many requests time out." What do you edit?
 :::
 
 ::: note
-**Say:** Open/closed: a new kind of thing should mean new code, not edits to code that already works. Each item brings its own due day, so the scheduler just asks `item.dueDay` and never names an item. That shape is called the Strategy pattern. A design pattern is a named answer to a problem that keeps coming back; the Gang of Four book from 1994 has twenty-three. The name is the point: "make it a Strategy" is a whole design in four words, for a teammate or for your agent. It's not finished, though. Whether a student has submitted is still a `switch` on the item in `SubmissionStatusService`, because it needs data the enum doesn't have. So a third item edits two files. What reminds you of the second one? *[The compiler: a switch expression must cover every constant.]* That's open/closed in real life: know where the edits land, and let your tools find them.
+**Say:** Open/closed: a new kind of thing should mean new code, not edits to code that already works. Here's a small API monitor. Two rules: too many transactions per second, too many errors. It works. Then the product manager asks for a third rule: timeouts. *[Ask.]* You add a parameter, so every caller changes. And you add another if to a method that's already tested. Every new rule edits the same method, and every edit can break the rules already in it.
+:::
+
+## One class per rule
+
+```java
+public interface AlertHandler {
+    void check(ApiStatInfo apiStatInfo);
+}
+
+public class AlertMonitor {
+    private final List<AlertHandler> handlers = new ArrayList<>();
+    public void addAlertHandler(AlertHandler h) { handlers.add(h); }
+    public void check(ApiStatInfo info) {
+        for (AlertHandler h : handlers) { h.check(info); }
+    }
+}
+```
+
+New rule: add a TimeoutAlertHandler, register it. check() never changes.
+
+::: note
+**Say:** Same monitor, refactored. Each rule is its own class behind one interface, and the monitor just runs them all. The timeout rule is a new class, registered with one line. The check method and the two old rules aren't touched, so their tests still hold. Not zero edits: the stats object gets a timeout field, and setup registers the new handler. But the logic that already works stays closed. Many design patterns exist to get exactly this; the Gang of Four book from 1994 has twenty-three, and Strategy, Decorator, and Chain of Responsibility are built for it. The name is the point: "make each rule a Strategy" is a whole design in five words, for a teammate or for your agent.
 :::
 
 ## 4. Ask for what you need
@@ -237,8 +241,8 @@ Production: the real clock. Dev: August 20, 2023, 11:30 pm. A test: any moment i
 ## 5. Build for the change you can see
 
 ::: steps
-- Two items: an enum, not an interface, a factory, and a registry
-- A fifth item arrives: refactor then
+- One alert rule, nobody asking for a second: the if is fine
+- The second or third rule arrives: refactor then
 - Ask for "extensible" and an agent may build three layers for two options
 :::
 
@@ -247,7 +251,7 @@ How many design patterns does it take to change a light bulb? A Strategy for the
 :::
 
 ::: note
-**Say:** Every habit can be overdone. Each pattern adds classes, and the next reader pays for them. Two items get an enum. If a fifth shows up, refactor then. Agents lean the other way, because pattern-heavy code is everywhere in what they learned from. Your test from the design week still works: name the requirement that needs the flexibility, or leave it out.
+**Say:** Every habit can be overdone. Each pattern adds classes, and the next reader pays for them. One alert rule doesn't need an AlertHandler interface. When more rules show up, refactor then, with the tests to keep you honest. Agents lean the other way, because pattern-heavy code is everywhere in what they learned from. Your test from the design week still works: name the requirement that needs the flexibility, or leave it out.
 :::
 
 ## Technical debt

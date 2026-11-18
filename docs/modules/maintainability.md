@@ -92,60 +92,90 @@ current.format(DateTimeFormatter.ofPattern("YYYY-'W'ww"))
 
 The question to ask: if this rule changed tomorrow, how many places would I edit? More than one, and some day someone will edit only one.
 
-**2. One reason to change** (the Single Responsibility Principle). A class or a method should serve one kind of need. Robert C. Martin puts it as "a module should be responsible to one, and only one, actor": ask *who* would ask for it to change. His example, from *Clean Architecture*, is the `Employee` class of a payroll system:
+**2. One reason to change** (the Single Responsibility Principle). A class should do one job, so it has only one reason to change. Robert C. Martin puts it as "a module should be responsible to one, and only one, actor": ask *who* would ask for it to change. Take the `UserInfo` class of a small social app:
 
 ```java
-public class Employee {
-    public Money calculatePay()  { /* ... uses regularHours() ... */ }  // changes when accounting asks
-    public String reportHours()  { /* ... uses regularHours() ... */ }  // changes when HR asks
-    public void save()           { /* ... */ }                          // changes when the database team asks
-
-    private double regularHours() { /* ... */ }                        // shared by pay and the hours report
+public class UserInfo {
+    private long userId;
+    private String username;
+    private String avatarUrl;
+    private String email;
+    private String telephone;
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
+    // getters and setters
 }
 ```
 
-It looks tidy: everything about an employee, in one place. But three groups of people depend on it. One day accounting changes how overtime is counted, and a developer updates `regularHours()`. Pay is now right. HR's hours report used the same helper, so it is now wrong, and nobody in HR asked for any change. Every test of pay passes.
+Does it do one job? It depends on what the app does. If all the app does is show a profile, yes. Everything here describes one user's profile, and splitting it would only scatter it.
 
-The fix splits the class by who asks: a `PayCalculator` for accounting, an `HourReporter` for HR, and an `EmployeeRepository` for the database team, sharing only the employee's data. Each keeps its own hours rule. That looks like it breaks habit 1, and it does not: accounting's regular hours and HR's regular hours are two rules that happened to match, like the username and password checks.
-
-Splitting can go too far, though. Split one rule across two classes and a change to it edits both, which breaks habit 1.
-
-**3. Add, don't edit** (the Open/Closed Principle). Code should be open for extension and closed for modification (Bertrand Meyer, 1988): adding a new kind of thing should mean adding code, not editing code that already works and is already tested. The usual tool is polymorphism. Each kind supplies its own behavior, so the code that uses them needs no `if` for each kind. Project Pulse's `SubmittableItem` does this with a Java enum whose constants each bring their own due day ([at `cff8d29`](https://github.com/Washingtonwei/project-pulse/blob/cff8d29ea49e403a5ea868de0a2cb953c5c7ba8e/backend/src/main/java/team/projectpulse/notification/SubmittableItem.java)):
+Now the app adds shopping. Checkout needs an address for shipping and another for billing, and the checkout code starts reading `UserInfo`. Then the company adds single sign-on across its apps, and login cares about the email, the phone, and a password. One class now serves three needs (the profile, checkout, and login), and a change for any of them, such as a second address or a new way to log in, edits the class the other two depend on. Now it is time to split:
 
 ```java
-public enum SubmittableItem {
-    WEEKLY_ACTIVITY_REPORT("Weekly activity report") {
-        @Override
-        public DayOfWeek dueDay(Section section) {
-            return section.getWarWeeklyDueDay();
-        }
-        // ... dueTime the same way
-    },
-    PEER_EVALUATION("Peer evaluation") {
-        @Override
-        public DayOfWeek dueDay(Section section) {
-            return section.getPeerEvaluationWeeklyDueDay();
-        }
-        // ... dueTime the same way
-    };
-
-    public abstract DayOfWeek dueDay(Section section);
+public class UserInfo {
+    private long userId;
+    private String username;
+    private String avatarUrl;
+    private Credentials credentials;   // what login needs
+    private List<Address> addresses;   // what checkout needs: shipping, billing
 }
 ```
 
-The reminder scheduler asks each item for `item.dueDay(section)` and never names one. This shape has a name: the **Strategy** pattern, whose definition reads "Define a family of algorithms, encapsulate each one, and make them interchangeable." A **design pattern** is a named, reusable answer to a design problem that keeps coming back; the 1994 book by Gamma, Helm, Johnson, and Vlissides (the "Gang of Four") catalogs 23 of them. The name is the point. "Make it a Strategy" is a whole design in three words, to a teammate or to an agent.
+The lesson is that single responsibility is not something you check once. The same class was right on day one and wrong a year later, because the system around it changed. Do not hunt for the perfect split up front. Start with the simple class, and split when a second kind of need arrives. If you notice that moment and cannot split yet, that is debt, and it gets a row.
 
-It is not finished, and that is worth seeing. `SubmissionStatusService` decides whether a student has submitted with a `switch`:
+Splitting can go too far, too. A `Serialization` class that turns objects into JSON and back is one job. Split it into a `Serializer` and a `Deserializer`, and a change to the format now edits two classes that must change together, which breaks habit 1. The test is the same question: who asks for the change?
+
+**3. Add, don't edit** (the Open/Closed Principle). Code should be open for extension and closed for modification (Bertrand Meyer, 1988): adding a new kind of thing should mean adding code, not editing code that already works and is already tested. Take a small API monitor that sends an alert when an API misbehaves. The first version checks each rule in one method:
 
 ```java
-boolean submitted = switch (item) {
-    case WEEKLY_ACTIVITY_REPORT -> reportingStudentIds.contains(student.getId());
-    case PEER_EVALUATION -> evaluateeIdsByEvaluator.getOrDefault(student.getId(), Set.of())
-            .containsAll(teammateIdsByTeam.get(student.getTeam().getTeamId()));
-};
+public class AlertMonitor {
+    private AlertRule rule;
+    private Notification notification;
+
+    public void check(String api, long requestCount, long errorCount, long durationOfSeconds) {
+        long tps = requestCount / durationOfSeconds;
+        if (tps > rule.getMatchedRule(api).getMaxTps()) {
+            notification.notify(NotificationEmergencyLevel.URGENCY, "...");
+        }
+        if (errorCount > rule.getMatchedRule(api).getMaxErrorCount()) {
+            notification.notify(NotificationEmergencyLevel.SEVERE, "...");
+        }
+    }
+}
 ```
 
-A third item means editing two files. That is a fair trade here: the check needs data from the activity and evaluation features, which the enum does not have. And a Java `switch` expression must cover every constant, so the compiler points at the second place. That is the realistic version of open/closed: know where the edits will land, and let your tools find them.
+It works. Then the product manager asks for a third rule: alert when too many requests time out. Now `check()` needs a new parameter, so every caller changes, and a new `if` goes into a method that was already tested. Every new rule edits the same method, and every edit can break the rules already in it.
+
+The fix gives each rule its own class behind one interface, and the monitor just runs them all:
+
+```java
+public interface AlertHandler {
+    void check(ApiStatInfo apiStatInfo);
+}
+
+public class TpsAlertHandler implements AlertHandler { ... }
+public class ErrorAlertHandler implements AlertHandler { ... }
+
+public class AlertMonitor {
+    private final List<AlertHandler> handlers = new ArrayList<>();
+
+    public void addAlertHandler(AlertHandler handler) {
+        handlers.add(handler);
+    }
+
+    public void check(ApiStatInfo apiStatInfo) {
+        for (AlertHandler handler : handlers) {
+            handler.check(apiStatInfo);
+        }
+    }
+}
+```
+
+The timeout rule is now a new class, `TimeoutAlertHandler`, registered with one `addAlertHandler` call. `AlertMonitor.check()` and the two existing rules are not touched, so their tests still hold. It is not zero edits: `ApiStatInfo` gains a `timeoutCount` field, and the setup code registers the new handler. The point is that the logic that already works stays closed.
+
+The tool underneath is polymorphism: each rule supplies its own behavior, so the code that uses them needs no `if` per rule. Many **design patterns** exist to get exactly this. A design pattern is a named, reusable answer to a design problem that keeps coming back, and the 1994 book by Gamma, Helm, Johnson, and Vlissides (the "Gang of Four") catalogs 23 of them, Strategy, Decorator, and Chain of Responsibility among those built for extension. The name is the point: "make each rule a Strategy" is a whole design in five words, to a teammate or to an agent.
 
 **4. Ask for what you need** (dependency injection). A class that builds its own dependencies is welded to them. A class that receives them, usually in its constructor, can be handed a different one, such as a test's. `EvaluationService` never calls `LocalDate.now()`. Spring passes it a `Clock`:
 
@@ -156,7 +186,7 @@ public EvaluationService(PeerEvaluationRepository evaluationRepository, StudentR
 
 In production the clock is the real one. In the `dev` profile it is fixed at August 20, 2023, 11:30 pm, to match the sample data. In a test it is any moment the test needs, so "which week is due now?" can be tested for New Year's Eve in the middle of July. This is testability from the table, built in.
 
-**5. Build for the change you can see** (Keep It Simple, and You Aren't Gonna Need It). Every habit above can be overdone. A pattern adds classes and indirection, and the next reader pays for both. Project Pulse has two submittable items, so they are an enum, not an interface with a factory and a plugin registry. If a fifth arrives, refactor then. Agents lean the other way: ask one to "make it extensible" and you can get three layers of abstraction around a choice with two options. [Design of Record 4.6](design-of-record.md#46-design-decisions-and-design-patterns) has the test: name the requirement that needs the flexibility, or leave it out.
+**5. Build for the change you can see** (Keep It Simple, and You Aren't Gonna Need It). Every habit above can be overdone. A pattern adds classes and indirection, and the next reader pays for both. An alert monitor with one rule, and nobody asking for a second, needs no `AlertHandler` interface; the `if` is fine. When the second or third rule arrives, refactor then, with the existing tests to keep you honest. Agents lean the other way: ask one to "make it extensible" and you can get three layers of abstraction around a choice with two options. [Design of Record 4.6](design-of-record.md#46-design-decisions-and-design-patterns) has the test: name the requirement that needs the flexibility, or leave it out.
 
 ### 4.2 Technical debt: principal and interest
 
@@ -334,7 +364,7 @@ Why this matters more now: agents make adding code nearly free, and they do not 
 
 ## 10. Self-check
 
-1. A teammate adds a third `SubmittableItem`, a weekly sprint retrospective. Which files change, which habit from [4.1](#41-maintainability-the-cost-of-the-next-change) tells you that is acceptable, and what makes sure nobody forgets the second file?
+1. The product manager asks for a fourth alert rule: alert when the average response time passes a threshold. In the `AlertHandler` design from [4.1](#41-maintainability-the-cost-of-the-next-change), which code do you add, which do you edit, and which stays untouched? Why does the untouched part matter?
 2. A file in your project is messy but nobody has changed it in two months, and nobody plans to. Is it technical debt? What would make it debt?
 3. Name the principal and the interest of `TD-duplicate-scheduler`. Why is "carry it" a reasonable decision, and what must be written down for it to stay reasonable?
 4. The old week code had a test, and the test passed. What was wrong with the test, and which partition from [Testing](testing.md) would have caught it?
