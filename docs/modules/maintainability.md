@@ -129,6 +129,10 @@ Debt nobody can see does not get paid. Project Pulse's architecture-of-record ke
 
 **Where debt goes to be forgotten:** a merged pull request's description, a `// TODO` comment, a Slack thread, a teammate's memory. Test any record with one question: could someone who never saw the conversation find it next semester? A row in section 11 passes. A GitHub issue linked from the row passes. "Left open:" in a merged pull request does not.
 
+![A rubber duck labelled "Temporary Fix (DO NOT TOUCH - Oct 2019)" holds up a server rack labelled "Production Environment (Enterprise Grade)"](../slides/img/temporary-fix-duck.jpg)
+
+Someone did write this debt down, with a date. It has no owner, no fix, and no due date, and "do not touch" is the interest: years later, nobody dares change anything near that rack. A record without an owner and a due date is a label, not a register. (Source unknown; the creator's watermark is in the image.)
+
 ### 4.6 Pay now, pay later, or carry it
 
 You will never pay off all of it, and you should not try. Four questions decide each item:

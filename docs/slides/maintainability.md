@@ -353,6 +353,14 @@ A TODO comment is a promise written to someone who doesn't work here yet.
 **Say:** *[Beat.]* Try this tonight: search your repository for TODO and look at the oldest one. Some of you will find one the agent wrote, and nobody on the team remembers why.
 :::
 
+## Temporary fix {.center}
+
+![A rubber duck labelled "Temporary Fix (DO NOT TOUCH - Oct 2019)" holds up a server rack labelled "Production Environment (Enterprise Grade)"](img/temporary-fix-duck.jpg){ height="520" }
+
+::: note
+**Say:** *[Let them laugh.]* Somebody did write this debt down. It has a date. Look what's missing: no owner, no fix, no due date. And "do not touch" is the interest: seven years later, nobody dares change anything near that rack. A record with no owner and no due date is a label, not a register. Source unknown; the creator's watermark is in the image.
+:::
+
 ## Pay now, carry it, or pay in pieces
 
 ::: steps
@@ -452,15 +460,17 @@ private List<String> getWeeksBetween(String startWeek, String endWeek) {
 ::: steps
 - The new test: green
 - The other 566 tests, SpotBugs, PMD: green
-- The debt row: closed, linked to the pull request
+- The debt row: closed when the fix merges, linked to the pull request
 :::
 
 ::: key
 A green test only counts if it was red first.
 :::
 
+This fix is on my laptop, tested, and not merged into Project Pulse yet.
+
 ::: note
-**Say:** Then every gate: 567 tests and both analyzers, all green. Last step, the one everybody skips: close the record. Otherwise the debt table drifts from the code, and a stale table is documentation debt.
+**Say:** Then every gate: 567 tests and both analyzers, all green. Last step, the one everybody skips: close the record. Otherwise the debt table drifts from the code, and a stale table is documentation debt. Full disclosure: this fix lives on my laptop. I'm in the middle of other changes to Project Pulse, so it waits its turn. Until it merges, the row stays open. That's not a failure; that's the register telling the truth.
 :::
 
 ## The prompt
